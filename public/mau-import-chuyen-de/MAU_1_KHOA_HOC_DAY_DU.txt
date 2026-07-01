@@ -1,0 +1,139 @@
+KHÓA_HỌC:
+Ôn tập Hàm số lũy thừa — Toán 12 (mẫu)
+
+MÔ_TẢ:
+Chuyên đề mẫu gồm hai chủ đề nhỏ, mỗi chủ đề vài bài tập. Giáo viên
+thay tên, nội dung và URL video theo thực tế.
+
+KHỐI_LỚP:
+12
+
+THỨ_TỰ:
+1
+
+VIDEO_MỞ_ĐẦU:
+https://www.youtube.com/watch?v=dQw4w9WgXcQ
+
+TÓM_TẮT_MỞ_ĐẦU:
+Nội dung tóm tắt mở đầu khóa (nhiều dòng được).
+Nhắc lại định nghĩa $y = x^\alpha$ với $\alpha \in \mathbb{R}$.
+
+HIỂN_THỊ_VIDEO_MỞ_ĐẦU: có
+HIỂN_THỊ_TÓM_TẮT_MỞ_ĐẦU: có
+
+CHỦ_ĐỀ:
+Tập xác định và đạo hàm
+
+MÔ_TẢ_CHỦ_ĐỀ:
+Các bài cơ bản về tập xác định và công thức đạo hàm.
+
+VIDEO_CHỦ_ĐỀ:
+https://www.youtube.com/watch?v=dQw4w9WgXcQ
+
+TÓM_TẮT_CHỦ_ĐỀ:
+Tóm tắt ngắn cho học sinh trước khi làm bài.
+
+VÍ_DỤ_1:
+Ví dụ — tập xác định lũy thừa
+
+ĐỀ_VÍ_DỤ:
+Tìm tập xác định của $y = (2x-1)^{-3}$.
+
+GỢI_Ý_VÍ_DỤ:
+Mẫu của lũy thừa phải khác 0.
+
+ĐÁP_ÁN_VÍ_DỤ:
+$x \neq \dfrac{1}{2}$
+
+VÍ_DỤ_2:
+Đạo hàm nhanh
+
+ĐỀ_VÍ_DỤ:
+Cho $f(x)=x^2$. Tính $f'(2)$.
+
+ĐÁP_ÁN_VÍ_DỤ:
+$4$
+
+HIỂN_THỊ_VIDEO_CHỦ_ĐỀ: có
+HIỂN_THỊ_TÓM_TẮT_CHỦ_ĐỀ: có
+HIỂN_THỊ_VÍ_DỤ_CHỦ_ĐỀ: có
+
+  BÀI_TẬP:
+  BT1 — Tập xác định
+
+    ĐỀ_BÀI:
+    Tìm tập xác định của hàm số $y = \dfrac{1}{\sqrt{x^2 - 4}}$.
+
+    GỢI_Ý:
+    Điều kiện căn bậc hai và mẫu khác 0.
+
+    ĐÁP_ÁN:
+    $(-\infty;-2) \cup (2;+\infty)$
+
+    LỜI_GIẢI_CHI_TIẾT:
+    Cần $x^2 - 4 > 0$ nên $|x| > 2$.
+
+    VIDEO_BÀI:
+    https://www.youtube.com/watch?v=dQw4w9WgXcQ
+
+    LOẠI_CÂU: điền
+
+  BÀI_TẬP:
+  BT2 — Đạo hàm
+
+    ĐỀ_BÀI:
+    Tính đạo hàm của $y = (3x+1)^5$.
+
+    GỢI_Ý:
+    Dùng công thức $(u^n)' = n u^{n-1} u'$.
+
+    ĐÁP_ÁN:
+    $y' = 15(3x+1)^4$
+
+    LỜI_GIẢI_CHI_TIẾT:
+    Đặt $u = 3x+1$, $y = u^5$ suy ra $y' = 5u^4 \cdot 3$.
+
+    VIDEO_BÀI:
+
+    LOẠI_CÂU: điền
+
+CHỦ_ĐỀ:
+Ứng dụng nhanh
+
+MÔ_TẢ_CHỦ_ĐỀ:
+Một bài trắc nghiệm mẫu.
+
+VIDEO_CHỦ_ĐỀ:
+
+TÓM_TẮT_CHỦ_ĐỀ:
+
+VÍ_DỤ_CHỦ_ĐỀ:
+
+HIỂN_THỊ_VIDEO_CHỦ_ĐỀ: không
+HIỂN_THỊ_TÓM_TẮT_CHỦ_ĐỀ: có
+HIỂN_THỊ_VÍ_DỤ_CHỦ_ĐỀ: không
+
+  BÀI_TẬP:
+  BT3 — Trắc nghiệm mẫu
+
+    ĐỀ_BÀI:
+    Chọn khẳng định đúng về hàm $y = x^{1/2}$.
+
+    GỢI_Ý:
+
+    LỜI_GIẢI_CHI_TIẾT:
+    Hàm căn bậc hai chỉ xác định khi $x \ge 0$.
+
+    VIDEO_BÀI:
+
+    LOẠI_CÂU: trắc_nghiệm
+
+    TRẮC_NGHIỆM:
+    A. Hàm xác định với mọi $x \in \mathbb{R}$
+    B. Hàm xác định khi $x \ge 0$ | đúng
+    C. Hàm luôn đồng biến trên $\mathbb{R}$
+    D. $y' = \dfrac{1}{x}$ với mọi $x > 0$
+
+ĐỀ_KIỂM_TRA_CUỐI:
+# Ghi ID hoặc mã đề thi trong hệ thống khi đã có, ví dụ: DE_THI_2025_01
+# Nếu chưa có đề, xóa dòng trên hoặc để trống phần giá trị.

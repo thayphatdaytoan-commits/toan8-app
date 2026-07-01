@@ -1,0 +1,711 @@
+TỔNG HỢP KIẾN THỨC MÔN TOÁN (LỚP 6 - LỚP 12)
+
+(Theo Chương trình Giáo dục phổ thông 2018)
+
+TOÁN LỚP 6
+
+HỌC KÌ 1
+
+Chương 1: Số tự nhiên
+
+Tập hợp, phần tử của tập hợp. Tập hợp các số tự nhiên.
+
+Các phép tính trong tập hợp số tự nhiên (cộng, trừ, nhân, chia hết, chia có dư).
+
+Lũy thừa với số mũ tự nhiên. Thứ tự thực hiện các phép tính.
+
+Quan hệ chia hết và tính chất. Dấu hiệu chia hết cho 2, 3, 5, 9.
+
+Số nguyên tố, hợp số. Phân tích một số ra thừa số nguyên tố.
+
+Ước chung, ước chung lớn nhất (ƯCLN).
+
+Bội chung, bội chung nhỏ nhất (BCNN).
+
+Các dạng toán khác
+
+Chương 2: Số nguyên
+
+Số nguyên âm và tập hợp các số nguyên. Thứ tự trong tập hợp số nguyên.
+
+Phép cộng và phép trừ hai số nguyên. Quy tắc dấu ngoặc.
+
+Phép nhân và phép chia hết hai số nguyên.
+
+Bội và ước của một số nguyên.
+
+Các dạng toán khác
+
+Chương 3: Hình học trực quan (Các hình phẳng trong thực tiễn)
+
+Tam giác đều, hình vuông, lục giác đều.
+
+Hình chữ nhật, hình thoi, hình bình hành, hình thang cân.
+
+Chu vi và diện tích của một số hình tứ giác đã học.
+
+Các dạng toán khác
+
+Chương 4: Tính đối xứng của hình phẳng trong tự nhiên
+
+Hình có trục đối xứng.
+
+Hình có tâm đối xứng.
+
+Vai trò của tính đối xứng trong thế giới tự nhiên.
+
+Các dạng toán khác
+
+HỌC KÌ 2
+
+Chương 5: Phân số
+
+Phân số với tử và mẫu là các số nguyên. Phân số bằng nhau.
+
+Tính chất cơ bản của phân số. Rút gọn phân số.
+
+So sánh phân số.
+
+Các phép tính với phân số: Cộng, trừ, nhân, chia.
+
+Hỗn số dương.
+
+Hai bài toán về phân số (Tìm giá trị phân số của một số; Tìm một số biết giá trị phân số của nó).
+
+Các dạng toán khác
+
+Chương 6: Số thập phân
+
+Số thập phân và các phép tính với số thập phân.
+
+Tỉ số và tỉ số phần trăm.
+
+Hai bài toán về tỉ số phần trăm.
+
+Làm tròn số nguyên và số thập phân. Ước lượng kết quả.
+
+Các dạng toán khác
+
+Chương 7: Hình học phẳng cơ bản
+
+Điểm, đường thẳng, tia.
+
+Đoạn thẳng, độ dài đoạn thẳng. Trung điểm của đoạn thẳng.
+
+Góc. Số đo góc. Các góc đặc biệt (góc vuông, góc nhọn, góc tù, góc bẹt).
+
+Các dạng toán khác
+
+Chương 8: Dữ liệu và Xác suất thực nghiệm
+
+Thu thập, tổ chức, phân loại và biểu diễn dữ liệu.
+
+Bảng dữ liệu, Biểu đồ tranh, Biểu đồ cột, Biểu đồ cột kép.
+
+Kết quả có thể và sự kiện trong các trò chơi, thí nghiệm (đồng xu, xúc xắc).
+
+Xác suất thực nghiệm trong một số trò chơi và thí nghiệm đơn giản.
+
+Các dạng toán khác
+
+TOÁN LỚP 7
+
+HỌC KÌ 1
+
+Chương 1: Số hữu tỉ
+
+Tập hợp các số hữu tỉ. Thứ tự trong tập hợp số hữu tỉ.
+
+Các phép tính cộng, trừ, nhân, chia số hữu tỉ.
+
+Lũy thừa của một số hữu tỉ.
+
+Quy tắc dấu ngoặc và quy tắc chuyển vế.
+
+Các dạng toán khác
+
+Chương 2: Số thực
+
+Số vô tỉ. Căn bậc hai số học.
+
+Số thực. Giá trị tuyệt đối của một số thực.
+
+Làm tròn số và ước lượng.
+
+Các dạng toán khác
+
+Chương 3: Hình học trực quan (Các hình khối trong thực tiễn)
+
+Hình hộp chữ nhật và Hình lập phương (Diện tích xung quanh, thể tích).
+
+Hình lăng trụ đứng tam giác và Hình lăng trụ đứng tứ giác.
+
+Các dạng toán khác
+
+Chương 4: Góc và Đường thẳng song song
+
+Góc ở vị trí đặc biệt (kề bù, đối đỉnh). Tia phân giác của một góc.
+
+Hai đường thẳng song song và dấu hiệu nhận biết.
+
+Tiên đề Euclid về đường thẳng song song. Tính chất hai đường thẳng song song.
+
+Định lí và chứng minh một định lí.
+
+Các dạng toán khác
+
+Chương 5: Thống kê và Xác suất (Phần 1)
+
+Thu thập và phân loại dữ liệu.
+
+Biểu đồ hình quạt tròn.
+
+Biểu đồ đoạn thẳng.
+
+Các dạng toán khác
+
+HỌC KÌ 2
+
+Chương 6: Tỉ lệ thức và Đại lượng tỉ lệ
+
+Tỉ lệ thức và tính chất.
+
+Dãy tỉ số bằng nhau.
+
+Đại lượng tỉ lệ thuận.
+
+Đại lượng tỉ lệ nghịch.
+
+Các dạng toán khác
+
+Chương 7: Biểu thức đại số và Đa thức một biến
+
+Biểu thức số, biểu thức đại số.
+
+Đa thức một biến. Nghiệm của đa thức một biến.
+
+Phép cộng và phép trừ đa thức một biến.
+
+Phép nhân và phép chia đa thức một biến.
+
+Các dạng toán khác
+
+Chương 8: Tam giác
+
+Tổng ba góc của một tam giác.
+
+Hai tam giác bằng nhau. Các trường hợp bằng nhau của tam giác (c.c.c, c.g.c, g.c.g).
+
+Các trường hợp bằng nhau của tam giác vuông.
+
+Tam giác cân, tam giác đều.
+
+Quan hệ giữa cạnh và góc trong tam giác. Bất đẳng thức tam giác.
+
+Sự đồng quy của các đường trung tuyến, đường phân giác, đường trung trực, đường cao trong tam giác.
+
+Các dạng toán khác
+
+Chương 9: Xác suất (Phần 2)
+
+Làm quen với biến cố ngẫu nhiên, biến cố chắc chắn, biến cố không thể.
+
+Xác suất của biến cố ngẫu nhiên trong một số trò chơi đơn giản.
+
+Các dạng toán khác
+
+TOÁN LỚP 8
+
+HỌC KÌ 1
+
+Chương 1: Đa thức nhiều biến
+
+Đơn thức và Đa thức nhiều biến.
+
+Các phép toán cộng, trừ, nhân, chia các đa thức nhiều biến.
+
+Hằng đẳng thức đáng nhớ (7 hằng đẳng thức cơ bản).
+
+Phân tích đa thức thành nhân tử.
+
+Các dạng toán khác
+
+Chương 2: Phân thức đại số
+
+Phân thức đại số. Tính chất cơ bản của phân thức.
+
+Các phép toán với phân thức đại số (cộng, trừ, nhân, chia).
+
+Rút gọn biểu thức chứa phân thức đại số.
+
+Các dạng toán khác
+
+Chương 3: Hình học trực quan
+
+Hình chóp tam giác đều.
+
+Hình chóp tứ giác đều.
+
+Diện tích xung quanh và Thể tích của hình chóp tam giác đều, hình chóp tứ giác đều.
+
+Các dạng toán khác
+
+Chương 4: Tứ giác
+
+Định lí Pythagore (Hệ thức và đảo).
+
+Tứ giác. Tổng các góc của một tứ giác.
+
+Hình thang, hình thang cân.
+
+Hình bình hành, hình chữ nhật, hình thoi, hình vuông.
+
+Các dạng toán khác
+
+HỌC KÌ 2
+
+Chương 5: Thống kê và Xác suất
+
+Thu thập và tổ chức dữ liệu nhiều tiêu chí.
+
+Phân tích và xử lý dữ liệu.
+
+Xác suất thực nghiệm của một biến cố trong một số trò chơi và thí nghiệm.
+
+Xác suất lí thuyết và mối liên hệ với xác suất thực nghiệm.
+
+Các dạng toán khác
+
+Chương 6: Hàm số và Đồ thị
+
+Khái niệm hàm số và mặt phẳng tọa độ $Oxy$.
+
+Đồ thị của hàm số.
+
+Hàm số bậc nhất $y = ax + b$ $(a \neq 0)$. Đồ thị của hàm số bậc nhất.
+
+Hệ số góc của đường thẳng.
+
+Các dạng toán khác
+
+Chương 7: Phương trình bậc nhất một ẩn
+
+Phương trình bậc nhất một ẩn và cách giải.
+
+Giải bài toán bằng cách lập phương trình.
+
+Các dạng toán khác
+
+Chương 8: Tam giác đồng dạng và Hình đồng dạng
+
+Định lí Thalès trong tam giác (Thuận, đảo, hệ quả).
+
+Đường trung bình của tam giác.
+
+Tính chất đường phân giác của tam giác.
+
+Hai tam giác đồng dạng. Các trường hợp đồng dạng của hai tam giác (c.c.c, c.g.c, g.g).
+
+Các trường hợp đồng dạng của tam giác vuông.
+
+Hình đồng dạng trong thực tiễn.
+
+Các dạng toán khác
+
+TOÁN LỚP 9
+
+HỌC KÌ 1
+
+Chương 1: Phương trình và Hệ phương trình
+
+Phương trình quy về phương trình bậc nhất một ẩn (Phương trình tích, phương trình chứa ẩn ở mẫu).
+
+Phương trình bậc nhất hai ẩn.
+
+Hệ phương trình bậc nhất hai ẩn.
+
+Giải hệ phương trình bậc nhất hai ẩn (Phương pháp thế, phương pháp cộng đại số).
+
+Giải bài toán bằng cách lập hệ phương trình.
+
+Các dạng toán khác
+
+Chương 2: Bất đẳng thức và Bất phương trình
+
+Bất đẳng thức và các tính chất cơ bản.
+
+Bất phương trình bậc nhất một ẩn.
+
+Các dạng toán khác
+
+Chương 3: Căn thức
+
+Căn bậc hai. Căn thức bậc hai và hằng đẳng thức $\sqrt{A^2} = |A|$.
+
+Các phép biến đổi đơn giản biểu thức chứa căn thức bậc hai (Đưa thừa số ra ngoài/vào trong dấu căn, khử mẫu, trục căn thức).
+
+Căn bậc ba.
+
+Các dạng toán khác
+
+Chương 4: Hệ thức lượng trong tam giác vuông
+
+Tỉ số lượng giác của góc nhọn ($\sin, \cos, \tan, \cot$).
+
+Hệ thức về cạnh và góc trong tam giác vuông.
+
+Ứng dụng tỉ số lượng giác để giải một số bài toán thực tế.
+
+Các dạng toán khác
+
+Chương 5: Đường tròn (Phần 1)
+
+Khái niệm đường tròn. Sự xác định đường tròn. Tính đối xứng của đường tròn.
+
+Vị trí tương đối của đường thẳng và đường tròn. Tiếp tuyến của đường tròn.
+
+Góc ở tâm. Số đo cung.
+
+Các dạng toán khác
+
+HỌC KÌ 2
+
+Chương 6: Hàm số $y = ax^2$ và Phương trình bậc hai một ẩn
+
+Hàm số $y = ax^2$ $(a \neq 0)$ và đồ thị.
+
+Phương trình bậc hai một ẩn. Công thức nghiệm và công thức nghiệm thu gọn.
+
+Định lí Viète và ứng dụng.
+
+Giải bài toán bằng cách lập phương trình bậc hai.
+
+Các dạng toán khác
+
+Chương 7: Thống kê và Xác suất
+
+Tần số. Bảng tần số. Tần số tương đối. Bảng tần số tương đối.
+
+Biểu đồ tần số, biểu đồ tần số tương đối.
+
+Phép thử ngẫu nhiên và không gian mẫu.
+
+Xác suất của biến cố có liên quan tới phép thử.
+
+Các dạng toán khác
+
+Chương 8: Đường tròn (Phần 2)
+
+Góc nội tiếp.
+
+Đường tròn ngoại tiếp, đường tròn nội tiếp tam giác.
+
+Tứ giác nội tiếp.
+
+Độ dài đường tròn, cung tròn.
+
+Diện tích hình tròn, hình quạt tròn.
+
+Các dạng toán khác
+
+Chương 9: Hình học không gian (Khối tròn xoay)
+
+Hình trụ: Diện tích xung quanh và Thể tích.
+
+Hình nón: Diện tích xung quanh và Thể tích.
+
+Hình cầu: Diện tích mặt cầu và Thể tích.
+
+Các dạng toán khác
+
+TOÁN LỚP 10
+
+HỌC KÌ 1
+
+Chương 1: Mệnh đề toán học và Tập hợp
+
+Khái niệm mệnh đề toán học, mệnh đề chứa biến.
+
+Mệnh đề phủ định, mệnh đề kéo theo, mệnh đề đảo, hai mệnh đề tương đương.
+
+Khái niệm tập hợp và các tập hợp số cơ bản.
+
+Các phép toán trên tập hợp: Phép giao, phép hợp, phép hiệu và phần bù.
+
+Các dạng toán khác
+
+Chương 2: Bất phương trình và Hệ bất phương trình bậc nhất hai ẩn
+
+Bất phương trình bậc nhất hai ẩn và cách biểu diễn miền nghiệm trên mặt phẳng tọa độ.
+
+Hệ bất phương trình bậc nhất hai ẩn và miền nghiệm.
+
+Ứng dụng hệ bất phương trình bậc nhất hai ẩn vào bài toán tối ưu (tìm giá trị lớn nhất, nhỏ nhất).
+
+Các dạng toán khác
+
+Chương 3: Hệ thức lượng trong tam giác
+
+Giá trị lượng giác của một góc từ $0^\circ$ đến $180^\circ$.
+
+Định lí côsin và định lí sin trong tam giác.
+
+Các công thức tính diện tích tam giác.
+
+Ứng dụng giải tam giác và đo đạc thực tế.
+
+Các dạng toán khác
+
+Chương 4: Vectơ và các phép toán
+
+Khái niệm vectơ, hai vectơ cùng phương, cùng hướng, hai vectơ bằng nhau.
+
+Tổng và hiệu của hai vectơ (quy tắc ba điểm, quy tắc hình bình hành).
+
+Tích của một số với một vectơ và các tính chất.
+
+Góc giữa hai vectơ và tích vô hướng của hai vectơ.
+
+Các dạng toán khác
+
+Chương 5: Thống kê
+
+Số gần đúng và sai số (sai số tuyệt đối, sai số tương đối, số quy tròn).
+
+Các số đặc trưng đo xu thế trung tâm cho mẫu số liệu không ghép nhóm: Số trung bình, trung vị, tứ phân vị, mốt.
+
+Các số đặc trưng đo mức độ phân tán cho mẫu số liệu không ghép nhóm: Khoảng biến thiên, khoảng tứ phân vị, phương sai và độ lệch chuẩn.
+
+Các dạng toán khác
+
+HỌC KÌ 2
+
+Chương 6: Hàm số và Đồ thị
+
+Khái niệm hàm số, tập xác định, tập giá trị.
+
+Tính đồng biến, nghịch biến của hàm số và đồ thị hàm số.
+
+Hàm số bậc hai: Bảng biến thiên, vẽ đồ thị hàm số parabol.
+
+Dấu của tam thức bậc hai và ứng dụng giải bất phương trình bậc hai một ẩn.
+
+Giải phương trình quy về phương trình bậc hai (tập trung vào hai dạng cơ bản: $\sqrt{f(x)} = \sqrt{g(x)}$ và $\sqrt{f(x)} = g(x)$).
+
+Các dạng toán khác
+
+Chương 7: Phương pháp tọa độ trong mặt phẳng
+
+Tọa độ của điểm và tọa độ của vectơ trên mặt phẳng $Oxy$.
+
+Biểu thức tọa độ của các phép toán vectơ.
+
+Phương trình đường thẳng: Phương trình tham số, phương trình tổng quát, khoảng cách từ một điểm đến đường thẳng, góc giữa hai đường thẳng.
+
+Phương trình đường tròn: Nhận dạng, lập phương trình đường tròn và phương trình tiếp tuyến của đường tròn.
+
+Ba đường conic: Lập phương trình chính tắc và nhận biết các tính chất cơ bản của Elip, Hypebol, Parabol.
+
+Các dạng toán khác
+
+Chương 8: Đại số Tổ hợp
+
+Quy tắc đếm: Quy tắc cộng và quy tắc nhân.
+
+Hoán vị, Chỉnh hợp và Tổ hợp.
+
+Khai triển nhị thức Newton (giới hạn cho các trường hợp số mũ nhỏ như $n=4$ hoặc $n=5$).
+
+Các dạng toán khác
+
+Chương 9: Xác suất
+
+Không gian mẫu và biến cố.
+
+Định nghĩa cổ điển của xác suất.
+
+Các quy tắc tính xác suất cơ bản: Quy tắc cộng xác suất (cho hai biến cố xung khắc) và quy tắc nhân xác suất (cho hai biến cố độc lập).
+
+Các dạng toán khác
+
+TOÁN LỚP 11
+
+HỌC KÌ 1
+
+Chương 1: Hàm số lượng giác và Phương trình lượng giác
+
+Góc lượng giác và giá trị lượng giác của các góc lượng giác.
+
+Các công thức biến đổi lượng giác (công thức cộng, công thức nhân đôi, công thức biến đổi tích thành tổng, tổng thành tích).
+
+Hàm số lượng giác ($y = \sin x, y = \cos x, y = \tan x, y = \cot x$) và đồ thị.
+
+Phương trình lượng giác cơ bản.
+
+Các dạng toán khác
+
+Chương 2: Dãy số. Cấp số cộng và Cấp số nhân
+
+Khái niệm dãy số, cách cho một dãy số, tính tăng/giảm và bị chặn của dãy số.
+
+Cấp số cộng: Định nghĩa, số hạng tổng quát, tính chất, tổng $n$ số hạng đầu.
+
+Cấp số nhân: Định nghĩa, số hạng tổng quát, tính chất, tổng $n$ số hạng đầu.
+
+Các dạng toán khác
+
+Chương 3: Giới hạn và Hàm số liên tục
+
+Giới hạn của dãy số: Các định lí về giới hạn, tổng của cấp số nhân lùi vô hạn.
+
+Giới hạn của hàm số: Giới hạn tại một điểm, giới hạn tại vô cực, các dạng vô định.
+
+Hàm số liên tục: Liên tục tại một điểm, liên tục trên một khoảng/đoạn, tính chất và định lí về nghiệm của phương trình.
+
+Các dạng toán khác
+
+Chương 4: Đường thẳng và Mặt phẳng. Quan hệ song song trong không gian
+
+Các khái niệm mở đầu về không gian: Điểm, đường thẳng, mặt phẳng. Các tính chất thừa nhận.
+
+Hai đường thẳng chéo nhau và hai đường thẳng song song.
+
+Đường thẳng song song với mặt phẳng.
+
+Hai mặt phẳng song song. Định lí Thales trong không gian.
+
+Phép chiếu song song. Hình biểu diễn của một hình không gian.
+
+Các dạng toán khác
+
+Chương 5: Thống kê (Mẫu số liệu ghép nhóm)
+
+Tổ chức dữ liệu: Cách ghép nhóm mẫu số liệu.
+
+Các số đặc trưng đo xu thế trung tâm cho mẫu số liệu ghép nhóm: Số trung bình, trung vị, tứ phân vị và mốt.
+
+Các dạng toán khác
+
+HỌC KÌ 2
+
+Chương 6: Hàm số mũ và Hàm số lôgarit
+
+Phép tính lũy thừa với số mũ nguyên, hữu tỉ, thực.
+
+Khái niệm, tính chất và các quy tắc tính lôgarit.
+
+Hàm số mũ và hàm số lôgarit: Tập xác định, tính biến thiên và đồ thị.
+
+Phương trình, bất phương trình mũ và lôgarit cơ bản.
+
+Các dạng toán khác
+
+Chương 7: Đạo hàm
+
+Khái niệm đạo hàm và ý nghĩa hình học (phương trình tiếp tuyến), ý nghĩa vật lí (vận tốc tức thời).
+
+Các quy tắc tính đạo hàm (tổng, hiệu, tích, thương, hàm hợp). Đạo hàm của hàm số lượng giác, mũ, lôgarit.
+
+Đạo hàm cấp hai.
+
+Các dạng toán khác
+
+Chương 8: Quan hệ vuông góc trong không gian
+
+Góc giữa hai đường thẳng trong không gian. Hai đường thẳng vuông góc.
+
+Đường thẳng vuông góc với mặt phẳng. Định lí ba đường vuông góc.
+
+Hai mặt phẳng vuông góc. Góc nhị diện.
+
+Khoảng cách: Khoảng cách từ điểm đến đường thẳng/mặt phẳng, khoảng cách giữa hai đường thẳng chéo nhau.
+
+Thể tích của một số khối đa diện (khối lăng trụ, khối chóp).
+
+Các dạng toán khác
+
+Chương 9: Xác suất
+
+Biến cố hợp, biến cố giao, biến cố xung khắc, biến cố độc lập.
+
+Các quy tắc tính xác suất: Quy tắc cộng (mở rộng) và Quy tắc nhân xác suất.
+
+Các dạng toán khác
+
+TOÁN LỚP 12
+
+HỌC KÌ 1
+
+Chương 1: Ứng dụng đạo hàm để khảo sát và vẽ đồ thị hàm số
+
+Tính đơn điệu của hàm số. Mối liên hệ giữa đạo hàm và sự đồng biến, nghịch biến.
+
+Cực trị của hàm số: Điểm cực đại, cực tiểu, giá trị cực trị.
+
+Giá trị lớn nhất và giá trị nhỏ nhất của hàm số trên một tập hợp.
+
+Đường tiệm cận của đồ thị hàm số: Tiệm cận đứng, tiệm cận ngang, tiệm cận xiên.
+
+Khảo sát sự biến thiên và vẽ đồ thị của hàm số. Tương giao đồ thị.
+
+Ứng dụng đạo hàm để giải quyết các bài toán tối ưu thực tế.
+
+Các dạng toán khác
+
+Chương 2: Vectơ và Hệ tọa độ trong không gian
+
+Vectơ trong không gian: Các phép toán cộng, trừ, nhân vectơ với một số, tích vô hướng của hai vectơ.
+
+Hệ trục tọa độ $Oxyz$ trong không gian.
+
+Biểu thức tọa độ của vectơ và tọa độ của điểm. Biểu thức tọa độ của các phép toán vectơ.
+
+Các dạng toán khác
+
+Chương 3: Thống kê (Mức độ phân tán của mẫu số liệu ghép nhóm)
+
+Khái quát lại mẫu số liệu ghép nhóm.
+
+Các số đặc trưng đo mức độ phân tán cho mẫu số liệu ghép nhóm: Khoảng biến thiên, khoảng tứ phân vị.
+
+Phương sai và độ lệch chuẩn của mẫu số liệu ghép nhóm. Ý nghĩa thực tiễn.
+
+Các dạng toán khác
+
+HỌC KÌ 2
+
+Chương 4: Nguyên hàm và Tích phân
+
+Khái niệm nguyên hàm, các tính chất cơ bản và bảng nguyên hàm các hàm số sơ cấp.
+
+Khái niệm tích phân, tính chất của tích phân. Định lí Newton - Leibniz.
+
+Các phương pháp tính nguyên hàm, tích phân: Phương pháp đổi biến số, phương pháp tích phân từng phần.
+
+Ứng dụng hình học của tích phân: Tính diện tích hình phẳng, thể tích khối tròn xoay.
+
+Các dạng toán khác
+
+Chương 5: Phương pháp tọa độ trong không gian
+
+Phương trình mặt phẳng: Vectơ pháp tuyến, cách lập phương trình tổng quát, khoảng cách từ một điểm đến mặt phẳng.
+
+Phương trình đường thẳng trong không gian: Vectơ chỉ phương, phương trình tham số, phương trình chính tắc.
+
+Góc giữa hai đường thẳng, góc giữa đường thẳng và mặt phẳng, góc giữa hai mặt phẳng.
+
+Phương trình mặt cầu: Cách lập phương trình, xác định tâm và bán kính mặt cầu.
+
+Các dạng toán khác
+
+Chương 6: Xác suất (Xác suất có điều kiện)
+
+Khái niệm xác suất có điều kiện $P(B|A)$.
+
+Công thức nhân xác suất đối với hai biến cố không độc lập.
+
+Công thức xác suất toàn phần.
+
+Công thức Bayes và ứng dụng trong các bài toán thực tế (y tế, kiểm định, quyết định).
+
+Các dạng toán khác

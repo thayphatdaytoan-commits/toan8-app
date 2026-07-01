@@ -1,0 +1,61 @@
+// =============================================================================
+// FILE MẪU — IMPORT BÀI GIẢNG CHUẨN SEO (TXT / Word → trích text)
+// Website: hệ thống Thầy Phát dạy toán (math_lessons_v2)
+// Quy ước: dòng bắt đầu // = ghi chú (bị bỏ qua khi import). Không dùng // cho nội dung học sinh.
+// Dòng bắt đầu "# " = tiêu đề markdown trong phần LÝ THUYẾT (trên web hiển thị như H2 trong khung lý thuyết;
+//          H1 trên trang học sinh = dòng @title / Tiêu đề bài dưới đây).
+// =============================================================================
+
+@grade_level: 10
+@chapter: 2
+@lesson_no: 3
+@title: Hoán vị – Tập hữu hạn và công thức $P_n = n!$
+
+@focus_keyword: hoán vị toán 10
+@keywords: chỉnh hợp, giai thừa, sắp xếp, xác suất, chương 2 đại số
+@seo_description: Lý thuyết và ví dụ hoán vị lớp 10: công thức $P_n=n!$, quy tắc nhân, bài tập có lời giải. Ôn thi hiệu quả, bám SGK.
+
+@video_url: https://www.youtube.com/watch?v=VIDEO_ID_CỦA_BẠN
+@pdf_url:
+
+// --- Nội dung: phần dưới đây đến trước "BÀI TẬP TỰ LUYỆN" / "TÀI LIỆU PDF" là LÝ THUYẾT + DẠNG + VÍ DỤ ---
+
+# Hoán vị – Ôn tập chương tổ hợp
+
+Đoạn mở đầu nên **chứa từ khóa chính** một cách tự nhiên (1–2 lần). Giải thích ngắn gọn học sinh sẽ học được gì.
+
+- Nhắc công thức: $P_n = n!$
+- Liên kết nội bộ (tuỳ chọn, markdown): [Cùng chương – bài trước](/lop/10/chuong/2/bai/2)
+
+Dạng 1: HOÁN VỊ (SẮP XẾP TOÀN BỘ)
+
+Phương pháp: Xếp có thứ tự toàn bộ $n$ phần tử phân biệt; số cách là $n!$.
+
+Ví dụ 1:
+
+Câu a) Có bao nhiêu số tự nhiên có 5 chữ số phân biệt thuộc tập $X = \{1,2,3,4,5\}$?
+
+Lời giải:
+- Chọn và sắp xếp 5 chữ số phân biệt từ 5 phần tử $\Rightarrow P_5 = 5! = 120$.
+
+Ví dụ 2:
+
+Câu 1) Có 10 quyển sách khác nhau xếp trên kệ. Hỏi có bao nhiêu cách xếp?
+
+Lời giải:
+- $P_{10} = 10!$ cách.
+
+// Khối lời giải chi tiết có thể dùng cú pháp: \{ Lời giải: ... nội dung ... \}
+
+BÀI TẬP TỰ LUYỆN
+
+Câu 1: Từ các chữ số 1,2,3,4 có bao nhiêu số tự nhiên có 4 chữ số phân biệt?
+A. 12
+B. 24
+C. 48
+D. 256
+Đáp án: B
+Lời giải: Hoán vị 4 phần tử: $4! = 24$.
+
+TÀI LIỆU PDF
+https://drive.google.com/file/d/xxxxxxxx/view

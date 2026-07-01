@@ -1,0 +1,27 @@
+PROBLEM_TITLE: Câu 7: (Cụm 11- Đề 1)
+PROBLEM_CONTENT: 
+Cho tam giác $ABC$ nhọn ($AB>AC$). Vẽ đường tròn tâm $O$ đường kính $AB$ cắt các cạnh $BC$, $AC$ lần lượt tại $D$, $E$. Gọi $H$ là giao điểm của $AD$ và $BE$.
+
+a) Chứng minh tứ giác $CEHD$ nội tiếp.
+
+# Lời giải theo từng ý — khớp cụm sau SOLUTION_FOR: với dòng TREE_TITLE: (cùng ý a, b.1...)
+# Hoặc SOLUTION_CONTENT: (một khối) — chỉ gán vào ý đầu tiên (tương thích file cũ)
+
+SOLUTION_FOR: Câu a: Chứng minh tứ giác CEHD nội tiếp
+Ta có $\widehat{CEH} = 90^\circ$ và $\widehat{CDH} = 90^\circ$ vì $E,D$ thuộc đường tròn đường kính $AB$.
+Suy ra $\widehat{CEH} + \widehat{CDH} = 180^\circ$ nên tứ giác $CEHD$ nội tiếp.
+
+SOLUTION_FOR: Câu b.1: Chứng minh ΔHNC ∼ ΔBCA
+(Ví dụ lời giải riêng cho ý b.1.)
+
+TREE_TITLE: Câu a: Chứng minh tứ giác CEHD nội tiếp
+[GOAL] Tứ giác $CEHD$ nội tiếp
+[NEED 1] $\widehat{CEH} + \widehat{CDH} = 180^\circ$
+[GIVEN 1.1] $\widehat{CEH} = 90^\circ$ (Do $E$ thuộc đường kính $AB$)
+[GIVEN 1.2] $\widehat{CDH} = 90^\circ$ (Do $D$ thuộc đường kính $AB$)
+
+TREE_TITLE: Câu b.1: Chứng minh ΔHNC ∼ ΔBCA
+[GOAL] $\Delta HNC \sim \Delta BCA$ (g.g)
+[NEED 1] $\widehat{CHN} = \widehat{CBA}$ và $\widehat{NCH} = \widehat{CAB}$
+[NEED 1.1] $\widehat{CHN} = \widehat{CBA}$
+[GIVEN 1.1.1] MCNH là hình bình hành suy ra $HN \parallel CE$

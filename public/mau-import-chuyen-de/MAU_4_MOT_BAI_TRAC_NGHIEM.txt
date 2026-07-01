@@ -1,0 +1,22 @@
+BÀI_TẬP:
+Một bài — trắc nghiệm (mẫu)
+
+ĐỀ_BÀI:
+Cho dãy số $(u_n)$ xác định bởi $u_1 = 1$ và $u_{n+1} = u_n + 2$ với mọi $n \ge 1$.
+Giá trị của $u_{10}$ là:
+
+GỢI_Ý:
+Đây là cấp số công.
+
+LỜI_GIẢI_CHI_TIẾT:
+$u_n = u_1 + (n-1)d$ với $d = 2$, nên $u_{10} = 1 + 9 \cdot 2 = 19$.
+
+VIDEO_BÀI:
+
+LOẠI_CÂU: trắc_nghiệm
+
+TRẮC_NGHIỆM:
+A. $17$
+B. $19$ | đúng
+C. $21$
+D. $23$

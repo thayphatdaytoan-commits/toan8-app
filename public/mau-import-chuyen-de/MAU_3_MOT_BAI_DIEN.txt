@@ -1,0 +1,19 @@
+BÀI_TẬP:
+Một bài — dạng điền đáp án (mẫu)
+
+ĐỀ_BÀI:
+Cho hàm số $f(x) = \ln(1 + x^2)$. Tính $f'(1)$.
+
+GỢI_Ý:
+Nhớ $(\ln u)' = \dfrac{u'}{u}$.
+
+ĐÁP_ÁN:
+$1$
+
+LỜI_GIẢI_CHI_TIẾT:
+$f'(x) = \dfrac{2x}{1+x^2}$. Thay $x = 1$ được $f'(1) = \dfrac{2}{2} = 1$.
+
+VIDEO_BÀI:
+https://www.youtube.com/watch?v=dQw4w9WgXcQ
+
+LOẠI_CÂU: điền

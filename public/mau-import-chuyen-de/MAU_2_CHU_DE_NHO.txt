@@ -1,0 +1,55 @@
+CHỦ_ĐỀ:
+Phương trình lượng giác cơ bản (mẫu một chủ đề)
+
+MÔ_TẢ_CHỦ_ĐỀ:
+File này mô phỏng khi giáo viên chỉ import MỘT chủ đề nhỏ (không kèm
+khối KHÓA_HỌC). Trong admin có thể gắn chủ đề vào khóa đang soạn.
+
+VIDEO_CHỦ_ĐỀ:
+https://www.youtube.com/watch?v=dQw4w9WgXcQ
+
+TÓM_TẮT_CHỦ_ĐỀ:
+Ôn các phương trình $\sin x = a$, $\cos x = a$ với $|a| \le 1$.
+
+VÍ_DỤ_CHỦ_ĐỀ:
+Giải $\sin x = \dfrac{1}{2}$ trên khoảng $(0;2\pi)$.
+
+HIỂN_THỊ_VIDEO_CHỦ_ĐỀ: có
+HIỂN_THỊ_TÓM_TẮT_CHỦ_ĐỀ: có
+HIỂN_THỊ_VÍ_DỤ_CHỦ_ĐỀ: có
+
+BÀI_TẬP:
+Bài A — Sin
+
+  ĐỀ_BÀI:
+  Giải phương trình $\sin\left(2x - \dfrac{\pi}{3}\right) = \dfrac{\sqrt{3}}{2}$.
+
+  GỢI_Ý:
+  Đặt $t = 2x - \dfrac{\pi}{3}$.
+
+  ĐÁP_ÁN:
+  $x = \dfrac{\pi}{3} + k\pi$ hoặc $x = \dfrac{\pi}{2} + k\pi$, $k \in \mathbb{Z}$
+
+  LỜI_GIẢI_CHI_TIẾT:
+  (Giáo viên điền lời giải chi tiết tại đây.)
+
+  VIDEO_BÀI:
+
+  LOẠI_CÂU: điền
+
+BÀI_TẬP:
+Bài B — Cos
+
+  ĐỀ_BÀI:
+  Tìm nghiệm thuộc $[0;\pi]$ của $\cos x = -\dfrac{1}{2}$.
+
+  GỢI_Ý:
+
+  ĐÁP_ÁN:
+  $x = \dfrac{2\pi}{3}$
+
+  LỜI_GIẢI_CHI_TIẾT:
+
+  VIDEO_BÀI:
+
+  LOẠI_CÂU: điền

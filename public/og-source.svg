@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="55%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="24" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="980" cy="120" r="180" fill="#ffffff" opacity="0.08" filter="url(#soft)"/>
+  <circle cx="200" cy="520" r="220" fill="#ffffff" opacity="0.06"/>
+  <text x="72" y="300" fill="#ffffff" font-family="Segoe UI, system-ui, sans-serif" font-size="68" font-weight="800">thayphatdaytoan</text>
+  <text x="72" y="380" fill="#e0e7ff" font-family="Segoe UI, system-ui, sans-serif" font-size="34" font-weight="600">Hoc Toan THCS &amp; THPT - Lop 6-12</text>
+  <text x="72" y="440" fill="#c7d2fe" font-family="Segoe UI, system-ui, sans-serif" font-size="22" font-weight="500">Bai giang - Luyen de - Phong thi online</text>
+</svg>

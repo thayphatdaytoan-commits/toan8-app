@@ -1,0 +1,34 @@
+═══════════════════════════════════════════════════════════════
+  MẪU IMPORT CHUYÊN ĐỀ ÔN TẬP — HƯỚNG DẪN NGẮN
+═══════════════════════════════════════════════════════════════
+
+Các file trong thư mục này dùng để GIÁO VIÊN tải về, mở bằng Notepad /
+VS Code, sao chép nội dung rồi chỉnh sửa theo bài dạy.
+
+• MAU_1_KHOA_HOC_DAY_DU.txt     — Một file = cả khóa (nhiều chủ đề, nhiều bài)
+• MAU_2_CHU_DE_NHO.txt          — Một file = một chủ đề nhỏ (nhiều bài tập)
+• MAU_3_MOT_BAI_DIEN.txt        — Một file = một bài (điền đáp án)
+• MAU_4_MOT_BAI_TRAC_NGHIEM.txt — Một file = một bài trắc nghiệm
+• MAU_5_NHIEU_CAU_HOI.txt       — Nhiều câu hỏi (nút Import câu hỏi ở khung sửa chủ đề)
+
+Quy tắc chung:
+  - Dòng tiêu đề khối viết IN HOA có dấu hai chấm, ví dụ: KHÓA_HỌC:
+  - Nội dung khối nằm ngay các dòng phía dưới, đến khi gặp khối mới.
+  - Video: dán URL YouTube đầy đủ (một dòng).
+  - Công thức: có thể dùng $...$ nếu hệ thống hỗ trợ KaTeX.
+
+Nhiều ví dụ trong một chủ đề (mỗi ví dụ một màn hình, có đề + ẩn/hiện đáp án):
+  - VÍ_DỤ_1: … VÍ_DỤ_2: … (tối đa 30 ví dụ)
+  - Bên trong mỗi khối dùng các dòng:
+      ĐỀ_VÍ_DỤ:
+      …
+      GỢI_Ý_VÍ_DỤ:   (tuỳ chọn)
+      …
+      ĐÁP_ÁN_VÍ_DỤ:
+      …
+  - Vẫn có thể dùng một khối VÍ_DỤ_CHỦ_ĐỀ: (một đoạn) nếu chưa cần tách ví dụ.
+
+Khi tính năng import trên web được bật, chọn đúng loại file tương ứng
+hoặc để hệ thống nhận diện theo các khối đầu file.
+
+═══════════════════════════════════════════════════════════════

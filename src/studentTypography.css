@@ -1,0 +1,289 @@
+/**
+ * Typography học sinh — Phương án A: Be Vietnam Pro (body) + Nunito (display).
+ * Gắn class `student-ui` lên shell App (mọi màn không phải admin).
+ */
+.student-ui,
+.chuyen-de-ontap {
+  font-family: 'Be Vietnam Pro', 'Nunito', system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.student-ui .font-display,
+.chuyen-de-ontap .font-display {
+  font-family: 'Nunito', 'Be Vietnam Pro', system-ui, sans-serif;
+}
+
+/* Nâng cơ sở Tailwind text-* trong khu vực học sinh */
+.student-ui .text-xs {
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.student-ui .text-sm {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.student-ui .text-base {
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+.student-ui .text-lg {
+  font-size: 1.1875rem;
+  line-height: 1.55;
+}
+
+.student-ui .text-xl {
+  font-size: 1.375rem;
+  line-height: 1.35;
+}
+
+.student-ui .text-2xl {
+  font-size: 1.625rem;
+  line-height: 1.3;
+}
+
+.student-ui .text-3xl {
+  font-size: 2rem;
+  line-height: 1.25;
+}
+
+/* Công thức toán cân với chữ nội dung */
+.student-ui .katex,
+.chuyen-de-ontap .katex {
+  font-size: 1.08em;
+}
+
+/* Trang bài học — công thức to hơn, dòng thoáng */
+.lesson-viewer .lesson-math-content,
+.lesson-viewer .lesson-math-content .katex {
+  font-size: 1.14em;
+  line-height: 1.75;
+}
+
+.lesson-viewer .lesson-math-content .katex-display {
+  margin: 1.25rem 0;
+  padding: 0.35rem 0;
+}
+
+.lesson-viewer .lesson-theory-block + .lesson-theory-block {
+  margin-top: 0.75rem;
+}
+
+/* Icon khối lý thuyết — giống mẫu thiết kế */
+.lesson-viewer .lesson-theory-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex-shrink: 0;
+  color: #fff;
+}
+
+.lesson-viewer .lesson-theory-icon--quote {
+  border-radius: 0.65rem;
+  background: linear-gradient(145deg, #3b82f6, #2563eb);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.28);
+}
+
+.lesson-viewer .lesson-theory-icon--pin {
+  border-radius: 9999px;
+  background: linear-gradient(145deg, #10b981, #059669);
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.28);
+}
+
+.lesson-viewer .lesson-theory-icon--layers {
+  border-radius: 0.65rem;
+  background: linear-gradient(145deg, #8b5cf6, #7c3aed);
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.28);
+}
+
+.lesson-viewer .lesson-theory-icon--example {
+  border-radius: 0.65rem;
+  background: linear-gradient(145deg, #a78bfa, #8b5cf6);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.28);
+}
+
+/* Ghi nhớ — dấu tick xanh trước mỗi ý */
+.lesson-viewer .lesson-theory-block--remember .lesson-math-content ul {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 0.25rem;
+}
+
+.lesson-viewer .lesson-theory-block--remember .lesson-math-content ul li {
+  position: relative;
+  padding-left: 1.65rem;
+  margin-bottom: 0.45rem;
+}
+
+.lesson-viewer .lesson-theory-block--remember .lesson-math-content ul li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  top: 0.1em;
+  color: #10b981;
+  font-weight: 800;
+  font-size: 1.05em;
+}
+
+/* Nền xanh bầu trời (kiểu IXL) — hai bên khung nội dung, mọi tab bài học */
+.lesson-viewer.lesson-sky-canvas,
+.lesson-viewer .lesson-sky-canvas {
+  background-color: #cfe9f8;
+  background-image:
+    linear-gradient(180deg, #b8dff5 0%, #cfe9f8 28%, #dceffb 58%, #e8f4fc 100%);
+}
+
+.lesson-viewer #lesson-scroll-main.lesson-sky-canvas {
+  min-height: 100%;
+}
+
+/* Khung bọc nội dung lý thuyết (không gồm tiêu đề mục) */
+.lesson-viewer .lesson-theory-content-frame {
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.lesson-viewer .lesson-theory-content-frame .lesson-theory-block:first-child {
+  margin-top: 0;
+}
+
+/* Ghi nhớ — viền đậm bên ngoài */
+.lesson-viewer .lesson-theory-block--remember {
+  box-shadow: 0 0 0 1px rgba(5, 150, 105, 0.15);
+}
+
+/* Ví dụ — một khung trắng, không nền màu */
+.lesson-viewer .lesson-vidu-card-shell,
+.lesson-viewer .lesson-vidu-card {
+  background: #fff !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: none !important;
+}
+
+.lesson-viewer .lesson-vidu-badge {
+  letter-spacing: 0.02em;
+}
+
+/* Lời giải mở rộng trong khối ví dụ */
+.lesson-viewer .lesson-loi-giai-details {
+  border-radius: 0;
+}
+
+.lesson-viewer .lesson-loi-giai-details[open] summary {
+  margin-bottom: 0.25rem;
+}
+
+/* Phương pháp — số thứ tự tím */
+.lesson-viewer .lesson-theory-block--method .lesson-math-content h4 > span:first-child {
+  background: linear-gradient(145deg, #8b5cf6, #7c3aed) !important;
+  box-shadow: 0 1px 4px rgba(124, 58, 237, 0.25);
+}
+
+/* Khung Dạng + Phương pháp (mục Các dạng toán và ví dụ) */
+.lesson-viewer .lesson-dang-method-frame .lesson-theory-block--method {
+  margin-bottom: 0;
+}
+
+.lesson-viewer .lesson-dang-highlight p {
+  letter-spacing: -0.01em;
+}
+
+/* ── Sổ bài tập KooBits (ChuyenDeOnTapKooBitsShell) ── */
+.chuyen-de-ontap .kb-notebook {
+  width: 100%;
+  max-width: min(58rem, 100%);
+}
+
+.chuyen-de-ontap .kb-notebook-shell {
+  display: flex;
+  min-height: min(72dvh, 700px);
+  border-radius: 1.35rem;
+  border: 7px solid #facc15;
+  background: #fde047;
+  box-shadow:
+    0 14px 44px rgba(0, 0, 0, 0.28),
+    inset 0 2px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -2px 0 rgba(180, 120, 0, 0.15);
+  overflow: hidden;
+}
+
+.chuyen-de-ontap .kb-spine {
+  width: 2.85rem;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: stretch;
+  padding: 0.85rem 0;
+  background: linear-gradient(90deg, #ca8a04 0%, #fbbf24 55%, #fde68a 100%);
+  border-right: 2px solid rgba(146, 90, 0, 0.28);
+  box-shadow: inset -4px 0 10px rgba(0, 0, 0, 0.08);
+}
+
+.chuyen-de-ontap .kb-spine-ring {
+  position: relative;
+  height: 0.9rem;
+  flex-shrink: 0;
+}
+
+.chuyen-de-ontap .kb-spine-wire {
+  position: absolute;
+  left: 3px;
+  right: 17px;
+  top: 50%;
+  height: 3px;
+  margin-top: -1.5px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f8fafc 0%, #94a3b8 42%, #cbd5e1 100%);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.18);
+}
+
+.chuyen-de-ontap .kb-spine-hole {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  width: 14px;
+  height: 8px;
+  margin-top: -4px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #64748b 0%, #334155 100%);
+  box-shadow:
+    inset 0 1px 2px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+.chuyen-de-ontap .kb-notebook-page {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #eef7fb 0%, #dceef5 100%);
+}
+
+.chuyen-de-ontap .kb-notebook-sheet {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin: 0.6rem 0.85rem 0.85rem 0.45rem;
+  background: #fff;
+  border-radius: 0.85rem;
+  border: 2px solid #dbeafe;
+  box-shadow: 0 6px 22px rgba(15, 23, 42, 0.1);
+  overflow: hidden;
+}
+
+@media (min-width: 1024px) {
+  .chuyen-de-ontap .kb-notebook {
+    max-width: min(62rem, 100%);
+  }
+
+  .chuyen-de-ontap .kb-spine {
+    width: 3.15rem;
+  }
+}

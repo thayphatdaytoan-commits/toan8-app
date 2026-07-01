@@ -1,0 +1,104 @@
+TOÁN LỚP 11
+
+HỌC KÌ 1
+
+Chương 1: Hàm số lượng giác và Phương trình lượng giác
+
+Góc lượng giác và giá trị lượng giác của các góc lượng giác.
+
+Các công thức biến đổi lượng giác (công thức cộng, công thức nhân đôi, công thức biến đổi tích thành tổng, tổng thành tích).
+
+Hàm số lượng giác ($y = \sin x, y = \cos x, y = \tan x, y = \cot x$) và đồ thị.
+
+Phương trình lượng giác cơ bản.
+
+Các dạng toán khác
+
+Chương 2: Dãy số. Cấp số cộng và Cấp số nhân
+
+Khái niệm dãy số, cách cho một dãy số, tính tăng/giảm và bị chặn của dãy số.
+
+Cấp số cộng: Định nghĩa, số hạng tổng quát, tính chất, tổng $n$ số hạng đầu.
+
+Cấp số nhân: Định nghĩa, số hạng tổng quát, tính chất, tổng $n$ số hạng đầu.
+
+Các dạng toán khác
+
+Chương 3: Giới hạn và Hàm số liên tục
+
+Giới hạn của dãy số: Các định lí về giới hạn, tổng của cấp số nhân lùi vô hạn.
+
+Giới hạn của hàm số: Giới hạn tại một điểm, giới hạn tại vô cực, các dạng vô định.
+
+Hàm số liên tục: Liên tục tại một điểm, liên tục trên một khoảng/đoạn, tính chất và định lí về nghiệm của phương trình.
+
+Các dạng toán khác
+
+Chương 4: Đường thẳng và Mặt phẳng. Quan hệ song song trong không gian
+
+Các khái niệm mở đầu về không gian: Điểm, đường thẳng, mặt phẳng. Các tính chất thừa nhận.
+
+Hai đường thẳng chéo nhau và hai đường thẳng song song.
+
+Đường thẳng song song với mặt phẳng.
+
+Hai mặt phẳng song song. Định lí Thales trong không gian.
+
+Phép chiếu song song. Hình biểu diễn của một hình không gian.
+
+Các dạng toán khác
+
+Chương 5: Thống kê (Mẫu số liệu ghép nhóm)
+
+Tổ chức dữ liệu: Cách ghép nhóm mẫu số liệu.
+
+Các số đặc trưng đo xu thế trung tâm cho mẫu số liệu ghép nhóm: Số trung bình, trung vị, tứ phân vị và mốt.
+
+Các dạng toán khác
+
+HỌC KÌ 2
+
+Chương 6: Hàm số mũ và Hàm số lôgarit
+
+Phép tính lũy thừa với số mũ nguyên, hữu tỉ, thực.
+
+Khái niệm, tính chất và các quy tắc tính lôgarit.
+
+Hàm số mũ và hàm số lôgarit: Tập xác định, tính biến thiên và đồ thị.
+
+Phương trình, bất phương trình mũ và lôgarit cơ bản.
+
+Các dạng toán khác
+
+Chương 7: Đạo hàm
+
+Khái niệm đạo hàm và ý nghĩa hình học (phương trình tiếp tuyến), ý nghĩa vật lí (vận tốc tức thời).
+
+Các quy tắc tính đạo hàm (tổng, hiệu, tích, thương, hàm hợp). Đạo hàm của hàm số lượng giác, mũ, lôgarit.
+
+Đạo hàm cấp hai.
+
+Các dạng toán khác
+
+Chương 8: Quan hệ vuông góc trong không gian
+
+Góc giữa hai đường thẳng trong không gian. Hai đường thẳng vuông góc.
+
+Đường thẳng vuông góc với mặt phẳng. Định lí ba đường vuông góc.
+
+Hai mặt phẳng vuông góc. Góc nhị diện.
+
+Khoảng cách: Khoảng cách từ điểm đến đường thẳng/mặt phẳng, khoảng cách giữa hai đường thẳng chéo nhau.
+
+Thể tích của một số khối đa diện (khối lăng trụ, khối chóp).
+
+Các dạng toán khác
+
+Chương 9: Xác suất
+
+Biến cố hợp, biến cố giao, biến cố xung khắc, biến cố độc lập.
+
+Các quy tắc tính xác suất: Quy tắc cộng (mở rộng) và Quy tắc nhân xác suất.
+
+Các dạng toán khác
+

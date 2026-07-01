@@ -1,0 +1,50 @@
+# Mẫu import CHỈ CÂU HỎI — dùng nút "Import câu hỏi" ở khung sửa chủ đề.
+# Không ghi KHÓA_HỌC, CHỦ_ĐỀ, VÍ_DỤ, lý thuyết — các khối đó sẽ bị bỏ qua.
+
+BÀI_TẬP:
+Câu 1 — Nền tảng
+
+ĐỀ_BÀI:
+Cho $(P): y = x^2$. Tìm tọa độ điểm $M$ thuộc $(P)$ có tung độ bằng $25$.
+
+GỢI_Ý:
+Thay $y = 25$ vào phương trình parabol.
+
+ĐÁP_ÁN:
+M(5;25)|M(5; 25)
+
+LỜI_GIẢI_CHI_TIẾT:
+$25 = x^2 \Rightarrow x = \pm 5$. Vậy $M(5;25)$ hoặc $M(-5;25)$ (tùy đề yêu cầu).
+
+CẤP_ĐỘ: Nền tảng
+LOẠI_CÂU: điền
+
+BÀI_TẬP:
+Câu 2 — Luyện tập
+
+ĐỀ_BÀI:
+Cho parabol $(P): y = -2x^2 + 4x + 1$. Tính tọa độ đỉnh của $(P)$.
+
+ĐÁP_ÁN:
+(1; 3)
+
+LỜI_GIẢI_CHI_TIẾT:
+$x_0 = -\dfrac{b}{2a} = 1$, $y_0 = -2 + 4 + 1 = 3$.
+
+CẤP_ĐỘ: Luyện tập
+LOẠI_CÂU: điền
+
+BÀI_TẬP:
+Câu 3 — Trắc nghiệm
+
+ĐỀ_BÀI:
+Parabol $y = ax^2$ đi qua điểm $(2; 8)$. Giá trị $a$ là:
+
+TRẮC_NGHIỆM:
+A. $a = 1$
+B. $a = 2$ | đúng
+C. $a = 4$
+D. $a = -2$
+
+CẤP_ĐỘ: Nền tảng
+LOẠI_CÂU: trắc nghiệm

@@ -1,0 +1,23 @@
+rules_version = '2';
+// Triển khai: Firebase Console → Storage → Rules, hoặc: firebase deploy --only storage
+// Ảnh admin upload vào site-content/ — chỉ user đã auth (kể cả ẩn danh), tối đa ~4MB, chỉ image/*
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /site-content/{fileName} {
+      allow read: if true;
+      allow create, update: if request.auth != null
+        && request.resource.size < 4 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+      allow delete: if request.auth != null;
+    }
+
+    // Ảnh sơ đồ Hình 9 (mind map) — JPEG sau nén, URL lưu trong Firestore
+    match /mindmap_geometry9/{path=**} {
+      allow read: if true;
+      allow create, update: if request.auth != null
+        && request.resource.size < 3 * 1024 * 1024
+        && request.resource.contentType == 'image/jpeg';
+      allow delete: if request.auth != null;
+    }
+  }
+}
