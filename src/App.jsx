@@ -1027,7 +1027,7 @@ setCurrentScore(score); setStudentAnswers(answers); setStudentEssayImages(essayI
         className: studentClass,
         quizId: `lesson_practice_${lessonId}`,
         grade_level: gradeLevel || window.currentStudentGrade || '8',
-        quizTitle: `Bài tập tự luyện — ${lessonTitle || 'Bài giảng'}`,
+        quizTitle: `Bài tập luyện tập — ${lessonTitle || 'Bài giảng'}`,
         score,
         time: `${score}/${total}`,
         essayImages: {},
@@ -1037,7 +1037,7 @@ setCurrentScore(score); setStudentAnswers(answers); setStudentEssayImages(essayI
         practiceTotal: total,
       });
     } catch (e) {
-      console.error('Lỗi lưu điểm bài tập tự luyện:', e);
+      console.error('Lỗi lưu điểm bài tập luyện tập:', e);
     }
   };
 
@@ -2459,7 +2459,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
       content: JSON.stringify(parsed),
     });
     alert(
-      `Đã import: ${nEx} mục lý thuyết/ví dụ${nPr ? `, ${nPr} phần bài tập tự luyện` : ''}${fromMeta.pdfUrl ? ', đã nhận link PDF' : ''}${fk || nk ? ` — SEO: ${fk ? `TK chính «${fk}»` : ''}${fk && nk ? ', ' : ''}${nk ? `${nk} từ khóa phụ` : ''}` : ''}. Kiểm tra Chương/Bài/Tiêu đề rồi Lưu.`
+      `Đã import: ${nEx} mục lý thuyết/ví dụ${nPr ? `, ${nPr} phần bài tập luyện tập` : ''}${fromMeta.pdfUrl ? ', đã nhận link PDF' : ''}${fk || nk ? ` — SEO: ${fk ? `TK chính «${fk}»` : ''}${fk && nk ? ', ' : ''}${nk ? `${nk} từ khóa phụ` : ''}` : ''}. Kiểm tra Chương/Bài/Tiêu đề rồi Lưu.`
     );
     e.target.value = '';
   };
@@ -2496,6 +2496,9 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
     const jsonBroken = Boolean(lessonContentParse.error);
     const examples = jsonBroken ? [] : (cObj?.examples ?? []);
     const practiceList = jsonBroken ? [] : (cObj?.practice ?? []);
+    const practiceDisplayMode = jsonBroken
+      ? 'list'
+      : (cObj?.practice_display_mode ?? cObj?.practiceDisplayMode ?? 'list');
     const theoryCoreVal = jsonBroken ? '' : (cObj?.theory_core ?? '').toString();
     const examplesCoreVal = jsonBroken ? '' : (cObj?.examples_core ?? '').toString();
     if (theoryLastSnapRef.current === '' && theoryCoreVal) {
@@ -2794,7 +2797,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
               {[
                 { id: 'theory', label: 'Lý thuyết', Icon: BookOpen },
                 { id: 'examples_core', label: 'Các dạng toán & ví dụ', Icon: FileEdit },
-                { id: 'practice', label: 'Bài tập tự luyện', Icon: ListOrdered },
+                { id: 'practice', label: 'Bài tập luyện tập', Icon: ListOrdered },
                 { id: 'materials', label: 'Tài liệu (JSON)', Icon: Link2 },
                 { id: 'raw', label: 'JSON nâng cao', Icon: FileText },
               ].map(({ id, label, Icon }) => (
@@ -2959,11 +2962,20 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
             {lessonAdminPane === 'practice' && (
               <div className="space-y-3 animate-in fade-in flex-1 min-h-0 overflow-y-auto pr-0.5">
                 <p className="text-xs text-slate-600">
-                  Mảng <code className="bg-slate-200/80 px-1 rounded">practice</code> — tab “Bài tập” của học sinh. Loại: mcq / input / text.
-                  Import TXT: sau <code className="bg-slate-200/80 px-1 rounded">Đáp án:</code> có thể thêm{' '}
-                  <code className="bg-slate-200/80 px-1 rounded">Gợi ý hướng dẫn:</code> (hiện trước khi nộp) và{' '}
-                  <code className="bg-slate-200/80 px-1 rounded">Lời giải:</code> (hiện sau khi nộp).
+                  Mảng <code className="bg-slate-200/80 px-1 rounded">practice</code> — tab “Bài tập luyện tập” của học sinh.
                 </p>
+                <label className="flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-700">
+                  <span>Cách hiển thị cho học sinh:</span>
+                  <select
+                    disabled={jsonBroken}
+                    value={practiceDisplayMode === 'step' ? 'step' : 'list'}
+                    onChange={(e) => patchLessonContent({ practice_display_mode: e.target.value })}
+                    className="p-2 border rounded text-sm font-bold disabled:opacity-50 min-w-[14rem]"
+                  >
+                    <option value="list">Danh sách — tất cả câu cùng lúc</option>
+                    <option value="step">Từng câu — làm xong mới qua câu tiếp</option>
+                  </select>
+                </label>
                 <button
                   type="button"
                   disabled={jsonBroken}
@@ -2985,9 +2997,11 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                           const next = practiceList.map((x, j) =>
                             j === idx
                               ? {
-                                  ...x,
-                                  type: t,
-                                  options: t === 'mcq' ? (x.options?.length ? x.options : ['', '', '', '']) : x.options,
+                                  ...emptyPracticeTemplate(j, t),
+                                  id: x.id || `pr_${Date.now()}_${j}`,
+                                  question: x.question ?? x.content ?? '',
+                                  hint: x.hint ?? '',
+                                  explanation: x.explanation ?? '',
                                 }
                               : x
                           );
@@ -2996,7 +3010,11 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                         className="p-2 border rounded text-sm font-bold disabled:opacity-50"
                       >
                         <option value="mcq">Trắc nghiệm (mcq)</option>
-                        <option value="input">Nhập số / đáp án (input)</option>
+                        <option value="input">Nhập đáp án (input)</option>
+                        <option value="true_false">Đúng / Sai</option>
+                        <option value="ordering">Sắp xếp</option>
+                        <option value="drag_drop">Kéo thả</option>
+                        <option value="fill_blanks">Điền chỗ trống</option>
                         <option value="text">Tự luận (text)</option>
                       </select>
                       <button
@@ -3018,7 +3036,11 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                         );
                         patchLessonContent({ practice: next });
                       }}
-                      placeholder="Đề bài / nội dung câu"
+                      placeholder={
+                        (p.type || 'text') === 'fill_blanks'
+                          ? 'Câu dẫn (tuỳ chọn) — ví dụ: Điền các chỗ trống trong đoạn văn sau'
+                          : 'Đề bài / nội dung câu'
+                      }
                       className="w-full p-2 border rounded text-sm min-h-[64px] disabled:opacity-50"
                     />
                     {(p.type || 'text') === 'mcq' ? (
@@ -3073,9 +3095,187 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                           );
                           patchLessonContent({ practice: next });
                         }}
-                        placeholder="Đáp án đúng (chuỗi so khớp)"
+                        placeholder="Đáp án đúng (chuỗi so khớp, có thể dùng | hoặc ; cho nhiều đáp án)"
                         className="w-full p-2 border rounded text-sm disabled:opacity-50"
                       />
+                    ) : null}
+                    {(p.type || 'text') === 'true_false' ? (
+                      <label className="flex items-center gap-2 text-sm font-semibold text-slate-600">
+                        <span>Đáp án đúng:</span>
+                        <select
+                          disabled={jsonBroken}
+                          value={p.correctAnswer === false ? 'false' : 'true'}
+                          onChange={(e) => {
+                            const next = practiceList.map((x, j) =>
+                              j === idx ? { ...x, correctAnswer: e.target.value === 'true' } : x
+                            );
+                            patchLessonContent({ practice: next });
+                          }}
+                          className="p-2 border rounded disabled:opacity-50"
+                        >
+                          <option value="true">Đúng</option>
+                          <option value="false">Sai</option>
+                        </select>
+                      </label>
+                    ) : null}
+                    {(p.type || 'text') === 'ordering' ? (
+                      <div className="space-y-2">
+                        <textarea
+                          disabled={jsonBroken}
+                          value={(Array.isArray(p.items) ? p.items : []).join('\n')}
+                          onChange={(e) => {
+                            const items = e.target.value.split('\n').map((l) => l.trim()).filter(Boolean);
+                            const next = practiceList.map((x, j) =>
+                              j === idx
+                                ? {
+                                    ...x,
+                                    items,
+                                    correctOrder: items.map((_, i) => i),
+                                  }
+                                : x
+                            );
+                            patchLessonContent({ practice: next });
+                          }}
+                          placeholder="Mỗi dòng một mục cần sắp xếp"
+                          className="w-full p-2 border rounded text-sm min-h-[72px] disabled:opacity-50"
+                        />
+                        <input
+                          disabled={jsonBroken}
+                          value={
+                            Array.isArray(p.correctOrder)
+                              ? p.correctOrder.map((n) => Number(n) + 1).join(',')
+                              : ''
+                          }
+                          onChange={(e) => {
+                            const items = Array.isArray(p.items) ? p.items : [];
+                            const nums = e.target.value
+                              .split(/[,;|]/g)
+                              .map((x) => Number(x.trim()) - 1)
+                              .filter((n) => Number.isFinite(n));
+                            const next = practiceList.map((x, j) =>
+                              j === idx
+                                ? {
+                                    ...x,
+                                    correctOrder:
+                                      nums.length === items.length
+                                        ? nums
+                                        : items.map((_, i) => i),
+                                  }
+                                : x
+                            );
+                            patchLessonContent({ practice: next });
+                          }}
+                          placeholder="Thứ tự đúng (số thứ tự mục, ví dụ: 1,2,3)"
+                          className="w-full p-2 border rounded text-sm disabled:opacity-50"
+                        />
+                      </div>
+                    ) : null}
+                    {(p.type || 'text') === 'drag_drop' ? (
+                      <div className="space-y-2">
+                        <textarea
+                          disabled={jsonBroken}
+                          value={(Array.isArray(p.slots) ? p.slots : [])
+                            .map((s) => (typeof s === 'object' ? `${s.id}:${s.label}` : String(s)))
+                            .join('\n')}
+                          onChange={(e) => {
+                            const slots = e.target.value
+                              .split('\n')
+                              .map((l) => l.trim())
+                              .filter(Boolean)
+                              .map((l, si) => {
+                                const m = l.match(/^([^:]+):\s*(.+)$/);
+                                if (m) return { id: m[1].trim(), label: m[2].trim() };
+                                return { id: `slot${si + 1}`, label: l };
+                              });
+                            const next = practiceList.map((x, j) => (j === idx ? { ...x, slots } : x));
+                            patchLessonContent({ practice: next });
+                          }}
+                          placeholder="Ô kéo thả — mỗi dòng: slot1: Nhãn ô"
+                          className="w-full p-2 border rounded text-sm min-h-[56px] disabled:opacity-50"
+                        />
+                        <textarea
+                          disabled={jsonBroken}
+                          value={(Array.isArray(p.choices) ? p.choices : []).join('\n')}
+                          onChange={(e) => {
+                            const choices = e.target.value.split('\n').map((l) => l.trim()).filter(Boolean);
+                            const next = practiceList.map((x, j) => (j === idx ? { ...x, choices } : x));
+                            patchLessonContent({ practice: next });
+                          }}
+                          placeholder="Lựa chọn kéo — mỗi dòng một đáp án"
+                          className="w-full p-2 border rounded text-sm min-h-[56px] disabled:opacity-50"
+                        />
+                        <textarea
+                          disabled={jsonBroken}
+                          value={
+                            p.correctAnswer && typeof p.correctAnswer === 'object'
+                              ? Object.entries(p.correctAnswer)
+                                  .map(([k, v]) => `${k}=${v}`)
+                                  .join('\n')
+                              : ''
+                          }
+                          onChange={(e) => {
+                            const correctAnswer = {};
+                            e.target.value
+                              .split('\n')
+                              .map((l) => l.trim())
+                              .filter(Boolean)
+                              .forEach((l) => {
+                                const m = l.match(/^([^=]+)=\s*(.+)$/);
+                                if (m) correctAnswer[m[1].trim()] = m[2].trim();
+                              });
+                            const next = practiceList.map((x, j) =>
+                              j === idx ? { ...x, correctAnswer } : x
+                            );
+                            patchLessonContent({ practice: next });
+                          }}
+                          placeholder="Ghép đúng — mỗi dòng: slot1=Đáp án A"
+                          className="w-full p-2 border rounded text-sm min-h-[56px] disabled:opacity-50"
+                        />
+                      </div>
+                    ) : null}
+                    {(p.type || 'text') === 'fill_blanks' ? (
+                      <div className="space-y-2">
+                        <textarea
+                          disabled={jsonBroken}
+                          value={(p.passage ?? '').toString()}
+                          onChange={(e) => {
+                            const next = practiceList.map((x, j) =>
+                              j === idx ? { ...x, passage: e.target.value } : x
+                            );
+                            patchLessonContent({ practice: next });
+                          }}
+                          placeholder="Đoạn văn — dùng {{1}}, {{2}}… để đánh dấu chỗ trống. Ví dụ: Hàm số $y=x^2$ có đỉnh {{1}}."
+                          className="w-full p-2 border rounded text-sm min-h-[88px] disabled:opacity-50 font-mono text-[13px]"
+                        />
+                        <textarea
+                          disabled={jsonBroken}
+                          value={(Array.isArray(p.blanks) ? p.blanks : [])
+                            .map((b) =>
+                              typeof b === 'object'
+                                ? `${b.id}=${b.correctAnswer ?? b.answer ?? ''}`
+                                : String(b ?? '')
+                            )
+                            .join('\n')}
+                          onChange={(e) => {
+                            const blanks = e.target.value
+                              .split('\n')
+                              .map((l) => l.trim())
+                              .filter(Boolean)
+                              .map((l) => {
+                                const m = l.match(/^(\d+)\s*=\s*(.+)$/);
+                                if (m) return { id: m[1], correctAnswer: m[2].trim() };
+                                const m2 = l.match(/^([^=]+)=\s*(.+)$/);
+                                if (m2) return { id: m2[1].trim(), correctAnswer: m2[2].trim() };
+                                return null;
+                              })
+                              .filter(Boolean);
+                            const next = practiceList.map((x, j) => (j === idx ? { ...x, blanks } : x));
+                            patchLessonContent({ practice: next });
+                          }}
+                          placeholder="Đáp án từng chỗ trống — mỗi dòng: 1=(0; 0) hoặc 2=x=0"
+                          className="w-full p-2 border rounded text-sm min-h-[72px] disabled:opacity-50"
+                        />
+                      </div>
                     ) : null}
                     <textarea
                       data-admin-snippet={`lesson-practice-hint:${idx}`}
@@ -3106,7 +3306,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                   </div>
                 ))}
                 {practiceList.length === 0 ? (
-                  <p className="text-sm text-slate-500 italic">Chưa có bài tập tự luyện — thêm câu hoặc import.</p>
+                  <p className="text-sm text-slate-500 italic">Chưa có bài tập luyện tập — thêm câu hoặc import.</p>
                 ) : null}
               </div>
             )}

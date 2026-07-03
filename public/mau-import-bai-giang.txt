@@ -77,8 +77,8 @@ Cho $y=2x-1$. Tìm hệ số góc và giao điểm với $Oy$.
 Hệ số góc $a=2$; giao điểm với $Oy$ là điểm $(0,-1)$.
 ]#
 
-// BÀI TẬP TỰ LUYỆN
-BÀI TẬP TỰ LUYỆN
+// BÀI TẬP LUYỆN TẬP (tên cũ BÀI TẬP TỰ LUYỆN vẫn import được)
+BÀI TẬP LUYỆN TẬP
 ID: hsbn_01
 § Cho $y=-3x+2$. Hệ số góc bằng bao nhiêu?
 A. 2
@@ -95,6 +95,43 @@ ID: hsbn_02
 § Cho $y=2x-1$. Tính $f(1)$.
 Đáp án: 1
 Lời giải: $f(1)=2\\cdot 1-1=1$.
+
+---
+
+ID: hsbn_03
+§ [đúng sai]
+Đồ thị hàm số $y=ax^2$ với $a>0$ luôn mở hướng lên trên.
+Đáp án: Đúng
+Lời giải: Khi $a>0$, parabol có nhánh hướng lên.
+
+---
+
+ID: hsbn_04
+§ [sắp xếp]
+Sắp xếp các bước tìm tọa độ điểm thuộc đồ thị $y=x^2$:
+1. Gọi hoành độ là $x$
+2. Thay vào công thức tính $y=x^2$
+3. Viết cặp tọa độ $(x;y)$
+Đáp án: 1,2,3
+
+---
+
+ID: hsbn_05
+§ [kéo thả]
+Kéo tọa độ đúng vào từng điểm trên $y=x^2$.
+Ô 1: Điểm có $x=2$
+Ô 2: Điểm có $x=-1$
+Lựa chọn: (2; 4) | (-1; 1) | (0; 0)
+Đáp án: Ô1=(2; 4); Ô2=(-1; 1)
+
+---
+
+ID: hsbn_06
+§ [điền chỗ trống]
+Điền các chỗ trống trong đoạn văn sau:
+Đoạn: Parabol $y=ax^2$ ($a \neq 0$) có đỉnh tại {{1}} và trục đối xứng là đường thẳng {{2}}.
+Đáp án: 1=(0; 0); 2=x=0
+Lời giải: Đỉnh parabol $y=ax^2$ luôn ở gốc tọa độ; trục đối xứng là trục $Oy$ ($x=0$).
 
 // TÀI LIỆU (tuỳ chọn) — nếu có link PDF có thể để ở @pdf_url hoặc chèn ở mục TÀI LIỆU
 TÀI LIỆU PDF

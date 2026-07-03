@@ -1,6 +1,8 @@
 /* eslint-disable */
 
-/** quizId tổng hợp cho bài tập tự luyện nhúng trong bài giảng (Firestore scores). */
+import { preparePracticeQuestion } from './practiceQuestionTypes';
+
+/** quizId tổng hợp cho bài tập luyện tập nhúng trong bài giảng (Firestore scores). */
 export function lessonPracticeQuizId(lessonId) {
   return `lesson_practice_${lessonId}`;
 }
@@ -11,7 +13,15 @@ export function lessonHasInteractivePractice(content) {
     const raw = typeof content === 'string' ? JSON.parse(content) : content;
     const p = raw?.practice;
     if (!Array.isArray(p)) return false;
-    return p.some((q) => q?.type === 'mcq' || q?.type === 'input');
+    return p.some(
+      (q) =>
+        q?.type === 'mcq' ||
+        q?.type === 'input' ||
+        q?.type === 'true_false' ||
+        q?.type === 'ordering' ||
+        q?.type === 'drag_drop' ||
+        q?.type === 'fill_blanks'
+    );
   } catch {
     return false;
   }
@@ -64,7 +74,10 @@ export function shuffleMcqOptions(q) {
 
 export function buildShuffledPracticeOrder(practice) {
   const list = Array.isArray(practice) ? practice : [];
-  const mapped = list.map((q) => (q.type === 'mcq' ? shuffleMcqOptions({ ...q }) : { ...q }));
+  const mapped = list.map((q) => {
+    const base = q.type === 'mcq' ? shuffleMcqOptions({ ...q }) : { ...q };
+    return preparePracticeQuestion(base);
+  });
   const order = shuffleIndices(mapped.length);
   return order.map((i) => mapped[i]);
 }

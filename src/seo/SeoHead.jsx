@@ -60,7 +60,7 @@ export default function SeoHead({
     if (g && ch && bn) {
       title = `Toán ${g} — Chương ${ch} · Bài ${bn} | Bài giảng & đề luyện | ${SITE_NAME_FULL}`;
       description = clipSeoDescription(
-        `Tổng hợp bài giảng và đề luyện Toán ${g} theo Chương ${ch} Bài ${bn}: lý thuyết trọng tâm, ví dụ minh hoạ, bài tập tự luyện, đề kiểm tra.`,
+        `Tổng hợp bài giảng và đề luyện Toán ${g} theo Chương ${ch} Bài ${bn}: lý thuyết trọng tâm, ví dụ minh hoạ, bài tập luyện tập, đề kiểm tra.`,
         158
       );
       keywords = [`Toán ${g}`, `lớp ${g}`, `chương ${ch}`, `bài ${bn}`, 'bài giảng', 'đề luyện', 'bài tập', 'lời giải']

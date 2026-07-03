@@ -18,7 +18,6 @@ import {
   UserCircle,
   CheckCircle2,
   XCircle,
-  Target,
   AlertCircle,
   AlertTriangle,
   CheckCircle,
@@ -28,7 +27,6 @@ import {
   Sparkles,
   PanelLeftClose,
   PanelLeftOpen,
-  Lightbulb,
 } from 'lucide-react';
 
 const DEFAULT_EXTERNAL_HOME =
@@ -46,9 +44,10 @@ import {
 } from './theoryCoreRichText';
 import { buildShuffledPracticeOrder, computeLessonStudyProgress } from './lessonProgress';
 import BackButton from './BackButton';
-import PracticeAnswerInput from './PracticeAnswerInput';
+import LessonPracticeSection from './LessonPracticeSection';
+import { isInteractivePracticeType, normalizePracticeList, resolvePracticeDisplayMode, scorePracticeQuestion } from './practiceQuestionTypes';
 
-/** Thứ tự tab nội dung bài: lý thuyết → tự luyện → đề luyện → PDF */
+/** Thứ tự tab nội dung bài: lý thuyết → luyện tập → đề luyện → PDF */
 const LESSON_TAB_SEQUENCE = ['theory', 'practice', 'papers', 'pdf'];
 
 function lessonNoSortKey(raw) {
@@ -61,7 +60,7 @@ function lessonTabLabel(tabId) {
     case 'theory':
       return 'Lý thuyết & ví dụ';
     case 'practice':
-      return 'Bài tập tự luyện';
+      return 'Bài tập luyện tập';
     case 'papers':
       return 'Đề luyện tập';
     case 'pdf':
@@ -144,15 +143,7 @@ function normalizeLessonContentForUI(rawContent) {
           .join('<hr style="margin:16px 0; border:none; border-top:1px dashed #e2e8f0" />');
 
         const rawPractice = Array.isArray(parsed.practice) ? parsed.practice : [];
-        const practice = rawPractice.map((p, i) => ({
-          id: p.id || `pr_${i}`,
-          type: p.type === 'mcq' || p.type === 'input' || p.type === 'text' ? p.type : 'text',
-          question: (p.question ?? p.content ?? '').toString(),
-          options: Array.isArray(p.options) ? p.options : [],
-          correctAnswer: p.correctAnswer,
-          hint: (p.hint ?? p.guidance ?? '').toString().trim(),
-          explanation: (p.explanation ?? '').toString().trim(),
-        }));
+        const practice = normalizePracticeList(rawPractice);
 
         return {
           theory: { rules: [{ title: parsed.title || 'Bài giảng', content: html || 'Chưa có nội dung.', note: [] }] },
@@ -176,16 +167,7 @@ function normalizeLessonContentForUI(rawContent) {
   if (!Array.isArray(normalized.theory.rules)) normalized.theory.rules = [];
   if (!Array.isArray(normalized.mathTypes)) normalized.mathTypes = [];
   if (!Array.isArray(normalized.practice)) normalized.practice = [];
-  normalized.practice = normalized.practice.map((p, i) => ({
-    id: p.id || `pr_${i}`,
-    type: p.type === 'mcq' || p.type === 'input' || p.type === 'text' ? p.type : 'text',
-    question: (p.question ?? p.content ?? '').toString(),
-    options: Array.isArray(p.options) ? p.options : [],
-    correctAnswer: p.correctAnswer,
-    answerPlaceholder: (p.answerPlaceholder ?? '').toString(),
-    hint: (p.hint ?? p.guidance ?? '').toString().trim(),
-    explanation: (p.explanation ?? '').toString().trim(),
-  }));
+  normalized.practice = normalizePracticeList(normalized.practice);
   normalized.theory.rules = normalized.theory.rules.map((r) => ({
     ...r,
     note: Array.isArray(r.note) ? r.note : [],
@@ -371,28 +353,6 @@ function ExamplesCorePanel({ examplesCoreText, phuongPhapFromTheory = [] }) {
   );
 }
 
-function PracticeHintPanel({ hint, open, onToggle }) {
-  const text = (hint || '').toString().trim();
-  if (!text) return null;
-  return (
-    <div className="mt-4">
-      <button
-        type="button"
-        onClick={onToggle}
-        className="inline-flex items-center gap-2 rounded-xl border border-amber-300/90 bg-amber-50/80 px-4 py-2.5 text-sm font-bold text-amber-900 hover:bg-amber-100/90 transition-colors"
-      >
-        <Lightbulb className="w-4 h-4 shrink-0 text-amber-600" />
-        {open ? 'Ẩn gợi ý hướng dẫn' : 'Xem gợi ý hướng dẫn'}
-      </button>
-      {open ? (
-        <div className="mt-3 rounded-xl border border-amber-200/90 bg-amber-50/40 px-5 py-4 text-slate-800 text-sm md:text-base leading-relaxed lesson-math-content">
-          <TextWithMath text={text} />
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
 function ExampleSolutionDetails({ steps }) {
   const list = Array.isArray(steps) ? steps.filter((x) => (x || '').toString().trim()) : [];
   if (!list.length) return null;
@@ -530,6 +490,25 @@ function matchesLessonPaperQuiz(lesson, q) {
   const ch = (lesson?.chapter ?? '').toString().trim();
   const ln = (lesson?.lesson_no ?? '').toString().trim();
   return qc === ch && ql === ln;
+}
+
+function LessonSkyClouds() {
+  return (
+    <div className="lesson-sky-clouds" aria-hidden="true">
+      <div className="lesson-sky-cloud lesson-sky-cloud--lg lesson-sky-cloud--l1" />
+      <div className="lesson-sky-cloud lesson-sky-cloud--md lesson-sky-cloud--l2" />
+      <div className="lesson-sky-cloud lesson-sky-cloud--sm lesson-sky-cloud--l3 lesson-sky-cloud--far" />
+      <div className="lesson-sky-cloud lesson-sky-cloud--md lesson-sky-cloud--l4" />
+      <div className="lesson-sky-cloud lesson-sky-cloud--lg lesson-sky-cloud--l5" />
+      <div className="lesson-sky-cloud lesson-sky-cloud--sm lesson-sky-cloud--l6 lesson-sky-cloud--far" />
+      <div className="lesson-sky-cloud lesson-sky-cloud--md lesson-sky-cloud--r1" />
+      <div className="lesson-sky-cloud lesson-sky-cloud--lg lesson-sky-cloud--r2" />
+      <div className="lesson-sky-cloud lesson-sky-cloud--sm lesson-sky-cloud--r3 lesson-sky-cloud--far" />
+      <div className="lesson-sky-cloud lesson-sky-cloud--lg lesson-sky-cloud--r4" />
+      <div className="lesson-sky-cloud lesson-sky-cloud--md lesson-sky-cloud--r5" />
+      <div className="lesson-sky-cloud lesson-sky-cloud--sm lesson-sky-cloud--r6 lesson-sky-cloud--far" />
+    </div>
+  );
 }
 
 export default function StudentLessonViewer({
@@ -733,53 +712,18 @@ export default function StudentLessonViewer({
   // Nếu đã có nội dung mới (examples_core), bỏ qua render kiểu cũ (examples mảng) để tránh lặp.
   const hasMath11Examples = !hasNewExamplesCore && Array.isArray(contentJson?.examples) && contentJson.examples.length > 0;
   const lessonData = useMemo(() => normalizeLessonContentForUI(lesson?.content), [lesson?.content]);
+  const practiceDisplayMode = useMemo(
+    () => resolvePracticeDisplayMode(contentJson?.practice_display_mode ?? contentJson?.practiceDisplayMode),
+    [contentJson]
+  );
   const shuffledPractice = useMemo(
     () => buildShuffledPracticeOrder(lessonData.practice || []),
     [lesson?.id, lesson?.content, practiceShuffleVersion]
   );
   const interactivePractice = useMemo(
-    () => shuffledPractice.filter((q) => q.type === 'mcq' || q.type === 'input'),
+    () => shuffledPractice.filter((q) => isInteractivePracticeType(q.type)),
     [shuffledPractice]
   );
-
-  const inputAnswerOk = useCallback((rawCorrect, rawUser) => {
-    const u0 = (rawUser ?? '').toString().trim();
-    if (!u0) return false;
-
-    const normalizeLoose = (s) => {
-      // Normalize common punctuation differences from Word/AI: spaces, fullwidth ; , parentheses.
-      return (s ?? '')
-        .toString()
-        .trim()
-        .toLowerCase()
-        .replace(/[\u200B\u200C\u200D\uFEFF]/g, '')
-        .replace(/[，]/g, ',')
-        .replace(/[；]/g, ';')
-        .replace(/\s+/g, '')
-        .replace(/^[\(\[\{]+/, '')
-        .replace(/[\)\]\}]+$/, '')
-        .replace(/,+/g, ',')
-        .replace(/;+?/g, ';');
-    };
-
-    const u = normalizeLoose(u0);
-    const parts = (rawCorrect ?? '')
-      .toString()
-      .split(/[|;]/g)
-      .map((x) => x.trim())
-      .filter(Boolean);
-    if (!parts.length) return false;
-    const uNum = Number(u0.replace(',', '.'));
-    const uIsNum = Number.isFinite(uNum);
-    for (const p of parts) {
-      const p0 = p.toString().trim();
-      if (!p0) continue;
-      if (normalizeLoose(p0) === u) return true;
-      const pNum = Number(p0.replace(',', '.'));
-      if (uIsNum && Number.isFinite(pNum) && Math.abs(uNum - pNum) <= 1e-9) return true;
-    }
-    return false;
-  }, []);
 
   const handleQuizChange = (qId, value) => {
     if (quizSubmitted) return;
@@ -789,8 +733,7 @@ export default function StudentLessonViewer({
   const submitQuiz = () => {
     let score = 0;
     interactivePractice.forEach((q) => {
-      if (q.type === 'mcq' && quizAnswers[q.id] === q.correctAnswer) score++;
-      if (q.type === 'input' && inputAnswerOk(q.correctAnswer, quizAnswers[q.id])) score++;
+      if (scorePracticeQuestion(q, quizAnswers[q.id])) score++;
     });
     setQuizScore(score);
     setQuizSubmitted(true);
@@ -1233,7 +1176,9 @@ export default function StudentLessonViewer({
               <PanelLeftOpen className="w-4 h-4" /> Lộ trình học
             </button>
           ) : null}
-          <div className="max-w-5xl mx-auto p-5 md:p-8 lg:p-10 pb-16 md:pb-12">
+          <div className="lesson-sky-stage relative min-h-full">
+            <LessonSkyClouds />
+            <div className="relative z-10 max-w-5xl mx-auto p-5 md:p-8 lg:p-10 pb-16 md:pb-12">
             <div className="flex items-center gap-2 sm:gap-3 mb-4 md:mb-5 min-w-0">
               {!previewEmbed ? (
                 <BackButton
@@ -1353,7 +1298,7 @@ export default function StudentLessonViewer({
                 {tabBtn('theory', 'LÝ THUYẾT & VÍ DỤ', BookOpen)}
                 {tabBtn(
                   'practice',
-                  'BÀI TẬP TỰ LUYỆN',
+                  'BÀI TẬP LUYỆN TẬP',
                   Pencil,
                   practiceCount > 0 ? (
                     <span className="ml-0.5 w-2 h-2 bg-red-500 rounded-full" />
@@ -1506,179 +1451,25 @@ export default function StudentLessonViewer({
                 <div className="p-6 md:p-10 lg:p-12 animate-in fade-in duration-200">
                   {lessonData.practice.length === 0 ? (
                     <div className="text-center py-12 text-slate-600">
-                      <p className="font-semibold">Chưa có bài tập tự luyện trong nội dung bài này.</p>
-                      <p className="text-sm mt-2">Có thể import từ file (mục BÀI TẬP TỰ LUYỆN) hoặc làm đề trong Phòng thi.</p>
+                      <p className="font-semibold">Chưa có bài tập luyện tập trong nội dung bài này.</p>
+                      <p className="text-sm mt-2">Có thể import từ file (mục BÀI TẬP LUYỆN TẬP) hoặc làm đề trong Phòng thi.</p>
                     </div>
                   ) : (
-                    <div className="w-full max-w-none">
-                      <div className="text-center mb-8 md:mb-10 pb-6 md:pb-8 border-b border-slate-200/80">
-                        <h2 className="text-xl md:text-2xl font-black text-slate-800 mb-1">Bài tập tự luyện</h2>
-                        <p className="text-slate-600 text-sm">
-                          {interactivePractice.length > 0
-                            ? 'Hoàn thành các câu hỏi để kiểm tra kiến thức'
-                            : 'Ôn tập — công thức có thể gõ dạng LaTeX trong $...$'}
-                        </p>
-                      </div>
-                      <div className="space-y-6 md:space-y-8">
-                        {shuffledPractice.map((q, index) => (
-                          <div key={`${q.id}-${index}`} className="p-6 md:p-7 rounded-2xl border border-slate-200/90 bg-white shadow-sm">
-                            <h4 className="font-bold text-slate-800 mb-4 flex gap-3 flex-wrap items-start text-base md:text-lg leading-relaxed">
-                              <span className="text-indigo-600 shrink-0">Câu {index + 1}:</span>
-                              {q.type === 'text' ? (
-                                <span className="text-left font-normal text-slate-800 min-w-0 flex-1">
-                                  <TextWithMathWithLoiGiai text={q.question || ''} />
-                                </span>
-                              ) : (
-                                <span className="min-w-0 flex-1 text-left font-normal">
-                                  <TextWithMathWithLoiGiai text={q.question || ''} />
-                                </span>
-                              )}
-                            </h4>
-                            {q.type === 'text' ? null : q.type === 'mcq' ? (
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                {(q.options || []).map((opt, oIdx) => {
-                                  const isSelected = quizAnswers[q.id] === oIdx;
-                                  const isCorrect = q.correctAnswer === oIdx;
-                                  let btnClass =
-                                    'border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 text-slate-700 bg-white';
-                                  if (quizSubmitted) {
-                                    if (isCorrect) btnClass = 'border-emerald-500 bg-emerald-50 text-emerald-800';
-                                    else if (isSelected && !isCorrect)
-                                      btnClass = 'border-red-500 bg-red-50 text-red-800';
-                                    else btnClass = 'border-slate-200 bg-white opacity-50';
-                                  } else if (isSelected) {
-                                    btnClass = 'border-indigo-500 bg-indigo-50 text-indigo-900 ring-1 ring-indigo-500';
-                                  }
-                                  return (
-                                    <button
-                                      key={oIdx}
-                                      type="button"
-                                      onClick={() => handleQuizChange(q.id, oIdx)}
-                                      disabled={quizSubmitted}
-                                      className={`p-3 md:p-4 rounded-xl border-2 text-left font-medium transition-all flex items-center gap-3 ${btnClass}`}
-                                    >
-                                      <span
-                                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                                          isSelected || (quizSubmitted && isCorrect)
-                                            ? 'bg-indigo-600 text-white'
-                                            : 'bg-slate-100 text-slate-500'
-                                        }`}
-                                      >
-                                        {String.fromCharCode(65 + oIdx)}
-                                      </span>
-                                      <TextWithMathWithLoiGiai text={String(opt ?? '')} inlineImage />
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                            ) : null}
-                            {q.type === 'input' ? (
-                              <PracticeAnswerInput
-                                q={q}
-                                value={quizAnswers[q.id] || ''}
-                                disabled={quizSubmitted}
-                                onChange={(val) => handleQuizChange(q.id, val)}
-                              />
-                            ) : null}
-                            <PracticeHintPanel
-                              hint={q.hint}
-                              open={Boolean(practiceHintsOpen[q.id])}
-                              onToggle={() => togglePracticeHint(q.id)}
-                            />
-                            {quizSubmitted && (q.type === 'mcq' || q.type === 'input') ? (
-                              <div className="mt-5 rounded-xl border border-slate-200 bg-indigo-50/30 px-5 py-5 md:px-6 md:py-6">
-                                <p className="text-xs font-bold uppercase tracking-widest text-indigo-800 mb-3 flex items-center gap-2">
-                                  <CheckCircle className="w-4 h-4 text-indigo-600 shrink-0" />
-                                  Đáp án và lời giải
-                                </p>
-                                {q.type === 'mcq' && Array.isArray(q.options) && q.correctAnswer != null ? (
-                                  <div className="text-slate-800 font-semibold mb-2">
-                                    <span className="text-teal-700">Đáp án đúng: </span>
-                                    <span className="font-black text-emerald-800">
-                                      {String.fromCharCode(65 + Number(q.correctAnswer))}.
-                                    </span>{' '}
-                                    <span className="font-medium">
-                                      <TextWithMathWithLoiGiai text={String(q.options[q.correctAnswer] ?? '')} inlineImage />
-                                    </span>
-                                  </div>
-                                ) : null}
-                                {q.type === 'input' ? (
-                                  <div className="text-slate-800 font-semibold mb-2">
-                                    <span className="text-teal-700">Đáp án đúng: </span>
-                                    <span className="font-black text-emerald-800">
-                                      <TextWithMathWithLoiGiai text={String(q.correctAnswer ?? '')} />
-                                    </span>
-                                  </div>
-                                ) : null}
-                                {(q.explanation || '').toString().trim() ? (
-                                  <div className="mt-3 pt-3 border-t border-teal-200/80 text-slate-700 text-sm md:text-base leading-relaxed whitespace-pre-wrap">
-                                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">
-                                      Lời giải chi tiết
-                                    </p>
-                                    <TextWithMathWithLoiGiai text={(q.explanation || '').toString().trim()} />
-                                  </div>
-                                ) : (
-                                  <p className="text-sm text-slate-500 italic mt-1">
-                                    Chưa có lời giải chi tiết trong nội dung bài — chỉ hiển thị đáp án đúng.
-                                  </p>
-                                )}
-                              </div>
-                            ) : null}
-                          </div>
-                        ))}
-                      </div>
-                      <div className="mt-8 text-center border-t border-slate-100 pt-6 space-y-4">
-                        {interactivePractice.length > 0 ? (
-                          <>
-                            {!quizSubmitted ? (
-                              <button
-                                type="button"
-                                onClick={submitQuiz}
-                                className="bg-indigo-600 text-white px-8 py-3.5 rounded-full font-black text-sm md:text-base hover:bg-indigo-700 transition-all shadow-md shadow-indigo-600/20 inline-flex items-center gap-2 min-w-[220px] justify-center"
-                              >
-                                <Target className="w-5 h-5 shrink-0" />
-                                Nộp bài — xem đáp án
-                              </button>
-                            ) : null}
-                            {quizSubmitted ? (
-                              <div className="space-y-4">
-                                <div className="bg-slate-50 p-5 rounded-2xl inline-block min-w-[260px] border border-slate-200/80">
-                                  <h3 className="text-base font-bold text-slate-600 mb-2">Kết quả</h3>
-                                  <p className="text-4xl font-black text-teal-600 mb-1">
-                                    {quizScore} / {interactivePractice.length}
-                                  </p>
-                                  {(studentName || '').trim() ? (
-                                    <p className="text-xs text-amber-800 font-semibold mb-4">
-                                      +{Math.round(quizScore * 15)} EXP (điểm × 15) — đã ghi vào tiến trình bài học
-                                    </p>
-                                  ) : (
-                                    <p className="text-xs text-slate-500 mb-4">
-                                      Đăng nhập bằng tên trong lớp để lưu điểm, EXP và thanh tiến trình.
-                                    </p>
-                                  )}
-                                  <button
-                                    type="button"
-                                    onClick={resetQuiz}
-                                    className="bg-white border-2 border-slate-200 text-slate-600 px-5 py-2 rounded-xl font-bold hover:bg-slate-100 transition-colors text-sm"
-                                  >
-                                    Làm lại (đổi thứ tự câu và đáp án)
-                                  </button>
-                                </div>
-                              </div>
-                            ) : (
-                              <p className="text-xs text-slate-500 max-w-md mx-auto">
-                                Chỉ sau khi <strong className="text-slate-700">nộp bài</strong> mới hiện đáp án đúng và lời
-                                giải phía dưới từng câu.
-                              </p>
-                            )}
-                          </>
-                        ) : (
-                          <p className="text-sm text-slate-500 max-w-lg mx-auto">
-                            Phần trên là bài tự luyện dạng tự giải. Đáp án chi tiết xem trong lời giải phần lý thuyết hoặc tài liệu PDF.
-                          </p>
-                        )}
-                      </div>
-                    </div>
+                    <LessonPracticeSection
+                      shuffledPractice={shuffledPractice}
+                      interactivePractice={interactivePractice}
+                      displayMode={practiceDisplayMode}
+                      quizAnswers={quizAnswers}
+                      onAnswerChange={handleQuizChange}
+                      quizSubmitted={quizSubmitted}
+                      onSubmitQuiz={submitQuiz}
+                      quizScore={quizScore}
+                      onResetQuiz={resetQuiz}
+                      practiceHintsOpen={practiceHintsOpen}
+                      onToggleHint={togglePracticeHint}
+                      studentName={studentName}
+                      resetKey={`${lesson?.id || ''}-${practiceShuffleVersion}`}
+                    />
                   )}
                 </div>
               )}
@@ -1820,7 +1611,7 @@ export default function StudentLessonViewer({
             </div>
 
             {!previewEmbed ? (
-              <div className="mt-8 mb-2 max-w-5xl mx-auto px-0">
+              <div className="relative z-10 mt-8 mb-2 max-w-5xl mx-auto px-0">
                 {canNext ? (
                   <div className="mb-2 flex justify-center sm:justify-end">
                     <span className="inline-flex items-center gap-1.5 text-xs md:text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full">
@@ -1895,6 +1686,7 @@ export default function StudentLessonViewer({
               ← Quay lại lộ trình / bảng điều khiển
             </button>
             ) : null}
+            </div>
           </div>
         </main>
       </div>

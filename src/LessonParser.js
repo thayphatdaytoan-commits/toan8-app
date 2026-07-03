@@ -1,5 +1,7 @@
 /* eslint-disable */
 
+import { parseFillBlanksCorrectRaw } from './practiceQuestionTypes';
+
 /**
  * Chuẩn import TXT / Word (text trích xuất) bài giảng — thân thiện SEO & AI.
  *
@@ -35,7 +37,7 @@
  */
 
 const PRACTICE_HEADER =
-  /^(BÀI\s*TẬP\s*TỰ\s*LUYỆN|BÀI\s*TẬP\s*TL|PHẦN\s*BÀI\s*TẬP|BÀI\s*TẬP\s*ỨNG\s*DỤNG)(\s*[:：]?\s*.*)?$/i;
+  /^(BÀI\s*TẬP\s*(TỰ\s*LUYỆN|LUYỆN\s*TẬP)|BÀI\s*TẬP\s*TL|PHẦN\s*BÀI\s*TẬP|BÀI\s*TẬP\s*ỨNG\s*DỤNG)(\s*[:：]?\s*.*)?$/i;
 
 const EXAMPLES_HEADER =
   /^(CÁC\s*DẠNG\s*TOÁN(\s*&\s*VÍ\s*DỤ)?|DẠNG\s*TOÁN(\s*&\s*VÍ\s*DỤ)?|DẠNG\s*TOÁN\s*VÀ\s*VÍ\s*DỤ)(\s*[:：]?\s*.*)?$/i;
@@ -365,6 +367,62 @@ function extractPracticePlaceholder(raw) {
   return (m ? (m[2] ?? m[1] ?? '') : '').toString().trim();
 }
 
+function detectPracticeBlockType(text) {
+  const s = String(text || '').toLowerCase();
+  if (/\[đúng\s*sai\]|loại\s*[:：]\s*đúng\s*sai|true\s*false/.test(s)) return 'true_false';
+  if (/\[sắp\s*xếp\]|loại\s*[:：]\s*sắp\s*xếp|ordering/.test(s)) return 'ordering';
+  if (/\[kéo\s*thả\]|loại\s*[:：]\s*kéo\s*thả|drag\s*drop/.test(s)) return 'drag_drop';
+  if (/\[điền\s*chỗ\s*trống\]|\[điền\]|\[cloze\]|loại\s*[:：]\s*điền\s*chỗ\s*trống|fill\s*blank/.test(s))
+    return 'fill_blanks';
+  return null;
+}
+
+function parseOrderingItemsFromStem(lines) {
+  const items = [];
+  for (const l of lines) {
+    const t = String(l ?? '').trim();
+    const m = t.match(/^(?:\d+[\.\)]|[-•*])\s+(.+)$/);
+    if (m) items.push(m[1].trim());
+  }
+  return items;
+}
+
+function parseDragDropFromStem(lines) {
+  const slots = [];
+  const choices = [];
+  for (const l of lines) {
+    const t = String(l ?? '').trim();
+    const slotM = t.match(/^(?:Ô|O|Slot)\s*(\d+)\s*[:：\-]\s*(.+)$/i);
+    if (slotM) {
+      slots.push({ id: `slot${slotM[1]}`, label: slotM[2].trim() });
+      continue;
+    }
+    const choiceM = t.match(/^(?:Lựa\s*chọn|Lua\s*chon|Choices?)\s*[:：\-]\s*(.+)$/i);
+    if (choiceM) {
+      choices.push(
+        ...choiceM[1]
+          .split(/[|；]/)
+          .map((x) => x.trim())
+          .filter(Boolean)
+      );
+    }
+  }
+  return { slots, choices };
+}
+
+function parseDragDropCorrect(raw, slots) {
+  const out = {};
+  const s = String(raw || '').trim();
+  if (!s) return out;
+  const parts = s.split(/[;；]/g).map((x) => x.trim()).filter(Boolean);
+  for (const p of parts) {
+    const m = p.match(/^(?:Ô|O|Slot)\s*(\d+)\s*=\s*(.+)$/i);
+    if (m) out[`slot${m[1]}`] = m[2].trim();
+  }
+  if (!Object.keys(out).length && slots.length === 1) out[slots[0].id] = s;
+  return out;
+}
+
 function parsePracticeBlock(blockLines, blockIndex) {
   const full = blockLines.join('\n').trim();
   if (!full) return null;
@@ -408,9 +466,79 @@ function parsePracticeBlock(blockLines, blockIndex) {
   }
 
   const questionLines = cleanedStemLines.filter(
-    (l) => !/^[A-D][\.\)]\s*\S/i.test(l.trim()) && !/^(?:ID|Id|id)\s*[:：]/.test(l.trim())
+    (l) => {
+      const t = l.trim();
+      return (
+        !/^[A-D][\.\)]\s*\S/i.test(t) &&
+        !/^(?:ID|Id|id)\s*[:：]/.test(t) &&
+        !/^\[(đúng\s*sai|sắp\s*xếp|kéo\s*thả|điền\s*chỗ\s*trống|điền)\]/i.test(t) &&
+        !/^loại\s*[:：]/i.test(t) &&
+        !/^(?:đoạn|doan)\s*[:：]/i.test(t) &&
+        !/^(?:Ô|O|Slot)\s*\d+\s*[:：\-]/i.test(t) &&
+        !/^(?:Lựa\s*chọn|Lua\s*chon|Choices?)\s*[:：\-]/i.test(t) &&
+        !/^(?:\d+[\.\)]|[-•*])\s+/.test(t)
+      );
+    }
   );
   const question = questionLines.join('\n').trim() || cleanedStemLines.join('\n').trim() || stem;
+
+  const explicitType = detectPracticeBlockType(full);
+
+  if (explicitType === 'true_false' && correctRaw) {
+    const tf = /^(sai|false|0|s)$/i.test(correctRaw.trim())
+      ? false
+      : /^(đúng|dung|true|1|d)$/i.test(correctRaw.trim())
+        ? true
+        : true;
+    return { id, type: 'true_false', question, correctAnswer: tf, hint, explanation };
+  }
+
+  if (explicitType === 'ordering') {
+    const items = parseOrderingItemsFromStem(cleanedStemLines.filter((l) => !/^(?:ID|Id|id)\s*[:：]/.test(l)));
+    const orderRaw = correctRaw || items.map((_, i) => i + 1).join(',');
+    const nums = orderRaw.split(/[,;|]/g).map((x) => Number(x.trim()) - 1);
+    const correctOrder =
+      nums.length === items.length && nums.every((n) => Number.isFinite(n) && n >= 0 && n < items.length)
+        ? nums
+        : items.map((_, i) => i);
+    return { id, type: 'ordering', question, items, correctOrder, hint, explanation };
+  }
+
+  if (explicitType === 'drag_drop') {
+    const { slots, choices } = parseDragDropFromStem(cleanedStemLines);
+    const correctAnswer = parseDragDropCorrect(correctRaw, slots);
+    return { id, type: 'drag_drop', question, slots, choices, correctAnswer, hint, explanation };
+  }
+
+  if (explicitType === 'fill_blanks') {
+    const passageLine = cleanedStemLines.find((l) => /^(?:đoạn|doan)\s*[:：\-]/i.test(String(l).trim()));
+    let passage = passageLine
+      ? String(passageLine).replace(/^(?:đoạn|doan)\s*[:：\-]\s*/i, '').trim()
+      : '';
+    if (!passage) {
+      const withBlanks = questionLines.find((l) => /\{\{\d+\}\}|___\d+___/.test(l));
+      passage = withBlanks ? withBlanks.trim() : question;
+    }
+    const intro = passageLine
+      ? questionLines
+          .filter((l) => !/^(?:đoạn|doan)\s*[:：\-]/i.test(l.trim()) && !/\{\{\d+\}\}|___\d+___/.test(l))
+          .join('\n')
+          .trim()
+      : questionLines
+          .filter((l) => !/\{\{\d+\}\}|___\d+___/.test(l))
+          .join('\n')
+          .trim();
+    const blanks = parseFillBlanksCorrectRaw(correctRaw);
+    return {
+      id,
+      type: 'fill_blanks',
+      question: intro && intro !== passage ? intro : '',
+      passage,
+      blanks,
+      hint,
+      explanation,
+    };
+  }
 
   if (options.length >= 2 && correctRaw) {
     const letter = correctRaw.match(/^([A-D])/i);

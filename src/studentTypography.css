@@ -143,6 +143,162 @@
   min-height: 100%;
 }
 
+/* Mây trang trí — hai bên khung nội dung (mọi tab bài học) */
+.lesson-viewer .lesson-sky-stage {
+  position: relative;
+  min-height: 100%;
+}
+
+.lesson-viewer .lesson-sky-clouds {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.lesson-viewer .lesson-sky-cloud {
+  position: absolute;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  opacity: 0.92;
+  filter: drop-shadow(0 4px 14px rgba(255, 255, 255, 0.65));
+  animation: lesson-cloud-float 24s ease-in-out infinite;
+}
+
+.lesson-viewer .lesson-sky-cloud--lg {
+  width: clamp(96px, 11vw, 188px);
+  height: clamp(42px, 5vw, 82px);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 80'%3E%3Cellipse cx='52' cy='54' rx='44' ry='27' fill='%23fff' fill-opacity='.93'/%3E%3Cellipse cx='96' cy='44' rx='54' ry='31' fill='%23fff' fill-opacity='.97'/%3E%3Cellipse cx='142' cy='52' rx='40' ry='25' fill='%23fff' fill-opacity='.9'/%3E%3C/svg%3E");
+}
+
+.lesson-viewer .lesson-sky-cloud--md {
+  width: clamp(72px, 8vw, 140px);
+  height: clamp(32px, 3.6vw, 62px);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 64'%3E%3Cellipse cx='42' cy='42' rx='34' ry='21' fill='%23fff' fill-opacity='.92'/%3E%3Cellipse cx='78' cy='36' rx='40' ry='24' fill='%23fff' fill-opacity='.96'/%3E%3Cellipse cx='114' cy='42' rx='30' ry='19' fill='%23fff' fill-opacity='.88'/%3E%3C/svg%3E");
+}
+
+.lesson-viewer .lesson-sky-cloud--sm {
+  width: clamp(56px, 6vw, 104px);
+  height: clamp(24px, 2.8vw, 46px);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 48'%3E%3Cellipse cx='32' cy='32' rx='26' ry='16' fill='%23fff' fill-opacity='.9'/%3E%3Cellipse cx='58' cy='28' rx='30' ry='18' fill='%23fff' fill-opacity='.94'/%3E%3Cellipse cx='84' cy='32' rx='22' ry='14' fill='%23fff' fill-opacity='.86'/%3E%3C/svg%3E");
+}
+
+/* Đặt mây sát mép ngoài khung max-w-5xl (64rem) */
+.lesson-viewer .lesson-sky-cloud--l1 {
+  left: max(0.35rem, calc(50% - 36rem));
+  top: 5.5rem;
+  animation-delay: 0s;
+}
+
+.lesson-viewer .lesson-sky-cloud--l2 {
+  left: max(0.5rem, calc(50% - 38rem));
+  top: 22rem;
+  animation-delay: -7s;
+}
+
+.lesson-viewer .lesson-sky-cloud--l3 {
+  left: max(0.35rem, calc(50% - 35rem));
+  top: 44rem;
+  animation-delay: -14s;
+}
+
+.lesson-viewer .lesson-sky-cloud--r1 {
+  right: max(0.35rem, calc(50% - 36rem));
+  top: 8rem;
+  animation-delay: -3s;
+}
+
+.lesson-viewer .lesson-sky-cloud--r2 {
+  right: max(0.5rem, calc(50% - 38rem));
+  top: 26rem;
+  animation-delay: -11s;
+}
+
+.lesson-viewer .lesson-sky-cloud--r3 {
+  right: max(0.35rem, calc(50% - 35rem));
+  top: 48rem;
+  animation-delay: -18s;
+}
+
+/* Mây khu vực dưới — cạnh nút Quay lại / Tiếp theo */
+.lesson-viewer .lesson-sky-cloud--l4 {
+  left: max(0.35rem, calc(50% - 37rem));
+  bottom: 5rem;
+  top: auto;
+  animation-delay: -4s;
+}
+
+.lesson-viewer .lesson-sky-cloud--l5 {
+  left: max(0.5rem, calc(50% - 39rem));
+  bottom: 13rem;
+  top: auto;
+  animation-delay: -12s;
+}
+
+.lesson-viewer .lesson-sky-cloud--l6 {
+  left: max(0.35rem, calc(50% - 34rem));
+  bottom: 21rem;
+  top: auto;
+  animation-delay: -20s;
+}
+
+.lesson-viewer .lesson-sky-cloud--r4 {
+  right: max(0.35rem, calc(50% - 37rem));
+  bottom: 7rem;
+  top: auto;
+  animation-delay: -6s;
+}
+
+.lesson-viewer .lesson-sky-cloud--r5 {
+  right: max(0.5rem, calc(50% - 38rem));
+  bottom: 15rem;
+  top: auto;
+  animation-delay: -15s;
+}
+
+.lesson-viewer .lesson-sky-cloud--r6 {
+  right: max(0.35rem, calc(50% - 35rem));
+  bottom: 23rem;
+  top: auto;
+  animation-delay: -22s;
+}
+
+@keyframes lesson-cloud-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(10px, -5px, 0);
+  }
+}
+
+@media (max-width: 900px) {
+  .lesson-viewer .lesson-sky-cloud {
+    opacity: 0.55;
+  }
+
+  .lesson-viewer .lesson-sky-cloud--far {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .lesson-viewer .lesson-sky-clouds {
+    opacity: 0.35;
+  }
+
+  .lesson-viewer .lesson-sky-cloud {
+    transform: scale(0.82);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lesson-viewer .lesson-sky-cloud {
+    animation: none;
+  }
+}
+
 /* Khung bọc nội dung lý thuyết (không gồm tiêu đề mục) */
 .lesson-viewer .lesson-theory-content-frame {
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);

@@ -12,6 +12,7 @@ export function parseLessonContentObject(contentStr) {
         examples: [],
         practice: [],
         materials: [],
+        practice_display_mode: 'list',
         seo: { focus_keyword: '', keywords: [] },
       },
       error: null,
@@ -85,16 +86,49 @@ export function emptyExampleTemplate() {
   return { title: 'Dạng mới', desc: '', items: [{ q: '', steps: [] }] };
 }
 
-export function emptyPracticeTemplate(index) {
-  return {
-    id: `pr_${Date.now()}_${index}`,
-    type: 'mcq',
-    question: '',
-    options: ['', '', '', ''],
-    correctAnswer: 0,
-    hint: '',
-    explanation: '',
-  };
+export function emptyPracticeTemplate(index, type = 'mcq') {
+  const id = `pr_${Date.now()}_${index}`;
+  const base = { id, question: '', hint: '', explanation: '' };
+  switch (type) {
+    case 'input':
+      return { ...base, type: 'input', correctAnswer: '' };
+    case 'text':
+      return { ...base, type: 'text' };
+    case 'true_false':
+      return { ...base, type: 'true_false', correctAnswer: true };
+    case 'ordering':
+      return { ...base, type: 'ordering', items: ['Bước 1', 'Bước 2', 'Bước 3'], correctOrder: [0, 1, 2] };
+    case 'drag_drop':
+      return {
+        ...base,
+        type: 'drag_drop',
+        slots: [
+          { id: 'slot1', label: 'Ô 1' },
+          { id: 'slot2', label: 'Ô 2' },
+        ],
+        choices: ['Đáp án A', 'Đáp án B'],
+        correctAnswer: { slot1: 'Đáp án A', slot2: 'Đáp án B' },
+      };
+    case 'fill_blanks':
+      return {
+        ...base,
+        type: 'fill_blanks',
+        question: 'Điền các chỗ trống trong đoạn văn sau:',
+        passage: 'Parabol $y=ax^2$ ($a \\neq 0$) có đỉnh tại {{1}} và trục đối xứng là đường thẳng {{2}}.',
+        blanks: [
+          { id: '1', correctAnswer: '(0; 0)' },
+          { id: '2', correctAnswer: 'x = 0' },
+        ],
+      };
+    case 'mcq':
+    default:
+      return {
+        ...base,
+        type: 'mcq',
+        options: ['', '', '', ''],
+        correctAnswer: 0,
+      };
+  }
 }
 
 /** Mẫu JSON tab Tài liệu (link rỗng — điền url sau). */
