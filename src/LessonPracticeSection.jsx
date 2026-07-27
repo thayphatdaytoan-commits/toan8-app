@@ -1,5 +1,18 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { CheckCircle, ChevronLeft, ChevronRight, Lightbulb, Target } from 'lucide-react';
+import {
+  CheckCircle,
+  ChevronLeft,
+  ChevronRight,
+  Divide,
+  Lightbulb,
+  Minus,
+  Percent,
+  Pi,
+  Plus,
+  Sigma,
+  Sparkles,
+  Target,
+} from 'lucide-react';
 import { TextWithMath, TextWithMathWithLoiGiai } from './Math11Template';
 import PracticeAnswerInput from './PracticeAnswerInput';
 import {
@@ -12,11 +25,38 @@ import {
   PracticeFillBlanks,
   PracticeFillBlanksResult,
 } from './PracticeInteractiveQuestions';
-import { isInteractivePracticeType, scorePracticeQuestion } from './practiceQuestionTypes';
+import { isInteractivePracticeType, scorePracticeQuestion, normalizeInputAnswerParts } from './practiceQuestionTypes';
+import ChuyenDeOnTapFireworks from './chuyenDeOnTap/ChuyenDeOnTapFireworks';
+import { extractYouTubeID, buildYouTubeEmbedUrl, buildYouTubeWatchUrl } from './youtubeUtils';
 
-function PracticeHintPanel({ hint, open, onToggle }) {
+const DECOR_ICONS = [
+  { Icon: Sigma, cls: 'lesson-practice-decor-icon', style: { top: '6%', left: '3%', transform: 'rotate(-12deg)' }, size: 28 },
+  { Icon: Pi, cls: 'lesson-practice-decor-icon lesson-practice-decor-icon--violet', style: { top: '14%', right: '5%', transform: 'rotate(8deg)' }, size: 32 },
+  { Icon: Percent, cls: 'lesson-practice-decor-icon lesson-practice-decor-icon--teal', style: { bottom: '18%', left: '4%', transform: 'rotate(6deg)' }, size: 26 },
+  { Icon: Divide, cls: 'lesson-practice-decor-icon', style: { bottom: '10%', right: '6%', transform: 'rotate(-6deg)' }, size: 24 },
+  { Icon: Plus, cls: 'lesson-practice-decor-icon lesson-practice-decor-icon--violet', style: { top: '42%', left: '2%', transform: 'rotate(15deg)' }, size: 22 },
+  { Icon: Minus, cls: 'lesson-practice-decor-icon lesson-practice-decor-icon--teal', style: { top: '55%', right: '3%', transform: 'rotate(-10deg)' }, size: 20 },
+  { Icon: Sparkles, cls: 'lesson-practice-decor-icon lesson-practice-decor-icon--violet', style: { top: '28%', right: '12%', transform: 'rotate(4deg)' }, size: 18 },
+];
+
+function PracticeFrameDecor() {
+  return (
+    <div className="lesson-practice-decor" aria-hidden="true">
+      {DECOR_ICONS.map(({ Icon, cls, style, size }, i) => (
+        <Icon key={i} className={cls} style={style} size={size} strokeWidth={2.2} />
+      ))}
+    </div>
+  );
+}
+
+function PracticeHintPanel({ hint, hintVideoUrl, open, onToggle }) {
   const text = (hint || '').toString().trim();
-  if (!text) return null;
+  const videoRaw = (hintVideoUrl || '').toString().trim();
+  const videoId = extractYouTubeID(videoRaw);
+  const embedUrl = videoId ? buildYouTubeEmbedUrl(videoId) : '';
+  const watchUrl = videoId ? buildYouTubeWatchUrl(videoId) : videoRaw;
+  if (!text && !embedUrl && !videoRaw) return null;
+
   return (
     <div className="mt-4">
       <button
@@ -28,8 +68,43 @@ function PracticeHintPanel({ hint, open, onToggle }) {
         {open ? 'Ẩn gợi ý hướng dẫn' : 'Xem gợi ý hướng dẫn'}
       </button>
       {open ? (
-        <div className="mt-3 rounded-xl border border-amber-200/90 bg-amber-50/40 px-5 py-4 text-slate-800 text-sm md:text-base leading-relaxed lesson-math-content">
-          <TextWithMath text={text} />
+        <div className="mt-3 rounded-xl border border-amber-200/90 bg-amber-50/40 px-5 py-4 text-slate-800 text-sm md:text-base leading-relaxed lesson-math-content space-y-4">
+          {text ? <TextWithMath text={text} /> : null}
+          {embedUrl ? (
+            <div className="space-y-2">
+              <p className="text-xs font-bold uppercase tracking-wide text-amber-800/90">Video hướng dẫn</p>
+              <div className="relative w-full overflow-hidden rounded-xl border border-amber-200/80 bg-black shadow-sm aspect-video">
+                <iframe
+                  title="Video gợi ý hướng dẫn"
+                  src={embedUrl}
+                  className="absolute inset-0 h-full w-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                />
+              </div>
+              {watchUrl ? (
+                <a
+                  href={watchUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex text-xs font-semibold text-amber-800 hover:underline"
+                >
+                  Mở trên YouTube ↗
+                </a>
+              ) : null}
+            </div>
+          ) : videoRaw ? (
+            <a
+              href={videoRaw}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex text-sm font-semibold text-amber-800 hover:underline break-all"
+            >
+              Xem video hướng dẫn ↗
+            </a>
+          ) : null}
         </div>
       ) : null}
     </div>
@@ -56,9 +131,9 @@ function getFeedbackMessage(correct, index) {
 
 function PracticeAnswerResult({ q }) {
   return (
-    <div className="mt-5 rounded-xl border border-slate-200 bg-indigo-50/30 px-5 py-5 md:px-6 md:py-6">
-      <p className="text-xs font-bold uppercase tracking-widest text-indigo-800 mb-3 flex items-center gap-2">
-        <CheckCircle className="w-4 h-4 text-indigo-600 shrink-0" />
+    <div className="mt-4 rounded-xl bg-sky-50/60 px-4 py-4 md:px-5 md:py-5">
+      <p className="text-xs font-bold uppercase tracking-widest text-sky-800 mb-3 flex items-center gap-2">
+        <CheckCircle className="w-4 h-4 text-sky-600 shrink-0" />
         Đáp án và lời giải
       </p>
       {q.type === 'mcq' && Array.isArray(q.options) && q.correctAnswer != null ? (
@@ -71,11 +146,25 @@ function PracticeAnswerResult({ q }) {
         </div>
       ) : null}
       {q.type === 'input' ? (
-        <div className="text-slate-800 font-semibold mb-2">
-          <span className="text-teal-700">Đáp án đúng: </span>
-          <span className="font-black text-emerald-800">
-            <TextWithMathWithLoiGiai text={String(q.correctAnswer ?? '')} />
-          </span>
+        <div className="text-slate-800 font-semibold mb-2 flex flex-wrap items-baseline gap-x-1 gap-y-1">
+          <span className="text-teal-700 shrink-0">Đáp án đúng:</span>
+          {normalizeInputAnswerParts(q).map((part, i, arr) => {
+            const label = (part.placeholder || '').replace(/\s*[?=…·.]+$/u, '').trim();
+            const ans = String(part.correctAnswer || '')
+              .split(/[|;]/g)
+              .map((x) => x.trim())
+              .filter(Boolean)[0] || String(part.correctAnswer || '').trim();
+            return (
+              <span key={part.id || i} className="inline-flex items-baseline gap-1 font-black text-emerald-800">
+                {label ? <span className="whitespace-pre-wrap tracking-wide">{label}</span> : null}
+                {label ? <span className="font-bold text-teal-700">=</span> : null}
+                <span className="whitespace-pre-wrap">
+                  <TextWithMathWithLoiGiai text={ans} />
+                </span>
+                {i < arr.length - 1 ? <span className="text-slate-400 font-bold mr-1">;</span> : null}
+              </span>
+            );
+          })}
         </div>
       ) : null}
       {q.type === 'true_false' ? (
@@ -103,7 +192,7 @@ function PracticeAnswerResult({ q }) {
         </div>
       ) : null}
       {(q.explanation || '').toString().trim() ? (
-        <div className="mt-3 pt-3 border-t border-teal-200/80 text-slate-700 text-sm md:text-base leading-relaxed whitespace-pre-wrap">
+        <div className="mt-3 pt-3 text-slate-700 text-sm md:text-base leading-relaxed whitespace-pre-wrap">
           <p className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Lời giải chi tiết</p>
           <TextWithMathWithLoiGiai text={(q.explanation || '').toString().trim()} />
         </div>
@@ -116,9 +205,33 @@ function PracticeAnswerResult({ q }) {
   );
 }
 
-function PracticeQuestionCard({
+function PracticeQuestionHeader({ q, index }) {
+  const questionText =
+    q.type === 'text'
+      ? q.question || ''
+      : q.type === 'fill_blanks' && !(q.question || '').trim()
+        ? 'Điền các chỗ trống trong đoạn văn dưới đây.'
+        : q.question || '';
+
+  return (
+    <div className="lesson-practice-question-header">
+      <div className="lesson-practice-q-badge">
+        <span className="lesson-practice-q-num">{index + 1}</span>
+        <span className="lesson-practice-q-label">Câu hỏi luyện tập</span>
+      </div>
+      <div className="lesson-practice-q-text lesson-math-content text-slate-800 text-base md:text-lg leading-loose">
+        {q.type === 'text' ? (
+          <TextWithMathWithLoiGiai text={questionText} />
+        ) : (
+          <TextWithMathWithLoiGiai text={questionText} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function PracticeQuestionBody({
   q,
-  index,
   quizAnswers,
   onAnswerChange,
   locked,
@@ -130,29 +243,13 @@ function PracticeQuestionCard({
   const isInteractive = isInteractivePracticeType(q.type);
 
   return (
-    <div className="p-6 md:p-7 rounded-2xl border border-slate-200/90 bg-white shadow-sm">
-      <h4 className="font-bold text-slate-800 mb-4 flex gap-3 flex-wrap items-start text-base md:text-lg leading-relaxed">
-        <span className="text-indigo-600 shrink-0">Câu {index + 1}:</span>
-        {q.type === 'text' ? (
-          <span className="text-left font-normal text-slate-800 min-w-0 flex-1">
-            <TextWithMathWithLoiGiai text={q.question || ''} />
-          </span>
-        ) : q.type === 'fill_blanks' && !(q.question || '').trim() ? (
-          <span className="min-w-0 flex-1 text-left font-normal text-slate-700">
-            Điền các chỗ trống trong đoạn văn dưới đây.
-          </span>
-        ) : (
-          <span className="min-w-0 flex-1 text-left font-normal">
-            <TextWithMathWithLoiGiai text={q.question || ''} />
-          </span>
-        )}
-      </h4>
+    <div className="lesson-practice-body-panel lesson-math-content text-base md:text-lg leading-loose text-slate-800">
       {q.type === 'text' ? null : q.type === 'mcq' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {(q.options || []).map((opt, oIdx) => {
             const isSelected = quizAnswers[q.id] === oIdx;
             const isCorrect = q.correctAnswer === oIdx;
-            let btnClass = 'border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 text-slate-700 bg-white';
+            let btnClass = 'border-slate-200 hover:border-sky-300 hover:bg-sky-50 text-slate-700 bg-white';
             if (highlightMcqResult) {
               if (isCorrect) btnClass = 'border-emerald-500 bg-emerald-50 text-emerald-800';
               else if (isSelected && !isCorrect) btnClass = 'border-red-500 bg-red-50 text-red-800';
@@ -197,7 +294,12 @@ function PracticeQuestionCard({
         <PracticeFillBlanks q={q} value={quizAnswers[q.id]} disabled={locked} onChange={(val) => onAnswerChange(q.id, val)} />
       ) : null}
       {isInteractive ? (
-        <PracticeHintPanel hint={q.hint} open={Boolean(practiceHintsOpen[q.id])} onToggle={() => onToggleHint(q.id)} />
+        <PracticeHintPanel
+          hint={q.hint}
+          hintVideoUrl={q.hintVideoUrl}
+          open={Boolean(practiceHintsOpen[q.id])}
+          onToggle={() => onToggleHint(q.id)}
+        />
       ) : null}
       {showResult && isInteractive ? <PracticeAnswerResult q={q} /> : null}
     </div>
@@ -206,23 +308,48 @@ function PracticeQuestionCard({
 
 function PracticeStepDots({ total, current, stepStates, onSelect }) {
   return (
-    <div className="flex flex-wrap items-center justify-center gap-2 md:gap-2.5 pt-2">
+    <div className="lesson-practice-step-dots">
       {Array.from({ length: total }, (_, i) => {
         const st = stepStates[i];
         const isCurrent = i === current;
-        let cls =
-          'w-10 h-10 md:w-11 md:h-11 rounded-full text-sm font-black border-2 transition-all flex items-center justify-center';
-        if (isCurrent) cls += ' bg-indigo-600 border-indigo-500 text-white scale-110 shadow-md shadow-indigo-300/40';
-        else if (st?.checked && st.correct) cls += ' bg-emerald-500 border-emerald-400 text-white';
-        else if (st?.checked && !st.correct) cls += ' bg-rose-500 border-rose-400 text-white';
-        else if (st?.visited) cls += ' bg-white border-slate-300 text-slate-600 hover:border-indigo-300';
-        else cls += ' bg-slate-100 border-slate-200 text-slate-400 hover:border-slate-300';
+        let cls = 'lesson-practice-dot';
+        if (isCurrent) cls += ' lesson-practice-dot--current';
+        else if (st?.checked && st.correct) cls += ' lesson-practice-dot--ok';
+        else if (st?.checked && !st.correct) cls += ' lesson-practice-dot--bad';
+        else if (st?.visited) cls += ' lesson-practice-dot--visited';
+        else cls += ' lesson-practice-dot--idle';
         return (
           <button key={i} type="button" onClick={() => onSelect(i)} className={cls} aria-label={`Câu ${i + 1}`}>
             {i + 1}
           </button>
         );
       })}
+    </div>
+  );
+}
+
+function PracticeStepPager({ total, current, stepStates, onSelect, onPrev, onNext, canGoPrev, canGoNext }) {
+  return (
+    <div className="lesson-practice-pager">
+      <button
+        type="button"
+        onClick={onPrev}
+        disabled={!canGoPrev}
+        className="lesson-practice-pager-arrow"
+        aria-label="Câu trước"
+      >
+        <ChevronLeft className="w-5 h-5" strokeWidth={2.5} />
+      </button>
+      <PracticeStepDots total={total} current={current} stepStates={stepStates} onSelect={onSelect} />
+      <button
+        type="button"
+        onClick={onNext}
+        disabled={!canGoNext}
+        className="lesson-practice-pager-arrow"
+        aria-label={current >= total - 1 ? 'Hoàn thành' : 'Câu tiếp theo'}
+      >
+        <ChevronRight className="w-5 h-5" strokeWidth={2.5} />
+      </button>
     </div>
   );
 }
@@ -248,25 +375,25 @@ function PracticeListFooter({
         <button
           type="button"
           onClick={onSubmit}
-          className="bg-indigo-600 text-white px-8 py-3.5 rounded-full font-black text-sm md:text-base hover:bg-indigo-700 transition-all shadow-md shadow-indigo-600/20 inline-flex items-center gap-2 min-w-[220px] justify-center"
+          className="lesson-practice-btn lesson-practice-btn--check min-w-[220px] justify-center"
         >
           <Target className="w-5 h-5 shrink-0" />
           Nộp bài — xem đáp án
         </button>
-        <p className="text-xs text-slate-500 max-w-md mx-auto">
+        <p className="text-xs text-slate-500 max-w-md mx-auto mt-2">
           Chỉ sau khi <strong className="text-slate-700">nộp bài</strong> mới hiện đáp án đúng và lời giải phía dưới từng câu.
         </p>
       </>
     );
   }
   return (
-    <div className="bg-slate-50 p-5 rounded-2xl inline-block min-w-[260px] border border-slate-200/80">
+    <div className="bg-sky-50/80 p-5 rounded-2xl inline-block min-w-[260px]">
       <h3 className="text-base font-bold text-slate-600 mb-2">Kết quả</h3>
       <p className="text-4xl font-black text-teal-600 mb-1">
         {quizScore} / {interactivePractice.length}
       </p>
       {(studentName || '').trim() ? (
-        <p className="text-xs text-amber-800 font-semibold mb-4">
+        <p className="text-xs text-sky-800 font-semibold mb-4">
           +{Math.round(quizScore * 15)} EXP (điểm × 15) — đã ghi vào tiến trình bài học
         </p>
       ) : (
@@ -275,10 +402,41 @@ function PracticeListFooter({
       <button
         type="button"
         onClick={onReset}
-        className="bg-white border-2 border-slate-200 text-slate-600 px-5 py-2 rounded-xl font-bold hover:bg-slate-100 transition-colors text-sm"
+        className="lesson-practice-btn lesson-practice-btn--ghost text-sm"
       >
-        Làm lại (đổi thứ tự câu và đáp án)
+        Làm lại
       </button>
+    </div>
+  );
+}
+
+function PracticeStepFeedbackBanner({ correct, index }) {
+  const ok = Boolean(correct);
+  return (
+    <div
+      className={`lesson-practice-feedback lesson-practice-feedback--banner ${
+        ok ? 'lesson-practice-feedback--ok' : 'lesson-practice-feedback--bad'
+      }`}
+      role="status"
+      aria-live="polite"
+    >
+      <span className="lesson-practice-feedback-emoji" aria-hidden="true">
+        {ok ? '🎉' : '💪'}
+      </span>
+      <span className="lesson-practice-feedback-text">{getFeedbackMessage(ok, index)}</span>
+    </div>
+  );
+}
+
+function PracticeStageFrame({ children, header, banner }) {
+  return (
+    <div className="lesson-practice-frame">
+      <PracticeFrameDecor />
+      <div className="lesson-practice-inner">
+        {banner || null}
+        {header}
+        <div className="lesson-practice-scroll">{children}</div>
+      </div>
     </div>
   );
 }
@@ -302,6 +460,7 @@ export default function LessonPracticeSection({
   const [stepChecked, setStepChecked] = useState({});
   const [stepVisited, setStepVisited] = useState({ 0: true });
   const [stepFinished, setStepFinished] = useState(false);
+  const [fireworksBurstKey, setFireworksBurstKey] = useState(0);
 
   const total = shuffledPractice.length;
   const currentQ = shuffledPractice[stepIndex] || null;
@@ -318,6 +477,15 @@ export default function LessonPracticeSection({
     setStepVisited((prev) => ({ ...prev, [stepIndex]: true }));
   }, [stepIndex]);
 
+  useEffect(() => {
+    if (!currentChecked?.checked) return undefined;
+    const el = document.querySelector('.lesson-practice-feedback--banner');
+    if (el && typeof el.scrollIntoView === 'function') {
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    return undefined;
+  }, [currentChecked?.checked, currentQ?.id]);
+
   const stepStates = useMemo(() => {
     return shuffledPractice.map((q, i) => ({
       checked: Boolean(stepChecked[q.id]?.checked),
@@ -330,6 +498,7 @@ export default function LessonPracticeSection({
     if (!currentQ || !isInteractivePracticeType(currentQ.type)) return;
     const correct = scorePracticeQuestion(currentQ, quizAnswers[currentQ.id]);
     setStepChecked((prev) => ({ ...prev, [currentQ.id]: { checked: true, correct } }));
+    if (correct) setFireworksBurstKey((k) => k + 1);
   }, [currentQ, quizAnswers]);
 
   const goStep = (idx) => {
@@ -351,77 +520,64 @@ export default function LessonPracticeSection({
     const canNext = currentQ && (!isInteractive ? true : currentChecked?.checked);
 
     return (
-      <div className="w-full max-w-none">
+      <div className="lesson-practice-stage">
+        <ChuyenDeOnTapFireworks burstKey={fireworksBurstKey} />
         {total === 0 ? null : (
           <>
             {currentQ ? (
-              <PracticeQuestionCard
-                q={currentQ}
-                index={stepIndex}
-                quizAnswers={quizAnswers}
-                onAnswerChange={onAnswerChange}
-                locked={Boolean(currentChecked?.checked)}
-                showResult={Boolean(currentChecked?.checked)}
-                practiceHintsOpen={practiceHintsOpen}
-                onToggleHint={onToggleHint}
-                highlightMcqResult={Boolean(currentChecked?.checked)}
-              />
-            ) : null}
-
-            {currentChecked?.checked ? (
-              <div
-                className={`mt-4 rounded-2xl px-5 py-4 border-2 text-center font-bold text-base md:text-lg ${
-                  currentChecked.correct
-                    ? 'bg-emerald-50 border-emerald-300 text-emerald-800'
-                    : 'bg-rose-50 border-rose-200 text-rose-800'
-                }`}
+              <PracticeStageFrame
+                banner={
+                  currentChecked?.checked ? (
+                    <PracticeStepFeedbackBanner correct={currentChecked.correct} index={stepIndex} />
+                  ) : null
+                }
+                header={<PracticeQuestionHeader q={currentQ} index={stepIndex} />}
               >
-                {getFeedbackMessage(currentChecked.correct, stepIndex)}
-              </div>
+                <PracticeQuestionBody
+                  q={currentQ}
+                  quizAnswers={quizAnswers}
+                  onAnswerChange={onAnswerChange}
+                  locked={Boolean(currentChecked?.checked)}
+                  showResult={Boolean(currentChecked?.checked)}
+                  practiceHintsOpen={practiceHintsOpen}
+                  onToggleHint={onToggleHint}
+                  highlightMcqResult={Boolean(currentChecked?.checked)}
+                />
+              </PracticeStageFrame>
             ) : null}
 
-            <div className="mt-6 flex flex-col items-center gap-4 border-t border-slate-100 pt-6">
-              <div className="flex flex-wrap items-center justify-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => goStep(stepIndex - 1)}
-                  disabled={stepIndex <= 0}
-                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border-2 border-slate-200 bg-white text-slate-600 font-bold text-sm disabled:opacity-40 hover:bg-slate-50"
-                >
-                  <ChevronLeft className="w-4 h-4" /> Câu trước
-                </button>
-                {canCheck ? (
-                  <button
-                    type="button"
-                    onClick={handleStepCheck}
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-indigo-600 text-white font-black text-sm md:text-base hover:bg-indigo-700 shadow-md shadow-indigo-600/20"
-                  >
+            <div className="lesson-practice-nav">
+              {canCheck ? (
+                <div className="lesson-practice-actions lesson-practice-actions--check-only">
+                  <button type="button" onClick={handleStepCheck} className="lesson-practice-btn lesson-practice-btn--check">
                     <Target className="w-5 h-5" />
                     Kiểm tra đáp án
                   </button>
-                ) : null}
-                <button
-                  type="button"
-                  onClick={handleStepNext}
-                  disabled={!canNext}
-                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border-2 border-teal-500 bg-teal-600 text-white font-bold text-sm disabled:opacity-40 hover:bg-teal-700"
-                >
-                  {stepIndex >= total - 1 ? 'Hoàn thành' : 'Câu tiếp theo'}
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              </div>
+                </div>
+              ) : null}
 
-              <PracticeStepDots total={total} current={stepIndex} stepStates={stepStates} onSelect={goStep} />
+              <PracticeStepPager
+                total={total}
+                current={stepIndex}
+                stepStates={stepStates}
+                onSelect={goStep}
+                onPrev={() => goStep(stepIndex - 1)}
+                onNext={handleStepNext}
+                canGoPrev={stepIndex > 0}
+                canGoNext={Boolean(canNext)}
+              />
 
               {stepFinished || quizSubmitted ? (
-                <PracticeListFooter
-                  interactivePractice={interactivePractice}
-                  quizSubmitted
-                  quizScore={quizScore}
-                  studentName={studentName}
-                  onSubmit={onSubmitQuiz}
-                  onReset={onResetQuiz}
-                />
+                <div className="lesson-practice-footer-wrap">
+                  <PracticeListFooter
+                    interactivePractice={interactivePractice}
+                    quizSubmitted
+                    quizScore={quizScore}
+                    studentName={studentName}
+                    onSubmit={onSubmitQuiz}
+                    onReset={onResetQuiz}
+                  />
+                </div>
               ) : null}
             </div>
           </>
@@ -431,24 +587,30 @@ export default function LessonPracticeSection({
   }
 
   return (
-    <div className="w-full max-w-none">
-      <div className="space-y-6 md:space-y-8">
-        {shuffledPractice.map((q, index) => (
-          <PracticeQuestionCard
-            key={`${q.id}-${index}`}
-            q={q}
-            index={index}
-            quizAnswers={quizAnswers}
-            onAnswerChange={onAnswerChange}
-            locked={quizSubmitted}
-            showResult={quizSubmitted && isInteractivePracticeType(q.type)}
-            practiceHintsOpen={practiceHintsOpen}
-            onToggleHint={onToggleHint}
-            highlightMcqResult={quizSubmitted}
-          />
-        ))}
+    <div className="lesson-practice-stage">
+      <div className="lesson-practice-frame">
+        <PracticeFrameDecor />
+        <div className="lesson-practice-scroll">
+          {shuffledPractice.map((q, index) => (
+            <div key={`${q.id}-${index}`} className="lesson-practice-list-item">
+              <PracticeQuestionHeader q={q} index={index} />
+              <div className="mt-3">
+                <PracticeQuestionBody
+                  q={q}
+                  quizAnswers={quizAnswers}
+                  onAnswerChange={onAnswerChange}
+                  locked={quizSubmitted}
+                  showResult={quizSubmitted && isInteractivePracticeType(q.type)}
+                  practiceHintsOpen={practiceHintsOpen}
+                  onToggleHint={onToggleHint}
+                  highlightMcqResult={quizSubmitted}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
-      <div className="mt-8 text-center border-t border-slate-100 pt-6 space-y-4">
+      <div className="lesson-practice-nav lesson-practice-footer-wrap space-y-3">
         <PracticeListFooter
           interactivePractice={interactivePractice}
           quizSubmitted={quizSubmitted}

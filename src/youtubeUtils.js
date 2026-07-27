@@ -21,17 +21,25 @@ export function extractYouTubeID(url) {
   return null;
 }
 
-/** URL nhúng chuẩn (query giúp một số trình duyệt / policy hiển thị ổn định hơn). */
-export function buildYouTubeEmbedUrl(videoId) {
+/** URL nhúng YouTube — iframe trực tiếp, UI mặc định của YouTube. */
+export function buildYouTubeEmbedUrl(videoId, { allowFullscreen = true } = {}) {
   if (!videoId) return '';
   const origin =
     typeof window !== 'undefined' && window.location?.origin
       ? `&origin=${encodeURIComponent(window.location.origin)}`
       : '';
-  return `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?rel=0&modestbranding=1&playsinline=1${origin}`;
+  const fs = allowFullscreen ? 1 : 0;
+  return `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?rel=0&modestbranding=1&playsinline=1&fs=${fs}${origin}`;
 }
 
 export function buildYouTubeWatchUrl(videoId) {
   if (!videoId) return '';
   return `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}`;
+}
+
+/** Ảnh thumbnail YouTube. */
+export function getYouTubeThumbnailUrl(videoId, size = 'maxres') {
+  if (!videoId) return '';
+  const file = size === 'hq' ? 'hqdefault' : 'maxresdefault';
+  return `https://i.ytimg.com/vi/${encodeURIComponent(videoId)}/${file}.jpg`;
 }

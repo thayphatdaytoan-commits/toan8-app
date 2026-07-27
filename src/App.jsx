@@ -30,6 +30,11 @@ function lazyWithRetry(factory, name) {
 }
 
 const PublicLandingScreen = lazyWithRetry(() => import('./PublicLandingScreen'), 'PublicLandingScreen');
+const CommunityQaScreen = lazyWithRetry(() => import('./CommunityQaScreen'), 'CommunityQaScreen');
+const WeeklyContestScreen = lazyWithRetry(() => import('./WeeklyContestScreen'), 'WeeklyContestScreen');
+const BlogPostScreen = lazyWithRetry(() => import('./BlogPostScreen'), 'BlogPostScreen');
+const DocumentsBrowseScreen = lazyWithRetry(() => import('./DocumentsBrowseScreen'), 'DocumentsBrowseScreen');
+const DocumentViewerScreen = lazyWithRetry(() => import('./DocumentViewerScreen'), 'DocumentViewerScreen');
 const StudentDashboardScreen = lazyWithRetry(() => import('./StudentDashboardScreen'), 'StudentDashboardScreen');
 const StudentLessonViewer = lazyWithRetry(() => import('./StudentLessonViewer'), 'StudentLessonViewer');
 import { getSiteOrigin } from './seo/siteConfig';
@@ -41,12 +46,31 @@ import {
   DEFAULT_LESSON_MATERIALS_JSON,
 } from './lessonContentAdminUtils';
 import {
+  emptyLessonSectionTemplate,
+  getLessonDisplayLabel,
+  getSectionDisplayLabel,
+  normalizeLessonSections,
+  sortLessonSections,
+} from './lessonSections';
+import {
+  buildMergedChapterOptions,
+  buildMergedLessonNoOptions,
+  deriveLessonTitleFromSections,
+  findSgkLessonTitle,
+} from './lessonEditorCatalog';
+import {
   parseQuestionsFromText,
   groupQuizImportErrors,
   validateQuizQuestionsAdmin,
 } from './quizImportParser';
+import { sortQuizQuestions, normalizeImportedQuizQuestion } from './quizQuestionOrder';
+import LessonRepositoryPanel from './admin/LessonRepositoryPanel';
+import QuizRepositoryPanel from './admin/QuizRepositoryPanel';
+import { getQuizExamTypeOptions, EXAM_TYPE, normalizeExamType } from './quizExamTypes';
 import { RichMathContent } from './RichMathContent';
-import { User, Lock, Award, ListOrdered, CheckCircle, XCircle, ArrowRight, ShieldCheck, AlertTriangle, Settings, Users, FileText, LogOut, Plus, Trash2, Edit2, Save, Camera, Image as ImageIcon, Eye, Upload, Lightbulb, ArrowLeft, Clock, PlayCircle, BookOpen, Filter, FileEdit, Video, Play, BookText, Home, Trophy, Sparkles, Star, Target, Heart, Link2, Network, Map as MapIcon } from 'lucide-react';
+import { PracticeFillBlanks, PracticeFillBlanksResult } from './PracticeInteractiveQuestions';
+import { fillBlanksAnswerOk, normalizeFillBlanksQuestion } from './practiceQuestionTypes';
+import { User, Lock, Award, ListOrdered, CheckCircle, XCircle, ArrowRight, ShieldCheck, AlertTriangle, Settings, Users, FileText, LogOut, Plus, Trash2, Edit2, Save, Camera, Image as ImageIcon, Eye, EyeOff, Upload, Lightbulb, ArrowLeft, Clock, PlayCircle, BookOpen, Filter, FileEdit, Video, Play, BookText, Home, Trophy, Sparkles, Star, Target, Heart, Link2, Network, Map as MapIcon, LayoutTemplate, MessageCircle, FolderOpen, UserCog } from 'lucide-react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, doc, setDoc, onSnapshot, addDoc, deleteDoc, updateDoc, getDoc } from 'firebase/firestore';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -58,8 +82,41 @@ import {
   COLLECTION_STUDENTS,
   COLLECTION_QUIZZES,
   COLLECTION_LESSONS,
+  COLLECTION_CUSTOM_MATH_TOPICS,
+  COLLECTION_CLASSES,
+  COLLECTION_TRIAL_REGISTRATIONS,
   ensureAnonymousAuth,
+  ensureLocalAuthPersistence,
 } from './firebaseClient';
+import {
+  mergeTopicOptionLists,
+  getCustomTopicsForChapter,
+  topicExistsInLists,
+  buildCustomTopicPayload,
+} from './customMathTopics';
+import AddCustomMathTopicModal from './admin/AddCustomMathTopicModal';
+import QuestionRepositoryPanel from './admin/QuestionRepositoryPanel';
+import ClassroomManagementPanel from './admin/ClassroomManagementPanel';
+import AdminTeachersPanel from './admin/AdminTeachersPanel';
+import HomepageCmsAdminPanel from './admin/HomepageCmsAdminPanel';
+import AdminCommunityQuestionsPanel from './admin/AdminCommunityQuestionsPanel';
+import AdminWeeklyContestPanel from './admin/AdminWeeklyContestPanel';
+import AdminBlogPanel from './admin/AdminBlogPanel';
+import AdminDocumentsPanel from './admin/AdminDocumentsPanel';
+import { authenticateStaff, STAFF_ROLE, ALL_GRADE_OPTIONS, normUsername } from './admin/adminStaffStore';
+import {
+  canAccessAdminTab,
+  canAccessGrade,
+  defaultGradeForStaff,
+  isSuperAdmin,
+  allowedGradesForStaff,
+} from './admin/adminPermissions';
+import {
+  filterBankQuestions,
+  buildBankChapterFilterOptions,
+  buildBankTopicFilterOptions,
+  BANK_SECTION_GIFTED,
+} from './questionBankRepository';
 import {
   readLessonDeepLinkFromLocation,
   findLessonInList,
@@ -68,12 +125,19 @@ import {
 import mammoth from'mammoth';
 import { compressImageFileToJpegBlob, applyAdminSnippetByKey } from './adminImageUpload';
 import { LessonFormattingToolbar } from './LessonFormattingToolbar';
-import { computeAutoGradedScore, DEFAULT_PART_POINTS, formatScoreForDisplay, normalizePartPoints } from './quizScoring';
+import { computeAutoGradedScore, DEFAULT_PART_POINTS, formatScoreForDisplay, normalizePartPoints, shortAnswerIsCorrect } from './quizScoring';
 import { slugifyVi, buildLessonSlug, ensureUniqueLessonSlug } from './lessonSlug';
 import LessonSeoAdminPanel from './LessonSeoAdminPanel';
 import { listExistingTopics, slugifyTopicId } from './topics';
 import BackButton from './BackButton';
 import { clearStudentSession, readStudentSession, touchStudentSession, writeStudentSession } from './studentSession';
+import {
+  consumeAuthRedirectResult,
+  loginWithStudentCredentials,
+  resolveStudentSessionFromAllowedStudents,
+  signInWithGoogleProvider,
+  upsertSelfRegisteredStudent,
+} from './studentAuth';
 import {
   COLLECTION_QUESTION_BANK,
   COG_LEVEL,
@@ -94,6 +158,7 @@ import {
   sanitizeReviewProgressPayload,
 } from './chuyenDeOnTap/chuyenDeOnTapProgressFirestore';
 import ChuyenDeOnTapAdminPanel from './chuyenDeOnTap/ChuyenDeOnTapAdminPanel';
+import StudentRegisterScreen from './StudentRegisterScreen';
 import math11KnowledgeRaw from './assets/math11-knowledge.txt?raw';
 import mathCurriculumGdpt2018Raw from './assets/math-curriculum-gdpt2018.txt?raw';
 import { parseMathKnowledgeTxt, parseMathKnowledgeTxtForGrade, knowledgeTopicMatches } from './knowledgeTags';
@@ -109,24 +174,6 @@ function MathContent({ text, className, inlineImage = false }) {
   return <RichMathContent text={text} className={className} inlineImage={inlineImage} />;
 }
 
-function normalizeShortAnswerText(s) {
-  return String(s || '')
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, ' ')
-    .replace(/,/g, '.');
-}
-
-function shortAnswerIsCorrect(userInput, shortCorrect) {
-  const u = normalizeShortAnswerText(userInput);
-  if (!u) return false;
-  const variants = String(shortCorrect || '')
-    .split('|')
-    .map((x) => normalizeShortAnswerText(x))
-    .filter(Boolean);
-  return variants.some((v) => u === v);
-}
-
 function tfAnswersComplete(q, value) {
   const items = q.tfItems || [];
   if (!items.length) return false;
@@ -140,6 +187,12 @@ function isQuizQuestionAnswered(q, answers, essayImages) {
   if (t === 'multiple_choice') return answers[q.id] !== undefined;
   if (t === 'true_false_group') return tfAnswersComplete(q, answers[q.id]);
   if (t === 'short_answer') return String(answers[q.id] || '').trim().length > 0;
+  if (t === 'fill_blanks') {
+    const { blanks } = normalizeFillBlanksQuestion(q);
+    const obj = answers[q.id];
+    if (!obj || typeof obj !== 'object') return false;
+    return blanks.length > 0 && blanks.every((b) => String(obj[b.id] || '').trim().length > 0);
+  }
   if (t === 'essay') return !!essayImages[q.id];
   return false;
 }
@@ -165,9 +218,45 @@ function isAdminLoginUrlPath(pathname) {
   return p === '/admin' || p === '/admin/login';
 }
 
+function isRegisterUrlPath(pathname) {
+  const p = normalizeAppPathname(pathname);
+  return p === '/dang-ky' || p === '/register';
+}
+
+function parseCommunityRoute(pathname) {
+  const p = normalizeAppPathname(pathname);
+  if (p === '/hoi-dap' || p === '/cong-dong') return { kind: 'qa' };
+  if (p === '/cuoc-thi') return { kind: 'contest', slug: '' };
+  const m = p.match(/^\/cuoc-thi\/([^/?#]+)\/?$/i);
+  if (m) return { kind: 'contest', slug: decodeURIComponent(m[1]) };
+  if (p === '/blog') return { kind: 'blog_list' };
+  const blog = p.match(/^\/blog\/([^/?#]+)\/?$/i);
+  if (blog) return { kind: 'blog', slug: decodeURIComponent(blog[1]) };
+  if (p === '/tai-lieu') return { kind: 'docs', folderId: '' };
+  const docsFolder = p.match(/^\/tai-lieu\/thu-muc\/([^/?#]+)\/?$/i);
+  if (docsFolder) return { kind: 'docs', folderId: decodeURIComponent(docsFolder[1]) };
+  const doc = p.match(/^\/tai-lieu\/([^/?#]+)\/?$/i);
+  if (doc && doc[1].toLowerCase() !== 'thu-muc') {
+    return { kind: 'doc_view', docId: decodeURIComponent(doc[1]) };
+  }
+  return null;
+}
+
 const ADMIN_SESSION_KEY = 'thayphat_admin_session_v2';
 const ADMIN_IDLE_MS = 60 * 60 * 1000;
 const ADMIN_MAX_MS = 12 * 60 * 60 * 1000;
+
+function staffFromSession(s) {
+  if (!s) return null;
+  return {
+    id: s.staffId || null,
+    username: s.username || '',
+    name: s.name || 'Admin',
+    role: s.role === STAFF_ROLE.TEACHER ? STAFF_ROLE.TEACHER : STAFF_ROLE.SUPER_ADMIN,
+    grade_levels: Array.isArray(s.grade_levels) ? s.grade_levels.map(String) : [],
+    class_ids: Array.isArray(s.class_ids) ? s.class_ids.map(String) : [],
+  };
+}
 
 function readAdminSession() {
   try {
@@ -179,7 +268,17 @@ function readAdminSession() {
     const loginAt = Number(obj.loginAt || 0);
     const lastActiveAt = Number(obj.lastActiveAt || 0);
     if (!loginAt || !lastActiveAt) return null;
-    return { loginAt, lastActiveAt };
+    return {
+      loginAt,
+      lastActiveAt,
+      staffId: obj.staffId || null,
+      username: obj.username || '',
+      name: obj.name || '',
+      // Session cũ không có role → coi như admin tổng (tương thích ngược)
+      role: obj.role === STAFF_ROLE.TEACHER ? STAFF_ROLE.TEACHER : STAFF_ROLE.SUPER_ADMIN,
+      grade_levels: Array.isArray(obj.grade_levels) ? obj.grade_levels.map(String) : [],
+      class_ids: Array.isArray(obj.class_ids) ? obj.class_ids.map(String) : [],
+    };
   } catch {
     return null;
   }
@@ -198,13 +297,24 @@ function readAdminSessionFlag() {
   }
   return true;
 }
-function writeAdminSessionLogin() {
+function writeAdminSessionLogin(staff = null) {
   try {
     if (typeof window === 'undefined') return;
     const now = Date.now();
+    const role =
+      staff?.role === STAFF_ROLE.TEACHER ? STAFF_ROLE.TEACHER : STAFF_ROLE.SUPER_ADMIN;
     window.localStorage.setItem(
       ADMIN_SESSION_KEY,
-      JSON.stringify({ loginAt: now, lastActiveAt: now }),
+      JSON.stringify({
+        loginAt: now,
+        lastActiveAt: now,
+        staffId: staff?.id || null,
+        username: staff?.username || (role === STAFF_ROLE.SUPER_ADMIN ? 'admin' : ''),
+        name: staff?.name || (role === STAFF_ROLE.SUPER_ADMIN ? 'Admin tổng' : 'Giáo viên'),
+        role,
+        grade_levels: Array.isArray(staff?.grade_levels) ? staff.grade_levels.map(String) : [],
+        class_ids: Array.isArray(staff?.class_ids) ? staff.class_ids.map(String) : [],
+      }),
     );
   } catch {
     /* ignore */
@@ -217,7 +327,7 @@ function touchAdminSession() {
     if (!isAdminSessionValid(s)) return false;
     window.localStorage.setItem(
       ADMIN_SESSION_KEY,
-      JSON.stringify({ loginAt: s.loginAt, lastActiveAt: Date.now() }),
+      JSON.stringify({ ...s, lastActiveAt: Date.now() }),
     );
     return true;
   } catch {
@@ -232,8 +342,8 @@ function clearAdminSession() {
     /* ignore */
   }
 }
-function writeAdminSessionFlag(on) {
-  if (on) writeAdminSessionLogin();
+function writeAdminSessionFlag(on, staff = null) {
+  if (on) writeAdminSessionLogin(staff);
   else clearAdminSession();
 }
 
@@ -255,6 +365,7 @@ export default function App() {
     try {
       if (typeof window !== 'undefined' && readAdminSessionFlag()) return 'admin';
       if (typeof window !== 'undefined' && isAdminLoginUrlPath(window.location.pathname)) return 'login';
+      if (typeof window !== 'undefined' && isRegisterUrlPath(window.location.pathname)) return 'register';
     } catch {
       /* ignore */
     }
@@ -281,6 +392,7 @@ const [publicGrade, setPublicGrade] = useState(() => {
 const [studentName, setStudentName] = useState(() => readStudentSession()?.name || '');
 const [studentClass, setStudentClass] = useState(() => readStudentSession()?.className || '');
   const [postLoginTab, setPostLoginTab] = useState(null);
+  const [studentPortalOpen, setStudentPortalOpen] = useState(false);
   const [teacherDefaultGrade, setTeacherDefaultGrade] = useState(null);
 
   const [selectedQuizId, setSelectedQuizId] = useState(null);
@@ -304,6 +416,8 @@ const [pendingOpen, setPendingOpen] = useState(null); // { quizId?: string } | {
 // States chứa dữ liệu từ Server
   const [scoresList, setScoresList] = useState([]);
   const [allowedStudents, setAllowedStudents] = useState([]);
+  const [classesList, setClassesList] = useState([]);
+  const [trialRegistrations, setTrialRegistrations] = useState([]);
   const [quizzesList, setQuizzesList] = useState([]);
   const [lessonsList, setLessonsList] = useState([]); // Danh sách bài giảng
   const [questionBank, setQuestionBank] = useState([]);
@@ -320,6 +434,55 @@ const [pendingOpen, setPendingOpen] = useState(null); // { quizId?: string } | {
     }
     return '8';
   }, [allowedStudents, studentName]);
+
+  const studentProfile = useMemo(() => {
+    if (!studentName) return null;
+    const byName = allowedStudents.find((s) => normStudentName(s?.name) === normStudentName(studentName));
+    if (byName) return byName;
+    const uid = auth.currentUser?.uid;
+    if (uid) {
+      const byUid = allowedStudents.find((s) => s.firebase_uid === uid);
+      if (byUid) return byUid;
+    }
+    const email = String(auth.currentUser?.email || '').trim().toLowerCase();
+    if (email) {
+      return allowedStudents.find((s) => String(s.email || '').trim().toLowerCase() === email) || null;
+    }
+    return null;
+  }, [allowedStudents, studentName]);
+
+  const handleSaveStudentProfile = useCallback(
+    async (patch) => {
+      const row = studentProfile;
+      if (!row?.id) {
+        throw new Error('Không tìm thấy hồ sơ học sinh trên hệ thống. Liên hệ giáo viên.');
+      }
+      const nextClass = String(patch.class_label ?? row.class_label ?? '').trim();
+      const nextGrade = String(patch.grade_level ?? row.grade_level ?? rosterGrade ?? '8').trim();
+      await updateDoc(doc(db, COLLECTION_STUDENTS, row.id), {
+        phone: String(patch.phone ?? row.phone ?? '').trim(),
+        school: String(patch.school ?? row.school ?? '').trim(),
+        class_label: nextClass,
+        grade_level: nextGrade,
+        province: String(patch.province ?? row.province ?? '').trim(),
+        ward: String(patch.ward ?? row.ward ?? '').trim(),
+        address: String(patch.address ?? row.address ?? '').trim(),
+        notify_zalo: Boolean(patch.notify_zalo),
+        notify_email: Boolean(patch.notify_email),
+        updated_at: Date.now(),
+      });
+      setStudentClass(nextClass);
+      if (VALID_PUBLIC_GRADES.has(nextGrade)) {
+        window.currentStudentGrade = nextGrade;
+        writeStudentSession({
+          name: studentName,
+          className: nextClass,
+          gradeLevel: nextGrade,
+        });
+      }
+    },
+    [studentProfile, rosterGrade, studentName]
+  );
 
   const studentQuizzesFiltered = useMemo(
     () => quizzesList.filter((q) => q.grade_level === rosterGrade || !q.grade_level),
@@ -342,6 +505,16 @@ const [pendingOpen, setPendingOpen] = useState(null); // { quizId?: string } | {
 
   const [user, setUser] = useState(null);
   const ADMIN_PASSWORD = 'Phat@210196';
+  const [adminStaff, setAdminStaff] = useState(() => {
+    const s = readAdminSession();
+    return isAdminSessionValid(s) ? staffFromSession(s) : null;
+  });
+
+  const logoutAdmin = useCallback(() => {
+    writeAdminSessionFlag(false);
+    setAdminStaff(null);
+    setAppState('login');
+  }, []);
 
   const setUrlParamSafe = useCallback((patch, mode = 'push') => {
     try {
@@ -421,6 +594,7 @@ const [pendingOpen, setPendingOpen] = useState(null); // { quizId?: string } | {
       const ok = touchAdminSession();
       if (!ok) {
         clearAdminSession();
+        setAdminStaff(null);
         setAppState('login');
       }
     };
@@ -430,6 +604,7 @@ const [pendingOpen, setPendingOpen] = useState(null); // { quizId?: string } | {
       const s = readAdminSession();
       if (!isAdminSessionValid(s)) {
         clearAdminSession();
+        setAdminStaff(null);
         setAppState('login');
       }
     }, 60 * 1000);
@@ -454,10 +629,26 @@ const [pendingOpen, setPendingOpen] = useState(null); // { quizId?: string } | {
     }
   }, [locationKey]);
 
+  const communityRoute = useMemo(() => {
+    try {
+      return typeof window !== 'undefined' ? parseCommunityRoute(window.location.pathname) : null;
+    } catch {
+      return null;
+    }
+  }, [locationKey]);
+
   /** URL cố định: /admin/login (hoặc /admin) → màn đăng nhập + mở sẵn khu giáo viên */
   const adminLoginRouteActive = useMemo(() => {
     try {
       return typeof window !== 'undefined' && isAdminLoginUrlPath(window.location.pathname);
+    } catch {
+      return false;
+    }
+  }, [locationKey]);
+
+  const registerRouteActive = useMemo(() => {
+    try {
+      return typeof window !== 'undefined' && isRegisterUrlPath(window.location.pathname);
     } catch {
       return false;
     }
@@ -471,6 +662,20 @@ const [pendingOpen, setPendingOpen] = useState(null); // { quizId?: string } | {
       /* ignore */
     }
   }, [adminLoginRouteActive, locationKey]);
+
+  useEffect(() => {
+    try {
+      if (!registerRouteActive) return;
+      setAppState((prev) => (prev === 'admin' ? prev : 'register'));
+    } catch {
+      /* ignore */
+    }
+  }, [registerRouteActive, locationKey]);
+
+  const openRegister = useCallback(() => {
+    setUrlPathSafe('/dang-ky', 'push');
+    setAppState('register');
+  }, [setUrlPathSafe]);
 
   /** Chuẩn hoá URL: /admin → /admin/login (một đường dẫn để lưu / chia sẻ) */
   useEffect(() => {
@@ -771,9 +976,11 @@ const [pendingOpen, setPendingOpen] = useState(null); // { quizId?: string } | {
   }, [publicGrade]);
 
   useEffect(() => {
-    ensureAnonymousAuth().catch((error) => {
-      console.error('Lỗi xác thực Firebase:', error);
-    });
+    ensureLocalAuthPersistence()
+      .then(() => ensureAnonymousAuth())
+      .catch((error) => {
+        console.error('Lỗi xác thực Firebase:', error);
+      });
     const unsubscribe = onAuthStateChanged(auth, setUser);
     return () => unsubscribe();
   }, []);
@@ -825,12 +1032,44 @@ const [pendingOpen, setPendingOpen] = useState(null); // { quizId?: string } | {
 
       unsubs.push(
         onSnapshot(
+          collection(db, COLLECTION_CLASSES),
+          (snapshot) => {
+            setClassesList(
+              snapshot.docs
+                .map((d) => ({ id: d.id, ...d.data() }))
+                .sort((a, b) => (a.name || '').localeCompare(b.name || '', 'vi'))
+            );
+          },
+          (err) => {
+            console.error('Lỗi tải danh sách lớp (Firestore):', err);
+          }
+        )
+      );
+
+      unsubs.push(
+        onSnapshot(
           collection(db, COLLECTION_STUDENTS),
           (snapshot) => {
             setAllowedStudents(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })).sort((a, b) => a.name.localeCompare(b.name)));
           },
           (err) => {
             console.error('Lỗi tải danh sách HS (Firestore):', err);
+          }
+        )
+      );
+
+      unsubs.push(
+        onSnapshot(
+          collection(db, COLLECTION_TRIAL_REGISTRATIONS),
+          (snapshot) => {
+            setTrialRegistrations(
+              snapshot.docs
+                .map((d) => ({ id: d.id, ...d.data() }))
+                .sort((a, b) => (b.created_at || 0) - (a.created_at || 0))
+            );
+          },
+          (err) => {
+            console.error('Lỗi tải đăng ký học thử (Firestore):', err);
           }
         )
       );
@@ -858,7 +1097,7 @@ const [pendingOpen, setPendingOpen] = useState(null); // { quizId?: string } | {
             setMindMapCategories(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
           },
           (err) => {
-            console.error('Lỗi tải sơ đồ Hình 9 (Firestore):', err);
+            console.error('Lỗi tải sơ đồ tư duy ngược (Firestore):', err);
           }
         )
       );
@@ -1003,8 +1242,33 @@ const [pendingOpen, setPendingOpen] = useState(null); // { quizId?: string } | {
     setAppState('dashboard');
     window.currentStudentGrade = grade;
     writeStudentSession({ name, className, gradeLevel: grade });
-    setTimeout(() => setPostLoginTab(null), 0);
+    const portalTab = postLoginTab;
+    if (portalTab === 'topics' || portalTab === 'exams' || portalTab === 'lessons') {
+      setStudentPortalOpen(true);
+    } else {
+      setStudentPortalOpen(false);
+      setPostLoginTab(null);
+      // Giữ URL /hoi-dap hoặc /cuoc-thi nếu đang ở đó
+      try {
+        const p = normalizeAppPathname(window.location.pathname);
+        if (p === '/hoi-dap' || p === '/cong-dong' || p === '/cuoc-thi' || p.startsWith('/cuoc-thi/')) {
+          /* stay on community page */
+        }
+      } catch {
+        /* ignore */
+      }
+    }
   };
+
+  const openStudentPortal = useCallback((tab = 'dashboard') => {
+    setPostLoginTab(tab);
+    setStudentPortalOpen(true);
+  }, []);
+
+  const closeStudentPortal = useCallback(() => {
+    setStudentPortalOpen(false);
+    setPostLoginTab(null);
+  }, []);
 
   const handleFinishQuiz = async (score, timeStr, essayImages, answers) => {
 setCurrentScore(score); setStudentAnswers(answers); setStudentEssayImages(essayImages); setAppState('result');
@@ -1109,6 +1373,18 @@ setCurrentScore(score); setStudentAnswers(answers); setStudentEssayImages(essayI
   };
 
   const isImmersiveLessonView = appState === 'lesson_viewer' && selectedLesson;
+  const showLessonDeepLinkSplash =
+    lessonDeepLinkLoading &&
+    appState === 'dashboard' &&
+    Boolean(pendingLessonId || pendingLessonSlug);
+  const isPublicLandingView =
+    !showLessonDeepLinkSplash &&
+    appState === 'dashboard' &&
+    !catalogRoute &&
+    !communityRoute &&
+    !studentPortalOpen;
+  const isCommunityView =
+    !showLessonDeepLinkSplash && appState === 'dashboard' && !!communityRoute && !studentPortalOpen;
   const publicLessonsFiltered = useMemo(
     () => lessonsList.filter((l) => l.grade_level === publicGrade || !l.grade_level),
     [lessonsList, publicGrade]
@@ -1119,15 +1395,12 @@ setCurrentScore(score); setStudentAnswers(answers); setStudentEssayImages(essayI
   );
 
   const isStudentExperience = appState !== 'admin';
-  const isStudentDashboard = Boolean(studentName && appState === 'dashboard');
-  const showGlobalHeader = !isImmersiveLessonView && !isStudentDashboard;
-  const showLessonDeepLinkSplash =
-    lessonDeepLinkLoading &&
-    appState === 'dashboard' &&
-    Boolean(pendingLessonId || pendingLessonSlug);
+  const isStudentDashboard = Boolean(studentName && appState === 'dashboard' && studentPortalOpen);
+  const showGlobalHeader =
+    !isImmersiveLessonView && !isStudentDashboard && !isPublicLandingView && !isCommunityView;
 
   return (
-    <div className={`min-h-screen bg-slate-100 flex flex-col font-sans selection:bg-blue-200 ${isStudentExperience ? 'student-ui' : ''}`}>
+    <div className={`min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-slate-100 flex flex-col font-sans selection:bg-blue-200 ${isStudentExperience ? 'student-ui' : ''}`}>
       <SeoHead
         appState={appState}
         publicGrade={publicGrade}
@@ -1137,7 +1410,7 @@ setCurrentScore(score); setStudentAnswers(answers); setStudentEssayImages(essayI
         activeQuiz={activeQuiz}
       />
 {showGlobalHeader && (
-<header className="bg-blue-700 text-white shadow-md py-4 px-6 flex justify-between items-center z-10">
+<header className="bg-blue-700 text-white shadow-md py-4 px-4 sm:px-6 flex justify-between items-center z-10 min-w-0">
 <div className="flex items-center gap-3 min-w-0">
   <button
     type="button"
@@ -1156,28 +1429,28 @@ setCurrentScore(score); setStudentAnswers(answers); setStudentEssayImages(essayI
     }}
     title="Quay lại thao tác trước"
     aria-label="Quay lại"
-    className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-blue-800/80 hover:bg-blue-900 text-white border border-white/10"
+    className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-blue-800/80 hover:bg-blue-900 text-white border border-white/10 shrink-0"
   >
     <ArrowLeft size={18} />
   </button>
-  <h1 className="font-display text-xl md:text-2xl font-bold flex items-center gap-2 truncate">
-    <BookText size={24} /> Lớp Học Toán Thầy Phát
+  <h1 className="font-display text-lg sm:text-xl md:text-2xl font-bold flex items-center gap-2 truncate">
+    <BookText size={24} className="shrink-0" /> Lớp Học Toán Thầy Phát
   </h1>
 </div>
         {appState === 'admin' && (
-<button onClick={() => { writeAdminSessionFlag(false); setAppState('login'); }} className="flex items-center gap-2 bg-blue-800 hover:bg-blue-900 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-            <LogOut size={16} /> Đăng xuất Admin
+<button onClick={logoutAdmin} className="flex items-center gap-2 bg-blue-800 hover:bg-blue-900 px-4 py-2 rounded-lg text-sm font-medium transition-colors shrink-0">
+            <LogOut size={16} /> Đăng xuất {adminStaff?.role === STAFF_ROLE.TEACHER ? 'GV' : 'Admin'}
 </button>
         )}
       </header>
 )}
 <main
-        className={`flex-1 flex min-h-0 ${
-          isImmersiveLessonView
-            ? 'flex-col p-0 overflow-hidden'
+        className={`flex-1 flex min-h-0 min-w-0 ${
+          isImmersiveLessonView || isPublicLandingView || isCommunityView || isStudentDashboard
+            ? 'w-full flex-col p-0 overflow-x-hidden overflow-y-hidden'
             : appState === 'admin'
               ? 'w-full flex-col items-stretch justify-start p-2 md:p-3 lg:px-4 min-h-0'
-              : 'items-start justify-center p-2 md:p-4'
+              : 'w-full items-start justify-center p-2 md:p-4 overflow-x-hidden'
         }`}
       >
         <Suspense
@@ -1194,9 +1467,26 @@ setCurrentScore(score); setStudentAnswers(answers); setStudentEssayImages(essayI
             allowedStudents={allowedStudents}
             adminPassword={ADMIN_PASSWORD}
             openTeacherGate={adminLoginRouteActive}
-            onAdminAccess={() => {
-              setTeacherDefaultGrade(publicGrade);
-              writeAdminSessionFlag(true);
+            onRequestRegister={openRegister}
+            onAdminAccess={(staff) => {
+              const next = staff || {
+                id: null,
+                username: 'admin',
+                name: 'Admin tổng',
+                role: STAFF_ROLE.SUPER_ADMIN,
+                grade_levels: [],
+                class_ids: [],
+              };
+              writeAdminSessionLogin(next);
+              setAdminStaff(staffFromSession(readAdminSession()) || {
+                id: next.id || null,
+                username: next.username || '',
+                name: next.name || 'Admin',
+                role: next.role === STAFF_ROLE.TEACHER ? STAFF_ROLE.TEACHER : STAFF_ROLE.SUPER_ADMIN,
+                grade_levels: Array.isArray(next.grade_levels) ? next.grade_levels.map(String) : [],
+                class_ids: Array.isArray(next.class_ids) ? next.class_ids.map(String) : [],
+              });
+              setTeacherDefaultGrade(defaultGradeForStaff(next, publicGrade || '8'));
               setAppState('admin');
               try {
                 if (isAdminLoginUrlPath(window.location.pathname)) setUrlPathSafe('/', 'replace');
@@ -1206,37 +1496,193 @@ setCurrentScore(score); setStudentAnswers(answers); setStudentEssayImages(essayI
             }}
           />
         )}
+        {appState === 'register' && (
+          <StudentRegisterScreen
+            publicGrade={publicGrade}
+            allowedStudents={allowedStudents}
+            onSuccess={(name, className, gradeLevel) => {
+              setAllowedStudents((prev) => {
+                const exists = prev.some((s) => normStudentName(s?.name) === normStudentName(name));
+                if (exists) return prev;
+                return [
+                  ...prev,
+                  {
+                    id: `local_${Date.now()}`,
+                    name,
+                    class_label: className,
+                    grade_level: gradeLevel,
+                    self_registered: true,
+                  },
+                ];
+              });
+              handleLogin(name, className, gradeLevel);
+              try {
+                if (isRegisterUrlPath(window.location.pathname)) setUrlPathSafe('/', 'replace');
+              } catch {
+                /* ignore */
+              }
+            }}
+            onGoLogin={() => {
+              setUrlPathSafe('/', 'replace');
+              setAppState('login');
+            }}
+            onGoHome={() => {
+              setUrlPathSafe('/', 'replace');
+              setAppState('dashboard');
+            }}
+          />
+        )}
 {showLessonDeepLinkSplash ? (
         <LessonDeepLinkSplash />
         ) : null}
 {!showLessonDeepLinkSplash && appState ==='dashboard' && catalogRoute && !studentName && (
         <CatalogScreen route={catalogRoute} />
         )}
-{!showLessonDeepLinkSplash && appState ==='dashboard' && !catalogRoute && !studentName && (
+{!showLessonDeepLinkSplash && appState === 'dashboard' && communityRoute?.kind === 'qa' && !studentPortalOpen && (
+        <div className="w-full h-full min-h-0 overflow-y-auto overflow-x-hidden">
+          <CommunityQaScreen
+            studentName={studentName}
+            studentClass={studentClass}
+            onRequestLogin={() => {
+              setPostLoginTab(null);
+              setUrlPathSafe('/hoi-dap', 'replace');
+              setAppState('login');
+            }}
+            onGoHome={() => {
+              setUrlPathSafe('/', 'push');
+              setAppState('dashboard');
+            }}
+          />
+        </div>
+        )}
+{!showLessonDeepLinkSplash && appState === 'dashboard' && communityRoute?.kind === 'contest' && !studentPortalOpen && (
+        <div className="w-full h-full min-h-0 overflow-y-auto overflow-x-hidden">
+          <WeeklyContestScreen
+            slug={communityRoute.slug || ''}
+            studentName={studentName}
+            studentClass={studentClass}
+            studentGrade={rosterGrade || publicGrade || ''}
+            onRequestLogin={() => {
+              setPostLoginTab(null);
+              setUrlPathSafe('/cuoc-thi', 'replace');
+              setAppState('login');
+            }}
+            onGoHome={() => {
+              setUrlPathSafe('/', 'push');
+              setAppState('dashboard');
+            }}
+            onOpenList={() => setUrlPathSafe('/cuoc-thi', 'push')}
+            onOpenDetail={(s) => setUrlPathSafe(`/cuoc-thi/${s}`, 'push')}
+            onOpenBlogPost={(s) => setUrlPathSafe(`/blog/${s}`, 'push')}
+          />
+        </div>
+        )}
+{!showLessonDeepLinkSplash && appState === 'dashboard' && (communityRoute?.kind === 'blog' || communityRoute?.kind === 'blog_list') && !studentPortalOpen && (
+        <div className="w-full h-full min-h-0 overflow-y-auto overflow-x-hidden">
+          <BlogPostScreen
+            slug={communityRoute.kind === 'blog' ? communityRoute.slug || '' : ''}
+            onGoHome={() => {
+              setUrlPathSafe('/', 'push');
+              setAppState('dashboard');
+            }}
+            onOpenPost={(s) => setUrlPathSafe(`/blog/${s}`, 'push')}
+          />
+        </div>
+        )}
+{!showLessonDeepLinkSplash && appState === 'dashboard' && communityRoute?.kind === 'docs' && !studentPortalOpen && (
+        <div className="w-full h-full min-h-0 overflow-y-auto overflow-x-hidden">
+          <DocumentsBrowseScreen
+            folderId={communityRoute.folderId || ''}
+            onGoHome={() => {
+              setUrlPathSafe('/', 'push');
+              setAppState('dashboard');
+            }}
+            onOpenDocument={(id) => setUrlPathSafe(`/tai-lieu/${id}`, 'push')}
+            onOpenFolder={(fid) => setUrlPathSafe(`/tai-lieu/thu-muc/${fid}`, 'push')}
+            onOpenAll={() => setUrlPathSafe('/tai-lieu', 'push')}
+          />
+        </div>
+        )}
+{!showLessonDeepLinkSplash && appState === 'dashboard' && communityRoute?.kind === 'doc_view' && !studentPortalOpen && (
+        <div className="w-full h-full min-h-0 overflow-y-auto overflow-x-hidden">
+          <DocumentViewerScreen
+            docId={communityRoute.docId || ''}
+            onGoHome={() => {
+              setUrlPathSafe('/', 'push');
+              setAppState('dashboard');
+            }}
+            onOpenDocuments={() => setUrlPathSafe('/tai-lieu', 'push')}
+            onOpenExplore={(fid) => setUrlPathSafe(`/tai-lieu/thu-muc/${fid || 'hsg'}`, 'push')}
+          />
+        </div>
+        )}
+{!showLessonDeepLinkSplash && appState ==='dashboard' && !catalogRoute && !communityRoute && !studentPortalOpen && (
         <PublicLandingScreen
           key={publicGrade}
           publicGrade={publicGrade}
+          studentName={studentName}
+          studentClass={studentClass}
+          rosterGrade={rosterGrade}
+          studentProfile={studentProfile}
           onPublicGradeChange={setPublicGrade}
           quizzesList={quizzesList.filter(q => q.grade_level === publicGrade || !q.grade_level)}
           lessonsList={lessonsList.filter(l => l.grade_level === publicGrade || !l.grade_level)}
           onRequestLogin={() => setAppState('login')}
-          onEnterExam={() => { setPostLoginTab('exams'); setAppState('login'); }}
+          onRequestRegister={openRegister}
+          onOpenCommunityQa={() => setUrlPathSafe('/hoi-dap', 'push')}
+          onOpenWeeklyContest={() => setUrlPathSafe('/cuoc-thi', 'push')}
+          onOpenBlogPost={(slug) => setUrlPathSafe(`/blog/${slug}`, 'push')}
+          onOpenDocuments={() => setUrlPathSafe('/tai-lieu', 'push')}
+          onOpenDocument={(id) => setUrlPathSafe(`/tai-lieu/${id}`, 'push')}
+          scoresList={scoresList}
+          studentsList={allowedStudents}
+          onEnterExam={() => {
+            if (studentName) openStudentPortal('exams');
+            else {
+              setPostLoginTab('exams');
+              setAppState('login');
+            }
+          }}
+          onRequestTopics={() => {
+            if (studentName) openStudentPortal('topics');
+            else {
+              setPostLoginTab('topics');
+              setAppState('login');
+            }
+          }}
+          onEnterStudentPortal={openStudentPortal}
+          onLogout={() => {
+            appNavStackRef.current = [];
+            clearStudentSession();
+            setStudentName('');
+            setStudentClass('');
+            setStudentPortalOpen(false);
+            setPostLoginTab(null);
+            try {
+              delete window.currentStudentGrade;
+            } catch {
+              /* ignore */
+            }
+          }}
           onSelectQuiz={(id) => {
             setPendingOpen({ quizId: id });
-setAppState('login');
+            if (studentName) openStudentPortal('exams');
+            else setAppState('login');
           }}
           onSelectLesson={(lessonId) => {
             openLessonById(lessonId);
           }}
         />
         )}
-{!showLessonDeepLinkSplash && appState ==='dashboard' && studentName && (
+{!showLessonDeepLinkSplash && appState ==='dashboard' && studentPortalOpen && studentName && (
         <StudentDashboardScreen
           ref={dashboardNavRef}
-          key={studentName}
+          key={`${studentName}-${postLoginTab || 'dashboard'}`}
           studentName={studentName}
           studentClass={studentClass}
           rosterGrade={rosterGrade}
+          studentProfile={studentProfile}
+          onSaveStudentProfile={handleSaveStudentProfile}
           scoresList={scoresList}
           quizzesList={studentQuizzesFiltered}
           lessonsList={studentLessonsFiltered}
@@ -1244,6 +1690,7 @@ setAppState('login');
           reviewCoursesList={reviewCoursesList}
           reviewProgressList={reviewProgressList}
           initialTab={postLoginTab || 'dashboard'}
+          onGoHome={closeStudentPortal}
           onSelectQuiz={(id) => {
             setPendingOpen({ quizId: id });
           }}
@@ -1257,6 +1704,8 @@ setAppState('login');
             clearStudentSession();
             setStudentName('');
             setStudentClass('');
+            setStudentPortalOpen(false);
+            setPostLoginTab(null);
             try {
               delete window.currentStudentGrade;
             } catch {
@@ -1273,6 +1722,7 @@ setAppState('login');
             scoresList={studentName ? scoresList : []}
             studentName={studentName || ''}
             studentClass={studentClass || ''}
+            studentProfile={studentProfile}
             rosterGrade={studentName ? rosterGrade : publicGrade}
             externalHomeUrl={publicGradeHomeUrl(studentName ? rosterGrade : publicGrade)}
             onBack={handleStudentGoBack}
@@ -1286,6 +1736,7 @@ setAppState('login');
                   }
             }
             onStartQuiz={openQuizById}
+            onSelectQuiz={openQuizById}
             onRequestLoginForPapers={() => {
               resumeLessonPapersTabRef.current = true;
               setAppState('login');
@@ -1323,17 +1774,20 @@ setAppState('login');
 {appState ==='admin' && (
           <AdminScreen
             allowedStudents={allowedStudents}
+            classesList={classesList}
             scoresList={scoresList}
             quizzesList={quizzesList}
             lessonsList={lessonsList}
             questionBank={questionBank}
             mindMapCategories={mindMapCategories}
             reviewCoursesList={reviewCoursesList}
+            trialRegistrations={trialRegistrations}
             adminPassword={ADMIN_PASSWORD}
             db={db}
             storage={storage}
             user={user}
             defaultGrade={teacherDefaultGrade || publicGrade}
+            staffSession={adminStaff}
           />
         )}
         </Suspense>
@@ -1342,30 +1796,133 @@ setAppState('login');
   );
 }
 
-function LoginScreen({ onLogin, allowedStudents, adminPassword, onAdminAccess, openTeacherGate }) {
-  const [name, setName] = useState(''); const [className, setClassName] = useState(''); const [error, setError] = useState('');
+function LoginScreen({ onLogin, allowedStudents, adminPassword, onAdminAccess, openTeacherGate, onRequestRegister }) {
+  const [loginId, setLoginId] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
   const [showAdminModal, setShowAdminModal] = useState(!!openTeacherGate);
+  const [adminUser, setAdminUser] = useState('');
   const [adminPwd, setAdminPwd] = useState('');
+  const [showAdminPwd, setShowAdminPwd] = useState(false);
   const [adminError, setAdminError] = useState('');
+  const [adminBusy, setAdminBusy] = useState(false);
 
   useEffect(() => {
     if (openTeacherGate) setShowAdminModal(true);
   }, [openTeacherGate]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!name.trim() || !className.trim()) return setError("Vui lòng nhập đầy đủ Họ tên và Lớp!");
-if (allowedStudents.length === 0) return setError("Danh sách lớp trống. Vui lòng báo Giáo viên!");
-    const normalizedInputName = name.trim().toLowerCase();
-    const isAllowed = allowedStudents.some(s => (s?.name || '').trim().toLowerCase() === normalizedInputName);
-    if (!isAllowed) return setError("Tên học sinh không có trong danh sách được phép thi!");
-setError('');
-const exactName = allowedStudents.find(s => (s?.name ||'').trim().toLowerCase() === normalizedInputName).name;
-onLogin(exactName, className.trim(), allowedStudents.find(s => (s?.name ||'').trim().toLowerCase() === normalizedInputName).grade_level || '8');
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const result = await consumeAuthRedirectResult();
+        if (cancelled || !result?.user) return;
+        const session = await upsertSelfRegisteredStudent({
+          firebaseUser: result.user,
+          profile: {
+            fullName: result.user.displayName || '',
+            email: result.user.email || '',
+            gradeLevel: '8',
+          },
+          allowedStudents,
+        });
+        onLogin(session.name, session.className, session.gradeLevel);
+      } catch (err) {
+        if (!cancelled) setError(err?.message || String(err));
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const finishGoogleLogin = async () => {
+    setError('');
+    setBusy(true);
+    try {
+      const cred = await signInWithGoogleProvider();
+      if (!cred?.user) return;
+      const session = await upsertSelfRegisteredStudent({
+        firebaseUser: cred.user,
+        profile: {
+          fullName: cred.user.displayName || '',
+          email: cred.user.email || '',
+          gradeLevel: '8',
+        },
+        allowedStudents,
+      });
+      onLogin(session.name, session.className, session.gradeLevel);
+    } catch (err) {
+      setError(err?.message || String(err));
+    } finally {
+      setBusy(false);
+    }
   };
 
-  const handleAdminSubmit = () => {
-    if (adminPwd === adminPassword) { onAdminAccess(); setShowAdminModal(false); } else { setAdminError("Mật khẩu không chính xác!"); }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    const id = String(loginId || '').trim();
+    if (!id) return setError('Nhập tên đăng nhập hoặc Gmail để đăng nhập.');
+    if (!password) return setError('Nhập mật khẩu.');
+    setBusy(true);
+    try {
+      const { session } = await loginWithStudentCredentials({
+        loginId: id,
+        password,
+        allowedStudents,
+      });
+      onLogin(session.name, session.className, session.gradeLevel);
+    } catch (err) {
+      setError(err?.message || String(err));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleAdminSubmit = async () => {
+    setAdminError('');
+    const u = String(adminUser || '').trim();
+    const p = String(adminPwd || '');
+    if (!p) {
+      setAdminError('Nhập mật khẩu.');
+      return;
+    }
+    setAdminBusy(true);
+    try {
+      const uNorm = normUsername(u);
+      // Admin tổng: để trống / "admin" + mật khẩu master (tương thích cũ)
+      if (p === adminPassword && (!uNorm || uNorm === 'admin')) {
+        onAdminAccess({
+          id: null,
+          username: 'admin',
+          name: 'Admin tổng',
+          role: STAFF_ROLE.SUPER_ADMIN,
+          grade_levels: [],
+          class_ids: [],
+        });
+        setShowAdminModal(false);
+        setAdminPwd('');
+        setAdminUser('');
+        return;
+      }
+      if (!uNorm) {
+        setAdminError('Nhập tên đăng nhập giáo viên (hoặc để trống + mật khẩu admin tổng).');
+        return;
+      }
+      const staff = await authenticateStaff(u, p);
+      onAdminAccess(staff);
+      setShowAdminModal(false);
+      setAdminPwd('');
+      setAdminUser('');
+    } catch (err) {
+      setAdminError(err?.message || 'Đăng nhập thất bại.');
+    } finally {
+      setAdminBusy(false);
+    }
   };
 
   return (
@@ -1375,17 +1932,46 @@ onLogin(exactName, className.trim(), allowedStudents.find(s => (s?.name ||'').tr
 <p className="text-center text-slate-500 text-base mb-8">Hệ thống cần lưu lại thông tin để chấm điểm bài thi của bạn.</p>
 <form onSubmit={handleSubmit} className="flex flex-col gap-4 mb-6">
         <div>
-<label className="block text-sm font-medium text-slate-700 mb-1">Họ và tên học sinh:</label>
-<input type="text" value={name} onChange={(e) => { setName(e.target.value); setError(''); }} className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="VD: Nguyễn Văn A" autoFocus />
+<label className="block text-sm font-medium text-slate-700 mb-1">Tên đăng nhập hoặc Gmail:</label>
+<input type="text" value={loginId} onChange={(e) => { setLoginId(e.target.value); setError(''); }} className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Phat@xyz hoặc abc@gmail.com" autoFocus autoComplete="username" />
         </div>
         <div>
-<label className="block text-sm font-medium text-slate-700 mb-1">Lớp:</label>
-<input type="text" value={className} onChange={(e) => { setClassName(e.target.value); setError(''); }} className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="VD: 8A1" />
+<label className="block text-sm font-medium text-slate-700 mb-1">Mật khẩu:</label>
+<div className="relative">
+<input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => { setPassword(e.target.value); setError(''); }} className="w-full px-4 py-3 pr-12 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Nhập mật khẩu" autoComplete="current-password" />
+<button type="button" onClick={() => setShowPassword((v) => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-700" aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}>
+{showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+</button>
+</div>
         </div>
 {error && <p className="text-sm text-red-500 flex items-center gap-1"><XCircle size={14} /> {error}</p>}
 <button type="button" onClick={() => window.location.reload()} className="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3 rounded-xl transition-colors mt-2 mb-2">Hủy / Quay lại</button>
-<button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-colors mt-2">Đăng nhập</button>
+<button type="submit" disabled={busy} className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-bold py-3 rounded-xl transition-colors mt-2">{busy ? 'Đang đăng nhập…' : 'Đăng nhập'}</button>
       </form>
+      <div className="flex items-center gap-3 text-slate-400 text-sm mb-4">
+        <div className="flex-1 h-px bg-slate-200" />
+        <span>hoặc</span>
+        <div className="flex-1 h-px bg-slate-200" />
+      </div>
+      <button
+        type="button"
+        disabled={busy}
+        onClick={finishGoogleLogin}
+        className="w-full mb-4 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 font-semibold text-slate-700 disabled:opacity-60"
+      >
+        <span className="inline-flex w-5 h-5 items-center justify-center text-[#EA4335] font-black text-sm">G</span>
+        Tiếp tục bằng Google
+      </button>
+      <p className="text-center text-sm text-slate-600 mb-4">
+        Chưa có tài khoản?{' '}
+        <button
+          type="button"
+          onClick={() => onRequestRegister?.()}
+          className="font-bold text-blue-600 hover:underline"
+        >
+          Đăng ký ngay
+        </button>
+      </p>
 <div className="text-center border-t border-slate-100 pt-4">
 <button onClick={() => setShowAdminModal(true)} className="text-sm text-slate-400 hover:text-blue-600 flex items-center justify-center gap-1 mx-auto transition-colors"><Settings size={14} /> Khu vực Giáo viên</button>
 </div>
@@ -1393,12 +1979,28 @@ onLogin(exactName, className.trim(), allowedStudents.find(s => (s?.name ||'').tr
       {showAdminModal && (
 <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50">
 <div className="bg-white p-6 rounded-2xl shadow-xl w-full max-w-sm animate-in zoom-in">
-<h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2"><ShieldCheck size={20} className="text-blue-600" /> Xác nhận Giáo viên</h3>
-<input type="password" value={adminPwd} onChange={(e) => { setAdminPwd(e.target.value); setAdminError(''); }} placeholder="Nhập mật khẩu..." className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 mb-2" onKeyDown={(e) => e.key === 'Enter' && handleAdminSubmit()} autoFocus />
+<h3 className="text-lg font-bold text-slate-800 mb-1 flex items-center gap-2"><ShieldCheck size={20} className="text-blue-600" /> Đăng nhập Giáo viên / Admin</h3>
+<p className="text-xs text-slate-500 mb-4">Admin tổng: để trống tên đăng nhập + mật khẩu master. Giáo viên: tài khoản được cấp.</p>
+<label className="block text-xs font-bold text-slate-600 mb-1">Tên đăng nhập</label>
+<input
+  type="text"
+  value={adminUser}
+  onChange={(e) => { setAdminUser(e.target.value); setAdminError(''); }}
+  placeholder="Để trống = admin tổng"
+  className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 mb-3"
+  autoComplete="username"
+/>
+<label className="block text-xs font-bold text-slate-600 mb-1">Mật khẩu</label>
+<div className="relative mb-2">
+<input type={showAdminPwd ? 'text' : 'password'} value={adminPwd} onChange={(e) => { setAdminPwd(e.target.value); setAdminError(''); }} placeholder="Nhập mật khẩu..." className="w-full px-4 py-2 pr-11 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500" onKeyDown={(e) => e.key === 'Enter' && !adminBusy && handleAdminSubmit()} autoFocus autoComplete="current-password" />
+<button type="button" onClick={() => setShowAdminPwd((v) => !v)} className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-700" aria-label={showAdminPwd ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}>
+{showAdminPwd ? <EyeOff size={18} /> : <Eye size={18} />}
+</button>
+</div>
 {adminError && <p className="text-xs text-red-500 mb-4">{adminError}</p>}
 <div className="flex gap-2 mt-4">
-<button onClick={() => setShowAdminModal(false)} className="flex-1 py-2 bg-slate-100 rounded-lg font-semibold">Hủy</button>
-<button onClick={handleAdminSubmit} className="flex-1 py-2 bg-blue-600 text-white rounded-lg font-bold">Vào</button>
+<button onClick={() => setShowAdminModal(false)} className="flex-1 py-2 bg-slate-100 rounded-lg font-semibold" disabled={adminBusy}>Hủy</button>
+<button onClick={handleAdminSubmit} disabled={adminBusy} className="flex-1 py-2 bg-blue-600 text-white rounded-lg font-bold disabled:opacity-60">{adminBusy ? '…' : 'Vào'}</button>
             </div>
 </div>
         </div>
@@ -1683,6 +2285,13 @@ timeStr = `${Math.floor(timeTakenSecs / 60).toString().padStart(2,'0')}:${(timeT
                   className="flex-1 min-w-0 px-4 py-2.5 rounded-lg border border-slate-300 bg-white text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
                 />
               </div>
+            ) : q.type === 'fill_blanks' ? (
+              <PracticeFillBlanks
+                q={q}
+                value={answers[q.id]}
+                disabled={false}
+                onChange={(val) => setAnswers({ ...answers, [q.id]: val })}
+              />
             ) : (
 <div className="mt-4">
 <label className="cursor-pointer bg-white border-2 border-dashed border-blue-300 hover:border-blue-500 text-blue-600 px-6 py-4 rounded-lg flex flex-col items-center gap-2 w-full sm:w-1/2">
@@ -1757,6 +2366,18 @@ function QuizReviewQuestionsList({ quiz, answers, essayImages }) {
           const has = String(sChoice || '').trim();
           const ok = shortAnswerIsCorrect(sChoice, q.shortCorrect);
           badge = !has ? (
+            <span className="bg-slate-200 px-2 py-1 rounded text-xs font-bold">Chưa làm</span>
+          ) : ok ? (
+            <span className="bg-green-200 text-green-800 px-2 py-1 rounded text-xs font-bold">Đúng</span>
+          ) : (
+            <span className="bg-red-200 text-red-800 px-2 py-1 rounded text-xs font-bold">Sai</span>
+          );
+        } else if (t === 'fill_blanks') {
+          const { blanks } = normalizeFillBlanksQuestion(q);
+          const obj = sChoice && typeof sChoice === 'object' ? sChoice : {};
+          const done = blanks.length > 0 && blanks.every((b) => String(obj[b.id] || '').trim().length > 0);
+          const ok = fillBlanksAnswerOk(blanks, obj);
+          badge = !done ? (
             <span className="bg-slate-200 px-2 py-1 rounded text-xs font-bold">Chưa làm</span>
           ) : ok ? (
             <span className="bg-green-200 text-green-800 px-2 py-1 rounded text-xs font-bold">Đúng</span>
@@ -1848,6 +2469,10 @@ function QuizReviewQuestionsList({ quiz, answers, essayImages }) {
                   <span className="font-bold text-slate-700">Đáp án chấp nhận: </span>
                   <span className="text-emerald-800 font-mono text-xs">{(q.shortCorrect || '').toString()}</span>
                 </p>
+              </div>
+            ) : t === 'fill_blanks' ? (
+              <div className="mb-4">
+                <PracticeFillBlanksResult q={q} />
               </div>
             ) : (
               <div className="mb-4">
@@ -2042,32 +2667,65 @@ function AdminExampleItemsJsonEditor({ items, onCommit, disabled }) {
 
 function AdminScreen({
   allowedStudents,
+  classesList,
   scoresList,
   quizzesList,
   lessonsList,
   questionBank,
   mindMapCategories,
   reviewCoursesList,
+  trialRegistrations = [],
   adminPassword,
   db,
   storage,
   user,
   defaultGrade,
+  staffSession = null,
 }) {
+  const staff = staffSession || { role: STAFF_ROLE.SUPER_ADMIN, grade_levels: [], class_ids: [] };
+  const staffIsSuper = isSuperAdmin(staff);
+  const staffGrades = allowedGradesForStaff(staff); // null = all
   const [activeTab, setActiveTab] = useState('lessons');
-  const [activeGrade, setActiveGrade] = useState(defaultGrade || "ALL"); //'lessons' | 'quizzes' | 'scores' | 'students' | 'bank'
+  const [activeGrade, setActiveGrade] = useState(() => defaultGradeForStaff(staff, defaultGrade || '8'));
   const [editingBankQuestion, setEditingBankQuestion] = useState(null);
   const [bankSearch, setBankSearch] = useState('');
+  const [bankFilterChapter, setBankFilterChapter] = useState('');
+  const [bankFilterTopic, setBankFilterTopic] = useState('');
+  const [bankFilterQType, setBankFilterQType] = useState('');
+  const [bankFilterCogLevel, setBankFilterCogLevel] = useState('');
   const [showMatrixModal, setShowMatrixModal] = useState(false);
   const [matrixDraft, setMatrixDraft] = useState(null);
   // Bank import removed per request
 
   useEffect(() => {
-    if (defaultGrade) setActiveGrade(defaultGrade);
-  }, [defaultGrade]);
+    const next = defaultGradeForStaff(staff, defaultGrade || '8');
+    if (next) setActiveGrade(next);
+  }, [defaultGrade, staff?.role, staff?.grade_levels?.join(',')]);
+
+  useEffect(() => {
+    if (!canAccessAdminTab(staff, activeTab)) {
+      setActiveTab('lessons');
+    }
+  }, [staff?.role, activeTab]);
+
+  useEffect(() => {
+    if (staffIsSuper) return;
+    if (activeGrade === 'ALL' || !canAccessGrade(staff, activeGrade)) {
+      setActiveGrade(defaultGradeForStaff(staff, '8'));
+    }
+  }, [staffIsSuper, staff?.grade_levels?.join(','), activeGrade]);
+
+  const goTab = (tabId) => {
+    if (!canAccessAdminTab(staff, tabId)) return;
+    setActiveTab(tabId);
+    if (tabId === 'lessons') setEditingLesson(null);
+    if (tabId === 'quizzes') setEditingQuiz(null);
+    if (tabId === 'bank') setEditingBankQuestion(null);
+  };
 
   const [editingLesson, setEditingLesson] = useState(null);
-  const [lessonAdminPane, setLessonAdminPane] = useState('theory');
+  const [lessonAdminPane, setLessonAdminPane] = useState('sections');
+  const [editingSectionIndex, setEditingSectionIndex] = useState(0);
   const [lessonMaterialsDraft, setLessonMaterialsDraft] = useState(DEFAULT_LESSON_MATERIALS_JSON);
   const newLessonDraftIdRef = useRef(null);
   const lessonTheoryTextareaRef = useRef(null);
@@ -2080,7 +2738,10 @@ function AdminScreen({
   const examplesLastAtRef = useRef(0);
 
   useEffect(() => {
-    if (editingLesson) setLessonAdminPane('theory');
+    if (editingLesson) {
+      setLessonAdminPane('sections');
+      setEditingSectionIndex(0);
+    }
   }, [editingLesson?.id, editingLesson?.isNew]);
 
   useEffect(() => {
@@ -2119,7 +2780,9 @@ function AdminScreen({
   );
 
   const [editingQuiz, setEditingQuiz] = useState(null);
-const [filterQuizId, setFilterQuizId] = useState('ALL');
+  const [customMathTopics, setCustomMathTopics] = useState([]);
+  const [customTopicModal, setCustomTopicModal] = useState(null);
+  const [savingCustomTopic, setSavingCustomTopic] = useState(false);
   const [viewingImage, setViewingImage] = useState(null);
   const [isSavingQuiz, setIsSavingQuiz] = useState(false);
 
@@ -2127,23 +2790,116 @@ const [filterQuizId, setFilterQuizId] = useState('ALL');
     ? lessonsList
     : lessonsList.filter(l => (l.grade_level || '8') === activeGrade);
 
+  const quizEditorGrade = (editingQuiz?.grade_level || activeGrade || '8').toString().trim();
+  const quizCatalogLessons = useMemo(
+    () =>
+      lessonsList.filter(
+        (l) => String(l.grade_level || '8') === quizEditorGrade && !l.is_topic
+      ),
+    [lessonsList, quizEditorGrade]
+  );
+  const quizChapterOptions = useMemo(
+    () => buildMergedChapterOptions(quizCatalogLessons, quizEditorGrade),
+    [quizCatalogLessons, quizEditorGrade]
+  );
+  const quizLessonNoOptions = useMemo(
+    () =>
+      buildMergedLessonNoOptions(
+        quizCatalogLessons,
+        editingQuiz?.chapter,
+        null,
+        quizEditorGrade
+      ),
+    [quizCatalogLessons, editingQuiz?.chapter, quizEditorGrade]
+  );
+
+  const quizSectionOptions = useMemo(() => {
+    const ch = String(editingQuiz?.chapter || '').trim();
+    const ln = String(editingQuiz?.lesson_no || '').trim();
+    if (!ch || !ln) return [];
+    const group = quizCatalogLessons.filter(
+      (l) => String(l.chapter || '').trim() === ch && String(l.lesson_no || '').trim() === ln
+    );
+    const seen = new Set();
+    const opts = [];
+    for (const l of group) {
+      let contentObj = {};
+      const raw = l?.content;
+      if (raw && typeof raw === 'object' && !Array.isArray(raw)) contentObj = raw;
+      else if (typeof raw === 'string' && raw.trim()) {
+        try {
+          const p = JSON.parse(raw);
+          if (p && typeof p === 'object') contentObj = p;
+        } catch {
+          contentObj = {};
+        }
+      }
+      const secs = sortLessonSections(normalizeLessonSections(contentObj?.sections));
+      secs.forEach((sec) => {
+        const no = String(sec.section_no || '').trim();
+        if (!no || seen.has(no)) return;
+        seen.add(no);
+        opts.push({ no, label: getSectionDisplayLabel(sec) });
+      });
+    }
+    opts.sort((a, b) => {
+      const na = Number(String(a.no).replace(/[^\d.-]/g, ''));
+      const nb = Number(String(b.no).replace(/[^\d.-]/g, ''));
+      if (Number.isFinite(na) && Number.isFinite(nb) && na !== nb) return na - nb;
+      return String(a.no).localeCompare(String(b.no), 'vi');
+    });
+    return opts;
+  }, [quizCatalogLessons, editingQuiz?.chapter, editingQuiz?.lesson_no]);
+
   const filteredQuizzes = (activeGrade === 'ALL')
     ? quizzesList
     : quizzesList.filter(q => (q.grade_level || '8') === activeGrade);
 
-  const filteredBankQuestions = useMemo(() => {
-    const base =
-      activeGrade === 'ALL'
-        ? (questionBank || [])
-        : (questionBank || []).filter((q) => (q.grade_level || '8') === activeGrade);
-    const q = (bankSearch || '').trim().toLowerCase();
-    if (!q) return base;
-    return base.filter((x) => {
-      const hay =
-        `${x.question || ''} ${x.explanation || ''} ${x.chapter || ''} ${x.lesson_no || ''} ${(x.topic_tags || []).join(' ')} ${(x.category || '')}`.toLowerCase();
-      return hay.includes(q);
-    });
-  }, [questionBank, activeGrade, bankSearch]);
+  useEffect(() => {
+    setBankFilterChapter('');
+    setBankFilterTopic('');
+    setBankFilterQType('');
+    setBankFilterCogLevel('');
+  }, [activeGrade]);
+
+  const gradeFilteredBankQuestions = useMemo(() => {
+    if (activeGrade === 'ALL') return questionBank || [];
+    return (questionBank || []).filter((q) => (q.grade_level || '8') === activeGrade);
+  }, [questionBank, activeGrade]);
+
+  const bankChapterFilterOptions = useMemo(
+    () => buildBankChapterFilterOptions(activeGrade, gradeFilteredBankQuestions),
+    [activeGrade, gradeFilteredBankQuestions]
+  );
+
+  const bankTopicFilterOptions = useMemo(
+    () =>
+      buildBankTopicFilterOptions(gradeFilteredBankQuestions, {
+        chapterFilter: bankFilterChapter,
+      }),
+    [gradeFilteredBankQuestions, bankFilterChapter]
+  );
+
+  const filteredBankQuestions = useMemo(
+    () =>
+      filterBankQuestions(questionBank || [], {
+        activeGrade,
+        chapter: bankFilterChapter,
+        topic: bankFilterTopic,
+        qType: bankFilterQType,
+        cogLevel: bankFilterCogLevel,
+        search: bankSearch,
+      }),
+    [
+      questionBank,
+      activeGrade,
+      bankFilterChapter,
+      bankFilterTopic,
+      bankFilterQType,
+      bankFilterCogLevel,
+      bankSearch,
+    ]
+  );
 
   /** Chương trình GDPT 2018 theo từng khối (6–12), fallback math11 nếu thiếu dữ liệu */
   const knowledgeByGrade = useMemo(() => {
@@ -2193,17 +2949,35 @@ const [filterQuizId, setFilterQuizId] = useState('ALL');
     [resolveKnowledgeForGrade]
   );
 
+  useEffect(() => {
+    if (!user) return;
+    const unsub = onSnapshot(
+      collection(db, COLLECTION_CUSTOM_MATH_TOPICS),
+      (snapshot) => {
+        setCustomMathTopics(snapshot.docs.map((d) => ({ id: d.id, ...d.data() })));
+      },
+      (err) => {
+        console.error('Lỗi tải dạng toán tùy chỉnh (Firestore):', err);
+      }
+    );
+    return () => unsub();
+  }, [user, db]);
+
   const getTopicOptionsForChapterAndGrade = useCallback(
     (grade, chapterNo) => {
       const k = resolveKnowledgeForGrade(grade);
       const ch = String(chapterNo || '').trim();
       const all = k.allTopics || [];
-      if (!ch) return all.slice(0, 600);
-      const list = k.topicsByChapter?.get?.(ch);
-      if (Array.isArray(list) && list.length > 0) return list;
-      return all.slice(0, 600);
+      let curriculum = [];
+      if (!ch) curriculum = all.slice(0, 600);
+      else {
+        const list = k.topicsByChapter?.get?.(ch);
+        curriculum = Array.isArray(list) && list.length > 0 ? list : all.slice(0, 600);
+      }
+      const custom = getCustomTopicsForChapter(customMathTopics, grade, ch);
+      return mergeTopicOptionLists(curriculum, custom);
     },
-    [resolveKnowledgeForGrade]
+    [resolveKnowledgeForGrade, customMathTopics]
   );
 
   const topicOptionsByChapter = useCallback(
@@ -2219,12 +2993,69 @@ const [filterQuizId, setFilterQuizId] = useState('ALL');
         return idx < half ? COG_LEVEL.recognize : COG_LEVEL.understand;
       }
       if (t === 'true_false_group') return COG_LEVEL.understand;
-      if (t === 'short_answer') return COG_LEVEL.apply;
+      if (t === 'short_answer' || t === 'fill_blanks') return COG_LEVEL.apply;
       if (t === 'essay') return COG_LEVEL.apply_high;
       return COG_LEVEL.recognize;
     },
     []
   );
+
+  const commitQuizQuestions = useCallback((updater) => {
+    setEditingQuiz((prev) => {
+      if (!prev) return prev;
+      const next = typeof updater === 'function' ? updater(prev.questions || []) : updater;
+      return { ...prev, questions: sortQuizQuestions(next) };
+    });
+  }, []);
+
+  const handleSaveCustomMathTopic = async (label) => {
+    if (!customTopicModal) return;
+    const trimmed = String(label || '').trim();
+    if (!trimmed) return alert('Nhập tên dạng toán.');
+    const { qIdx, chapter, grade, context } = customTopicModal;
+    const ch = String(chapter || '').trim();
+    const gl = String(
+      grade ||
+        (context === 'bank' ? editingBankQuestion?.grade_level : quizCurriculumGrade) ||
+        '8'
+    ).trim();
+    if (!ch) return alert('Chọn chương trước khi thêm dạng toán.');
+    const k = resolveKnowledgeForGrade(gl);
+    const chList = k.topicsByChapter?.get?.(ch);
+    const curriculum =
+      Array.isArray(chList) && chList.length > 0 ? chList : (k.allTopics || []).slice(0, 600);
+    setSavingCustomTopic(true);
+    try {
+      if (!topicExistsInLists(trimmed, curriculum, customMathTopics, gl, ch)) {
+        await addDoc(
+          collection(db, COLLECTION_CUSTOM_MATH_TOPICS),
+          buildCustomTopicPayload({ label: trimmed, gradeLevel: gl, chapterNo: ch })
+        );
+      }
+      if (context === 'bank') {
+        if (!editingBankQuestion) return;
+        setEditingBankQuestion({
+          ...editingBankQuestion,
+          chapter: ch,
+          topic_tags: [trimmed],
+        });
+        setCustomTopicModal(null);
+        return;
+      }
+      if (!editingQuiz) return;
+      const nq = [...(editingQuiz.questions || [])];
+      if (!nq[qIdx]) return;
+      if (!nq[qIdx].chapter) nq[qIdx].chapter = ch;
+      nq[qIdx].topic_tags = [trimmed];
+      commitQuizQuestions(nq);
+      setCustomTopicModal(null);
+    } catch (err) {
+      console.error(err);
+      alert('Không lưu được dạng toán. Thử lại sau vài giây.');
+    } finally {
+      setSavingCustomTopic(false);
+    }
+  };
 
   useEffect(() => {
     if (!editingQuiz?.questions || editingQuiz.questions.length === 0) return;
@@ -2247,7 +3078,7 @@ const [filterQuizId, setFilterQuizId] = useState('ALL');
       if (!out.topic_tags) out.topic_tags = [];
       return out;
     });
-    if (changed) setEditingQuiz({ ...editingQuiz, questions: nextQs });
+    if (changed) commitQuizQuestions(nextQs);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editingQuiz?.id, editingQuiz?.isNew]);
 
@@ -2358,33 +3189,29 @@ const [filterQuizId, setFilterQuizId] = useState('ALL');
     [storage, user, withTimeout]
   );
 
-  const [newStudentName, setNewStudentName] = useState('');
-const [bulkText, setBulkText] = useState('');
-  const [showBulkModal, setShowBulkModal] = useState(false);
 
   const handleSaveLesson = async () => {
-    if (!editingLesson.title) return alert("Cần nhập tiêu đề bài giảng!");
-    const isTopicLesson = !!editingLesson.is_topic;
     const chapter = (editingLesson.chapter ?? '').toString().trim();
     const lessonNo = (editingLesson.lesson_no ?? '').toString().trim();
-    if (isTopicLesson) {
-      const tid = (editingLesson.topic_id || '').toString().trim();
-      const tname = (editingLesson.topic_name || '').toString().trim();
-      if (!tid || !tname) {
-        return alert('Đã tích “Chuyên đề ôn thi” — vui lòng chọn chuyên đề có sẵn hoặc bấm “+ Tạo chuyên đề mới”.');
-      }
-    } else if (!chapter || !lessonNo) {
-      return alert('Cần chọn đầy đủ: Chương và Bài (hoặc tích “Chuyên đề ôn thi”).');
+    if (!chapter || !lessonNo) {
+      return alert('Cần chọn Chương và Bài (dropdown phía trên).');
+    }
+    const { obj: saveContentObj } = parseLessonContentObject(editingLesson.content);
+    const saveSections = normalizeLessonSections(saveContentObj?.sections, { keepEmpty: true });
+    const finalTitle = deriveLessonTitleFromSections(saveSections, editingLesson.title);
+    if (!finalTitle) {
+      return alert('Cần nhập tên mục ở tab Mục bài — tiêu đề bài giảng lấy từ tên mục đầu tiên.');
     }
     const gradeForLesson = (editingLesson.grade_level || activeGrade || '8').toString();
+    const isTopicLesson = !!editingLesson.is_topic;
     const existingSlug = String(editingLesson.slug || '').trim();
     const slug = existingSlug
       ? existingSlug
       : ensureUniqueLessonSlug(
           buildLessonSlug({
             grade_level: gradeForLesson,
-            chapter: isTopicLesson ? (editingLesson.topic_id || 'cd') : chapter,
-            lesson_no: isTopicLesson ? (Date.now().toString().slice(-4)) : lessonNo,
+            chapter: isTopicLesson && !(chapter && lessonNo) ? (editingLesson.topic_id || 'cd') : chapter,
+            lesson_no: isTopicLesson && !(chapter && lessonNo) ? (Date.now().toString().slice(-4)) : lessonNo,
             title: editingLesson.title,
           }),
           editingLesson.id,
@@ -2392,10 +3219,12 @@ const [bulkText, setBulkText] = useState('');
         );
     const dataToSave = {
       ...editingLesson,
+      title: finalTitle,
       grade_level: gradeForLesson,
       chapter,
       lesson_no: lessonNo,
       videoUrl: (editingLesson.videoUrl ?? '').toString().trim(),
+      slidesUrl: (editingLesson.slidesUrl ?? '').toString().trim(),
       videoMaterialUrl: (editingLesson.videoMaterialUrl ?? '').toString().trim(),
       pdfUrl: (editingLesson.pdfUrl ?? '').toString().trim(),
       is_topic: isTopicLesson,
@@ -2494,13 +3323,108 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
     };
     const cObj = lessonContentParse.obj;
     const jsonBroken = Boolean(lessonContentParse.error);
+    const sectionsList = jsonBroken ? [] : normalizeLessonSections(cObj?.sections, { keepEmpty: true });
+    const hasSections = sectionsList.length > 0;
+    const activeSectionIdx = hasSections
+      ? Math.min(Math.max(0, editingSectionIndex), sectionsList.length - 1)
+      : 0;
+    const patchSections = (nextSections) => patchLessonContent({ sections: nextSections });
+    const patchSectionAt = (idx, patch) => {
+      const next = sectionsList.map((s, i) => (i === idx ? { ...s, ...patch } : s));
+      patchSections(next);
+      if (patch.title !== undefined && idx === 0) {
+        setEditingLesson((el) => (el ? { ...el, title: String(patch.title) } : el));
+      }
+    };
+    const editorGrade = (editingLesson.grade_level || (activeGrade !== 'ALL' ? activeGrade : '') || '11').toString();
+    const catalogLessons = lessonsList.filter(
+      (l) => String(l.grade_level || '8') === editorGrade && !l.is_topic
+    );
+    const chapterOptions = buildMergedChapterOptions(catalogLessons, editorGrade);
+    const lessonNoOptions = buildMergedLessonNoOptions(
+      catalogLessons,
+      editingLesson.chapter,
+      editingLesson.id,
+      editorGrade
+    );
+    const derivedTitle = deriveLessonTitleFromSections(sectionsList, editingLesson.title);
+    const handleAddChapter = () => {
+      const v = window.prompt('Nhập số / tên chương mới:', editingLesson.chapter || '');
+      if (v == null || !String(v).trim()) return;
+      setEditingLesson({ ...editingLesson, chapter: String(v).trim(), lesson_no: '' });
+    };
+    const handleAddLessonNo = () => {
+      if (!(editingLesson.chapter || '').toString().trim()) {
+        alert('Hãy chọn chương trước.');
+        return;
+      }
+      const v = window.prompt('Số bài mới (vd. 1, 2, 3):', editingLesson.lesson_no || '');
+      if (v == null || !String(v).trim()) return;
+      setEditingLesson({ ...editingLesson, lesson_no: String(v).trim() });
+    };
+    const patchTheoryCore = (val) => {
+      if (hasSections) patchSectionAt(activeSectionIdx, { theory_core: val });
+      else patchLessonContent({ theory_core: val });
+    };
+    const patchExamplesCore = (val) => {
+      if (hasSections) patchSectionAt(activeSectionIdx, { examples_core: val });
+      else patchLessonContent({ examples_core: val });
+    };
+    const patchPracticeList = (next) => {
+      if (hasSections) patchSectionAt(activeSectionIdx, { practice: next });
+      else patchLessonContent({ practice: next });
+    };
+    const sectionEditorBanner =
+      hasSections && lessonAdminPane !== 'sections' ? (
+        <div className="shrink-0 flex flex-wrap items-center gap-2 text-xs font-semibold text-indigo-900 bg-indigo-50 border border-indigo-200 rounded-lg px-2.5 py-2">
+          <span>Đang soạn mục:</span>
+          <select
+            value={activeSectionIdx}
+            disabled={jsonBroken}
+            onChange={(e) => setEditingSectionIndex(Number(e.target.value))}
+            className="p-1.5 border rounded text-sm font-bold min-w-[14rem] disabled:opacity-50"
+          >
+            {sectionsList.map((s, i) => (
+              <option key={s.id || i} value={i}>
+                {getSectionDisplayLabel(s) || `Mục ${i + 1}`}
+              </option>
+            ))}
+          </select>
+          <button type="button" onClick={() => setLessonAdminPane('sections')} className="text-indigo-700 hover:underline font-bold">
+            Quản lý mục bài
+          </button>
+        </div>
+      ) : null;
+    const noSectionsContentBanner =
+      !hasSections && !['sections', 'raw', 'materials'].includes(lessonAdminPane) ? (
+        <div className="shrink-0 rounded-lg border border-amber-200 bg-amber-50/80 px-3 py-2 text-xs text-amber-900 leading-relaxed">
+          <strong>Một khối duy nhất.</strong> Lý thuyết / ví dụ / bài tập dưới đây dùng chung cho cả bài. Muốn chia thành nhiều phần học (vd.{' '}
+          <em>1. Hàm số…</em>, <em>2. Đồ thị…</em>), mở tab{' '}
+          <button type="button" onClick={() => setLessonAdminPane('sections')} className="font-bold text-indigo-700 underline">
+            Mục bài
+          </button>{' '}
+          → <strong>Thêm mục con</strong>.
+        </div>
+      ) : null;
+    const theoryCoreVal = jsonBroken
+      ? ''
+      : hasSections
+        ? (sectionsList[activeSectionIdx]?.theory_core ?? '').toString()
+        : (cObj?.theory_core ?? '').toString();
+    const examplesCoreVal = jsonBroken
+      ? ''
+      : hasSections
+        ? (sectionsList[activeSectionIdx]?.examples_core ?? '').toString()
+        : (cObj?.examples_core ?? '').toString();
+    const practiceList = jsonBroken
+      ? []
+      : hasSections
+        ? (sectionsList[activeSectionIdx]?.practice ?? [])
+        : (cObj?.practice ?? []);
     const examples = jsonBroken ? [] : (cObj?.examples ?? []);
-    const practiceList = jsonBroken ? [] : (cObj?.practice ?? []);
     const practiceDisplayMode = jsonBroken
       ? 'list'
       : (cObj?.practice_display_mode ?? cObj?.practiceDisplayMode ?? 'list');
-    const theoryCoreVal = jsonBroken ? '' : (cObj?.theory_core ?? '').toString();
-    const examplesCoreVal = jsonBroken ? '' : (cObj?.examples_core ?? '').toString();
     if (theoryLastSnapRef.current === '' && theoryCoreVal) {
       theoryLastSnapRef.current = theoryCoreVal;
       theoryLastAtRef.current = Date.now();
@@ -2534,7 +3458,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
     const undoTheory = () => {
       const prev = theoryUndoStackRef.current.pop();
       if (prev === undefined) return;
-      patchLessonContent({ theory_core: prev });
+      patchTheoryCore(prev);
       theoryLastSnapRef.current = prev;
       theoryLastAtRef.current = Date.now();
       requestAnimationFrame(() => {
@@ -2552,7 +3476,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
     const undoExamples = () => {
       const prev = examplesUndoStackRef.current.pop();
       if (prev === undefined) return;
-      patchLessonContent({ examples_core: prev });
+      patchExamplesCore(prev);
       examplesLastSnapRef.current = prev;
       examplesLastAtRef.current = Date.now();
       requestAnimationFrame(() => {
@@ -2594,16 +3518,16 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
             </button>
           </div>
           <div className="shrink-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
-            <input
-              type="text"
-              value={editingLesson.title}
-              onChange={(e) => setEditingLesson({ ...editingLesson, title: e.target.value })}
-              placeholder="Tiêu đề bài giảng"
-              className="sm:col-span-1 lg:col-span-2 w-full p-2 text-sm border rounded-md focus:ring-2 focus:ring-indigo-500 font-bold"
-            />
             <select
-              value={(editingLesson.grade_level || (activeGrade !== 'ALL' ? activeGrade : '') || '11').toString()}
-              onChange={(e) => setEditingLesson({ ...editingLesson, grade_level: e.target.value })}
+              value={editorGrade}
+              onChange={(e) =>
+                setEditingLesson({
+                  ...editingLesson,
+                  grade_level: e.target.value,
+                  chapter: '',
+                  lesson_no: '',
+                })
+              }
               className="w-full p-2 text-sm border rounded-md focus:ring-2 focus:ring-indigo-500 font-bold text-slate-800 bg-white"
             >
               <option value="6">Toán 6</option>
@@ -2614,28 +3538,111 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
               <option value="11">Toán 11</option>
               <option value="12">Toán 12</option>
             </select>
-            <div className="grid grid-cols-2 gap-2 sm:col-span-2 lg:col-span-1">
-              <input
-                type="text"
-                value={(editingLesson.chapter || '')}
-                onChange={(e) => setEditingLesson({ ...editingLesson, chapter: e.target.value })}
-                placeholder={editingLesson.is_topic ? 'Chương (tuỳ chọn)' : 'Chương'}
-                title={editingLesson.is_topic ? 'Bài thuộc Chuyên đề: có thể chọn chương để hiển thị (không bắt buộc)' : undefined}
-                className={`w-full p-2 text-sm border rounded-md focus:ring-2 focus:ring-indigo-500 font-semibold text-center ${
-                  editingLesson.is_topic ? 'bg-indigo-50/40 border-indigo-200' : ''
-                }`}
-              />
-              <input
-                type="text"
-                value={(editingLesson.lesson_no || '')}
-                onChange={(e) => setEditingLesson({ ...editingLesson, lesson_no: e.target.value })}
-                placeholder={editingLesson.is_topic ? 'Bài (tuỳ chọn)' : 'Bài'}
-                title={editingLesson.is_topic ? 'Bài thuộc Chuyên đề: có thể đặt số thứ tự để sắp xếp trong chương (không bắt buộc)' : undefined}
-                className={`w-full p-2 text-sm border rounded-md focus:ring-2 focus:ring-indigo-500 font-semibold text-center ${
-                  editingLesson.is_topic ? 'bg-indigo-50/40 border-indigo-200' : ''
-                }`}
-              />
+            <div className="flex gap-1.5 min-w-0">
+              <select
+                value={(editingLesson.chapter || '').toString()}
+                onChange={(e) =>
+                  setEditingLesson({
+                    ...editingLesson,
+                    chapter: e.target.value,
+                    lesson_no: '',
+                  })
+                }
+                className="flex-1 min-w-0 p-2 text-sm border rounded-md focus:ring-2 focus:ring-indigo-500 font-semibold bg-white"
+              >
+                <option value="">— Chọn chương —</option>
+                {chapterOptions.map(({ no, label }) => (
+                  <option key={no} value={no}>
+                    {label}
+                  </option>
+                ))}
+                {(editingLesson.chapter || '').toString().trim() &&
+                !chapterOptions.some((o) => o.no === (editingLesson.chapter || '').toString().trim()) ? (
+                  <option value={(editingLesson.chapter || '').toString().trim()}>
+                    Chương {editingLesson.chapter}
+                  </option>
+                ) : null}
+              </select>
+              <button
+                type="button"
+                onClick={handleAddChapter}
+                className="shrink-0 px-2 py-2 text-[11px] font-bold rounded-md border border-indigo-200 text-indigo-700 hover:bg-indigo-50 whitespace-nowrap"
+                title="Thêm chương mới"
+              >
+                + Chương
+              </button>
             </div>
+            <div className="flex gap-1.5 min-w-0 sm:col-span-2 lg:col-span-2">
+              <select
+                value={(editingLesson.lesson_no || '').toString()}
+                disabled={!(editingLesson.chapter || '').toString().trim()}
+                onChange={(e) => {
+                  const lessonNo = e.target.value;
+                  const sgkTitle = findSgkLessonTitle(editorGrade, editingLesson.chapter, lessonNo);
+                  if (sgkTitle) {
+                    if (hasSections && sectionsList.length > 0) {
+                      const first = sectionsList[0];
+                      if (!String(first?.title ?? '').trim()) {
+                        patchSectionAt(0, { title: sgkTitle });
+                      }
+                    } else if (!jsonBroken) {
+                      const nextSec = emptyLessonSectionTemplate(0);
+                      nextSec.title = sgkTitle;
+                      if (cObj) {
+                        nextSec.theory_core = (cObj.theory_core ?? '').toString();
+                        nextSec.examples_core = (cObj.examples_core ?? '').toString();
+                        nextSec.practice = Array.isArray(cObj.practice) ? cObj.practice : [];
+                      }
+                      patchSections([nextSec]);
+                      setEditingSectionIndex(0);
+                    }
+                  }
+                  setEditingLesson({ ...editingLesson, lesson_no: lessonNo });
+                }}
+                className="flex-1 min-w-0 p-2 text-sm border rounded-md focus:ring-2 focus:ring-indigo-500 font-semibold bg-white disabled:opacity-50"
+              >
+                <option value="">— Chọn bài —</option>
+                {lessonNoOptions.map(({ no, label }) => (
+                  <option key={no} value={no}>
+                    {label}
+                  </option>
+                ))}
+                {(editingLesson.lesson_no || '').toString().trim() &&
+                !lessonNoOptions.some((o) => o.no === (editingLesson.lesson_no || '').toString().trim()) ? (
+                  <option value={(editingLesson.lesson_no || '').toString().trim()}>
+                    Bài {editingLesson.lesson_no}
+                  </option>
+                ) : null}
+              </select>
+              <button
+                type="button"
+                onClick={handleAddLessonNo}
+                disabled={!(editingLesson.chapter || '').toString().trim()}
+                className="shrink-0 px-2 py-2 text-[11px] font-bold rounded-md border border-teal-200 text-teal-800 hover:bg-teal-50 disabled:opacity-40 whitespace-nowrap"
+                title="Thêm số bài mới trong chương"
+              >
+                + Bài
+              </button>
+            </div>
+          </div>
+          <div className="shrink-0 rounded-lg border border-sky-100 bg-sky-50/70 px-3 py-2 text-xs text-sky-900 space-y-1">
+            <p>
+              <span className="font-bold">Tiêu đề bài giảng</span> = tên <strong>mục đầu tiên</strong> (tab Mục bài) — không gõ riêng.
+            </p>
+            <p>
+              <span className="font-bold">Học sinh thấy:</span>{' '}
+              <span className="font-black text-indigo-800">
+                {getLessonDisplayLabel({
+                  lesson_no: editingLesson.lesson_no,
+                  title: derivedTitle || '…',
+                })}
+              </span>
+              {hasSections ? (
+                <span className="text-sky-700"> · {sectionsList.length} mục con</span>
+              ) : (
+                <span className="text-amber-700"> · chưa có mục — thêm ở tab Mục bài</span>
+              )}
+            </p>
           </div>
           <div className="shrink-0 grid grid-cols-1 md:grid-cols-2 gap-2">
             <input
@@ -2647,14 +3654,21 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
             />
             <input
               type="url"
+              value={editingLesson.slidesUrl || ''}
+              onChange={(e) => setEditingLesson({ ...editingLesson, slidesUrl: e.target.value })}
+              placeholder="Google Slides / PPT Drive (docs.google.com/presentation/... hoặc drive.google.com/file/...)"
+              className="w-full p-2 text-sm border rounded-md focus:ring-2 focus:ring-indigo-500"
+            />
+            <input
+              type="url"
               value={editingLesson.pdfUrl || ''}
               onChange={(e) => setEditingLesson({ ...editingLesson, pdfUrl: e.target.value })}
               placeholder="Link PDF"
-              className="w-full p-2 text-sm border rounded-md focus:ring-2 focus:ring-indigo-500"
+              className="w-full p-2 text-sm border rounded-md focus:ring-2 focus:ring-indigo-500 md:col-span-2"
             />
           </div>
           <p className="shrink-0 text-[11px] leading-snug text-slate-500 -mt-0.5">
-            YouTube nhúng chính; PDF mở tab Tài liệu (Drive: quyền xem theo link).
+            YouTube + Google Slides/PPT có thể dùng cùng lúc (học sinh chọn tab Video / Slide). Slides: Chia sẻ → bất kỳ ai có link; PPT: tải lên Drive rồi dán link file.
           </p>
           <div className="relative border rounded-md focus-within:ring-2 ring-indigo-500 shrink-0">
             <textarea
@@ -2666,104 +3680,13 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
             />
           </div>
 
-          {(() => {
-            const existingTopics = listExistingTopics(lessonsList, {
-              grade: editingLesson.grade_level || (activeGrade !== 'ALL' ? activeGrade : null),
-            });
-            const isTopic = !!editingLesson.is_topic;
-            const topicId = (editingLesson.topic_id || '').toString();
-            return (
-              <div className="shrink-0 rounded-lg border border-indigo-100 bg-indigo-50/40 p-2.5 space-y-2">
-                <label className="flex items-center gap-2 text-[12px] font-bold text-indigo-900 cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    checked={isTopic}
-                    onChange={(e) => {
-                      const on = e.target.checked;
-                      setEditingLesson({
-                        ...editingLesson,
-                        is_topic: on,
-                        topic_id: on ? editingLesson.topic_id || '' : '',
-                        topic_name: on ? editingLesson.topic_name || '' : '',
-                      });
-                    }}
-                    className="w-4 h-4 accent-indigo-600"
-                  />
-                  Bài giảng thuộc <span className="underline decoration-indigo-300">Chuyên đề ôn thi</span>
-                  <span className="text-[10px] font-semibold text-slate-500 ml-1">(gom riêng trong tab Chuyên đề cho học sinh)</span>
-                </label>
-                {isTopic && (
-                  <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2">
-                    <select
-                      value={topicId && existingTopics.some((t) => t.id === topicId) ? topicId : ''}
-                      onChange={(e) => {
-                        const id = e.target.value;
-                        if (!id) return;
-                        const hit = existingTopics.find((t) => t.id === id);
-                        setEditingLesson({
-                          ...editingLesson,
-                          is_topic: true,
-                          topic_id: id,
-                          topic_name: hit?.name || editingLesson.topic_name || '',
-                        });
-                      }}
-                      className="w-full p-2 text-sm border rounded-md focus:ring-2 focus:ring-indigo-500 bg-white"
-                    >
-                      <option value="">— Chọn chuyên đề đã có —</option>
-                      {existingTopics.map((t) => (
-                        <option key={t.id} value={t.id}>
-                          {t.name}
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const name = window.prompt('Tên chuyên đề mới:', editingLesson.topic_name || '');
-                        if (!name || !name.trim()) return;
-                        const nm = name.trim();
-                        const existed = existingTopics.find((t) => t.name.toLowerCase() === nm.toLowerCase());
-                        const id = existed ? existed.id : slugifyTopicId(nm);
-                        setEditingLesson({
-                          ...editingLesson,
-                          is_topic: true,
-                          topic_id: id,
-                          topic_name: nm,
-                        });
-                      }}
-                      className="px-3 py-2 text-xs font-bold rounded-md bg-indigo-600 hover:bg-indigo-700 text-white whitespace-nowrap"
-                    >
-                      + Tạo chuyên đề mới
-                    </button>
-                  </div>
-                )}
-                {isTopic && (
-                  <input
-                    type="text"
-                    value={editingLesson.topic_name || ''}
-                    onChange={(e) => setEditingLesson({ ...editingLesson, topic_name: e.target.value })}
-                    placeholder="Tên chuyên đề hiển thị cho học sinh"
-                    className="w-full p-2 text-sm border rounded-md focus:ring-2 focus:ring-indigo-500 bg-white"
-                  />
-                )}
-                {isTopic && !topicId && (
-                  <p className="text-[11px] text-rose-600 font-semibold">
-                    Chưa có ID chuyên đề — hãy chọn “chuyên đề đã có” hoặc bấm “+ Tạo chuyên đề mới” để lưu tên mới.
-                  </p>
-                )}
-              </div>
-            );
-          })()}
-
-          <LessonSeoAdminPanel lesson={editingLesson} theoryCore={theoryCoreVal} lessonsList={lessonsList} />
-
           {jsonBroken ? (
             <div className="shrink-0 rounded-md border border-amber-300 bg-amber-50 text-amber-900 text-xs p-2 font-semibold">
               JSON lỗi: {lessonContentParse.error}. Sửa tab <strong>JSON nâng cao</strong>.
             </div>
           ) : null}
 
-          <div className="bg-slate-50 p-2 border border-slate-200 rounded-lg flex-1 min-h-[min(58vh,640px)] flex flex-col gap-2 min-w-0">
+          <div className="bg-slate-50 p-2 border border-slate-200 rounded-lg flex-1 min-h-[min(90vh,1920px)] flex flex-col gap-2 min-w-0">
             <div className="shrink-0 flex flex-wrap justify-between items-center gap-2">
               <h4 className="font-bold text-slate-800 text-sm flex items-center gap-1.5 min-w-0">
                 <span>🛠</span>
@@ -2783,18 +3706,29 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                   Import TXT/Word
                   <input type="file" accept=".txt,.docx" onChange={handleImportLesson} className="hidden" />
                 </label>
-                <a
-                  href="/mau-import-bai-giang.txt"
-                  download
-                  className="text-[11px] font-bold text-indigo-700 hover:text-indigo-900 underline decoration-indigo-300 shrink-0"
-                  title="Tải mẫu import bài giảng"
-                >
-                  mau-import-bai-giang.txt
-                </a>
+                <div className="flex flex-col items-end gap-0.5 shrink-0">
+                  <a
+                    href="/mau-import-bai-giang.txt"
+                    download
+                    className="text-[11px] font-bold text-indigo-700 hover:text-indigo-900 underline decoration-indigo-300"
+                    title="Tải mẫu import bài giảng (.txt)"
+                  >
+                    mau-import-bai-giang.txt
+                  </a>
+                  <a
+                    href="/mau-import-bai-giang.docx"
+                    download
+                    className="text-[11px] font-bold text-indigo-700 hover:text-indigo-900 underline decoration-indigo-300"
+                    title="Tải mẫu import bài giảng (Word .docx)"
+                  >
+                    mau-import-bai-giang.docx
+                  </a>
+                </div>
               </div>
             </div>
             <div className="shrink-0 flex flex-wrap gap-1 border-b border-slate-200 pb-1.5">
               {[
+                { id: 'sections', label: 'Mục bài', Icon: BookText },
                 { id: 'theory', label: 'Lý thuyết', Icon: BookOpen },
                 { id: 'examples_core', label: 'Các dạng toán & ví dụ', Icon: FileEdit },
                 { id: 'practice', label: 'Bài tập luyện tập', Icon: ListOrdered },
@@ -2816,9 +3750,136 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
               ))}
             </div>
 
-            <div className="flex-1 min-h-0 min-w-0 flex flex-col overflow-hidden">
+            <div className="flex-1 min-h-0 min-w-0 flex flex-col overflow-y-auto">
+            {lessonAdminPane === 'sections' && (
+              <div className="space-y-3 animate-in fade-in flex-1 min-h-0 overflow-y-auto pr-0.5">
+                <ol className="text-xs text-slate-600 space-y-1.5 list-decimal list-inside leading-relaxed bg-white rounded-lg border border-slate-200 px-3 py-2.5">
+                  <li>
+                    Chọn <strong>Chương</strong> và <strong>Bài</strong> ở dropdown phía trên (+ thêm mới nếu chưa có)
+                  </li>
+                  <li>
+                    Thêm <strong>mục con</strong> — tên mục đầu tiên = tiêu đề bài{' '}
+                    <strong>{derivedTitle ? `"${derivedTitle}"` : '(chưa có)'}</strong>
+                  </li>
+                  <li>Bấm <strong>Soạn nội dung →</strong> từng mục (Lý thuyết, Ví dụ, Bài tập)</li>
+                </ol>
+                <button
+                  type="button"
+                  disabled={jsonBroken}
+                  onClick={() => {
+                    const isFirst = sectionsList.length === 0;
+                    const nextSec = emptyLessonSectionTemplate(sectionsList.length);
+                    if (isFirst && !jsonBroken && cObj) {
+                      nextSec.theory_core = (cObj.theory_core ?? '').toString();
+                      nextSec.examples_core = (cObj.examples_core ?? '').toString();
+                      nextSec.practice = Array.isArray(cObj.practice) ? cObj.practice : [];
+                    }
+                    patchSections([...sectionsList, nextSec]);
+                    setEditingSectionIndex(sectionsList.length);
+                    if (sectionsList.length === 0 && nextSec.title) {
+                      setEditingLesson((el) => (el ? { ...el, title: nextSec.title } : el));
+                    }
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 disabled:opacity-50"
+                >
+                  <Plus size={14} /> Thêm mục con
+                </button>
+                {sectionsList.length === 0 ? (
+                  <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50/50 px-4 py-8 text-center">
+                    <p className="text-sm text-slate-600 font-semibold">Chưa có mục con</p>
+                    <p className="text-xs text-slate-500 mt-2 max-w-md mx-auto">
+                      Bài sẽ hiển thị một khối. Thêm mục để chia nhỏ — nội dung đang có sẽ được copy vào mục đầu tiên.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {sectionsList.map((sec, idx) => (
+                      <div key={sec.id || idx} className="rounded-xl border border-indigo-100 bg-white p-3 space-y-2 shadow-sm">
+                        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2">
+                          <p className="text-sm font-black text-indigo-800">
+                            {getSectionDisplayLabel(sec) || `Mục ${idx + 1}`}
+                          </p>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-[5rem_1fr] gap-2">
+                          <label className="text-xs font-bold text-slate-600">
+                            STT
+                            <input
+                              disabled={jsonBroken}
+                              value={sec.section_no}
+                              onChange={(e) => patchSectionAt(idx, { section_no: e.target.value })}
+                              className="mt-1 block w-full p-2 border rounded text-sm font-bold text-center"
+                              placeholder="1"
+                            />
+                          </label>
+                          <label className="text-xs font-bold text-slate-600">
+                            Tên mục (hiện sidebar)
+                            {idx === 0 ? (
+                              <span className="ml-1 font-normal text-indigo-600">— mục 1 = tiêu đề bài giảng</span>
+                            ) : null}
+                            <input
+                              disabled={jsonBroken}
+                              value={sec.title}
+                              onChange={(e) => patchSectionAt(idx, { title: e.target.value })}
+                              className="mt-1 block w-full p-2 border rounded text-sm"
+                              placeholder="Hàm số y=ax²"
+                            />
+                          </label>
+                        </div>
+                        <label className="block text-xs font-bold text-slate-600">
+                          Video riêng (tuỳ chọn)
+                          <input
+                            disabled={jsonBroken}
+                            value={sec.videoUrl || ''}
+                            onChange={(e) => patchSectionAt(idx, { videoUrl: e.target.value })}
+                            className="mt-1 block w-full p-2 border rounded text-xs"
+                            placeholder="Để trống → dùng video chung của bài"
+                          />
+                        </label>
+                        <label className="block text-xs font-bold text-slate-600">
+                          Slide / PPT riêng (tuỳ chọn)
+                          <input
+                            disabled={jsonBroken}
+                            value={sec.slidesUrl || ''}
+                            onChange={(e) => patchSectionAt(idx, { slidesUrl: e.target.value })}
+                            className="mt-1 block w-full p-2 border rounded text-xs"
+                            placeholder="Google Slides hoặc file PPT trên Drive — trống → dùng slide chung của bài"
+                          />
+                        </label>
+                        <div className="flex flex-wrap gap-2 pt-1">
+                          <button
+                            type="button"
+                            disabled={jsonBroken}
+                            onClick={() => {
+                              setEditingSectionIndex(idx);
+                              setLessonAdminPane('theory');
+                            }}
+                            className="px-3 py-2 rounded-lg bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700"
+                          >
+                            Soạn nội dung →
+                          </button>
+                          <button
+                            type="button"
+                            disabled={jsonBroken || sectionsList.length <= 1}
+                            onClick={() => {
+                              const next = sectionsList.filter((_, j) => j !== idx);
+                              patchSections(next);
+                              setEditingSectionIndex(Math.max(0, idx - 1));
+                            }}
+                            className="px-3 py-2 rounded-lg bg-white border border-rose-200 text-rose-700 text-xs font-bold hover:bg-rose-50 disabled:opacity-40"
+                          >
+                            <Trash2 size={12} className="inline mr-1" /> Xóa
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
             {lessonAdminPane === 'theory' && (
-              <div className="animate-in fade-in flex-1 min-h-0 flex flex-col gap-2">
+              <div className="animate-in fade-in flex flex-col gap-2 pb-4">
+                {sectionEditorBanner}
+                {noSectionsContentBanner}
                 <p className="text-[11px] text-slate-600 shrink-0 leading-snug">
                   <code className="bg-slate-200/80 px-1 rounded">theory_core</code> — LaTeX{' '}
                   <code className="bg-slate-200/80 px-0.5 rounded">$...$</code> / <code className="bg-slate-200/80 px-0.5 rounded">$$...$$</code>
@@ -2844,7 +3905,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                     if (theoryUndoStackRef.current.length > 120) theoryUndoStackRef.current.shift();
                     theoryLastSnapRef.current = next;
                     theoryLastAtRef.current = Date.now();
-                    patchLessonContent({ theory_core: next });
+                    patchTheoryCore(next);
                     requestAnimationFrame(() => {
                       requestAnimationFrame(() => {
                         const el = lessonTheoryTextareaRef.current;
@@ -2867,17 +3928,19 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                   disabled={jsonBroken}
                   onChange={(e) => {
                     const next = e.target.value;
-                    patchLessonContent({ theory_core: next });
+                    patchTheoryCore(next);
                     recordTheorySnapshot(next);
                   }}
                   placeholder="Công thức, định nghĩa, lưu ý trọng tâm…"
-                  className="w-full flex-1 min-h-[min(52vh,620px)] p-3 border border-slate-300 rounded-lg text-sm font-sans disabled:opacity-50 resize-y"
+                  className="w-full min-h-[1860px] h-[1860px] p-3 border border-slate-300 rounded-lg text-sm font-sans disabled:opacity-50 resize-y"
                 />
               </div>
             )}
 
             {lessonAdminPane === 'examples_core' && (
-              <div className="animate-in fade-in flex-1 min-h-0 flex flex-col gap-2">
+              <div className="animate-in fade-in flex flex-col gap-2 pb-4">
+                {sectionEditorBanner}
+                {noSectionsContentBanner}
                 <p className="text-[11px] text-slate-600 shrink-0 leading-snug">
                   <code className="bg-slate-200/80 px-1 rounded">examples_core</code> — nhập nội dung “Các dạng toán & ví dụ” theo cùng cú pháp như Lý thuyết (có thẻ khối).
                 </p>
@@ -2892,7 +3955,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                       disabled={jsonBroken}
                       onClick={() => {
                         const text = examplesArrayToCoreText(examples);
-                        patchLessonContent({ examples_core: text });
+                        patchExamplesCore(text);
                         examplesUndoStackRef.current.push(examplesCoreVal);
                         examplesLastSnapRef.current = text;
                         examplesLastAtRef.current = Date.now();
@@ -2921,7 +3984,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                     if (examplesUndoStackRef.current.length > 120) examplesUndoStackRef.current.shift();
                     examplesLastSnapRef.current = next;
                     examplesLastAtRef.current = Date.now();
-                    patchLessonContent({ examples_core: next });
+                    patchExamplesCore(next);
                     requestAnimationFrame(() => {
                       requestAnimationFrame(() => {
                         const el = lessonExamplesTextareaRef.current;
@@ -2944,11 +4007,11 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                   disabled={jsonBroken}
                   onChange={(e) => {
                     const next = e.target.value;
-                    patchLessonContent({ examples_core: next });
+                    patchExamplesCore(next);
                     recordExamplesSnapshot(next);
                   }}
                   placeholder="Dạng 1..., {Ví dụ: ...}, {Lời giải: ...}..."
-                  className="w-full flex-1 min-h-[min(52vh,620px)] p-3 border border-slate-300 rounded-lg text-sm font-sans disabled:opacity-50 resize-y"
+                  className="w-full min-h-[1860px] h-[1860px] p-3 border border-slate-300 rounded-lg text-sm font-sans disabled:opacity-50 resize-y"
                 />
                 {Array.isArray(examples) && examples.length > 0 ? (
                   <div className="rounded-lg border border-amber-200 bg-amber-50/70 px-3 py-2 text-[11px] text-amber-900">
@@ -2961,6 +4024,8 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
 
             {lessonAdminPane === 'practice' && (
               <div className="space-y-3 animate-in fade-in flex-1 min-h-0 overflow-y-auto pr-0.5">
+                {sectionEditorBanner}
+                {noSectionsContentBanner}
                 <p className="text-xs text-slate-600">
                   Mảng <code className="bg-slate-200/80 px-1 rounded">practice</code> — tab “Bài tập luyện tập” của học sinh.
                 </p>
@@ -2980,7 +4045,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                   type="button"
                   disabled={jsonBroken}
                   onClick={() =>
-                    patchLessonContent({ practice: [...practiceList, emptyPracticeTemplate(practiceList.length)] })
+                    patchPracticeList([...practiceList, emptyPracticeTemplate(practiceList.length)])
                   }
                   className="text-sm font-bold text-indigo-600 hover:text-indigo-800 disabled:opacity-40"
                 >
@@ -3001,11 +4066,12 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                                   id: x.id || `pr_${Date.now()}_${j}`,
                                   question: x.question ?? x.content ?? '',
                                   hint: x.hint ?? '',
+                                  hintVideoUrl: x.hintVideoUrl ?? '',
                                   explanation: x.explanation ?? '',
                                 }
                               : x
                           );
-                          patchLessonContent({ practice: next });
+                          patchPracticeList(next);
                         }}
                         className="p-2 border rounded text-sm font-bold disabled:opacity-50"
                       >
@@ -3020,7 +4086,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                       <button
                         type="button"
                         disabled={jsonBroken}
-                        onClick={() => patchLessonContent({ practice: practiceList.filter((_, j) => j !== idx) })}
+                        onClick={() => patchPracticeList(practiceList.filter((_, j) => j !== idx))}
                         className="text-xs font-bold text-red-600 hover:underline disabled:opacity-40"
                       >
                         Xóa câu
@@ -3034,14 +4100,14 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                         const next = practiceList.map((x, j) =>
                           j === idx ? { ...x, question: e.target.value } : x
                         );
-                        patchLessonContent({ practice: next });
+                        patchPracticeList(next);
                       }}
                       placeholder={
                         (p.type || 'text') === 'fill_blanks'
                           ? 'Câu dẫn (tuỳ chọn) — ví dụ: Điền các chỗ trống trong đoạn văn sau'
                           : 'Đề bài / nội dung câu'
                       }
-                      className="w-full p-2 border rounded text-sm min-h-[64px] disabled:opacity-50"
+                      className="w-full p-2 border rounded text-sm min-h-[192px] disabled:opacity-50 resize-y"
                     />
                     {(p.type || 'text') === 'mcq' ? (
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -3056,7 +4122,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                                 const opts = [...(Array.isArray(p.options) && p.options.length ? p.options : ['', '', '', ''])];
                                 opts[oi] = e.target.value;
                                 const next = practiceList.map((x, j) => (j === idx ? { ...x, options: opts } : x));
-                                patchLessonContent({ practice: next });
+                                patchPracticeList(next);
                               }}
                               className="flex-1 p-2 border rounded text-sm disabled:opacity-50"
                               placeholder={`Phương án ${String.fromCharCode(65 + oi)}`}
@@ -3078,7 +4144,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                               if (/^\d+$/.test(raw)) ca = Number(raw);
                               else if (/^[A-Da-d]$/.test(raw)) ca = raw.toUpperCase().charCodeAt(0) - 65;
                               const next = practiceList.map((x, j) => (j === idx ? { ...x, correctAnswer: ca } : x));
-                              patchLessonContent({ practice: next });
+                              patchPracticeList(next);
                             }}
                             className="w-24 p-2 border rounded font-mono disabled:opacity-50"
                           />
@@ -3086,18 +4152,117 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                       </div>
                     ) : null}
                     {(p.type || 'text') === 'input' ? (
-                      <input
-                        disabled={jsonBroken}
-                        value={(p.correctAnswer ?? '').toString()}
-                        onChange={(e) => {
-                          const next = practiceList.map((x, j) =>
-                            j === idx ? { ...x, correctAnswer: e.target.value } : x
-                          );
-                          patchLessonContent({ practice: next });
-                        }}
-                        placeholder="Đáp án đúng (chuỗi so khớp, có thể dùng | hoặc ; cho nhiều đáp án)"
-                        className="w-full p-2 border rounded text-sm disabled:opacity-50"
-                      />
+                      <div className="space-y-2 rounded-lg border border-slate-200 bg-slate-50/80 p-3">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-xs font-bold text-slate-600 uppercase tracking-wide">
+                            Ô đáp án (có thể nhiều ô — vd. x và y)
+                          </p>
+                          <button
+                            type="button"
+                            disabled={jsonBroken}
+                            onClick={() => {
+                              const parts = Array.isArray(p.answerParts) && p.answerParts.length
+                                ? [...p.answerParts]
+                                : [{ id: '1', placeholder: '', correctAnswer: (p.correctAnswer ?? '').toString() }];
+                              const n = parts.length + 1;
+                              parts.push({
+                                id: String(n),
+                                placeholder: n === 2 ? 'y = …' : `Ô ${n}`,
+                                correctAnswer: '',
+                              });
+                              const next = practiceList.map((x, j) =>
+                                j === idx
+                                  ? {
+                                      ...x,
+                                      answerParts: parts,
+                                      correctAnswer: parts.map((pt) => pt.correctAnswer).filter(Boolean).join('; '),
+                                    }
+                                  : x
+                              );
+                              patchPracticeList(next);
+                            }}
+                            className="text-xs font-bold text-indigo-600 hover:underline disabled:opacity-40"
+                          >
+                            + Thêm ô
+                          </button>
+                        </div>
+                        {(Array.isArray(p.answerParts) && p.answerParts.length
+                          ? p.answerParts
+                          : [{ id: '1', placeholder: (p.answerPlaceholder ?? '').toString(), correctAnswer: (p.correctAnswer ?? '').toString() }]
+                        ).map((part, pi) => (
+                          <div key={part.id || pi} className="flex flex-wrap items-center gap-2">
+                            <input
+                              disabled={jsonBroken}
+                              value={(part.placeholder ?? '').toString()}
+                              onChange={(e) => {
+                                const parts = (Array.isArray(p.answerParts) && p.answerParts.length
+                                  ? p.answerParts
+                                  : [{ id: '1', placeholder: (p.answerPlaceholder ?? '').toString(), correctAnswer: (p.correctAnswer ?? '').toString() }]
+                                ).map((pt, i) => (i === pi ? { ...pt, placeholder: e.target.value } : pt));
+                                const next = practiceList.map((x, j) =>
+                                  j === idx
+                                    ? {
+                                        ...x,
+                                        answerParts: parts,
+                                        answerPlaceholder: parts.length === 1 ? e.target.value : x.answerPlaceholder,
+                                      }
+                                    : x
+                                );
+                                patchPracticeList(next);
+                              }}
+                              placeholder={pi === 0 ? 'Placeholder: x = …' : pi === 1 ? 'Placeholder: y = …' : `Placeholder ô ${pi + 1}`}
+                              className="w-28 sm:w-36 p-2 border rounded text-sm disabled:opacity-50 bg-white"
+                            />
+                            <input
+                              disabled={jsonBroken}
+                              value={(part.correctAnswer ?? '').toString()}
+                              onChange={(e) => {
+                                const parts = (Array.isArray(p.answerParts) && p.answerParts.length
+                                  ? p.answerParts
+                                  : [{ id: '1', placeholder: (p.answerPlaceholder ?? '').toString(), correctAnswer: (p.correctAnswer ?? '').toString() }]
+                                ).map((pt, i) => (i === pi ? { ...pt, id: String(pt.id || i + 1), correctAnswer: e.target.value } : pt));
+                                const next = practiceList.map((x, j) =>
+                                  j === idx
+                                    ? {
+                                        ...x,
+                                        answerParts: parts,
+                                        correctAnswer: parts.map((pt) => pt.correctAnswer).filter(Boolean).join('; '),
+                                      }
+                                    : x
+                                );
+                                patchPracticeList(next);
+                              }}
+                              placeholder="Đáp án đúng (| hoặc ; cho biến thể)"
+                              className="flex-1 min-w-[8rem] p-2 border rounded text-sm disabled:opacity-50 bg-white font-mono"
+                            />
+                            {(Array.isArray(p.answerParts) ? p.answerParts.length : 1) > 1 ? (
+                              <button
+                                type="button"
+                                disabled={jsonBroken}
+                                onClick={() => {
+                                  const parts = (p.answerParts || []).filter((_, i) => i !== pi);
+                                  const next = practiceList.map((x, j) =>
+                                    j === idx
+                                      ? {
+                                          ...x,
+                                          answerParts: parts,
+                                          correctAnswer: parts.map((pt) => pt.correctAnswer).filter(Boolean).join('; '),
+                                        }
+                                      : x
+                                  );
+                                  patchPracticeList(next);
+                                }}
+                                className="text-xs font-bold text-red-500 hover:underline disabled:opacity-40 px-1"
+                              >
+                                Xóa
+                              </button>
+                            ) : null}
+                          </div>
+                        ))}
+                        <p className="text-[11px] text-slate-500 leading-snug">
+                          Placeholder hiện chìm trong ô nhập của học sinh. Hệ PT: thêm 2 ô — placeholder <code className="bg-white px-1 rounded">x = …</code> và <code className="bg-white px-1 rounded">y = …</code>.
+                        </p>
+                      </div>
                     ) : null}
                     {(p.type || 'text') === 'true_false' ? (
                       <label className="flex items-center gap-2 text-sm font-semibold text-slate-600">
@@ -3109,7 +4274,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                             const next = practiceList.map((x, j) =>
                               j === idx ? { ...x, correctAnswer: e.target.value === 'true' } : x
                             );
-                            patchLessonContent({ practice: next });
+                            patchPracticeList(next);
                           }}
                           className="p-2 border rounded disabled:opacity-50"
                         >
@@ -3134,10 +4299,10 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                                   }
                                 : x
                             );
-                            patchLessonContent({ practice: next });
+                            patchPracticeList(next);
                           }}
                           placeholder="Mỗi dòng một mục cần sắp xếp"
-                          className="w-full p-2 border rounded text-sm min-h-[72px] disabled:opacity-50"
+                          className="w-full p-2 border rounded text-sm min-h-[216px] disabled:opacity-50 resize-y"
                         />
                         <input
                           disabled={jsonBroken}
@@ -3163,7 +4328,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                                   }
                                 : x
                             );
-                            patchLessonContent({ practice: next });
+                            patchPracticeList(next);
                           }}
                           placeholder="Thứ tự đúng (số thứ tự mục, ví dụ: 1,2,3)"
                           className="w-full p-2 border rounded text-sm disabled:opacity-50"
@@ -3188,10 +4353,10 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                                 return { id: `slot${si + 1}`, label: l };
                               });
                             const next = practiceList.map((x, j) => (j === idx ? { ...x, slots } : x));
-                            patchLessonContent({ practice: next });
+                            patchPracticeList(next);
                           }}
                           placeholder="Ô kéo thả — mỗi dòng: slot1: Nhãn ô"
-                          className="w-full p-2 border rounded text-sm min-h-[56px] disabled:opacity-50"
+                          className="w-full p-2 border rounded text-sm min-h-[168px] disabled:opacity-50 resize-y"
                         />
                         <textarea
                           disabled={jsonBroken}
@@ -3199,10 +4364,10 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                           onChange={(e) => {
                             const choices = e.target.value.split('\n').map((l) => l.trim()).filter(Boolean);
                             const next = practiceList.map((x, j) => (j === idx ? { ...x, choices } : x));
-                            patchLessonContent({ practice: next });
+                            patchPracticeList(next);
                           }}
                           placeholder="Lựa chọn kéo — mỗi dòng một đáp án"
-                          className="w-full p-2 border rounded text-sm min-h-[56px] disabled:opacity-50"
+                          className="w-full p-2 border rounded text-sm min-h-[168px] disabled:opacity-50 resize-y"
                         />
                         <textarea
                           disabled={jsonBroken}
@@ -3226,10 +4391,10 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                             const next = practiceList.map((x, j) =>
                               j === idx ? { ...x, correctAnswer } : x
                             );
-                            patchLessonContent({ practice: next });
+                            patchPracticeList(next);
                           }}
                           placeholder="Ghép đúng — mỗi dòng: slot1=Đáp án A"
-                          className="w-full p-2 border rounded text-sm min-h-[56px] disabled:opacity-50"
+                          className="w-full p-2 border rounded text-sm min-h-[168px] disabled:opacity-50 resize-y"
                         />
                       </div>
                     ) : null}
@@ -3242,10 +4407,10 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                             const next = practiceList.map((x, j) =>
                               j === idx ? { ...x, passage: e.target.value } : x
                             );
-                            patchLessonContent({ practice: next });
+                            patchPracticeList(next);
                           }}
                           placeholder="Đoạn văn — dùng {{1}}, {{2}}… để đánh dấu chỗ trống. Ví dụ: Hàm số $y=x^2$ có đỉnh {{1}}."
-                          className="w-full p-2 border rounded text-sm min-h-[88px] disabled:opacity-50 font-mono text-[13px]"
+                          className="w-full p-2 border rounded text-sm min-h-[264px] disabled:opacity-50 font-mono text-[13px] resize-y"
                         />
                         <textarea
                           disabled={jsonBroken}
@@ -3270,10 +4435,10 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                               })
                               .filter(Boolean);
                             const next = practiceList.map((x, j) => (j === idx ? { ...x, blanks } : x));
-                            patchLessonContent({ practice: next });
+                            patchPracticeList(next);
                           }}
                           placeholder="Đáp án từng chỗ trống — mỗi dòng: 1=(0; 0) hoặc 2=x=0"
-                          className="w-full p-2 border rounded text-sm min-h-[72px] disabled:opacity-50"
+                          className="w-full p-2 border rounded text-sm min-h-[216px] disabled:opacity-50 resize-y"
                         />
                       </div>
                     ) : null}
@@ -3285,10 +4450,24 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                         const next = practiceList.map((x, j) =>
                           j === idx ? { ...x, hint: e.target.value } : x
                         );
-                        patchLessonContent({ practice: next });
+                        patchPracticeList(next);
                       }}
                       placeholder="Gợi ý hướng dẫn (tùy chọn — học sinh bấm xem trước khi nộp bài)"
-                      className="w-full p-2 border rounded text-xs min-h-[56px] disabled:opacity-50 border-amber-200/80 bg-amber-50/30"
+                      className="w-full p-2 border rounded text-xs min-h-[168px] disabled:opacity-50 border-amber-200/80 bg-amber-50/30 resize-y"
+                    />
+                    <input
+                      data-admin-snippet={`lesson-practice-hint-video:${idx}`}
+                      disabled={jsonBroken}
+                      type="url"
+                      value={(p.hintVideoUrl ?? '').toString()}
+                      onChange={(e) => {
+                        const next = practiceList.map((x, j) =>
+                          j === idx ? { ...x, hintVideoUrl: e.target.value } : x
+                        );
+                        patchPracticeList(next);
+                      }}
+                      placeholder="Link video YouTube hướng dẫn (tùy chọn) — youtube.com/watch?v=... hoặc youtu.be/..."
+                      className="w-full p-2 border rounded text-xs disabled:opacity-50 border-amber-200/80 bg-amber-50/30"
                     />
                     <textarea
                       data-admin-snippet={`lesson-practice-ex:${idx}`}
@@ -3298,10 +4477,10 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                         const next = practiceList.map((x, j) =>
                           j === idx ? { ...x, explanation: e.target.value } : x
                         );
-                        patchLessonContent({ practice: next });
+                        patchPracticeList(next);
                       }}
                       placeholder="Lời giải chi tiết (hiện sau khi học sinh nộp bài)"
-                      className="w-full p-2 border rounded text-xs min-h-[56px] disabled:opacity-50"
+                      className="w-full p-2 border rounded text-xs min-h-[168px] disabled:opacity-50 resize-y"
                     />
                   </div>
                 ))}
@@ -3370,7 +4549,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                     }
                   }}
                   spellCheck={false}
-                  className="w-full flex-1 min-h-[min(40vh,480px)] text-xs font-mono p-3 border border-slate-300 rounded-lg bg-white resize-y disabled:opacity-50"
+                  className="w-full flex-1 min-h-[1440px] text-xs font-mono p-3 border border-slate-300 rounded-lg bg-white resize-y disabled:opacity-50"
                 />
                 <p className="text-[10px] text-slate-500 shrink-0">
                   Rời khỏi ô (blur) để lưu vào nội dung bài. Tab JSON nâng cao cũng có thể sửa trực tiếp khóa <code className="bg-slate-100 px-0.5 rounded">materials</code>.
@@ -3386,12 +4565,14 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                   value={editingLesson.content || ''}
                   onChange={(e) => setEditingLesson({ ...editingLesson, content: e.target.value })}
                   spellCheck={false}
-                  className="w-full flex-1 min-h-[min(48vh,560px)] text-xs font-mono p-2 border border-slate-300 rounded-lg bg-white resize-y"
+                  className="w-full flex-1 min-h-[1680px] h-[1680px] text-xs font-mono p-2 border border-slate-300 rounded-lg bg-white resize-y"
                 />
               </div>
             )}
             </div>
           </div>
+
+          <LessonSeoAdminPanel lesson={editingLesson} theoryCore={theoryCoreVal} lessonsList={lessonsList} />
 
           <button
             type="button"
@@ -3412,6 +4593,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
               <StudentLessonViewer
                 previewEmbed
                 previewSyncedTab={previewTab}
+                previewSectionIndex={hasSections ? activeSectionIdx : undefined}
                 lesson={draftLessonForPreview}
                 lessonsList={[draftLessonForPreview]}
                 quizzesList={[]}
@@ -3439,17 +4621,19 @@ alert("Hệ thống chưa kết nối (chưa đăng nhập). Vui lòng đợi 3-
       return;
     }
 if (!(editingQuiz.title || '').toString().trim() || editingQuiz.questions.length === 0) return alert("Kiểm tra lại tên đề và câu hỏi!");
-    const examType = (editingQuiz.exam_type || 'lesson').toString().trim();
+    const examType = (editingQuiz.exam_type || EXAM_TYPE.lesson).toString().trim();
     const gradeForQuiz = (editingQuiz.grade_level || activeGrade || '8').toString().trim();
-    if (examType === 'mock' && !(gradeForQuiz === '9' || gradeForQuiz === '12')) {
-      return alert("Đề thi thử (mock) chỉ áp dụng cho Lớp 9 và Lớp 12.");
+    if (examType === EXAM_TYPE.entrance_10 && gradeForQuiz !== '9') {
+      return alert('Đề thi thử tuyển sinh 10 chỉ dành cho khối 9.');
+    }
+    if (examType === EXAM_TYPE.entrance_univ && gradeForQuiz !== '12') {
+      return alert('Đề thi thử đại học chỉ dành cho khối 12.');
     }
     const chapter = (editingQuiz.chapter ?? '').toString().trim();
     const lessonNo = (editingQuiz.lesson_no ?? '').toString().trim();
-    const topicLessonId = (editingQuiz.topic_lesson_id || '').toString().trim();
-    const topicId = (editingQuiz.topic_id || '').toString().trim();
-    if (examType === 'lesson' && (!chapter || !lessonNo) && !topicLessonId) {
-      return alert("Đề theo bài cần chọn đầy đủ: Chương và Bài (hoặc gán theo Chuyên đề bằng topic_lesson_id).");
+    const sectionNo = (editingQuiz.section_no ?? '').toString().trim();
+    if (examType === 'lesson' && (!chapter || !lessonNo)) {
+      return alert('Đề theo bài cần chọn đầy đủ: Chương và Bài.');
     }
     const pp = normalizePartPoints(editingQuiz);
     const stars = Math.min(5, Math.max(1, Math.round(Number(editingQuiz.difficulty_stars)) || 3));
@@ -3458,12 +4642,13 @@ if (!(editingQuiz.title || '').toString().trim() || editingQuiz.questions.length
       ...editingQuiz,
       level: 'test',
       grade_level: gradeForQuiz,
-      exam_type: examType,
+      exam_type: normalizeExamType(examType, gradeForQuiz),
       points_mc: pp.points_mc,
       points_tf: pp.points_tf,
       points_short: pp.points_short,
       points_essay: pp.points_essay,
       difficulty_stars: stars,
+      questions: sortQuizQuestions(editingQuiz.questions || []),
       updated_at: now,
       ...(editingQuiz.isNew ? { created_at: now } : {}),
     };
@@ -3471,20 +4656,19 @@ if (!(editingQuiz.title || '').toString().trim() || editingQuiz.questions.length
     if (examType === 'lesson') {
       dataToSave.chapter = chapter;
       dataToSave.lesson_no = lessonNo;
-      dataToSave.topic_id = topicLessonId ? topicId : '';
-      dataToSave.topic_name = topicLessonId ? (editingQuiz.topic_name || '').toString().trim() : '';
-      dataToSave.topic_lesson_id = topicLessonId || '';
-      dataToSave.topic_lesson_title = topicLessonId ? (editingQuiz.topic_lesson_title || '').toString().trim() : '';
+      if (sectionNo) dataToSave.section_no = sectionNo;
+      else delete dataToSave.section_no;
     } else {
       if (chapter) dataToSave.chapter = chapter;
       else delete dataToSave.chapter;
       if (lessonNo) dataToSave.lesson_no = lessonNo;
       else delete dataToSave.lesson_no;
-      delete dataToSave.topic_id;
-      delete dataToSave.topic_name;
-      delete dataToSave.topic_lesson_id;
-      delete dataToSave.topic_lesson_title;
+      delete dataToSave.section_no;
     }
+    delete dataToSave.topic_id;
+    delete dataToSave.topic_name;
+    delete dataToSave.topic_lesson_id;
+    delete dataToSave.topic_lesson_title;
     delete dataToSave.isNew;
     try {
       setIsSavingQuiz(true);
@@ -3564,11 +4748,15 @@ alert("Lỗi lưu đề thi." + msg);
     if (!window.confirm(`Đưa ${editingQuiz.questions.length} câu của đề hiện tại vào Ngân hàng câu hỏi?`)) return;
     const now = Date.now();
     const gl = (editingQuiz.grade_level || activeGrade || '8').toString().trim();
+    const isGiftedExam = normalizeExamType(editingQuiz.exam_type, gl) === EXAM_TYPE.gifted;
     const baseMeta = {
       grade_level: gl,
       chapter: (editingQuiz.chapter ?? '').toString().trim(),
       lesson_no: (editingQuiz.lesson_no ?? '').toString().trim(),
       category: (editingQuiz.category ?? '').toString().trim(),
+      ...(isGiftedExam
+        ? { bank_section: BANK_SECTION_GIFTED, source_exam_type: EXAM_TYPE.gifted }
+        : {}),
     };
     const adds = (editingQuiz.questions || []).map((q) => {
       const q_type = (q?.type || 'multiple_choice').toString().trim();
@@ -3646,28 +4834,22 @@ alert("Lỗi lưu đề thi." + msg);
     }
     const t0 = Date.now();
     const withIds = questions.map((q, i) => ({
-      ...q,
+      ...normalizeImportedQuizQuestion(q, editingQuiz),
       id: `q_${t0}_${i}_${Math.random().toString(36).slice(2, 8)}`,
     }));
-    const ALLOW_EXAM = new Set(['lesson', 'combined', 'midterm', 'final', 'mock', 'entrance']);
-    const etRaw = (meta?.exam_type || meta?.type || editingQuiz.exam_type || 'lesson').toString().trim().toLowerCase();
-    const examType = ALLOW_EXAM.has(etRaw) ? etRaw : (editingQuiz.exam_type || 'lesson');
+    const ALLOW_EXAM = new Set([
+      ...Object.values(EXAM_TYPE),
+      'mock',
+      'entrance',
+    ]);
+    const etRaw = (meta?.exam_type || meta?.type || editingQuiz.exam_type || EXAM_TYPE.lesson).toString().trim().toLowerCase();
+    const parsedType = ALLOW_EXAM.has(etRaw) ? etRaw : (editingQuiz.exam_type || EXAM_TYPE.lesson);
+    const importGrade = (meta?.grade_level || editingQuiz.grade_level || activeGrade || '8').toString().trim();
+    const examType = normalizeExamType(parsedType, importGrade);
 
-    // Chuyên đề: cho phép gán đề theo bài (lesson) bằng topic_id + topic_lesson_id (ưu tiên) hoặc resolve theo title.
-    const metaTopicId = (meta?.topic_id || '').toString().trim();
-    const metaTopicName = (meta?.topic_name || '').toString().trim();
-    const metaTopicLessonId = (meta?.topic_lesson_id || '').toString().trim();
-    const metaTopicLessonTitle = (meta?.topic_lesson_title || '').toString().trim();
-    let resolvedLessonId = metaTopicLessonId;
-    if (!resolvedLessonId && metaTopicId && metaTopicLessonTitle) {
-      const want = metaTopicLessonTitle.toLowerCase();
-      const hit = (lessonsList || []).find(
-        (l) =>
-          String(l?.topic_id || '').trim() === metaTopicId &&
-          (l?.title || '').toString().trim().toLowerCase() === want
-      );
-      if (hit?.id) resolvedLessonId = hit.id;
-    }
+    const existing = Array.isArray(editingQuiz.questions) ? editingQuiz.questions : [];
+    const merged = sortQuizQuestions([...existing, ...withIds]);
+
     setEditingQuiz({
       ...editingQuiz,
       title: (meta?.title || '').toString().trim() || editingQuiz.title,
@@ -3677,14 +4859,11 @@ alert("Lỗi lưu đề thi." + msg);
       grade_level: meta?.grade_level || editingQuiz.grade_level,
       chapter: meta?.chapter || editingQuiz.chapter,
       lesson_no: meta?.lesson_no || editingQuiz.lesson_no,
-      topic_id: metaTopicId || editingQuiz.topic_id || '',
-      topic_name: metaTopicName || editingQuiz.topic_name || '',
-      topic_lesson_id: resolvedLessonId || editingQuiz.topic_lesson_id || '',
-      topic_lesson_title: metaTopicLessonTitle || editingQuiz.topic_lesson_title || '',
       exam_type: examType,
-      questions: withIds,
+      questions: merged,
     });
     setImportErrors([]);
+    setImportText('');
     return true;
   };
 
@@ -3753,39 +4932,41 @@ alert("Đọc file thất bại.");
     }
   };
 
-  const handleBulkImport = async () => {
-    if (!bulkText.trim()) return;
-    const names = bulkText.split('\n').map(n => n.trim()).filter(n => n.length > 0);
-    const uniqueNames = [...new Set(names)].filter(name => !allowedStudents.some(s => s.name.toLowerCase() === name.toLowerCase()));
-    await Promise.all(uniqueNames.map(name => addDoc(collection(db, COLLECTION_STUDENTS), { name, grade_level: activeGrade === 'ALL' ? '8' : activeGrade })));
-setShowBulkModal(false); setBulkText('');
-  };
-
   return (
     <div className="bg-white rounded-2xl shadow-lg w-full min-w-0 max-w-full border border-slate-200 overflow-hidden my-2 md:my-4 flex flex-col flex-1 min-h-0">
 <div className="flex flex-col md:flex-row justify-between items-center bg-slate-800 p-2 border-b border-slate-700">
 <div className="flex flex-wrap gap-2 text-slate-300">
-          <button onClick={() => { setActiveTab('lessons'); setEditingLesson(null); }} className={`min-w-[120px] py-2 px-4 rounded font-bold flex justify-center items-center gap-2 transition-colors ${activeTab === 'lessons' ? 'bg-indigo-600 text-white' : 'hover:bg-slate-700 hover:text-white'}`}><Video size={18} /> Bài Giảng</button>
-<button onClick={() => { setActiveTab('quizzes'); setEditingQuiz(null); }} className={`min-w-[120px] py-2 px-4 rounded font-bold flex justify-center items-center gap-2 transition-colors ${activeTab === 'quizzes' ? 'bg-blue-600 text-white' : 'hover:bg-slate-700 hover:text-white'}`}><BookOpen size={18} /> Đề Thi</button>
-<button onClick={() => { setActiveTab('bank'); setEditingBankQuestion(null); }} className={`min-w-[140px] py-2 px-4 rounded font-bold flex justify-center items-center gap-2 transition-colors ${activeTab === 'bank' ? 'bg-violet-600 text-white' : 'hover:bg-slate-700 hover:text-white'}`}><Sparkles size={18} /> Ngân hàng câu</button>
-<button onClick={() => setActiveTab('mindmap')} className={`min-w-[120px] py-2 px-4 rounded font-bold flex justify-center items-center gap-2 transition-colors ${activeTab === 'mindmap' ? 'bg-fuchsia-600 text-white' : 'hover:bg-slate-700 hover:text-white'}`}><Network size={18} /> Sơ đồ</button>
-<button onClick={() => setActiveTab('review_map')} className={`min-w-[140px] py-2 px-4 rounded font-bold flex justify-center items-center gap-2 transition-colors ${activeTab === 'review_map' ? 'bg-cyan-600 text-white' : 'hover:bg-slate-700 hover:text-white'}`}><MapIcon size={18} /> Ôn tập map</button>
-<button onClick={() => setActiveTab('scores')} className={`min-w-[120px] py-2 px-4 rounded font-bold flex justify-center items-center gap-2 transition-colors ${activeTab === 'scores' ? 'bg-teal-600 text-white' : 'hover:bg-slate-700 hover:text-white'}`}><FileText size={18} /> Bảng Điểm</button>
-<button onClick={() => setActiveTab('students')} className={`min-w-[120px] py-2 px-4 rounded font-bold flex justify-center items-center gap-2 transition-colors ${activeTab === 'students' ? 'bg-orange-600 text-white' : 'hover:bg-slate-700 hover:text-white'}`}><Users size={18} /> Danh sách</button>
+          <button onClick={() => goTab('lessons')} className={`min-w-[120px] py-2 px-4 rounded font-bold flex justify-center items-center gap-2 transition-colors ${activeTab === 'lessons' ? 'bg-indigo-600 text-white' : 'hover:bg-slate-700 hover:text-white'}`}><Video size={18} /> Bài Giảng</button>
+<button onClick={() => goTab('quizzes')} className={`min-w-[120px] py-2 px-4 rounded font-bold flex justify-center items-center gap-2 transition-colors ${activeTab === 'quizzes' ? 'bg-blue-600 text-white' : 'hover:bg-slate-700 hover:text-white'}`}><BookOpen size={18} /> Đề Thi</button>
+<button onClick={() => goTab('bank')} className={`min-w-[140px] py-2 px-4 rounded font-bold flex justify-center items-center gap-2 transition-colors ${activeTab === 'bank' ? 'bg-violet-600 text-white' : 'hover:bg-slate-700 hover:text-white'}`}><Sparkles size={18} /> Ngân hàng câu</button>
+<button onClick={() => goTab('mindmap')} className={`min-w-[120px] py-2 px-4 rounded font-bold flex justify-center items-center gap-2 transition-colors ${activeTab === 'mindmap' ? 'bg-fuchsia-600 text-white' : 'hover:bg-slate-700 hover:text-white'}`}><Network size={18} /> Sơ đồ tư duy ngược</button>
+<button onClick={() => goTab('review_map')} className={`min-w-[140px] py-2 px-4 rounded font-bold flex justify-center items-center gap-2 transition-colors ${activeTab === 'review_map' ? 'bg-cyan-600 text-white' : 'hover:bg-slate-700 hover:text-white'}`}><MapIcon size={18} /> Ôn tập map</button>
+<button onClick={() => goTab('classroom')} className={`min-w-[160px] py-2 px-4 rounded font-bold flex justify-center items-center gap-2 transition-colors ${activeTab === 'classroom' ? 'bg-teal-600 text-white' : 'hover:bg-slate-700 hover:text-white'}`}><Users size={18} /> Quản lí lớp học</button>
+{staffIsSuper ? (
+  <button onClick={() => goTab('teachers')} className={`min-w-[160px] py-2 px-4 rounded font-bold flex justify-center items-center gap-2 transition-colors ${activeTab === 'teachers' ? 'bg-indigo-500 text-white' : 'hover:bg-slate-700 hover:text-white'}`}><UserCog size={18} /> Quản lí giáo viên</button>
+) : null}
+{canAccessAdminTab(staff, 'homepage') ? (
+<button onClick={() => goTab('homepage')} className={`min-w-[140px] py-2 px-4 rounded font-bold flex justify-center items-center gap-2 transition-colors ${activeTab === 'homepage' ? 'bg-orange-600 text-white' : 'hover:bg-slate-700 hover:text-white'}`}><LayoutTemplate size={18} /> Trang chủ</button>
+) : null}
+<button onClick={() => goTab('community_qa')} className={`min-w-[140px] py-2 px-4 rounded font-bold flex justify-center items-center gap-2 transition-colors ${activeTab === 'community_qa' ? 'bg-sky-600 text-white' : 'hover:bg-slate-700 hover:text-white'}`}><MessageCircle size={18} /> Câu hỏi</button>
+<button onClick={() => goTab('weekly_contest')} className={`min-w-[140px] py-2 px-4 rounded font-bold flex justify-center items-center gap-2 transition-colors ${activeTab === 'weekly_contest' ? 'bg-amber-500 text-white' : 'hover:bg-slate-700 hover:text-white'}`}><Trophy size={18} /> Đố vui</button>
+<button onClick={() => goTab('blog')} className={`min-w-[120px] py-2 px-4 rounded font-bold flex justify-center items-center gap-2 transition-colors ${activeTab === 'blog' ? 'bg-blue-600 text-white' : 'hover:bg-slate-700 hover:text-white'}`}><BookOpen size={18} /> Blog</button>
+<button onClick={() => goTab('documents')} className={`min-w-[140px] py-2 px-4 rounded font-bold flex justify-center items-center gap-2 transition-colors ${activeTab === 'documents' ? 'bg-rose-600 text-white' : 'hover:bg-slate-700 hover:text-white'}`}><FolderOpen size={18} /> Tài liệu</button>
 </div>
-        <div className="mt-3 md:mt-0 flex items-center gap-2 text-white bg-slate-700 px-3 py-2 rounded-lg font-bold">
+        <div className="mt-3 md:mt-0 flex flex-col items-end gap-1 text-white">
+          <div className="text-[11px] text-slate-300 font-semibold">
+            {staffIsSuper ? 'Admin tổng' : `GV: ${staff.name || staff.username || '—'}`}
+          </div>
+          <div className="flex items-center gap-2 bg-slate-700 px-3 py-2 rounded-lg font-bold">
            Khối Lớp: 
 <select value={activeGrade} onChange={e => setActiveGrade(e.target.value)} className="bg-slate-900 border border-slate-600 rounded p-1 text-yellow-400">
-<option value="ALL">Toàn Trường (All)</option>
-<option value="6">Toán 6</option>
-<option value="7">Toán 7</option>
-<option value="8">Toán 8</option>
-<option value="9">Toán 9</option>
-<option value="10">Toán 10</option>
-<option value="11">Toán 11</option>
-<option value="12">Toán 12</option>
+{staffIsSuper ? <option value="ALL">Toàn Trường (All)</option> : null}
+{(staffGrades || ALL_GRADE_OPTIONS).map((g) => (
+  <option key={g} value={g}>Toán {g}</option>
+))}
            </select>
 </div>
+        </div>
       </div>
 <div className={`bg-slate-50 min-h-[600px] flex flex-col flex-1 min-h-0 ${editingLesson ? 'p-2 md:p-3' : 'p-4 md:p-6'}`}>
         <MatrixModal
@@ -3818,7 +4999,7 @@ setShowBulkModal(false); setBulkText('');
               lesson_no: '',
               exam_type: 'lesson',
               difficulty_stars: 3,
-              questions: qs,
+              questions: sortQuizQuestions(qs),
               ...DEFAULT_PART_POINTS,
             });
             setActiveTab('quizzes');
@@ -3829,21 +5010,49 @@ setShowBulkModal(false); setBulkText('');
           editingLesson ? renderLessonEditor() : (
 <div className="space-y-4">
 <div className="flex justify-between items-center bg-white p-4 rounded-xl border shadow-sm">
-<div><h2 className="font-bold text-lg text-slate-800">Kho Bài Giảng</h2><p className="text-sm text-slate-500">Đăng video YouTube và lý thuyết.</p></div>
-<button onClick={() => setEditingLesson({ isNew: true, title: '', videoUrl: '', videoMaterialUrl: '', pdfUrl: '', description: '', content: '', chapter: '', lesson_no: '', grade_level: activeGrade !== 'ALL' ? activeGrade : '' })} className="bg-indigo-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2"><Plus size={16} /> Đăng Bài Mới</button>
+<div><h2 className="font-bold text-lg text-slate-800">Kho Bài Giảng</h2><p className="text-sm text-slate-500">Thư mục theo lớp → chương SGK. Bài lưu đúng chương đã chọn khi soạn.</p></div>
+<button
+  onClick={() =>
+    setEditingLesson({
+      isNew: true,
+      title: '',
+      videoUrl: '',
+      slidesUrl: '',
+      videoMaterialUrl: '',
+      pdfUrl: '',
+      description: '',
+      content: '',
+      chapter: '',
+      lesson_no: '',
+      grade_level: activeGrade !== 'ALL' ? activeGrade : '9',
+    })
+  }
+  className="bg-indigo-600 text-white px-4 py-2 rounded-lg font-bold flex items-center gap-2"
+>
+  <Plus size={16} /> Đăng Bài Mới
+</button>
 </div>
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {filteredLessons.map(l => (
-<div key={l.id} className="bg-white p-4 rounded-xl border shadow-sm flex flex-col">
-<h3 className="font-bold text-slate-800 line-clamp-1 mb-2"><Video size={16} className="inline mr-1 text-indigo-500" />{l.title}</h3>
-<p className="text-xs text-slate-500 line-clamp-2 flex-1 mb-4">{l.description}</p>
-<div className="flex gap-2">
-<button onClick={() => setEditingLesson(l)} className="flex-1 bg-indigo-50 text-indigo-600 py-1.5 rounded font-semibold text-sm">Sửa</button>
-<button onClick={() => handleDeleteLesson(l.id)} className="px-3 bg-red-50 text-red-600 rounded"><Trash2 size={16} /></button>
-</div>
-                  </div>
-                ))}
-              </div>
+<LessonRepositoryPanel
+  lessonsList={lessonsList}
+  activeGrade={activeGrade}
+  onCreateLesson={({ grade_level, chapter, lesson_no }) =>
+    setEditingLesson({
+      isNew: true,
+      title: '',
+      videoUrl: '',
+      slidesUrl: '',
+      videoMaterialUrl: '',
+      pdfUrl: '',
+      description: '',
+      content: '',
+      chapter: chapter || '',
+      lesson_no: lesson_no || '',
+      grade_level: grade_level || (activeGrade !== 'ALL' ? activeGrade : '9'),
+    })
+  }
+  onEditLesson={(l) => setEditingLesson(l)}
+  onDeleteLesson={handleDeleteLesson}
+/>
 </div>
           )
         )}
@@ -3853,10 +5062,10 @@ setShowBulkModal(false); setBulkText('');
             <div className="min-w-0 bg-slate-50 p-2 md:p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col flex-1 min-h-0 xl:overflow-hidden xl:h-[calc(100dvh-6rem)] xl:max-h-[calc(100dvh-6rem)]">
               <div className="flex flex-col xl:flex-row xl:items-stretch gap-3 min-w-0 flex-1 min-h-0 xl:overflow-hidden">
                 <div
-                  className="w-full xl:flex-[7] xl:min-w-0 flex flex-col gap-2 min-w-0 min-h-0 xl:overflow-hidden"
+                  className="w-full xl:flex-[7] xl:min-w-0 min-w-0 min-h-0 xl:overflow-y-scroll xl:pr-1.5 [scrollbar-gutter:stable] space-y-3"
                   onFocusCapture={captureAdminTextFocus}
                 >
-                    <div className="bg-white rounded-lg border border-slate-200 p-2 shadow-sm shrink-0">
+                    <div className="bg-white rounded-lg border border-slate-200 p-2 shadow-sm">
                     <div className="flex justify-between items-center border-b border-slate-100 pb-1.5 mb-1.5 gap-2">
                       <h3 className="font-bold text-base text-blue-800 flex gap-2 items-center min-w-0">
                         <BookOpen size={18} className="shrink-0" /> <span className="truncate">Tạo/Sửa Đề Kiểm Tra</span>
@@ -3884,9 +5093,15 @@ setShowBulkModal(false); setBulkText('');
                           const ng = e.target.value;
                           const k = resolveKnowledgeForGrade(ng);
                           const validNos = new Set((k.chapters || []).map((c) => c.chapterNo));
+                          const validTypes = new Set(getQuizExamTypeOptions(ng).map((o) => o.value));
+                          let nextExamType = editingQuiz.exam_type || EXAM_TYPE.lesson;
+                          if (!validTypes.has(nextExamType)) nextExamType = EXAM_TYPE.lesson;
                           setEditingQuiz({
                             ...editingQuiz,
                             grade_level: ng,
+                            exam_type: nextExamType,
+                            chapter: '',
+                            lesson_no: '',
                             questions: (editingQuiz.questions || []).map((qq) => {
                               const ch = String(qq.chapter || '').trim();
                               const next = { ...qq };
@@ -3933,162 +5148,115 @@ setShowBulkModal(false); setBulkText('');
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
                       <select
-                        value={editingQuiz.exam_type || 'lesson'}
+                        value={editingQuiz.exam_type || EXAM_TYPE.lesson}
                         onChange={(e) => setEditingQuiz({ ...editingQuiz, exam_type: e.target.value })}
                         className="p-2 text-sm border rounded-md font-bold text-slate-700 bg-slate-50"
                       >
-                        <option value="lesson">Đề theo Bài</option>
-                        <option value="combined">Tổng hợp</option>
-                        <option value="midterm">Giữa kỳ</option>
-                        <option value="final">Cuối kỳ</option>
-                        <option value="mock">Thi thử</option>
-                        <option value="entrance">Tuyển sinh</option>
+                        {getQuizExamTypeOptions(editingQuiz.grade_level || activeGrade || '8').map(({ value, label }) => (
+                          <option key={value} value={value}>{label}</option>
+                        ))}
                       </select>
-                      <div className="grid grid-cols-2 gap-2">
-                        <input
-                          type="text"
-                          value={editingQuiz.topic_lesson_id ? '' : (editingQuiz.chapter || '')}
-                          onChange={(e) => setEditingQuiz({ ...editingQuiz, chapter: e.target.value })}
-                          disabled={!!editingQuiz.topic_lesson_id}
-                          placeholder={editingQuiz.topic_lesson_id ? 'Không cần' : 'Chương'}
-                          className={`p-2 text-sm border rounded-md font-semibold text-center ${editingQuiz.topic_lesson_id ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : ''}`}
-                        />
-                        <input
-                          type="text"
-                          value={editingQuiz.topic_lesson_id ? '' : (editingQuiz.lesson_no || '')}
-                          onChange={(e) => setEditingQuiz({ ...editingQuiz, lesson_no: e.target.value })}
-                          disabled={!!editingQuiz.topic_lesson_id}
-                          placeholder={editingQuiz.topic_lesson_id ? 'Không cần' : 'Bài'}
-                          className={`p-2 text-sm border rounded-md font-semibold text-center ${editingQuiz.topic_lesson_id ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : ''}`}
-                        />
-                      </div>
+                      {(editingQuiz.exam_type || EXAM_TYPE.lesson) === EXAM_TYPE.lesson ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                          <select
+                            value={(editingQuiz.chapter || '').toString()}
+                            onChange={(e) =>
+                              setEditingQuiz({
+                                ...editingQuiz,
+                                chapter: e.target.value,
+                                lesson_no: '',
+                                section_no: '',
+                              })
+                            }
+                            className="p-2 text-sm border rounded-md font-semibold bg-white min-w-0"
+                          >
+                            <option value="">— Chọn chương —</option>
+                            {quizChapterOptions.map(({ no, label }) => (
+                              <option key={no} value={no}>
+                                {label}
+                              </option>
+                            ))}
+                            {(editingQuiz.chapter || '').toString().trim() &&
+                            !quizChapterOptions.some(
+                              (o) => o.no === (editingQuiz.chapter || '').toString().trim()
+                            ) ? (
+                              <option value={(editingQuiz.chapter || '').toString().trim()}>
+                                Chương {editingQuiz.chapter}
+                              </option>
+                            ) : null}
+                          </select>
+                          <select
+                            value={(editingQuiz.lesson_no || '').toString()}
+                            disabled={!(editingQuiz.chapter || '').toString().trim()}
+                            onChange={(e) =>
+                              setEditingQuiz({
+                                ...editingQuiz,
+                                lesson_no: e.target.value,
+                                section_no: '',
+                              })
+                            }
+                            className="p-2 text-sm border rounded-md font-semibold bg-white min-w-0 disabled:opacity-50"
+                          >
+                            <option value="">— Chọn bài —</option>
+                            {quizLessonNoOptions.map(({ no, label }) => (
+                              <option key={no} value={no}>
+                                {label}
+                              </option>
+                            ))}
+                            {(editingQuiz.lesson_no || '').toString().trim() &&
+                            !quizLessonNoOptions.some(
+                              (o) => o.no === (editingQuiz.lesson_no || '').toString().trim()
+                            ) ? (
+                              <option value={(editingQuiz.lesson_no || '').toString().trim()}>
+                                Bài {editingQuiz.lesson_no}
+                              </option>
+                            ) : null}
+                          </select>
+                          <select
+                            value={(editingQuiz.section_no || '').toString()}
+                            disabled={!(editingQuiz.lesson_no || '').toString().trim()}
+                            onChange={(e) =>
+                              setEditingQuiz({ ...editingQuiz, section_no: e.target.value })
+                            }
+                            className="p-2 text-sm border rounded-md font-semibold bg-white min-w-0 disabled:opacity-50"
+                            title="Gắn đề vào một mục con trong bài (tuỳ chọn)"
+                          >
+                            <option value="">— Toàn bài (không gắn mục) —</option>
+                            {quizSectionOptions.map(({ no, label }) => (
+                              <option key={no} value={no}>
+                                {label}
+                              </option>
+                            ))}
+                            {(editingQuiz.section_no || '').toString().trim() &&
+                            !quizSectionOptions.some(
+                              (o) => o.no === (editingQuiz.section_no || '').toString().trim()
+                            ) ? (
+                              <option value={(editingQuiz.section_no || '').toString().trim()}>
+                                Mục {editingQuiz.section_no}
+                              </option>
+                            ) : null}
+                          </select>
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-2 gap-2">
+                          <input
+                            type="text"
+                            value={editingQuiz.chapter || ''}
+                            onChange={(e) => setEditingQuiz({ ...editingQuiz, chapter: e.target.value })}
+                            placeholder="Chương (tuỳ chọn)"
+                            className="p-2 text-sm border rounded-md font-semibold text-center"
+                          />
+                          <input
+                            type="text"
+                            value={editingQuiz.lesson_no || ''}
+                            onChange={(e) => setEditingQuiz({ ...editingQuiz, lesson_no: e.target.value })}
+                            placeholder="Bài (tuỳ chọn)"
+                            className="p-2 text-sm border rounded-md font-semibold text-center"
+                          />
+                        </div>
+                      )}
                     </div>
 
-                    {/* Gán đề theo chuyên đề: topic_id + topic_lesson_id (để hiện trong tab Đề luyện tập của bài chuyên đề) */}
-                    {(() => {
-                      const isLessonExam = (editingQuiz.exam_type || 'lesson') === 'lesson';
-                      const grade = (editingQuiz.grade_level || activeGrade || '8').toString().trim();
-                      const topicLessons = (lessonsList || []).filter((l) => {
-                        if (!l) return false;
-                        if (!String(l.topic_id || '').trim()) return false;
-                        const gl = String(l.grade_level || '').trim();
-                        if (gl && grade && gl !== grade) return false;
-                        return true;
-                      });
-                      const topics = Array.from(
-                        new Map(
-                          topicLessons.map((l) => [String(l.topic_id || '').trim(), String(l.topic_name || '').trim() || 'Chuyên đề'])
-                        ).entries()
-                      ).map(([id, name]) => ({ id, name }));
-                      topics.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'vi'));
-
-                      const curTopicId = String(editingQuiz.topic_id || '').trim();
-                      const curTopicLessonId = String(editingQuiz.topic_lesson_id || '').trim();
-                      const enabled = isLessonExam && topics.length > 0;
-                      const checked = !!curTopicLessonId || (!!curTopicId && !!String(editingQuiz.topic_name || '').trim());
-                      const lessonOptions = curTopicId
-                        ? topicLessons
-                            .filter((l) => String(l.topic_id || '').trim() === curTopicId)
-                            .sort((a, b) => (String(a.title || '')).localeCompare(String(b.title || ''), 'vi'))
-                        : [];
-
-                      return (
-                        <div className={`mt-2 p-2 rounded-md border ${enabled ? 'border-indigo-200 bg-indigo-50/40' : 'border-slate-200 bg-slate-50'}`}>
-                          <label className={`flex items-center gap-2 text-[12px] font-bold ${enabled ? 'text-indigo-900' : 'text-slate-400'} cursor-pointer select-none`}>
-                            <input
-                              type="checkbox"
-                              checked={checked}
-                              disabled={!enabled}
-                              onChange={(e) => {
-                                const on = e.target.checked;
-                                if (!on) {
-                                  setEditingQuiz({
-                                    ...editingQuiz,
-                                    topic_id: '',
-                                    topic_name: '',
-                                    topic_lesson_id: '',
-                                    topic_lesson_title: '',
-                                  });
-                                  return;
-                                }
-                                const first = topics[0];
-                                const nextTopicId = first?.id || '';
-                                const nextTopicName = first?.name || '';
-                                setEditingQuiz({
-                                  ...editingQuiz,
-                                  chapter: '',
-                                  lesson_no: '',
-                                  topic_id: nextTopicId,
-                                  topic_name: nextTopicName,
-                                  topic_lesson_id: '',
-                                  topic_lesson_title: '',
-                                });
-                              }}
-                              className="w-4 h-4 accent-indigo-600"
-                            />
-                            Đề thuộc Chuyên đề
-                            <span className="text-[10px] font-semibold text-slate-500">(tự hiện trong tab “Đề luyện tập” của bài chuyên đề)</span>
-                          </label>
-
-                          {checked && enabled ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-                              <select
-                                value={curTopicId}
-                                onChange={(e) => {
-                                  const id = e.target.value;
-                                  const hit = topics.find((t) => t.id === id);
-                                  setEditingQuiz({
-                                    ...editingQuiz,
-                                    chapter: '',
-                                    lesson_no: '',
-                                    topic_id: id,
-                                    topic_name: hit?.name || '',
-                                    topic_lesson_id: '',
-                                    topic_lesson_title: '',
-                                  });
-                                }}
-                                className="p-2 text-sm border rounded-md font-semibold bg-white"
-                              >
-                                {topics.map((t) => (
-                                  <option key={t.id} value={t.id}>
-                                    {t.name}
-                                  </option>
-                                ))}
-                              </select>
-
-                              <select
-                                value={curTopicLessonId}
-                                onChange={(e) => {
-                                  const id = e.target.value;
-                                  const hit = lessonOptions.find((l) => String(l.id) === String(id));
-                                  setEditingQuiz({
-                                    ...editingQuiz,
-                                    chapter: '',
-                                    lesson_no: '',
-                                    topic_lesson_id: id,
-                                    topic_lesson_title: (hit?.title || '').toString(),
-                                  });
-                                }}
-                                className="p-2 text-sm border rounded-md font-semibold bg-white"
-                              >
-                                <option value="">— Chọn bài trong chuyên đề —</option>
-                                {lessonOptions.map((l) => (
-                                  <option key={l.id} value={l.id}>
-                                    {String(l.title || 'Bài học')}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                          ) : null}
-
-                          {!enabled ? (
-                            <p className="text-[11px] text-slate-400 font-semibold mt-1">
-                              Bật “Đề theo Bài” và cần có ít nhất 1 bài giảng đã được gán chuyên đề để dùng tính năng này.
-                            </p>
-                          ) : null}
-                        </div>
-                      );
-                    })()}
                     <div className="mt-2 p-2 rounded-md border border-indigo-200 bg-indigo-50/50">
                       <p className="text-[10px] font-bold text-indigo-900 leading-tight mb-1.5">
                         Chia điểm (thang 10)
@@ -4208,7 +5376,7 @@ setShowBulkModal(false); setBulkText('');
                   </div>
 
                   {(quizEditorErrorGroups.global.length > 0 || quizEditorErrorGroups.byQuestion.size > 0) && (
-                    <div className="shrink-0 text-[11px] text-amber-900 bg-amber-50 border border-amber-200 rounded-md px-2 py-1.5">
+                    <div className="text-[11px] text-amber-900 bg-amber-50 border border-amber-200 rounded-md px-2 py-1.5">
                       <span className="font-bold">Tổng quan lỗi:</span>{' '}
                       {quizEditorErrorGroups.byQuestion.size > 0
                         ? `${quizEditorErrorGroups.byQuestion.size} câu có ghi chú đỏ bên dưới. `
@@ -4227,17 +5395,17 @@ setShowBulkModal(false); setBulkText('');
                     </div>
                   )}
 
-                  <div className="flex-1 min-h-0 min-w-0 overflow-y-auto overflow-x-hidden space-y-2 pb-2 pr-0.5">
+                  <div className="min-w-0 space-y-4 pb-2">
                     {editingQuiz.questions.map((q, qIdx) => {
                       const qErrs = quizEditorErrorGroups.byQuestion.get(qIdx + 1);
                       return (
-                        <div key={q.id || qIdx} className="p-2.5 border rounded-lg bg-white border-slate-200 relative shadow-sm">
+                        <div key={q.id || qIdx} className="p-3 md:p-4 border rounded-xl bg-white border-slate-200 relative shadow-sm">
                           <button
                             type="button"
                             onClick={() => {
                               const nq = [...editingQuiz.questions];
                               nq.splice(qIdx, 1);
-                              setEditingQuiz({ ...editingQuiz, questions: nq });
+                              commitQuizQuestions(nq);
                             }}
                             className="absolute top-2 right-2 text-red-400 hover:text-red-600"
                           >
@@ -4251,7 +5419,7 @@ setShowBulkModal(false); setBulkText('');
                                 onChange={(e) => {
                                   const nq = [...editingQuiz.questions];
                                   nq[qIdx].cognitive_level = e.target.value;
-                                  setEditingQuiz({ ...editingQuiz, questions: nq });
+                                  commitQuizQuestions(nq);
                                 }}
                                 className="text-[11px] font-black rounded-lg border px-2 py-1.5 bg-violet-50 text-violet-900 border-violet-200"
                                 title="Độ nhận thức"
@@ -4272,7 +5440,7 @@ setShowBulkModal(false); setBulkText('');
                                   if (curTag && Array.isArray(list) && list.length && !knowledgeTopicMatches(list, curTag)) {
                                     nq[qIdx].topic_tags = ['Các dạng toán khác'];
                                   }
-                                  setEditingQuiz({ ...editingQuiz, questions: nq });
+                                  commitQuizQuestions(nq);
                                 }}
                                 className="text-[11px] font-bold rounded-lg border px-2 py-1.5 bg-white text-slate-700 border-slate-200"
                                 title="Chương"
@@ -4283,33 +5451,57 @@ setShowBulkModal(false); setBulkText('');
                                 ))}
                               </select>
 
-                              <select
-                                value={String((q.topic_tags && q.topic_tags[0]) || '')}
-                                onChange={(e) => {
-                                  const nq = [...editingQuiz.questions];
-                                  const v = e.target.value;
-                                  nq[qIdx].topic_tags = v ? [v] : [];
-                                  setEditingQuiz({ ...editingQuiz, questions: nq });
-                                }}
-                                className="text-[11px] font-semibold rounded-lg border px-2 py-1.5 bg-white text-slate-700 border-slate-200 min-w-[260px]"
-                                title="Dạng toán (chỉ chọn trong danh sách)"
-                              >
-                                <option value="">-- Dạng toán --</option>
-                                {(() => {
-                                  const chSel = (q.chapter ?? editingQuiz.chapter ?? '').toString().trim();
-                                  const base = topicOptionsByChapter(chSel);
-                                  const curT = (q.topic_tags && q.topic_tags[0]) || '';
-                                  const opts =
-                                    curT && Array.isArray(base) && !knowledgeTopicMatches(base, curT)
-                                      ? [curT, ...base]
-                                      : base;
-                                  return opts.map((t) => (
-                                    <option key={t} value={t}>
-                                      {t}
-                                    </option>
-                                  ));
-                                })()}
-                              </select>
+                              <div className="flex items-center gap-1">
+                                <select
+                                  value={String((q.topic_tags && q.topic_tags[0]) || '')}
+                                  onChange={(e) => {
+                                    const nq = [...editingQuiz.questions];
+                                    const v = e.target.value;
+                                    nq[qIdx].topic_tags = v ? [v] : [];
+                                    commitQuizQuestions(nq);
+                                  }}
+                                  className="text-[11px] font-semibold rounded-lg border px-2 py-1.5 bg-white text-slate-700 border-slate-200 min-w-[220px] max-w-[320px]"
+                                  title="Dạng toán"
+                                >
+                                  <option value="">-- Dạng toán --</option>
+                                  {(() => {
+                                    const chSel = (q.chapter ?? editingQuiz.chapter ?? '').toString().trim();
+                                    const base = topicOptionsByChapter(chSel);
+                                    const curT = (q.topic_tags && q.topic_tags[0]) || '';
+                                    const opts =
+                                      curT && Array.isArray(base) && !knowledgeTopicMatches(base, curT)
+                                        ? [curT, ...base]
+                                        : base;
+                                    return opts.map((t) => (
+                                      <option key={t} value={t}>
+                                        {t}
+                                      </option>
+                                    ));
+                                  })()}
+                                </select>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const chSel = (q.chapter ?? editingQuiz.chapter ?? '').toString().trim();
+                                    if (!chSel) {
+                                      alert('Chọn chương trước khi thêm dạng toán mới.');
+                                      return;
+                                    }
+                                    const chOpt = chapterOptions.find((c) => c.value === chSel);
+                                    setCustomTopicModal({
+                                      qIdx,
+                                      chapter: chSel,
+                                      grade: quizCurriculumGrade,
+                                      chapterLabel: chOpt?.label || `Chương ${chSel}`,
+                                      initialLabel: (q.topic_tags && q.topic_tags[0]) || '',
+                                    });
+                                  }}
+                                  className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                                  title="Thêm dạng toán mới (lưu cho lần sau)"
+                                >
+                                  <Plus size={16} />
+                                </button>
+                              </div>
                             </div>
                           </div>
                           {qErrs && qErrs.length > 0 ? (
@@ -4328,10 +5520,14 @@ setShowBulkModal(false); setBulkText('');
                             onChange={(e) => {
                               const nq = [...editingQuiz.questions];
                               nq[qIdx].question = e.target.value;
-                              setEditingQuiz({ ...editingQuiz, questions: nq });
+                              commitQuizQuestions(nq);
                             }}
-                            className="w-full p-2.5 border rounded-md text-sm mb-2 min-h-[8rem] resize-y"
-                            placeholder="Nội dung câu hỏi..."
+                            className="w-full p-3 border rounded-md text-sm mb-2 min-h-[20rem] h-[20rem] resize-y leading-relaxed"
+                            placeholder={
+                              q.type === 'fill_blanks'
+                                ? 'Câu dẫn (tuỳ chọn) — ví dụ: Điền các chỗ trống trong đoạn văn sau'
+                                : 'Nội dung câu hỏi...'
+                            }
                           />
                           <select
                             value={q.type}
@@ -4353,13 +5549,18 @@ setShowBulkModal(false); setBulkText('');
                                 if (nq[qIdx].shortCorrect == null) nq[qIdx].shortCorrect = '';
                                 if (nq[qIdx].answerPlaceholder == null) nq[qIdx].answerPlaceholder = 'Nhập đáp án...';
                               }
-                              setEditingQuiz({ ...editingQuiz, questions: nq });
+                              if (typ === 'fill_blanks') {
+                                if (nq[qIdx].passage == null) nq[qIdx].passage = '';
+                                if (!Array.isArray(nq[qIdx].blanks)) nq[qIdx].blanks = [];
+                              }
+                              commitQuizQuestions(nq);
                             }}
                             className="mb-2 p-1.5 border rounded-md text-xs w-full font-bold text-slate-600"
                           >
                             <option value="multiple_choice">Trắc nghiệm A–D</option>
                             <option value="true_false_group">Đúng / Sai (a–d)</option>
                             <option value="short_answer">Trả lời ngắn</option>
+                            <option value="fill_blanks">Điền chỗ trống (đoạn văn)</option>
                             <option value="essay">Tự luận (nộp ảnh)</option>
                           </select>
                           {q.type === 'multiple_choice' && (
@@ -4372,7 +5573,7 @@ setShowBulkModal(false); setBulkText('');
                                     onChange={() => {
                                       const nq = [...editingQuiz.questions];
                                       nq[qIdx].correctAnswer = oIdx;
-                                      setEditingQuiz({ ...editingQuiz, questions: nq });
+                                      commitQuizQuestions(nq);
                                     }}
                                   />
                                   <input
@@ -4382,7 +5583,7 @@ setShowBulkModal(false); setBulkText('');
                                     onChange={(e) => {
                                       const nq = [...editingQuiz.questions];
                                       nq[qIdx].options[oIdx] = e.target.value;
-                                      setEditingQuiz({ ...editingQuiz, questions: nq });
+                                      commitQuizQuestions(nq);
                                     }}
                                     className="w-full text-sm border rounded px-2 py-1 bg-slate-50/80"
                                   />
@@ -4404,7 +5605,7 @@ setShowBulkModal(false); setBulkText('');
                                       const items = [...(nq[qIdx].tfItems || [])];
                                       items[ti] = { ...items[ti], text: e.target.value };
                                       nq[qIdx].tfItems = items;
-                                      setEditingQuiz({ ...editingQuiz, questions: nq });
+                                      commitQuizQuestions(nq);
                                     }}
                                     rows={2}
                                     className="flex-1 min-w-0 text-xs border rounded p-2 bg-white"
@@ -4417,7 +5618,7 @@ setShowBulkModal(false); setBulkText('');
                                       const items = [...(nq[qIdx].tfItems || [])];
                                       items[ti] = { ...items[ti], correct: e.target.value === 'true' };
                                       nq[qIdx].tfItems = items;
-                                      setEditingQuiz({ ...editingQuiz, questions: nq });
+                                      commitQuizQuestions(nq);
                                     }}
                                     className="text-xs font-bold border rounded p-2 bg-white shrink-0"
                                   >
@@ -4439,7 +5640,7 @@ setShowBulkModal(false); setBulkText('');
                                   onChange={(e) => {
                                     const nq = [...editingQuiz.questions];
                                     nq[qIdx].shortCorrect = e.target.value;
-                                    setEditingQuiz({ ...editingQuiz, questions: nq });
+                                    commitQuizQuestions(nq);
                                   }}
                                   className="w-full text-sm border rounded px-2 py-1.5"
                                   placeholder="12 | mười hai"
@@ -4454,12 +5655,56 @@ setShowBulkModal(false); setBulkText('');
                                   onChange={(e) => {
                                     const nq = [...editingQuiz.questions];
                                     nq[qIdx].answerPlaceholder = e.target.value;
-                                    setEditingQuiz({ ...editingQuiz, questions: nq });
+                                    commitQuizQuestions(nq);
                                   }}
                                   className="w-full text-sm border rounded px-2 py-1.5"
                                   placeholder="Nhập đáp án..."
                                 />
                               </div>
+                            </div>
+                          )}
+                          {q.type === 'fill_blanks' && (
+                            <div className="mb-2 space-y-2">
+                              <textarea
+                                data-admin-snippet={`quiz-fb-passage:${qIdx}`}
+                                value={(q.passage ?? '').toString()}
+                                onChange={(e) => {
+                                  const nq = [...editingQuiz.questions];
+                                  nq[qIdx].passage = e.target.value;
+                                  commitQuizQuestions(nq);
+                                }}
+                                placeholder="Đoạn văn — dùng {{1}}, {{2}}… để đánh dấu chỗ trống. Ví dụ: Hàm số $y=x^2$ có đỉnh {{1}}."
+                                className="w-full p-2 border rounded text-sm min-h-[16rem] font-mono text-[13px] resize-y"
+                              />
+                              <textarea
+                                data-admin-snippet={`quiz-fb-answers:${qIdx}`}
+                                value={(Array.isArray(q.blanks) ? q.blanks : [])
+                                  .map((b) =>
+                                    typeof b === 'object'
+                                      ? `${b.id}=${b.correctAnswer ?? b.answer ?? ''}`
+                                      : String(b ?? '')
+                                  )
+                                  .join('\n')}
+                                onChange={(e) => {
+                                  const blanks = e.target.value
+                                    .split('\n')
+                                    .map((l) => l.trim())
+                                    .filter(Boolean)
+                                    .map((l) => {
+                                      const m = l.match(/^(\d+)\s*=\s*(.+)$/);
+                                      if (m) return { id: m[1], correctAnswer: m[2].trim() };
+                                      const m2 = l.match(/^([^=]+)=\s*(.+)$/);
+                                      if (m2) return { id: m2[1].trim(), correctAnswer: m2[2].trim() };
+                                      return null;
+                                    })
+                                    .filter(Boolean);
+                                  const nq = [...editingQuiz.questions];
+                                  nq[qIdx].blanks = blanks;
+                                  commitQuizQuestions(nq);
+                                }}
+                                placeholder="Đáp án từng chỗ trống — mỗi dòng: 1=(0; 0) hoặc 2=x=0"
+                                className="w-full p-2 border rounded text-sm min-h-[12rem] resize-y"
+                              />
                             </div>
                           )}
                           <textarea
@@ -4468,9 +5713,9 @@ setShowBulkModal(false); setBulkText('');
                             onChange={(e) => {
                               const nq = [...editingQuiz.questions];
                               nq[qIdx].explanation = e.target.value;
-                              setEditingQuiz({ ...editingQuiz, questions: nq });
+                              commitQuizQuestions(nq);
                             }}
-                            className="w-full p-2.5 border border-amber-200 bg-amber-50/80 rounded-md text-sm min-h-[5.5rem] resize-y"
+                            className="w-full p-3 border border-amber-200 bg-amber-50/80 rounded-md text-sm min-h-[12rem] resize-y leading-relaxed"
                             placeholder="Lời giải..."
                           />
                         </div>
@@ -4478,26 +5723,24 @@ setShowBulkModal(false); setBulkText('');
                     })}
                   </div>
 
-                  <div className="shrink-0 z-10 space-y-2 pt-1 pb-0.5 bg-slate-50 rounded-b-lg border-t border-slate-200/90 shadow-[0_-4px_12px_rgba(15,23,42,0.06)]">
+                  <div className="space-y-2 pt-2 pb-4 border-t border-slate-200">
                     <button
                       type="button"
                       onClick={() => {
-                        setEditingQuiz({
-                          ...editingQuiz,
-                          questions: [
-                            ...editingQuiz.questions,
-                            {
-                              id: `q${Date.now()}`,
-                              type: 'multiple_choice',
-                              question: '',
-                              options: ['', '', '', ''],
-                              correctAnswer: 0,
-                              explanation: '',
-                            },
-                          ],
-                        });
+                        commitQuizQuestions([
+                          ...editingQuiz.questions,
+                          {
+                            id: `q${Date.now()}`,
+                            type: 'multiple_choice',
+                            question: '',
+                            options: ['', '', '', ''],
+                            correctAnswer: 0,
+                            explanation: '',
+                            cognitive_level: COG_LEVEL.recognize,
+                          },
+                        ]);
                       }}
-                      className="w-full border-2 border-dashed border-blue-400 text-blue-600 py-2.5 rounded-lg text-sm font-bold flex justify-center items-center gap-2 bg-white"
+                      className="w-full border-2 border-dashed border-blue-400 text-blue-600 py-3 rounded-lg text-sm font-bold flex justify-center items-center gap-2 bg-white"
                     >
                       <Plus size={18} /> Thêm câu
                     </button>
@@ -4505,7 +5748,7 @@ setShowBulkModal(false); setBulkText('');
                       type="button"
                       onClick={handleSaveQuiz}
                       disabled={isSavingQuiz}
-                      className={`w-full font-bold py-3 rounded-xl flex justify-center items-center gap-2 text-sm shadow-md ${
+                      className={`w-full font-bold py-3.5 rounded-xl flex justify-center items-center gap-2 text-sm shadow-md ${
                         isSavingQuiz ? 'bg-blue-300 text-white cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'
                       }`}
                     >
@@ -4551,6 +5794,10 @@ setShowBulkModal(false); setBulkText('');
                                   Ô nhập: {String(q.answerPlaceholder || 'Nhập đáp án...')}
                                 </p>
                               </div>
+                            ) : q.type === 'fill_blanks' ? (
+                              <div className="text-[11px]">
+                                <PracticeFillBlanksResult q={q} />
+                              </div>
                             ) : q.type === 'true_false_group' ? (
                               <ul className="text-[11px] space-y-1">
                                 {(q.tfItems || []).map((it) => (
@@ -4586,7 +5833,7 @@ setShowBulkModal(false); setBulkText('');
             </div>
           ) : (
             <div className="space-y-4">
-<div className="flex justify-between items-center bg-white p-4 rounded-xl border shadow-sm"><div><h2 className="font-bold text-lg text-slate-800">Kho Đề Thi</h2></div>
+<div className="flex justify-between items-center bg-white p-4 rounded-xl border shadow-sm"><div><h2 className="font-bold text-lg text-slate-800">Kho Đề Thi</h2><p className="text-sm text-slate-500">Thư mục theo loại đề · đề theo bài nằm trong chương SGK đã chọn khi soạn.</p></div>
 <div className="flex gap-2">
 {filteredQuizzes.length === 0 && <button onClick={() => Promise.all(SAMPLE_QUIZZES.map(q => addDoc(collection(db, COLLECTION_QUIZZES), { ...q, grade_level: activeGrade === 'ALL' ? '8' : activeGrade })))} className="bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded font-bold text-sm">Nạp Đề Mẫu</button>}
 <button
@@ -4598,7 +5845,10 @@ setShowBulkModal(false); setBulkText('');
                       level: 'test',
                       category: '',
                       grade_level: activeGrade === 'ALL' ? '8' : activeGrade,
-                      exam_type: 'lesson',
+                      exam_type: EXAM_TYPE.lesson,
+                      chapter: '',
+                      lesson_no: '',
+                      section_no: '',
                       questions: [],
                       difficulty_stars: 3,
                       ...DEFAULT_PART_POINTS,
@@ -4610,14 +5860,36 @@ setShowBulkModal(false); setBulkText('');
                 </button>
 </div>
               </div>
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {filteredQuizzes.map(q => (
-<div key={q.id} className="bg-white p-4 rounded-xl border shadow-sm flex flex-col justify-between">
-<div><h3 className="font-bold text-blue-800 mb-2">{q.title}</h3><p className="text-sm text-slate-500 mb-4">{q.questions?.length} câu • {q.duration} phút • độ khó {Math.min(5, Math.max(1, Number(q.difficulty_stars) || 3))}★</p></div>
-<div className="flex gap-2"><button onClick={() => setEditingQuiz({ ...q, level: 'test' })} className="flex-1 bg-blue-50 text-blue-600 py-1.5 rounded font-bold text-sm">Sửa Đề</button><button onClick={() => window.confirm("Xóa?") && deleteDoc(doc(db, COLLECTION_QUIZZES, q.id))} className="px-3 bg-red-50 text-red-600 rounded"><Trash2 size={16} /></button></div>
-</div>
-                ))}
-              </div>
+<QuizRepositoryPanel
+  quizzesList={quizzesList}
+  activeGrade={activeGrade}
+  onCreateQuiz={({ exam_type, chapter, grade_level }) =>
+    setEditingQuiz({
+      isNew: true,
+      title: '',
+      duration: 15,
+      level: 'test',
+      category: '',
+      grade_level: grade_level || (activeGrade !== 'ALL' ? activeGrade : '11'),
+      exam_type: exam_type || EXAM_TYPE.lesson,
+      chapter: chapter || '',
+      lesson_no: '',
+      section_no: '',
+      questions: [],
+      difficulty_stars: 3,
+      ...DEFAULT_PART_POINTS,
+    })
+  }
+  onEditQuiz={(q) =>
+    setEditingQuiz({
+      ...q,
+      level: 'test',
+      exam_type: normalizeExamType(q.exam_type, q.grade_level),
+      questions: sortQuizQuestions(q.questions || []),
+    })
+  }
+  onDeleteQuiz={(id) => window.confirm('Xóa đề này?') && deleteDoc(doc(db, COLLECTION_QUIZZES, id))}
+/>
 </div>
           )
         )}
@@ -4635,7 +5907,7 @@ setShowBulkModal(false); setBulkText('');
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-2">
                 <select
                   value={editingBankQuestion.cognitive_level || COG_LEVEL.recognize}
                   onChange={(e) => setEditingBankQuestion({ ...editingBankQuestion, cognitive_level: e.target.value })}
@@ -4697,46 +5969,52 @@ setShowBulkModal(false); setBulkText('');
                     </option>
                   ))}
                 </select>
-                <input
-                  value={editingBankQuestion.lesson_no || ''}
-                  onChange={(e) => setEditingBankQuestion({ ...editingBankQuestion, lesson_no: e.target.value })}
-                  placeholder="Bài"
-                  className="p-2 text-sm border rounded-md font-semibold text-center"
-                />
-                <select
-                  value={editingBankQuestion.category || ''}
-                  onChange={(e) => setEditingBankQuestion({ ...editingBankQuestion, category: e.target.value })}
-                  className="p-2 text-sm border rounded-md font-bold bg-slate-50 text-slate-800"
-                  title="Dạng (dang1..dang5)"
-                >
-                  <option value="">-- Dạng --</option>
-                  <option value="dang1">Dạng 1: Hàm số</option>
-                  <option value="dang2">Dạng 2: Phương trình</option>
-                  <option value="dang3">Dạng 3: Thực tế HH</option>
-                  <option value="dang4">Dạng 4: Thực tế HS</option>
-                  <option value="dang5">Dạng 5: Hình học</option>
-                </select>
-                <select
-                  value={String((editingBankQuestion.topic_tags || [])[0] || '')}
-                  onChange={(e) =>
-                    setEditingBankQuestion({
-                      ...editingBankQuestion,
-                      topic_tags: e.target.value ? [e.target.value] : [],
-                    })
-                  }
-                  className="p-2 text-sm border rounded-md font-semibold lg:col-span-2 min-w-0"
-                  title="Dạng toán (kiến thức)"
-                >
-                  <option value="">-- Dạng toán --</option>
-                  {getTopicOptionsForChapterAndGrade(
-                    (editingBankQuestion.grade_level || activeGrade || '8').toString(),
-                    String(editingBankQuestion.chapter || '')
-                  ).map((t) => (
-                    <option key={t} value={t}>
-                      {t.length > 120 ? `${t.slice(0, 118)}…` : t}
-                    </option>
-                  ))}
-                </select>
+                <div className="flex gap-1 lg:col-span-2 min-w-0">
+                  <select
+                    value={String((editingBankQuestion.topic_tags || [])[0] || '')}
+                    onChange={(e) =>
+                      setEditingBankQuestion({
+                        ...editingBankQuestion,
+                        topic_tags: e.target.value ? [e.target.value] : [],
+                      })
+                    }
+                    className="flex-1 p-2 text-sm border rounded-md font-semibold min-w-0"
+                    title="Dạng toán (kiến thức)"
+                  >
+                    <option value="">-- Dạng toán --</option>
+                    {getTopicOptionsForChapterAndGrade(
+                      (editingBankQuestion.grade_level || activeGrade || '8').toString(),
+                      String(editingBankQuestion.chapter || '')
+                    ).map((t) => (
+                      <option key={t} value={t}>
+                        {t.length > 120 ? `${t.slice(0, 118)}…` : t}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const gl = (editingBankQuestion.grade_level || activeGrade || '8').toString();
+                      const chSel = String(editingBankQuestion.chapter || '').trim();
+                      if (!chSel) {
+                        alert('Chọn chương trước khi thêm dạng toán mới.');
+                        return;
+                      }
+                      const chOpt = getChapterOptionsForGrade(gl).find((c) => c.value === chSel);
+                      setCustomTopicModal({
+                        context: 'bank',
+                        chapter: chSel,
+                        grade: gl,
+                        chapterLabel: chOpt?.label || `Chương ${chSel}`,
+                        initialLabel: (editingBankQuestion.topic_tags && editingBankQuestion.topic_tags[0]) || '',
+                      });
+                    }}
+                    className="shrink-0 inline-flex items-center justify-center w-8 h-8 rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                    title="Thêm dạng toán mới (lưu cho lần sau)"
+                  >
+                    <Plus size={16} />
+                  </button>
+                </div>
               </div>
 
               <textarea
@@ -4870,82 +6148,110 @@ setShowBulkModal(false); setBulkText('');
                 </div>
               </div>
 
-              <div className="bg-white p-4 rounded-xl border shadow-sm flex flex-col md:flex-row gap-2 md:items-center">
-                <div className="flex-1 min-w-0">
-                  <input
-                    value={bankSearch}
-                    onChange={(e) => setBankSearch(e.target.value)}
-                    placeholder="Tìm trong câu hỏi / lời giải / tags..."
-                    className="w-full p-2 border rounded-lg text-sm"
-                  />
+              <div className="bg-white p-4 rounded-xl border shadow-sm space-y-3">
+                <div className="flex flex-col md:flex-row gap-2 md:items-center">
+                  <div className="flex-1 min-w-0">
+                    <input
+                      value={bankSearch}
+                      onChange={(e) => setBankSearch(e.target.value)}
+                      placeholder="Tìm trong câu hỏi / lời giải / tags..."
+                      className="w-full p-2 border rounded-lg text-sm"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleMigrateEditingQuizToBank}
+                    disabled={!editingQuiz}
+                    className={`px-3 py-2 rounded-lg text-sm font-bold flex items-center gap-2 shrink-0 ${editingQuiz ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}`}
+                    title="Đưa câu hỏi của đề đang mở (Tạo/Sửa Đề) vào ngân hàng"
+                  >
+                    <Upload size={16} /> Lấy từ đề đang sửa
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={handleMigrateEditingQuizToBank}
-                  disabled={!editingQuiz}
-                  className={`px-3 py-2 rounded-lg text-sm font-bold flex items-center gap-2 ${editingQuiz ? 'bg-amber-100 text-amber-800 hover:bg-amber-200' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}`}
-                  title="Đưa câu hỏi của đề đang mở (Tạo/Sửa Đề) vào ngân hàng"
-                >
-                  <Upload size={16} /> Lấy từ đề đang sửa
-                </button>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2">
+                  <select
+                    value={bankFilterChapter}
+                    onChange={(e) => {
+                      setBankFilterChapter(e.target.value);
+                      setBankFilterTopic('');
+                    }}
+                    className="p-2 text-xs font-bold border rounded-lg bg-violet-50 text-violet-900 min-w-0"
+                    title="Lọc theo chương"
+                  >
+                    {bankChapterFilterOptions.map((o) => (
+                      <option key={o.value || 'all'} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    value={bankFilterTopic}
+                    onChange={(e) => setBankFilterTopic(e.target.value)}
+                    className="p-2 text-xs font-semibold border rounded-lg bg-white text-slate-800 min-w-0"
+                    title="Lọc theo dạng toán"
+                  >
+                    {bankTopicFilterOptions.map((o) => (
+                      <option key={o.value || 'all-topic'} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    value={bankFilterQType}
+                    onChange={(e) => setBankFilterQType(e.target.value)}
+                    className="p-2 text-xs font-bold border rounded-lg bg-white text-slate-800 min-w-0"
+                    title="Lọc theo loại câu"
+                  >
+                    <option value="">Tất cả loại câu</option>
+                    {Object.values(QUESTION_TYPE).map((k) => (
+                      <option key={k} value={k}>
+                        {QUESTION_TYPE_LABEL[k]}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    value={bankFilterCogLevel}
+                    onChange={(e) => setBankFilterCogLevel(e.target.value)}
+                    className="p-2 text-xs font-bold border rounded-lg bg-white text-slate-800 min-w-0"
+                    title="Lọc theo mức độ"
+                  >
+                    <option value="">Tất cả mức độ</option>
+                    {Object.values(COG_LEVEL).map((k) => (
+                      <option key={k} value={k}>
+                        {COG_LEVEL_LABEL[k]}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {(bankFilterChapter || bankFilterTopic || bankFilterQType || bankFilterCogLevel) ? (
+                  <div className="flex items-center justify-between gap-2 text-xs">
+                    <span className="text-slate-500 font-semibold">
+                      Đang lọc · {filteredBankQuestions.length} câu
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setBankFilterChapter('');
+                        setBankFilterTopic('');
+                        setBankFilterQType('');
+                        setBankFilterCogLevel('');
+                      }}
+                      className="text-violet-700 font-bold hover:underline shrink-0"
+                    >
+                      Xóa bộ lọc
+                    </button>
+                  </div>
+                ) : null}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {filteredBankQuestions.length === 0 ? (
-                  <div className="col-span-full bg-slate-50 p-10 rounded-2xl border-2 border-dashed border-slate-200 text-center text-slate-500">
-                    Chưa có câu hỏi trong ngân hàng (hoặc bộ lọc rỗng).
-                  </div>
-                ) : (
-                  filteredBankQuestions.map((q) => (
-                    <div key={q.id} className="bg-white p-4 rounded-xl border shadow-sm flex flex-col gap-2">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="min-w-0">
-                          <p className="text-[11px] font-bold text-slate-500">
-                            {q.chapter ? `Chương ${q.chapter}` : '—'} {q.lesson_no ? `· Bài ${q.lesson_no}` : ''} {q.category ? `· ${q.category}` : ''}
-                          </p>
-                          <p className="text-xs font-bold text-violet-800 mt-0.5">
-                            {COG_LEVEL_LABEL[String(q.cognitive_level || COG_LEVEL.recognize)]} · {QUESTION_TYPE_LABEL[String(q.q_type || QUESTION_TYPE.multiple_choice)]}
-                          </p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => handleDeleteBankQuestion(q.id)}
-                          className="text-red-500 hover:text-red-700"
-                          title="Xóa"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                      <div className="text-sm text-slate-800 line-clamp-3">
-                        <MathContent text={String(q.question || '—')} />
-                      </div>
-                      {(q.topic_tags || []).length > 0 && (
-                        <div className="flex flex-wrap gap-1">
-                          {(q.topic_tags || []).slice(0, 4).map((t) => (
-                            <span key={t} className="text-[10px] font-bold px-2 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
-                              {t}
-                            </span>
-                          ))}
-                          {(q.topic_tags || []).length > 4 && (
-                            <span className="text-[10px] font-bold px-2 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
-                              +{(q.topic_tags || []).length - 4}
-                            </span>
-                          )}
-                        </div>
-                      )}
-                      <div className="flex gap-2 pt-1">
-                        <button
-                          type="button"
-                          onClick={() => setEditingBankQuestion({ ...q, topic_tags: q.topic_tags || [] })}
-                          className="flex-1 bg-violet-50 text-violet-700 py-2 rounded-lg font-bold text-sm hover:bg-violet-100"
-                        >
-                          <Edit2 size={16} className="inline mr-1" /> Sửa
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
+              <QuestionRepositoryPanel
+                questions={filteredBankQuestions}
+                activeGrade={activeGrade}
+                onEditQuestion={(q) => setEditingBankQuestion({ ...q, topic_tags: q.topic_tags || [] })}
+                onDeleteQuestion={handleDeleteBankQuestion}
+              />
             </div>
           )
         )}
@@ -4970,34 +6276,33 @@ setShowBulkModal(false); setBulkText('');
           />
         )}
 
-        {activeTab === 'scores' && (
-<div className="bg-white p-4 rounded-xl border shadow-sm h-full">
-<div className="flex justify-between items-center mb-4">
-<h2 className="font-bold text-lg text-teal-800">Bảng Điểm</h2>
-<select className="border p-2 rounded text-sm font-bold bg-slate-50" value={filterQuizId} onChange={e => setFilterQuizId(e.target.value)}><option value="ALL">Tất cả đề thi</option>{filteredQuizzes.map(q => <option key={q.id} value={q.id}>{q.title}</option>)}</select>
-</div>
-<div className="overflow-auto max-h-[450px]">
-<table className="w-full text-left text-sm"><thead className="bg-slate-100 sticky top-0"><tr><th className="p-2">Tên</th><th className="p-2">Đề thi</th><th className="p-2 text-center">Điểm</th><th className="p-2 text-center">Tự luận</th><th className="p-2"></th></tr></thead><tbody>
-                {(filterQuizId === 'ALL' ? scoresList : scoresList.filter(s => s.quizId === filterQuizId)).filter(s => activeGrade === 'ALL' || s.grade_level === activeGrade).map(s => (
-                  <tr key={s.id} className="border-b"><td className="p-2 font-bold">{s.name}</td><td className="p-2 text-slate-500 truncate max-w-[150px]">{s.quizTitle}</td><td className="p-2 text-center font-bold text-blue-600">{s.score}</td><td className="p-2 text-center">{s.essayImages && Object.keys(s.essayImages).length > 0 ? <button onClick={() => setViewingImage({ name: s.name, img: Object.values(s.essayImages)[0] })} className="bg-teal-50 text-teal-700 px-2 py-1 rounded text-xs font-bold">Xem ảnh</button> : '-'}</td><td className="p-2 text-right"><button onClick={() => window.confirm('Xóa kết quả này?') && deleteDoc(doc(db, COLLECTION_SCORES, s.id))} className="text-red-400"><Trash2 size={14} /></button></td></tr>
-                ))}
-              </tbody></table>
-</div>
-          </div>
+        {activeTab === 'classroom' && (
+          <ClassroomManagementPanel
+            db={db}
+            activeGrade={activeGrade}
+            studentsList={allowedStudents}
+            classesList={classesList}
+            scoresList={scoresList}
+            quizzesList={quizzesList}
+            lessonsList={lessonsList}
+            trialRegistrations={trialRegistrations}
+            onViewEssayImage={setViewingImage}
+            staffSession={staff}
+          />
         )}
 
-        {activeTab === 'students' && (
-<div className="bg-white p-4 rounded-xl border shadow-sm">
-<div className="flex justify-between items-center mb-4"><h2 className="font-bold text-lg text-orange-800">Quản lý Học Sinh ({(activeGrade === 'ALL' ? allowedStudents : allowedStudents.filter(s => s.grade_level === activeGrade)).length})</h2> <button onClick={() => setShowBulkModal(true)} className="bg-orange-100 text-orange-700 px-3 py-1.5 rounded font-bold text-sm flex items-center gap-1"><Upload size={14} /> Nhập từ Excel</button></div>
-<form onSubmit={e => { e.preventDefault(); if (newStudentName.trim()) addDoc(collection(db, COLLECTION_STUDENTS), { name: newStudentName, grade_level: activeGrade === 'ALL' ? '8' : activeGrade }); setNewStudentName(''); }} className="flex gap-2 mb-4"><input value={newStudentName} onChange={e => setNewStudentName(e.target.value)} placeholder="Thêm học sinh mới..." className="flex-1 p-2 border rounded focus:ring-2 ring-orange-400" /><button className="bg-orange-600 text-white px-4 py-2 rounded font-bold">Thêm</button></form>
-<div className="grid grid-cols-2 md:grid-cols-3 gap-2">{(activeGrade === 'ALL' ? allowedStudents : allowedStudents.filter(s => s.grade_level === activeGrade)).map(s => <div key={s.id} className="flex justify-between items-center bg-slate-50 border p-2 rounded"><span className="font-medium text-sm">{s.name}</span><button onClick={() => deleteDoc(doc(db, COLLECTION_STUDENTS, s.id))} className="text-red-400 p-1"><XCircle size={16} /></button></div>)}</div>
-</div>
+        {activeTab === 'teachers' && staffIsSuper && (
+          <AdminTeachersPanel classesList={classesList} />
         )}
+
+        {activeTab === 'homepage' && canAccessAdminTab(staff, 'homepage') && (
+          <HomepageCmsAdminPanel db={db} storage={storage} user={user} />
+        )}
+        {activeTab === 'community_qa' && <AdminCommunityQuestionsPanel />}
+        {activeTab === 'weekly_contest' && <AdminWeeklyContestPanel />}
+        {activeTab === 'blog' && <AdminBlogPanel />}
+        {activeTab === 'documents' && <AdminDocumentsPanel />}
       </div>
-
-      {showBulkModal && (
-<div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50"><div className="bg-white p-6 rounded-xl w-full max-w-md"><h3 className="font-bold mb-2">Nhập tên từ Excel (Mỗi tên 1 dòng)</h3><textarea value={bulkText} onChange={e => setBulkText(e.target.value)} className="w-full h-48 border rounded p-2 mb-4 text-sm" /><div className="flex gap-2"><button onClick={() => setShowBulkModal(false)} className="flex-1 bg-slate-100 py-2 rounded font-bold">Hủy</button><button onClick={handleBulkImport} className="flex-1 bg-orange-600 text-white py-2 rounded font-bold">Xác nhận nạp</button></div></div></div>
-      )}
 
       {showImportModal && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-2 md:p-4 z-50">
@@ -5137,6 +6442,21 @@ setShowBulkModal(false); setBulkText('');
       )}
 
       {/* Bank import removed per request */}
+
+      <AddCustomMathTopicModal
+        open={Boolean(customTopicModal)}
+        chapterLabel={customTopicModal?.chapterLabel || ''}
+        gradeLevel={
+          customTopicModal?.grade ||
+          (customTopicModal?.context === 'bank'
+            ? editingBankQuestion?.grade_level
+            : quizCurriculumGrade)
+        }
+        initialLabel={customTopicModal?.initialLabel || ''}
+        saving={savingCustomTopic}
+        onClose={() => !savingCustomTopic && setCustomTopicModal(null)}
+        onSave={handleSaveCustomMathTopic}
+      />
 
       {viewingImage && (
         <div className="fixed inset-0 bg-black/80 flex justify-center items-center z-50 p-4"><div className="bg-white rounded-xl overflow-hidden max-w-2xl w-full"><div className="flex justify-between items-center p-4 border-b"><strong>Ảnh bài làm: {viewingImage.name}</strong><button onClick={() => setViewingImage(null)}><XCircle size={24} /></button></div><img src={viewingImage.img} className="w-full h-auto" alt="Bài làm" /></div></div>

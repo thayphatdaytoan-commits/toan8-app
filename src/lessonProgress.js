@@ -74,10 +74,5 @@ export function shuffleMcqOptions(q) {
 
 export function buildShuffledPracticeOrder(practice) {
   const list = Array.isArray(practice) ? practice : [];
-  const mapped = list.map((q) => {
-    const base = q.type === 'mcq' ? shuffleMcqOptions({ ...q }) : { ...q };
-    return preparePracticeQuestion(base);
-  });
-  const order = shuffleIndices(mapped.length);
-  return order.map((i) => mapped[i]);
+  return list.map((q) => preparePracticeQuestion({ ...q }));
 }

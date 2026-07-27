@@ -252,10 +252,89 @@ export function inputAnswerLooseOk(rawCorrect, rawUser) {
   return false;
 }
 
+/**
+ * Nhiều ô nhập cho loại input (vd. hệ PT: x và y).
+ * Mỗi phần: { id, placeholder, correctAnswer } — correctAnswer có thể dùng | hoặc ; cho biến thể.
+ * Tương thích cũ: chỉ có correctAnswer (+ answerPlaceholder) → 1 ô.
+ */
+export function normalizeInputAnswerParts(p) {
+  if (Array.isArray(p?.answerParts) && p.answerParts.length > 0) {
+    return p.answerParts
+      .map((part, i) => {
+        if (!part || typeof part !== 'object') {
+          const s = String(part ?? '').trim();
+          return s ? { id: String(i + 1), placeholder: '', correctAnswer: s } : null;
+        }
+        const id = String(part.id ?? i + 1).trim() || String(i + 1);
+        return {
+          id,
+          placeholder: String(part.placeholder ?? part.label ?? '').trim(),
+          correctAnswer: String(part.correctAnswer ?? part.answer ?? '').trim(),
+        };
+      })
+      .filter(Boolean);
+  }
+  const correct = String(p?.correctAnswer ?? '').trim();
+  const ph = String(p?.answerPlaceholder ?? '').trim();
+  return [{ id: '1', placeholder: ph, correctAnswer: correct }];
+}
+
+export function formatInputCorrectAnswerDisplay(q) {
+  const parts = normalizeInputAnswerParts(q);
+  const firstVariant = (s) =>
+    String(s || '')
+      .split(/[|;]/g)
+      .map((x) => x.trim())
+      .filter(Boolean)[0] || String(s || '').trim();
+
+  if (parts.length <= 1) {
+    return firstVariant(parts[0]?.correctAnswer || q?.correctAnswer || '');
+  }
+  return parts
+    .map((part) => {
+      const label = (part.placeholder || part.id || '').replace(/\s*[?=…·.]+$/u, '').trim() || part.id;
+      return `${label} ${firstVariant(part.correctAnswer)}`.trim();
+    })
+    .join('; ');
+}
+
+/** Lấy giá trị từng ô từ answer (string cũ hoặc object { id: value }). */
+export function resolveInputPartValues(parts, userAnswer) {
+  const list = Array.isArray(parts) ? parts : [];
+  const out = {};
+  if (userAnswer && typeof userAnswer === 'object' && !Array.isArray(userAnswer)) {
+    for (const part of list) {
+      out[part.id] = String(userAnswer[part.id] ?? '').trim();
+    }
+    return out;
+  }
+  const s = String(userAnswer ?? '');
+  if (list.length === 1) {
+    out[list[0].id] = s;
+    return out;
+  }
+  // Chuỗi cũ "a; b" → gán lần lượt
+  const chunks = s.split(/[;|]/g).map((x) => x.trim());
+  list.forEach((part, i) => {
+    out[part.id] = chunks[i] ?? '';
+  });
+  return out;
+}
+
+export function inputPartsAnswerOk(parts, userAnswer) {
+  const list = Array.isArray(parts) ? parts : [];
+  if (!list.length) return false;
+  const values = resolveInputPartValues(list, userAnswer);
+  return list.every((part) => inputAnswerLooseOk(part.correctAnswer, values[part.id]));
+}
+
 export function scorePracticeQuestion(q, userAnswer) {
   const t = q?.type;
   if (t === 'mcq') return userAnswer === q.correctAnswer;
-  if (t === 'input') return inputAnswerLooseOk(q.correctAnswer, userAnswer);
+  if (t === 'input') {
+    const parts = normalizeInputAnswerParts(q);
+    return inputPartsAnswerOk(parts, userAnswer);
+  }
   if (t === 'true_false') {
     const expected = normalizeTrueFalseAnswer(q.correctAnswer);
     const got = normalizeTrueFalseAnswer(userAnswer);
@@ -287,12 +366,14 @@ export function preparePracticeQuestion(q) {
   if (type === 'drag_drop') {
     const slots = parseDragSlots(q.slots);
     const choices = parseDragChoices(q.choices);
-    const shuffledChoices = shuffleIndices(choices.length).map((i) => choices[i]);
-    return { ...q, slots, choices: shuffledChoices };
+    return { ...q, slots, choices };
   }
   if (type === 'fill_blanks') {
     const fb = normalizeFillBlanksQuestion(q);
     return { ...q, ...fb };
+  }
+  if (type === 'input') {
+    return { ...q, answerParts: normalizeInputAnswerParts(q) };
   }
   return { ...q };
 }
@@ -308,6 +389,7 @@ export function normalizePracticeQuestion(p, index = 0) {
     type,
     question: (p?.question ?? p?.content ?? '').toString(),
     hint: (p?.hint ?? p?.guidance ?? '').toString().trim(),
+    hintVideoUrl: (p?.hintVideoUrl ?? p?.hint_video_url ?? p?.guidanceVideoUrl ?? '').toString().trim(),
     explanation: (p?.explanation ?? '').toString().trim(),
   };
 
@@ -319,10 +401,12 @@ export function normalizePracticeQuestion(p, index = 0) {
     };
   }
   if (type === 'input') {
+    const answerParts = normalizeInputAnswerParts(p);
     return {
       ...base,
       correctAnswer: p?.correctAnswer,
       answerPlaceholder: (p?.answerPlaceholder ?? '').toString(),
+      answerParts,
     };
   }
   if (type === 'true_false') {

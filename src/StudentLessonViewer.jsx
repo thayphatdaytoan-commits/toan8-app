@@ -5,7 +5,6 @@ import {
   Menu,
   X,
   Calculator,
-  Bell,
   Compass,
   ChevronDown,
   ChevronLeft,
@@ -27,6 +26,7 @@ import {
   Sparkles,
   PanelLeftClose,
   PanelLeftOpen,
+  Presentation,
 } from 'lucide-react';
 
 const DEFAULT_EXTERNAL_HOME =
@@ -35,23 +35,55 @@ import { TextWithMath, TextWithMathWithLoiGiai } from './Math11Template';
 import { stripLoiGiaiPrefix } from './loiGiaiSegments';
 import { isAllowedImageUrl } from './RichMathContent';
 import { embedSanitizedSvgIntoHtmlString } from './svgEmbed';
-import { extractYouTubeID, buildYouTubeEmbedUrl, buildYouTubeWatchUrl } from './youtubeUtils';
+import { extractYouTubeID } from './youtubeUtils';
+import LessonYouTubePlayer from './LessonYouTubePlayer';
+import LessonSlidesEmbed from './LessonSlidesEmbed';
 import {
   theoryCorePlainToHtml,
   splitPhuongPhapBlocks,
   wrapPhuongPhapBlock,
   parseExamplesCoreStructure,
+  normalizeDoubleBackslashInMath,
 } from './theoryCoreRichText';
 import { buildShuffledPracticeOrder, computeLessonStudyProgress } from './lessonProgress';
 import BackButton from './BackButton';
 import LessonPracticeSection from './LessonPracticeSection';
+import StudentNotificationBell from './StudentNotificationBell';
 import { isInteractivePracticeType, normalizePracticeList, resolvePracticeDisplayMode, scorePracticeQuestion } from './practiceQuestionTypes';
+import {
+  getLessonDisplayLabel,
+  getSidebarLessonTitle,
+  getSectionDisplayLabel,
+  normalizeLessonSections,
+  resolveActiveLessonSlice,
+  sortLessonSections,
+  mergeLessonsByLessonNo,
+  lessonBelongsToGroup,
+  isSgkRoadmapLesson,
+  roadmapChapterKey,
+} from './lessonSections';
+import { formatSgkChapterHeading, formatSgkLessonHeading } from './sgkToc';
 
 /** Thứ tự tab nội dung bài: lý thuyết → luyện tập → đề luyện → PDF */
 const LESSON_TAB_SEQUENCE = ['theory', 'practice', 'papers', 'pdf'];
 
 function lessonNoSortKey(raw) {
   const m = String(raw ?? '').match(/(\d+(?:[.,]\d+)?)/);
+  return m ? parseFloat(m[1].replace(',', '.')) : Number.MAX_SAFE_INTEGER;
+}
+
+function isChapterReviewLesson(lesson) {
+  const title = String(lesson?.title || '').trim();
+  const no = String(lesson?.lesson_no || '').trim();
+  if (/^OT\d*/i.test(no)) return true;
+  // Khớp dù title có tiền tố "Bài X." hay không
+  if (/ôn\s*tập/i.test(title)) return true;
+  return false;
+}
+
+function titleLessonSortKey(lesson) {
+  const title = String(lesson?.title || '').trim();
+  const m = title.match(/\bbài\s*(\d+(?:[.,]\d+)?)/i);
   return m ? parseFloat(m[1].replace(',', '.')) : Number.MAX_SAFE_INTEGER;
 }
 
@@ -93,7 +125,7 @@ function HtmlWithMath({ html, className }) {
     const withSvg = embedSanitizedSvgIntoHtmlString(html || '');
     const withImg = markdownImagesToHtmlInString(withSvg);
     const safe = withImg.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    ref.current.innerHTML = safe;
+    ref.current.innerHTML = normalizeDoubleBackslashInMath(safe);
     try {
       renderMathInElement(ref.current, {
         delimiters: [
@@ -306,46 +338,77 @@ function ExamplesCorePanel({ examplesCoreText, phuongPhapFromTheory = [] }) {
 
   const parsed = useMemo(() => {
     if (!hasExamples) {
-      return { dangBody: null, remainder: '', phuongPhapFromExamples: [], examplesHtml: '' };
+      return {
+        groups: [],
+        preface: '',
+        dangBody: null,
+        remainder: '',
+        phuongPhapFromExamples: [],
+      };
     }
-    const structure = parseExamplesCoreStructure(examplesCoreText);
-    return {
-      ...structure,
-      examplesHtml: structure.remainder ? theoryCorePlainToHtml(structure.remainder) : '',
-    };
+    return parseExamplesCoreStructure(examplesCoreText);
   }, [examplesCoreText, hasExamples]);
-
-  const allPhuongPhap = useMemo(
-    () => [...(phuongPhapFromTheory || []), ...(parsed.phuongPhapFromExamples || [])],
-    [phuongPhapFromTheory, parsed.phuongPhapFromExamples]
-  );
 
   if (!hasExamples && !hasTheoryPp) return null;
 
-  const showDangFrame = Boolean(parsed.dangBody) || allPhuongPhap.length > 0;
+  const groups = Array.isArray(parsed.groups) ? parsed.groups : [];
+  const hasDangGroups = groups.some((g) => g.dangTitle || g.dangBody);
 
   return (
     <section className="mb-12 md:mb-16">
       <div className="max-w-4xl mx-auto px-2 md:px-4">
         <LessonSectionHeading num={2} title="Các dạng toán và ví dụ" />
-        {showDangFrame ? (
-          <div className="lesson-dang-method-frame rounded-2xl border border-indigo-200/70 bg-white px-5 py-6 md:px-8 md:py-7 mb-8 md:mb-10">
-            {parsed.dangBody ? (
-              <div className="lesson-dang-highlight mb-5 md:mb-6 pb-5 md:pb-6 border-b border-indigo-200/60">
-                <span className="inline-flex items-center rounded-lg bg-indigo-600 px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-white mb-3">
-                  Dạng
-                </span>
-                <p className="text-lg md:text-xl font-black text-slate-900 leading-snug">
-                  <TextWithMathWithLoiGiai text={parsed.dangBody} />
-                </p>
-              </div>
-            ) : null}
-            <PhuongPhapBlocks bodies={allPhuongPhap} />
+
+        {parsed.preface ? (
+          <div className="w-full max-w-full text-left text-slate-800 text-base md:text-lg leading-loose lesson-math-content mb-8 [&_p]:text-left [&_ul]:text-left">
+            <HtmlWithMath
+              html={theoryCorePlainToHtml(parsed.preface)}
+              className="theory-core-rich block max-w-full"
+            />
           </div>
         ) : null}
-        {parsed.examplesHtml ? (
-          <div className="w-full max-w-full text-left text-slate-800 text-base md:text-lg leading-loose lesson-math-content [&_.katex-display]:block [&_.katex-display]:mx-auto [&_.katex-display]:my-5 [&_p]:text-left [&_ul]:text-left [&_table]:text-left">
-            <HtmlWithMath html={parsed.examplesHtml} className="theory-core-rich block max-w-full" />
+
+        {hasDangGroups || groups.length > 0
+          ? groups.map((g, gi) => {
+              const pps =
+                gi === 0
+                  ? [...(phuongPhapFromTheory || []), ...(g.phuongPhapBodies || [])]
+                  : g.phuongPhapBodies || [];
+              const dangText = (g.dangBody || g.dangTitle || '').toString().trim();
+              const showFrame = Boolean(dangText) || pps.length > 0;
+              return (
+                <div key={`dang-group-${gi}`} className="mb-10 md:mb-12 last:mb-0">
+                  {showFrame ? (
+                    <div className="lesson-dang-method-frame rounded-2xl border border-indigo-200/70 bg-white px-5 py-6 md:px-8 md:py-7 mb-6 md:mb-8">
+                      {dangText ? (
+                        <div className="lesson-dang-highlight mb-5 md:mb-6 pb-5 md:pb-6 border-b border-indigo-200/60">
+                          <span className="inline-flex items-center rounded-lg bg-indigo-600 px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-white mb-3">
+                            {g.dangLabel || 'Dạng'}
+                          </span>
+                          <p className="text-lg md:text-xl font-black text-slate-900 leading-snug">
+                            <TextWithMathWithLoiGiai text={dangText} />
+                          </p>
+                        </div>
+                      ) : null}
+                      <PhuongPhapBlocks bodies={pps} />
+                    </div>
+                  ) : null}
+                  {g.content ? (
+                    <div className="w-full max-w-full text-left text-slate-800 text-base md:text-lg leading-loose lesson-math-content [&_.katex-display]:block [&_.katex-display]:mx-auto [&_.katex-display]:my-5 [&_p]:text-left [&_ul]:text-left [&_table]:text-left">
+                      <HtmlWithMath
+                        html={theoryCorePlainToHtml(g.content)}
+                        className="theory-core-rich block max-w-full"
+                      />
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })
+          : null}
+
+        {!hasDangGroups && groups.length === 0 && hasTheoryPp ? (
+          <div className="lesson-dang-method-frame rounded-2xl border border-indigo-200/70 bg-white px-5 py-6 md:px-8 md:py-7 mb-8">
+            <PhuongPhapBlocks bodies={phuongPhapFromTheory} />
           </div>
         ) : null}
       </div>
@@ -469,8 +532,8 @@ const parseNum = (v) => {
 
 const normName = (s) => (s || '').trim().toLowerCase();
 
-/** Đề gắn bài: (A) cùng chương + bài; hoặc (B) gắn theo chuyên đề: topic_lesson_id = lesson.id. */
-function matchesLessonPaperQuiz(lesson, q) {
+/** Đề gắn bài: (A) cùng chương + bài (+ mục nếu đề gắn mục); hoặc (B) gắn theo chuyên đề. */
+function matchesLessonPaperQuiz(lesson, q, activeSection = null) {
   const et = (q?.exam_type || 'lesson').toString().trim();
   if (et !== 'lesson') return false;
   const lg = String(lesson?.grade_level ?? '').trim();
@@ -489,7 +552,13 @@ function matchesLessonPaperQuiz(lesson, q) {
   const ql = (q?.lesson_no ?? '').toString().trim();
   const ch = (lesson?.chapter ?? '').toString().trim();
   const ln = (lesson?.lesson_no ?? '').toString().trim();
-  return qc === ch && ql === ln;
+  if (qc !== ch || ql !== ln) return false;
+  const qSec = String(q?.section_no ?? q?.sectionNo ?? '').trim();
+  if (!qSec) return true;
+  // Đề gắn mục: chỉ hiện khi đang xem đúng mục đó
+  if (!activeSection) return true;
+  const aSec = String(activeSection.section_no ?? activeSection.no ?? '').trim();
+  return Boolean(aSec) && aSec === qSec;
 }
 
 function LessonSkyClouds() {
@@ -511,6 +580,18 @@ function LessonSkyClouds() {
   );
 }
 
+function LessonVideoPlaceholder({ wrapClassName = '', frameClassName = '', children }) {
+  return (
+    <div className={`lesson-video-wrap ${wrapClassName}`.trim()}>
+      <div
+        className={`lesson-video-frame w-full bg-slate-900 shadow-2xl relative overflow-hidden ${frameClassName}`.trim()}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
 export default function StudentLessonViewer({
   lesson,
   lessonsList = [],
@@ -518,12 +599,14 @@ export default function StudentLessonViewer({
   scoresList = [],
   studentName = '',
   studentClass = '',
+  studentProfile = null,
   rosterGrade = '11',
   onBack,
   onBackToOverview,
   onOpenExamsRoom,
   onSelectLesson,
   onStartQuiz,
+  onSelectQuiz,
   onRequestLoginForPapers,
   resumePapersTabRef: resumePapersTabRefProp,
   externalHomeUrl = DEFAULT_EXTERNAL_HOME,
@@ -532,21 +615,24 @@ export default function StudentLessonViewer({
   previewEmbed = false,
   /** Khi preview: đồng bộ tab với panel sửa ('theory' | 'practice' | 'pdf' | 'papers'). */
   previewSyncedTab = null,
+  /** Khi preview: mục con đang soạn trong Admin. */
+  previewSectionIndex = null,
 }) {
   const defaultResumePapersRef = useRef(false);
   const resumePapersTabRef = resumePapersTabRefProp ?? defaultResumePapersRef;
-  const prevLessonIdForPracticeRef = useRef(undefined);
   const goOverview = onBackToOverview || onBack;
   const goBack = onBack || onBackToOverview;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
   const [expandedChapters, setExpandedChapters] = useState([]);
+  const [expandedLessonRows, setExpandedLessonRows] = useState([]);
   const [activeTab, setActiveTab] = useState('theory');
   const [quizAnswers, setQuizAnswers] = useState({});
   const [quizSubmitted, setQuizSubmitted] = useState(false);
   const [quizScore, setQuizScore] = useState(0);
-  const [practiceShuffleVersion, setPracticeShuffleVersion] = useState(0);
   const [practiceHintsOpen, setPracticeHintsOpen] = useState({});
+  const [activeSectionIndex, setActiveSectionIndex] = useState(0);
+  const [lessonMediaTab, setLessonMediaTab] = useState('video');
 
   const lessonsEnriched = useMemo(() => {
     const me = normName(studentName);
@@ -577,7 +663,10 @@ export default function StudentLessonViewer({
           : null;
         const weak = avgScore != null && avgScore < 5;
 
-        return { ...l, _progress: progress, _weak: weak, _avgScore: avgScore, chapter, lesson_no };
+        const parsedContent = parseLessonJson(l.content);
+        const _sections = sortLessonSections(normalizeLessonSections(parsedContent?.sections));
+
+        return { ...l, _progress: progress, _weak: weak, _avgScore: avgScore, chapter, lesson_no, _sections };
       })
       .sort((a, b) => {
         const ca = parseNum(a.chapter);
@@ -591,69 +680,54 @@ export default function StudentLessonViewer({
       });
   }, [lessonsList, quizzesList, scoresList, studentName, rosterGrade]);
 
-  const currentTopicId = (lesson?.topic_id || '').toString().trim();
-  const currentTopicName = (lesson?.topic_name || '').toString().trim();
-
   const dynamicChapters = useMemo(() => {
-    // Khi đang học bài thuộc Chuyên đề ôn thi → sidebar gom theo chuyên đề (1 nhóm) thay vì theo chương.
-    if (currentTopicId) {
-      const lessons = lessonsEnriched.filter(
-        (l) => (l.topic_id || '').toString().trim() === currentTopicId,
-      );
-      return [
-        {
-          id: `t_${currentTopicId}`,
-          chapterNo: 'CĐ',
-          theme: CHAPTER_THEME_KEYS[0],
-          title: currentTopicName || 'Chuyên đề ôn thi',
-          lessons,
-        },
-      ];
-    }
-
     const grouped = new Map();
     lessonsEnriched.forEach((l) => {
-      const tid = (l.topic_id || '').toString().trim();
-      const tname = (l.topic_name || '').toString().trim();
-      const chRaw = (l.chapter || '').toString().trim();
-      // Nếu bài thuộc chuyên đề nhưng không gán Chương → gom thành một "chương riêng" mang tên chuyên đề.
-      const key = tid && !chRaw ? `topic:${tid}` : (chRaw || '0');
-      if (!grouped.has(key)) grouped.set(key, { key, title: tid && !chRaw ? (tname || 'Chuyên đề ôn thi') : '', lessons: [] });
+      // Ẩn chuyên đề cũ / bài không thuộc chương SGK sạch
+      if (!isSgkRoadmapLesson(l)) return;
+      const key = roadmapChapterKey(l);
+      if (!key) return;
+      if (!grouped.has(key)) grouped.set(key, { key, lessons: [] });
       grouped.get(key).lessons.push(l);
     });
     const chapterKeys = Array.from(grouped.keys()).sort((a, b) => {
-      const at = String(a).startsWith('topic:');
-      const bt = String(b).startsWith('topic:');
-      if (at !== bt) return at ? 1 : -1; // chương chuyên đề luôn xuống cuối
       const na = parseNum(a);
       const nb = parseNum(b);
       if (na !== null && nb !== null) return na - nb;
       return a.localeCompare(b);
     });
     return chapterKeys.map((ch, idx) => {
-      const row = grouped.get(ch) || { key: ch, title: '', lessons: [] };
-      const lessons = row.lessons || [];
+      const row = grouped.get(ch) || { key: ch, lessons: [] };
+      const merged = mergeLessonsByLessonNo(row.lessons || [], parseNum);
       return {
         id: `c_${ch}`,
-        chapterNo: String(ch).startsWith('topic:') ? 'CĐ' : ch,
+        chapterNo: ch,
         theme: CHAPTER_THEME_KEYS[idx % CHAPTER_THEME_KEYS.length],
-        title: String(ch).startsWith('topic:') ? (row.title || 'Chuyên đề ôn thi') : `Chương ${ch}`,
-        lessons,
+        lessons: merged,
       };
     });
-  }, [lessonsEnriched, currentTopicId, currentTopicName]);
+  }, [lessonsEnriched]);
 
   useEffect(() => {
     setQuizAnswers({});
     setQuizSubmitted(false);
     setQuizScore(0);
     setPracticeHintsOpen({});
-    const cur = lesson?.id;
-    if (prevLessonIdForPracticeRef.current !== undefined && prevLessonIdForPracticeRef.current !== cur) {
-      setPracticeShuffleVersion((v) => v + 1);
-    }
-    prevLessonIdForPracticeRef.current = cur;
+    setActiveSectionIndex(0);
   }, [lesson?.id]);
+
+  useEffect(() => {
+    setQuizAnswers({});
+    setQuizSubmitted(false);
+    setQuizScore(0);
+    setPracticeHintsOpen({});
+  }, [activeSectionIndex]);
+
+  useEffect(() => {
+    if (!previewEmbed) return;
+    if (previewSectionIndex == null) return;
+    setActiveSectionIndex(Math.max(0, Number(previewSectionIndex) || 0));
+  }, [previewEmbed, previewSectionIndex, lesson?.content]);
 
   useLayoutEffect(() => {
     const goPapers = resumePapersTabRef.current;
@@ -681,11 +755,11 @@ export default function StudentLessonViewer({
     } catch {
       /* ignore */
     }
-  }, [lesson?.id]);
+  }, [lesson?.id, activeSectionIndex]);
 
   useEffect(() => {
     if (previewEmbed) return;
-    const cur = dynamicChapters.find((c) => c.lessons.some((l) => l.id === lesson?.id));
+    const cur = dynamicChapters.find((c) => c.lessons.some((l) => lessonBelongsToGroup(l, lesson?.id)));
     setExpandedChapters((prev) => {
       const next = new Set(prev);
       if (cur) next.add(cur.id);
@@ -694,12 +768,29 @@ export default function StudentLessonViewer({
     });
   }, [lesson?.id, dynamicChapters, previewEmbed]);
 
+  useEffect(() => {
+    if (previewEmbed) return;
+    const cur = dynamicChapters.find((c) => c.lessons.some((l) => lessonBelongsToGroup(l, lesson?.id)));
+    const currentRow = cur?.lessons.find((l) => lessonBelongsToGroup(l, lesson?.id));
+    if (!currentRow) return;
+    const sections = Array.isArray(currentRow._displaySections)
+      ? currentRow._displaySections
+      : sortLessonSections(currentRow._sections || []);
+    if (sections.length === 0) return;
+    setExpandedLessonRows((prev) => (prev.includes(currentRow.id) ? prev : [...prev, currentRow.id]));
+  }, [lesson?.id, dynamicChapters, previewEmbed]);
+
   const contentJson = useMemo(() => parseLessonJson(lesson?.content), [lesson?.content]);
-  const theoryCoreText = useMemo(
-    () => theoryCoreSource(lesson, contentJson),
-    [lesson?.description, lesson?.content, contentJson]
+  const activeSlice = useMemo(
+    () => resolveActiveLessonSlice(contentJson, activeSectionIndex),
+    [contentJson, activeSectionIndex]
   );
-  const examplesCoreText = useMemo(() => (contentJson?.examples_core ?? '').toString().trim(), [contentJson?.examples_core]);
+  const theoryCoreText = useMemo(() => {
+    const fromSlice = (activeSlice.theory_core ?? '').toString().trim();
+    if (fromSlice) return fromSlice;
+    return (lesson?.description ?? '').toString().trim();
+  }, [activeSlice.theory_core, lesson?.description]);
+  const examplesCoreText = useMemo(() => (activeSlice.examples_core ?? '').toString().trim(), [activeSlice.examples_core]);
   const exampleGroups = useMemo(() => groupExamplesByDang(contentJson?.examples), [contentJson?.examples]);
   const hasNewExamplesCore = Boolean(examplesCoreText && examplesCoreText.trim());
   const theoryCoreForPanel = useMemo(() => {
@@ -711,14 +802,17 @@ export default function StudentLessonViewer({
   const phuongPhapFromTheory = theoryPanelSplit.phuongPhapBodies;
   // Nếu đã có nội dung mới (examples_core), bỏ qua render kiểu cũ (examples mảng) để tránh lặp.
   const hasMath11Examples = !hasNewExamplesCore && Array.isArray(contentJson?.examples) && contentJson.examples.length > 0;
-  const lessonData = useMemo(() => normalizeLessonContentForUI(lesson?.content), [lesson?.content]);
+  const lessonData = useMemo(() => {
+    const base = normalizeLessonContentForUI(lesson?.content);
+    return { ...base, practice: normalizePracticeList(activeSlice.practice || []) };
+  }, [lesson?.content, activeSlice.practice]);
   const practiceDisplayMode = useMemo(
     () => resolvePracticeDisplayMode(contentJson?.practice_display_mode ?? contentJson?.practiceDisplayMode),
     [contentJson]
   );
   const shuffledPractice = useMemo(
     () => buildShuffledPracticeOrder(lessonData.practice || []),
-    [lesson?.id, lesson?.content, practiceShuffleVersion]
+    [lessonData.practice]
   );
   const interactivePractice = useMemo(
     () => shuffledPractice.filter((q) => isInteractivePracticeType(q.type)),
@@ -753,7 +847,6 @@ export default function StudentLessonViewer({
     setQuizSubmitted(false);
     setQuizScore(0);
     setPracticeHintsOpen({});
-    setPracticeShuffleVersion((v) => v + 1);
   };
 
   const togglePracticeHint = useCallback((qid) => {
@@ -766,33 +859,46 @@ export default function StudentLessonViewer({
     );
   };
 
-  const videoId = extractYouTubeID(lesson?.videoUrl || '');
-  const embedUrl = videoId ? buildYouTubeEmbedUrl(videoId) : '';
-  const youtubeWatchUrl = videoId ? buildYouTubeWatchUrl(videoId) : (lesson?.videoUrl || '').trim();
+  const effectiveVideoUrl = (activeSlice.videoUrl || lesson?.videoUrl || '').toString().trim();
+  const videoId = extractYouTubeID(effectiveVideoUrl);
+  const effectiveSlidesUrl = (activeSlice.slidesUrl || lesson?.slidesUrl || lesson?.slides_url || '').toString().trim();
+  const hasSlides = Boolean(effectiveSlidesUrl);
+  const hasVideo = Boolean(effectiveVideoUrl && videoId);
+  const hasMediaChoice = hasVideo && hasSlides;
+
+  useEffect(() => {
+    if (hasVideo) setLessonMediaTab('video');
+    else if (hasSlides) setLessonMediaTab('slides');
+  }, [lesson?.id, activeSlice.activeSectionIndex, hasVideo, hasSlides]);
 
   const videoMaterialRaw = (lesson?.videoMaterialUrl || lesson?.video_material_url || '').toString().trim();
   const videoMaterialId = extractYouTubeID(videoMaterialRaw);
-  const embedMaterialUrl = videoMaterialId ? buildYouTubeEmbedUrl(videoMaterialId) : '';
-  const youtubeMaterialWatchUrl = videoMaterialId
-    ? buildYouTubeWatchUrl(videoMaterialId)
-    : videoMaterialRaw;
   const durationMins = Number(lesson?.duration);
   const durationLabel = Number.isFinite(durationMins) && durationMins > 0 ? `${durationMins} phút` : '45 phút';
 
   const chapterNo = (lesson?.chapter ?? '').toString().trim() || '—';
   const lessonNo = (lesson?.lesson_no ?? '').toString().trim() || '—';
+  const displayGrade = String(lesson?.grade_level ?? rosterGrade ?? '').trim();
+  const chapterHeading = useMemo(
+    () => formatSgkChapterHeading(displayGrade, chapterNo),
+    [displayGrade, chapterNo]
+  );
+  const lessonHeading = useMemo(
+    () => formatSgkLessonHeading(displayGrade, chapterNo, lessonNo, lesson?.title),
+    [displayGrade, chapterNo, lessonNo, lesson?.title]
+  );
   const pdfUrl = (lesson?.pdfUrl || lesson?.pdf_url || '').toString().trim();
 
   const practiceCount = lessonData.practice?.length || 0;
 
   const lessonPapersQuizzes = useMemo(() => {
     return (quizzesList || [])
-      .filter((q) => matchesLessonPaperQuiz(lesson, q))
+      .filter((q) => matchesLessonPaperQuiz(lesson, q, activeSlice.activeSection))
       .sort((a, b) => (a.title || '').localeCompare(b.title || '', 'vi'));
-  }, [quizzesList, lesson]);
+  }, [quizzesList, lesson, activeSlice.activeSection]);
 
   const materialLinks = useMemo(() => {
-    const raw = contentJson?.materials;
+    const raw = activeSlice.materials;
     const list = Array.isArray(raw)
       ? raw
           .filter((x) => x && typeof x === 'object')
@@ -803,7 +909,7 @@ export default function StudentLessonViewer({
           .filter((x) => x.url)
       : [];
     return list;
-  }, [contentJson?.materials]);
+  }, [activeSlice.materials]);
 
   const papersQuizCount = lessonPapersQuizzes.length;
   const isLessonStudentLoggedIn = Boolean((studentName || '').trim());
@@ -819,8 +925,11 @@ export default function StudentLessonViewer({
       return true;
     });
     const sorted = [...pool].sort((a, b) => {
-      const ka = lessonNoSortKey(a.lesson_no);
-      const kb = lessonNoSortKey(b.lesson_no);
+      const aReview = isChapterReviewLesson(a);
+      const bReview = isChapterReviewLesson(b);
+      if (aReview !== bReview) return aReview ? 1 : -1;
+      const ka = Number.isFinite(lessonNoSortKey(a.lesson_no)) ? lessonNoSortKey(a.lesson_no) : titleLessonSortKey(a);
+      const kb = Number.isFinite(lessonNoSortKey(b.lesson_no)) ? lessonNoSortKey(b.lesson_no) : titleLessonSortKey(b);
       if (ka !== kb) return ka - kb;
       return String(a.title || '').localeCompare(String(b.title || ''), 'vi');
     });
@@ -838,11 +947,17 @@ export default function StudentLessonViewer({
       setActiveTab(LESSON_TAB_SEQUENCE[pos + 1]);
       return;
     }
+    const sectionCount = activeSlice.sections.length;
+    if (sectionCount > 0 && activeSectionIndex < sectionCount - 1) {
+      setActiveSectionIndex((idx) => idx + 1);
+      setActiveTab('theory');
+      return;
+    }
     if (lessonChainNav.nextLesson && typeof onSelectLesson === 'function') {
       onSelectLesson(lessonChainNav.nextLesson.id);
       setActiveTab('theory');
     }
-  }, [activeTab, lessonChainNav.nextLesson, onSelectLesson]);
+  }, [activeTab, activeSectionIndex, activeSlice.sections.length, lessonChainNav.nextLesson, onSelectLesson]);
 
   const goPrevTabOrLesson = useCallback(() => {
     const i = LESSON_TAB_SEQUENCE.indexOf(activeTab);
@@ -851,20 +966,29 @@ export default function StudentLessonViewer({
       setActiveTab(LESSON_TAB_SEQUENCE[pos - 1]);
       return;
     }
+    if (activeSlice.sections.length > 0 && activeSectionIndex > 0) {
+      setActiveSectionIndex((idx) => idx - 1);
+      setActiveTab('pdf');
+      return;
+    }
     if (lessonChainNav.prevLesson && typeof onSelectLesson === 'function') {
       onSelectLesson(lessonChainNav.prevLesson.id);
       setActiveTab('pdf');
     }
-  }, [activeTab, lessonChainNav.prevLesson, onSelectLesson]);
+  }, [activeTab, activeSectionIndex, activeSlice.sections.length, lessonChainNav.prevLesson, onSelectLesson]);
 
   const navPos = LESSON_TAB_SEQUENCE.indexOf(activeTab);
   const navIndex = navPos === -1 ? 0 : navPos;
   const nextTabId = navIndex < LESSON_TAB_SEQUENCE.length - 1 ? LESSON_TAB_SEQUENCE[navIndex + 1] : null;
   const prevTabId = navIndex > 0 ? LESSON_TAB_SEQUENCE[navIndex - 1] : null;
   const canNext =
-    nextTabId != null || (lessonChainNav.nextLesson != null && typeof onSelectLesson === 'function');
+    nextTabId != null ||
+    (activeSlice.sections.length > 0 && activeSectionIndex < activeSlice.sections.length - 1) ||
+    (lessonChainNav.nextLesson != null && typeof onSelectLesson === 'function');
   const canPrev =
-    prevTabId != null || (lessonChainNav.prevLesson != null && typeof onSelectLesson === 'function');
+    prevTabId != null ||
+    (activeSlice.sections.length > 0 && activeSectionIndex > 0) ||
+    (lessonChainNav.prevLesson != null && typeof onSelectLesson === 'function');
 
   const papersAttemptedIds = useMemo(() => {
     const me = normName(studentName);
@@ -878,6 +1002,143 @@ export default function StudentLessonViewer({
     });
     return ids;
   }, [scoresList, studentName, rosterGrade]);
+
+  const selectLessonSection = useCallback(
+    (lessonId, sectionIndex = 0) => {
+      if (lessonId && lessonId !== lesson?.id) onSelectLesson?.(lessonId);
+      setActiveSectionIndex(Math.max(0, sectionIndex));
+      setActiveTab('theory');
+      setMobileOpen(false);
+    },
+    [lesson?.id, onSelectLesson]
+  );
+
+  const renderSidebarLessonRow = (l) => {
+    const isCurrentLesson = lessonBelongsToGroup(l, lesson?.id);
+    const p = l._progress || 0;
+    const doneLesson = p >= 100;
+    const isWeak = !!l._weak && !doneLesson;
+    const sections = Array.isArray(l._displaySections)
+      ? l._displaySections
+      : sortLessonSections(l._sections || []);
+    const hasSections = sections.length > 0;
+    const isExpanded = expandedLessonRows.includes(l.id);
+
+    const rowIcon = (active, compact = false) => (
+      <div
+        className={`${compact ? 'w-7 h-7' : 'w-9 h-9'} rounded-xl flex items-center justify-center shrink-0 ${
+          doneLesson
+            ? 'bg-slate-100 text-slate-400'
+            : active
+              ? 'bg-indigo-100 text-indigo-600'
+              : isWeak
+                ? 'bg-rose-50 text-rose-600'
+                : 'bg-slate-100 text-slate-500'
+        }`}
+      >
+        {doneLesson ? (
+          <CheckCircle className={compact ? 'w-4 h-4' : 'w-5 h-5'} />
+        ) : active ? (
+          <Play className={`${compact ? 'w-4 h-4' : 'w-5 h-5'} ml-0.5`} />
+        ) : (
+          <BookOpen className={compact ? 'w-4 h-4' : 'w-5 h-5'} />
+        )}
+      </div>
+    );
+
+    return (
+      <div key={l.id} className="space-y-1.5">
+        <button
+          type="button"
+          onClick={() => {
+            if (hasSections) {
+              setExpandedLessonRows((prev) =>
+                prev.includes(l.id) ? prev.filter((id) => id !== l.id) : [...prev, l.id]
+              );
+            }
+            selectLessonSection(l.id, 0);
+          }}
+          className={`w-full text-left rounded-xl p-3 transition border ${
+            isCurrentLesson
+              ? 'border-indigo-200 bg-indigo-50 relative overflow-hidden'
+              : 'border-transparent hover:bg-slate-50'
+          } ${doneLesson && !isCurrentLesson ? 'opacity-80 hover:opacity-100' : ''}`}
+        >
+          {isCurrentLesson && <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500 rounded-l-xl" />}
+          <div className={`flex items-start gap-3 ${isCurrentLesson ? 'pl-1' : ''}`}>
+            {rowIcon(isCurrentLesson)}
+            <div className="min-w-0 flex-1">
+              <div className="flex items-start gap-1.5 flex-wrap">
+                <h4 className={`font-semibold text-sm leading-snug ${isCurrentLesson ? 'text-indigo-900' : 'text-slate-800'}`}>
+                  {hasSections ? getSidebarLessonTitle(l, sections) : getLessonDisplayLabel(l)}
+                </h4>
+                {isWeak && (
+                  <span
+                    className="inline-flex items-center gap-1 text-xs font-black px-1.5 py-0.5 rounded-md bg-rose-100 text-rose-700 border border-rose-200"
+                    title={l._avgScore != null ? `Điểm TB ${l._avgScore.toFixed(1)}/10 — cần ôn lại` : 'Bài đang yếu — cần ôn lại'}
+                  >
+                    <AlertTriangle className="w-3 h-3" /> Yếu
+                  </span>
+                )}
+              </div>
+              <div className="mt-1 flex items-center justify-between gap-2">
+                <p className={`text-xs font-bold uppercase tracking-wider ${isCurrentLesson ? 'text-indigo-500' : 'text-slate-400'}`}>
+                  {doneLesson ? 'Đã hoàn thành' : isCurrentLesson ? `Bạn đang học · ${p}%` : `Tiến độ · ${p}%`}
+                </p>
+                {hasSections ? (
+                  <ChevronDown
+                    className={`w-4 h-4 shrink-0 transition-transform ${isExpanded ? 'rotate-180 text-indigo-500' : 'text-slate-400'}`}
+                  />
+                ) : null}
+              </div>
+              <div className="mt-1.5 h-1 bg-slate-100 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full ${isCurrentLesson ? 'bg-indigo-500' : isWeak ? 'bg-rose-400' : 'bg-slate-300'}`}
+                  style={{ width: `${p}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        </button>
+
+        {hasSections && isExpanded ? (
+          <div className="ml-3 md:ml-4 pl-2 md:pl-3 border-l-2 border-indigo-100 space-y-1.5">
+            {sections.map((sec, si) => {
+              const sourceId = sec._sourceLessonId || l.id;
+              const sourceIdx = sec._sourceSectionIndex ?? si;
+              const isCurrentSection =
+                lesson?.id === sourceId && Number(activeSectionIndex) === Number(sourceIdx);
+              return (
+                <button
+                  key={sec.id || `${sourceId}-${sourceIdx}`}
+                  type="button"
+                  onClick={() => selectLessonSection(sourceId, sourceIdx)}
+                  className={`w-full text-left rounded-xl p-2.5 md:p-3 transition border ${
+                    isCurrentSection
+                      ? 'border-indigo-200 bg-indigo-50 relative overflow-hidden'
+                      : 'border-transparent hover:bg-slate-50'
+                  } ${doneLesson && !isCurrentSection ? 'opacity-80 hover:opacity-100' : ''}`}
+                >
+                  {isCurrentSection && <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500 rounded-l-xl" />}
+                  <div className={`flex items-center gap-2.5 ${isCurrentSection ? 'pl-1' : ''}`}>
+                    <div className="min-w-0 flex-1">
+                      <h4 className={`font-semibold text-xs md:text-sm leading-snug ${isCurrentSection ? 'text-indigo-900' : 'text-slate-700'}`}>
+                        {getSectionDisplayLabel(sec)}
+                      </h4>
+                      <p className={`text-[10px] font-bold mt-0.5 uppercase tracking-wider ${isCurrentSection ? 'text-indigo-500' : 'text-slate-400'}`}>
+                        {isCurrentSection ? 'Đang học' : 'Mục con'}
+                      </p>
+                    </div>
+                    {rowIcon(isCurrentSection, true)}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        ) : null}
+      </div>
+    );
+  };
 
   const chapterProgress = (ch) => {
     if (!ch.lessons.length) return { avg: 0, done: 0 };
@@ -969,13 +1230,22 @@ export default function StudentLessonViewer({
                 <ClipboardList className="w-4 h-4" />
               </button>
             ) : null}
-            <button
-              type="button"
-              className="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center border border-slate-200 hover:text-indigo-600 hover:border-indigo-200 transition"
-              aria-label="Thông báo"
-            >
-              <Bell className="w-4 h-4" />
-            </button>
+            <StudentNotificationBell
+              size="sm"
+              studentId={studentProfile?.id}
+              studentName={studentName}
+              onOpenLink={(n) => {
+                if (n.link_type === 'lesson' && n.link_id) {
+                  onSelectLesson?.(n.link_id);
+                  return;
+                }
+                if (n.link_type === 'quiz' && n.link_id) {
+                  (onSelectQuiz || onStartQuiz)?.(n.link_id);
+                  return;
+                }
+                if (n.link_url) window.open(n.link_url, '_blank');
+              }}
+            />
             <div
               className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-black text-xs cursor-default border border-indigo-200"
               title={studentName}
@@ -1010,7 +1280,7 @@ export default function StudentLessonViewer({
 
         {!previewEmbed ? (
         <aside
-          className={`absolute md:static inset-y-0 left-0 w-[300px] md:w-[320px] bg-white border-r border-slate-200 flex flex-col shrink-0 z-30 transition-transform duration-300 overflow-y-auto ${
+          className={`absolute md:static inset-y-0 left-0 w-[340px] md:w-[380px] bg-white border-r border-slate-200 flex flex-col shrink-0 z-30 transition-transform duration-300 overflow-y-auto ${
             mobileOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full md:translate-x-0'
           } ${focusMode ? 'md:hidden' : ''}`}
         >
@@ -1021,12 +1291,10 @@ export default function StudentLessonViewer({
               </div>
               <div className="min-w-0">
                 <h2 className="font-black text-slate-900 text-lg md:text-xl tracking-tight truncate">
-                  {currentTopicId ? 'Chuyên đề ôn thi' : 'Lộ trình học'}
+                  Lộ trình học
                 </h2>
                 <p className="text-xs text-slate-500 font-bold uppercase tracking-wide truncate">
-                  {currentTopicId
-                    ? currentTopicName || 'Chuyên đề'
-                    : `Toán ${rosterGrade}${studentClass ? ` · ${studentClass}` : ''}`}
+                  {`Toán ${rosterGrade}${studentClass ? ` · ${studentClass}` : ''}`}
                 </p>
               </div>
             </div>
@@ -1063,10 +1331,12 @@ export default function StudentLessonViewer({
                     className="w-full text-left bg-white hover:bg-slate-50 p-4 md:p-5 text-slate-800 flex justify-between items-start gap-2 transition-colors"
                   >
                     <div className="pr-2 min-w-0">
-                      <span className="text-xs font-black uppercase tracking-widest text-indigo-600 block">
-                        Chương {ch.chapterNo}
+                      <span className="text-xs md:text-sm font-black text-indigo-900 leading-snug block">
+                        {formatSgkChapterHeading(
+                          String(ch.lessons[0]?.grade_level ?? rosterGrade ?? '').trim(),
+                          ch.chapterNo
+                        )}
                       </span>
-                      <h3 className="font-black text-base md:text-lg mt-1 leading-tight text-slate-900">{ch.title}</h3>
                       <div className="mt-3 bg-slate-100 rounded-full h-1.5 w-full overflow-hidden">
                         <div className="bg-indigo-500 h-full rounded-full transition-all" style={{ width: `${avg}%` }} />
                       </div>
@@ -1083,79 +1353,7 @@ export default function StudentLessonViewer({
 
                   {open && (
                     <div className="bg-white p-2 space-y-1.5 border-t border-slate-100">
-                      {ch.lessons.map((l) => {
-                        const isCurrent = l.id === lesson?.id;
-                        const p = l._progress || 0;
-                        const doneLesson = p >= 100;
-                        const isWeak = !!l._weak && !doneLesson;
-                        return (
-                          <button
-                            key={l.id}
-                            type="button"
-                            onClick={() => {
-                              onSelectLesson?.(l.id);
-                              setMobileOpen(false);
-                            }}
-                            className={`w-full text-left rounded-xl p-3 transition border ${
-                              isCurrent
-                                ? 'border-indigo-200 bg-indigo-50 relative overflow-hidden'
-                                : 'border-transparent hover:bg-slate-50'
-                            } ${doneLesson && !isCurrent ? 'opacity-80 hover:opacity-100' : ''}`}
-                          >
-                            {isCurrent && <div className="absolute top-0 left-0 w-1 h-full bg-indigo-500 rounded-l-xl" />}
-                            <div className={`flex items-center gap-3 ${isCurrent ? 'pl-1' : ''}`}>
-                              <div
-                                className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
-                                  doneLesson
-                                    ? 'bg-slate-100 text-slate-400'
-                                    : isCurrent
-                                      ? 'bg-indigo-100 text-indigo-600'
-                                      : isWeak
-                                        ? 'bg-rose-50 text-rose-600'
-                                        : 'bg-slate-100 text-slate-500'
-                                }`}
-                              >
-                                {doneLesson ? (
-                                  <CheckCircle className="w-5 h-5" />
-                                ) : isCurrent ? (
-                                  <Play className="w-5 h-5 ml-0.5" />
-                                ) : (
-                                  <BookOpen className="w-5 h-5" />
-                                )}
-                              </div>
-                              <div className="min-w-0 flex-1">
-                                <div className="flex items-center gap-1.5 flex-wrap">
-                                  <h4 className={`font-semibold text-sm leading-snug line-clamp-2 ${isCurrent ? 'text-indigo-900' : 'text-slate-800'}`}>
-                                    {l.lesson_no ? `Bài ${l.lesson_no}: ` : ''}
-                                    {l.title || 'Bài học'}
-                                  </h4>
-                                  {isWeak && (
-                                    <span
-                                      className="inline-flex items-center gap-1 text-xs font-black px-1.5 py-0.5 rounded-md bg-rose-100 text-rose-700 border border-rose-200"
-                                      title={l._avgScore != null ? `Điểm TB ${l._avgScore.toFixed(1)}/10 — cần ôn lại` : 'Bài đang yếu — cần ôn lại'}
-                                    >
-                                      <AlertTriangle className="w-3 h-3" /> Yếu
-                                    </span>
-                                  )}
-                                </div>
-                                <p className={`text-xs font-bold mt-1 uppercase tracking-wider ${isCurrent ? 'text-indigo-500' : 'text-slate-400'}`}>
-                                  {doneLesson
-                                    ? 'Đã hoàn thành'
-                                    : isCurrent
-                                      ? `Bạn đang học · ${p}%`
-                                      : `Tiến độ · ${p}%`}
-                                </p>
-                                <div className="mt-1.5 h-1 bg-slate-100 rounded-full overflow-hidden">
-                                  <div
-                                    className={`h-full rounded-full ${isCurrent ? 'bg-indigo-500' : isWeak ? 'bg-rose-400' : 'bg-slate-300'}`}
-                                    style={{ width: `${p}%` }}
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          </button>
-                        );
-                      })}
+                      {ch.lessons.map((l) => renderSidebarLessonRow(l))}
                     </div>
                   )}
                 </div>
@@ -1178,7 +1376,7 @@ export default function StudentLessonViewer({
           ) : null}
           <div className="lesson-sky-stage relative min-h-full">
             <LessonSkyClouds />
-            <div className="relative z-10 max-w-5xl mx-auto p-5 md:p-8 lg:p-10 pb-16 md:pb-12">
+            <div className="relative z-10 max-w-7xl mx-auto p-4 md:p-6 lg:p-8 pb-16 md:pb-12">
             <div className="flex items-center gap-2 sm:gap-3 mb-4 md:mb-5 min-w-0">
               {!previewEmbed ? (
                 <BackButton
@@ -1188,104 +1386,130 @@ export default function StudentLessonViewer({
                   onBack={() => goBack?.()}
                 />
               ) : null}
-              <nav className="text-xs md:text-xs font-black text-slate-400 flex flex-wrap items-center gap-2 uppercase tracking-widest min-w-0">
-              <button type="button" onClick={goOverview} className="hover:text-indigo-600 transition">
+              <nav className="text-[11px] md:text-xs font-bold text-slate-500 flex flex-wrap items-center gap-x-2 gap-y-1 min-w-0 leading-snug">
+              <button type="button" onClick={goOverview} className="hover:text-indigo-600 transition shrink-0">
                 Toán {rosterGrade}
               </button>
-              <span className="text-slate-300">›</span>
-              {currentTopicId ? (
-                <span className="hover:text-indigo-600">Chuyên đề · {currentTopicName || 'Ôn thi'}</span>
-              ) : (
-                <span className="hover:text-indigo-600">Chương {chapterNo}</span>
-              )}
-              <span className="text-slate-300">›</span>
-              <span className="text-indigo-600 px-2 py-0.5 bg-indigo-50 rounded-md border border-indigo-100">
-                {currentTopicId ? (lesson?.title ? (lesson.title.length > 24 ? `${lesson.title.slice(0, 24)}…` : lesson.title) : 'Bài học') : `Bài ${lessonNo}`}
-              </span>
+              <span className="text-slate-300 shrink-0">›</span>
+              <span className="hover:text-indigo-600 text-slate-600 min-w-0">{chapterHeading}</span>
+              {lessonNo && lessonNo !== '—' ? (
+                <>
+                  <span className="text-slate-300 shrink-0">›</span>
+                  <span className="hover:text-indigo-600 text-indigo-800 min-w-0">{lessonHeading}</span>
+                </>
+              ) : null}
               </nav>
             </div>
 
-            <div className="mb-6">
-              <h1 className="text-2xl md:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-tight">
-                {lesson?.title || 'Bài học'}
+            <div className="mb-4 md:mb-6">
+              <h1 className="inline-flex max-w-full items-center rounded-2xl border border-indigo-200 bg-indigo-50 px-3 py-2 md:px-6 md:py-3 text-xl md:text-4xl lg:text-5xl font-black text-indigo-700 tracking-tight leading-tight">
+                {activeSlice.activeSection
+                  ? getSectionDisplayLabel(activeSlice.activeSection)
+                  : getLessonDisplayLabel(lesson)}
               </h1>
-              <p className="text-slate-500 mt-3 md:mt-4 text-sm font-semibold flex flex-wrap items-center gap-4 md:gap-5">
+              <p className="text-slate-500 mt-2 md:mt-4 text-xs md:text-sm font-semibold flex flex-wrap items-center gap-3 md:gap-5">
                 <span className="flex items-center gap-1.5">
-                  <Clock className="w-5 h-5 text-teal-600" />
+                  <Clock className="w-4 h-4 md:w-5 md:h-5 text-teal-600" />
                   {durationLabel}
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <UserCircle className="w-5 h-5 text-teal-600" />
+                  <UserCircle className="w-4 h-4 md:w-5 md:h-5 text-teal-600" />
                   Thầy Phát
                 </span>
               </p>
             </div>
 
-            <div className="w-full bg-slate-900 rounded-3xl aspect-video shadow-2xl relative overflow-hidden mb-2 md:mb-3 border border-slate-800">
-              {lesson?.videoUrl && videoId ? (
-                <iframe
-                  title={lesson.title}
-                  src={embedUrl}
-                  className="absolute inset-0 w-full h-full border-0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  referrerPolicy="strict-origin-when-cross-origin"
-                />
-              ) : lesson?.videoUrl && !videoId ? (
-                <div className="absolute inset-0 flex items-center justify-center text-slate-400 text-sm px-4 text-center">
-                  Link video không hỗ trợ nhúng. Mở trực tiếp từ URL đã nhập.
-                </div>
-              ) : (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-transparent to-slate-900/80">
-                  <div className="w-16 h-16 md:w-20 md:h-20 bg-teal-500 rounded-full flex items-center justify-center text-white mb-3 md:mb-4 border-4 border-white/20 shadow-lg shadow-teal-500/30">
-                    <Play className="w-8 h-8 md:w-9 md:h-9 ml-1" />
-                  </div>
-                  <p className="text-white font-bold tracking-wide text-sm md:text-base text-center px-4">
-                    Video bài giảng sẽ hiển thị khi giáo viên thêm link YouTube
-                  </p>
-                </div>
-              )}
-            </div>
-            {lesson?.videoUrl && videoId && youtubeWatchUrl ? (
-              <p className="mb-6 md:mb-8 text-center">
-                <a
-                  href={youtubeWatchUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm md:text-base font-bold text-teal-700 hover:text-teal-900 hover:underline"
+            {hasMediaChoice ? (
+              <div className="-mx-4 md:mx-0 mb-3 md:mb-4 flex flex-wrap gap-2 px-4 md:px-0">
+                <button
+                  type="button"
+                  onClick={() => setLessonMediaTab('video')}
+                  className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition border ${
+                    lessonMediaTab === 'video'
+                      ? 'bg-teal-600 text-white border-teal-600 shadow-md shadow-teal-600/20'
+                      : 'bg-white text-slate-700 border-slate-200 hover:border-teal-300 hover:bg-teal-50'
+                  }`}
                 >
-                  <ExternalLink className="w-4 h-4 md:w-5 md:h-5 shrink-0" />
-                  Mở video trên YouTube (nếu bị chặn nhúng)
-                </a>
-              </p>
+                  <Play className="w-4 h-4" />
+                  Video bài giảng
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setLessonMediaTab('slides')}
+                  className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition border ${
+                    lessonMediaTab === 'slides'
+                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/20'
+                      : 'bg-white text-slate-700 border-slate-200 hover:border-indigo-300 hover:bg-indigo-50'
+                  }`}
+                >
+                  <Presentation className="w-4 h-4" />
+                  Slide trình chiếu
+                </button>
+              </div>
+            ) : null}
+
+            {(hasVideo && (!hasMediaChoice || lessonMediaTab === 'video')) ||
+            (!hasVideo && !hasSlides) ? (
+              hasVideo ? (
+                <LessonYouTubePlayer
+                  videoId={videoId}
+                  title={activeSlice.activeSection ? getSectionDisplayLabel(activeSlice.activeSection) : lesson.title}
+                  wrapClassName="-mx-4 md:mx-0 mb-4 md:mb-8"
+                  frameClassName="lesson-video-frame--hero rounded-none md:rounded-3xl border-0 md:border md:border-slate-800"
+                />
+              ) : (
+                <LessonVideoPlaceholder
+                  wrapClassName="-mx-4 md:mx-0 mb-4 md:mb-8"
+                  frameClassName="lesson-video-frame--hero rounded-none md:rounded-3xl border-0 md:border md:border-slate-800"
+                >
+                  {effectiveVideoUrl && !videoId ? (
+                    <div className="absolute inset-0 flex items-center justify-center text-slate-400 text-sm px-4 text-center aspect-video">
+                      Link video không hỗ trợ nhúng. Mở trực tiếp từ URL đã nhập.
+                    </div>
+                  ) : (
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-transparent to-slate-900/80 aspect-video min-h-[220px]">
+                      <div className="w-16 h-16 md:w-20 md:h-20 bg-teal-500 rounded-full flex items-center justify-center text-white mb-3 md:mb-4 border-4 border-white/20 shadow-lg shadow-teal-500/30">
+                        <Play className="w-8 h-8 md:w-9 md:h-9 ml-1" />
+                      </div>
+                      <p className="text-white font-bold tracking-wide text-sm md:text-base text-center px-4">
+                        Video / slide bài giảng sẽ hiển thị khi giáo viên thêm link
+                      </p>
+                    </div>
+                  )}
+                </LessonVideoPlaceholder>
+              )
+            ) : null}
+
+            {hasSlides && (!hasMediaChoice || lessonMediaTab === 'slides') ? (
+              <div className="-mx-4 md:mx-0 mb-4 md:mb-8 px-0 md:px-0">
+                {!hasMediaChoice ? (
+                  <h2 className="text-lg md:text-xl font-black text-slate-800 mb-2 mt-1 px-4 md:px-0 flex items-center gap-2">
+                    <Presentation className="w-5 h-5 text-indigo-600" />
+                    Slide trình chiếu
+                  </h2>
+                ) : null}
+                <LessonSlidesEmbed
+                  url={effectiveSlidesUrl}
+                  title={
+                    activeSlice.activeSection
+                      ? `${getSectionDisplayLabel(activeSlice.activeSection)} — slide`
+                      : `${lesson?.title || 'Bài học'} — slide`
+                  }
+                  wrapClassName="px-4 md:px-0"
+                  frameClassName="rounded-none md:rounded-3xl border-0 md:border md:border-slate-200"
+                />
+              </div>
             ) : null}
 
             {videoMaterialRaw && videoMaterialId ? (
               <>
                 <h2 className="text-lg md:text-xl font-black text-slate-800 mb-2 mt-2">Video tài liệu / ôn tập</h2>
-                <div className="w-full bg-slate-900 rounded-3xl aspect-video shadow-xl relative overflow-hidden mb-2 md:mb-3 border border-slate-700">
-                  <iframe
-                    title={`${lesson?.title || 'Bài học'} — tài liệu`}
-                    src={embedMaterialUrl}
-                    className="absolute inset-0 w-full h-full border-0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    referrerPolicy="strict-origin-when-cross-origin"
-                  />
-                </div>
-                {youtubeMaterialWatchUrl ? (
-                  <p className="mb-6 md:mb-8 text-center">
-                    <a
-                      href={youtubeMaterialWatchUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm md:text-base font-bold text-indigo-700 hover:text-indigo-900 hover:underline"
-                    >
-                      <ExternalLink className="w-4 h-4 md:w-5 md:h-5 shrink-0" />
-                      Mở video tài liệu trên YouTube
-                    </a>
-                  </p>
-                ) : null}
+                <LessonYouTubePlayer
+                  videoId={videoMaterialId}
+                  title={`${lesson?.title || 'Bài học'} — tài liệu`}
+                  wrapClassName="mb-6 md:mb-8"
+                  frameClassName="rounded-2xl md:rounded-3xl aspect-video border border-slate-700 shadow-xl"
+                />
               </>
             ) : videoMaterialRaw && !videoMaterialId ? (
               <p className="mb-6 text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
@@ -1293,7 +1517,7 @@ export default function StudentLessonViewer({
               </p>
             ) : null}
 
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden mb-10 md:mb-12">
+            <div className="lesson-tabs-shell bg-white rounded-none md:rounded-3xl shadow-sm border-y border-slate-200 md:border border-slate-200 overflow-hidden mb-10 md:mb-12 -mx-4 md:mx-0">
               <div className="flex items-center gap-2 p-2 md:p-2.5 bg-slate-50/90 border-b border-slate-200 overflow-x-auto">
                 {tabBtn('theory', 'LÝ THUYẾT & VÍ DỤ', BookOpen)}
                 {tabBtn(
@@ -1316,7 +1540,7 @@ export default function StudentLessonViewer({
               </div>
 
               {activeTab === 'theory' && (
-                <div className="p-6 md:p-10 lg:p-12 animate-in fade-in duration-200">
+                <div className="lesson-tab-panel lesson-tab-panel--theory p-4 md:p-10 lg:p-12 animate-in fade-in duration-200">
                   {!hasMath11Examples && (
                     <>
                       <TheoryCorePanel source={theoryForPanel} />
@@ -1448,9 +1672,9 @@ export default function StudentLessonViewer({
               )}
 
               {activeTab === 'practice' && (
-                <div className="p-6 md:p-10 lg:p-12 animate-in fade-in duration-200">
+                <div className="lesson-practice-tab animate-in fade-in duration-200">
                   {lessonData.practice.length === 0 ? (
-                    <div className="text-center py-12 text-slate-600">
+                    <div className="text-center py-12 px-6 md:px-10 text-slate-600">
                       <p className="font-semibold">Chưa có bài tập luyện tập trong nội dung bài này.</p>
                       <p className="text-sm mt-2">Có thể import từ file (mục BÀI TẬP LUYỆN TẬP) hoặc làm đề trong Phòng thi.</p>
                     </div>
@@ -1468,7 +1692,7 @@ export default function StudentLessonViewer({
                       practiceHintsOpen={practiceHintsOpen}
                       onToggleHint={togglePracticeHint}
                       studentName={studentName}
-                      resetKey={`${lesson?.id || ''}-${practiceShuffleVersion}`}
+                      resetKey={`${lesson?.id || ''}-${activeSectionIndex}`}
                     />
                   )}
                 </div>
@@ -1483,7 +1707,7 @@ export default function StudentLessonViewer({
                       <p className="text-slate-600 text-sm md:text-base leading-relaxed mb-6">
                         Đăng nhập bằng tên trong danh sách lớp để xem và làm các đề thi gắn với{' '}
                         <strong>
-                          Chương {chapterNo} — Bài {lessonNo}
+                          {chapterHeading} — {lessonHeading}
                         </strong>
                         .
                       </p>
@@ -1510,7 +1734,7 @@ export default function StudentLessonViewer({
                   ) : (
                     <div className="space-y-4 max-w-2xl mx-auto">
                       <p className="text-sm text-slate-500 font-semibold text-center md:text-left mb-2">
-                        Đề theo bài · Chương {chapterNo} — Bài {lessonNo} ({papersQuizCount} đề)
+                        Đề theo bài · {lessonHeading} ({papersQuizCount} đề)
                       </p>
                       {lessonPapersQuizzes.map((q) => {
                         const done = papersAttemptedIds.has(q.id);
@@ -1611,8 +1835,8 @@ export default function StudentLessonViewer({
             </div>
 
             {!previewEmbed ? (
-              <div className="relative z-10 mt-8 mb-2 max-w-5xl mx-auto px-0">
-                {canNext ? (
+              <div className="relative z-10 mt-8 mb-2 max-w-7xl mx-auto px-0">
+                {canNext && activeTab !== 'practice' ? (
                   <div className="mb-2 flex justify-center sm:justify-end">
                     <span className="inline-flex items-center gap-1.5 text-xs md:text-xs font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full">
                       <Sparkles className="w-3.5 h-3.5 text-amber-500" />

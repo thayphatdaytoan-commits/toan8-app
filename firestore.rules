@@ -9,6 +9,80 @@ service cloud.firestore {
       allow write: if request.auth != null;
     }
 
+    // Form đăng ký học thử trên trang chủ (khách ẩn danh cũng ghi được)
+    match /trial_registrations_v1/{document} {
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasAll(['student_name', 'phone', 'course', 'created_at', 'status'])
+        && request.resource.data.phone is string
+        && request.resource.data.phone.size() >= 9
+        && request.resource.data.phone.size() <= 20;
+      allow read, update, delete: if request.auth != null;
+    }
+
+    // CMS trang chủ: đọc công khai, ghi khi đã đăng nhập (admin)
+    match /site_homepage_v1/{document} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Hỏi đáp cộng đồng + đố vui: đọc công khai, ghi khi đã auth (học sinh ẩn danh / admin)
+    match /community_questions_v1/{document} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    match /weekly_contests_v1/{document} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    match /contest_submissions_v1/{document} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    match /contest_news_v1/{document} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    match /math_blog_posts_v1/{document} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    match /math_site_documents_v1/{document} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Ngưỡng Level / EXP: đọc công khai (trang chủ), ghi khi auth (admin)
+    match /student_level_config_v1/{document} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Điểm danh & thời khóa biểu lớp (admin)
+    match /class_attendance_v1/{document} {
+      allow read, write: if request.auth != null;
+    }
+    match /class_timetable_v1/{document} {
+      allow read, write: if request.auth != null;
+    }
+    match /class_tuition_v1/{document} {
+      allow read, write: if request.auth != null;
+    }
+    match /class_tuition_settings_v1/{document} {
+      allow read, write: if request.auth != null;
+    }
+    match /class_feedback_v1/{document} {
+      allow read, write: if request.auth != null;
+    }
+    match /class_homework_v1/{document} {
+      allow read, write: if request.auth != null;
+    }
+    match /student_notifications_v1/{document} {
+      allow read, write: if request.auth != null;
+    }
+    match /admin_staff_v1/{document} {
+      allow read, write: if request.auth != null;
+    }
+
     match /{document=**} {
       allow read, write: if request.auth != null;
     }

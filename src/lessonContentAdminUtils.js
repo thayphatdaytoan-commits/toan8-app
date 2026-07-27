@@ -12,6 +12,7 @@ export function parseLessonContentObject(contentStr) {
         examples: [],
         practice: [],
         materials: [],
+        sections: [],
         practice_display_mode: 'list',
         seo: { focus_keyword: '', keywords: [] },
       },
@@ -88,10 +89,17 @@ export function emptyExampleTemplate() {
 
 export function emptyPracticeTemplate(index, type = 'mcq') {
   const id = `pr_${Date.now()}_${index}`;
-  const base = { id, question: '', hint: '', explanation: '' };
+  const base = { id, question: '', hint: '', hintVideoUrl: '', explanation: '' };
   switch (type) {
     case 'input':
-      return { ...base, type: 'input', correctAnswer: '' };
+      return {
+        ...base,
+        type: 'input',
+        correctAnswer: '',
+        answerParts: [
+          { id: '1', placeholder: 'x = …', correctAnswer: '' },
+        ],
+      };
     case 'text':
       return { ...base, type: 'text' };
     case 'true_false':
