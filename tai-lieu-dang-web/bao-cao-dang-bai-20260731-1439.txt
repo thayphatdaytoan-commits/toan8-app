@@ -1,0 +1,44 @@
+BÁO CÁO ĐĂNG BÀI GIẢNG
+=======================
+Thời điểm (UTC): 2026-07-31 14:39
+Chế độ: CHẠY LẠI (rerun) — ĐÂY LÀ LẦN CHẠY LẠI
+Lý do kích hoạt: "Chạy lại Toán 9 Chương III Bài 7" (user không hài lòng / yêu cầu chạy lại 1 bài)
+Khối/bài mục tiêu: Toán 9 · CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA · Bài 7. Căn bậc hai và căn thức bậc hai
+
+KẾT QUẢ TỔNG QUAN
+-----------------
+Trạng thái: DỪNG — thiếu bí mật Environment Variable
+Bài OK: (không)
+Bài lỗi / chưa đăng lại: Toán 9 · Chương III · Bài 7
+
+NGUỒN ĐÃ XÁC ĐỊNH
+-----------------
+Folder: tai-lieu-dang-web/Toán 9/Bài Giảng/CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA/Bài 7. Căn bậc hai và căn thức bậc hai/
+File nguồn: Bài 7. Căn bậc hai và căn thức bậc hai.pdf (có sẵn, ~636 KB)
+Đã copy tạm sang Downloads để sẵn sàng upload (không xóa file nguồn).
+
+BƯỚC 1 — bai-viet-ai.vercel.app
+-------------------------------
+Mở được trang Tạo Bài Giảng.
+BỊ CHẶN: không có GEMINI_API_KEY_1 và GEMINI_API_KEY_2 trong Environment Variable của cloud agent.
+Hệ quả: không thể cấu hình API Key → không tạo được bài → không tải được Word import.
+
+BƯỚC 2 — thayphatdaytoan (Khu vực Giáo viên)
+--------------------------------------------
+Chưa thực hiện (phụ thuộc Word từ Bước 1).
+Ghi chú: TEACHER_ADMIN_PASSWORD cũng không có trong Environment Variable.
+
+VIỆC CẦN KHẮC PHỤC
+------------------
+1) Cấu hình các secret sau dưới dạng Environment Variable (KHÔNG phải Runtime Secret / không hard-code):
+   - TEACHER_ADMIN_PASSWORD
+   - GEMINI_API_KEY_1
+   - GEMINI_API_KEY_2 (dự phòng khi key 1 hết quota / invalid)
+2) Sau khi gắn đúng Environment Variable, chạy lại cùng lệnh:
+   "Chạy lại Toán 9 Chương III Bài 7"
+3) Khi chạy lại thành công: nếu bài đã có trên web thì mở Sửa → Import Word → Lưu; nếu chưa có thì + Bài.
+
+GHI CHÚ AN TOÀN
+---------------
+Báo cáo này không chứa API key / mật khẩu.
+Không xóa / không sửa file nguồn PDF.
