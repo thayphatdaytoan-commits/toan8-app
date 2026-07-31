@@ -1,0 +1,58 @@
+BÁO CÁO ĐĂNG BÀI GIẢNG
+================================================================================
+Thời gian chạy: 2026-07-31 15:18–15:27 UTC
+Chế độ: CHẠY LẠI (ĐÂY LÀ LẦN CHẠY LẠI)
+Phạm vi: Toán 9 — CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA
+Trigger: "Chạy lại Toán 9 Chương III"
+Nhịp nghỉ 5 bài / 5 phút: ĐÃ BỎ (chế độ chạy lại)
+
+Khối đã xử lý: Toán 9 (chỉ Chương III)
+
+================================================================================
+DANH SÁCH BÀI ĐÃ ĐĂNG THÀNH CÔNG
+================================================================================
+(Không có)
+
+================================================================================
+DANH SÁCH BÀI LỖI / BỎ QUA
+================================================================================
+1) Toán 9 / CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA / Bài 7. Căn bậc hai và căn thức bậc hai
+   - File nguồn: Bài 7. Căn bậc hai và căn thức bậc hai.docx (+ .pdf)
+   - Nguyên nhân: Bước 1 thất bại — GEMINI_API_KEY_1 và GEMINI_API_KEY_2 đều trống/unset trong process env; thao tác thật trên bai-viet-ai báo "Chưa có API key. Nhấn API Key để thêm..."
+   - File word output: chưa tạo
+
+2) Toán 9 / CHƯƠNG III… / Bài 8. Khai căn bậc hai với phép nhân và phép chia
+   - File nguồn: Bài 8. Khai căn bậc hai với phép nhân và phép chia.docx (+ .pdf)
+   - Nguyên nhân: bỏ qua vì cùng chặn secrets Gemini như trên
+   - File word output: chưa tạo
+
+3) Toán 9 / CHƯƠNG III… / Bài 9. Biến đổi đơn giản và rút gọn biểu thức chứa căn thức bậc hai
+   - File nguồn: Bài 9. Biến đổi đơn giản và rút gọn biểu thức chứa căn thức bậc hai.docx (+ .pdf)
+   - Nguyên nhân: bỏ qua vì cùng chặn secrets Gemini như trên
+   - File word output: chưa tạo
+
+4) Toán 9 / CHƯƠNG III… / Bài 10. Căn bậc ba và căn thức bậc ba
+   - File nguồn: Bài 10. Căn bậc ba và căn thức bậc ba.docx (+ .pdf); folder còn dư PDF Bài 9
+   - Nguyên nhân: bỏ qua vì cùng chặn secrets Gemini như trên
+   - File word output: chưa tạo
+
+5) Toán 9 / CHƯƠNG III… / ÔN TẬP CHƯƠNG III
+   - File nguồn: ÔN TẬP CHƯƠNG III.docx (+ .pdf)
+   - Nguyên nhân: bỏ qua vì cùng chặn secrets Gemini như trên
+   - File word output: chưa tạo
+
+Bước 2 (thayphatdaytoan) — thử đăng nhập giáo viên:
+- TEACHER_ADMIN_PASSWORD trống/unset trong process env
+- Form Khu vực Giáo viên (username trống + mật khẩu trống) → UI báo: "Nhập mật khẩu."
+- Không vào được Tab Bài Giảng khu vực giáo viên để Sửa/Import/Lưu
+
+Trạng thái công khai (không cần login): Chương III trên web đã có Bài 7–10 (khớp tên thư mục). Không thể Import lại vì thiếu mật khẩu admin.
+
+================================================================================
+VIỆC CẦN KHẮC PHỤC
+================================================================================
+1) Gắn giá trị thật cho GEMINI_API_KEY_1, GEMINI_API_KEY_2, TEACHER_ADMIN_PASSWORD vào Environment Variable của Cloud Agent / Automation environment (hiện process env length = 0 cho cả 3 biến; thao tác web thất bại).
+2) Chạy lại trigger "Chạy lại Toán 9 Chương III" sau khi secrets có giá trị.
+3) Folder Bài 10 vẫn chứa thêm PDF của Bài 9 — nên dọn để tránh upload nhầm nguồn.
+4) Khi secrets OK: với bài đã có trên web → mở Sửa → Import Word output → Lưu; với ÔN TẬP nếu chưa có → + Bài.
+5) Kiểm tra SEO / PDF URL sau import nếu trống.
