@@ -1,0 +1,153 @@
+// MẪU IMPORT BÀI GIẢNG (TXT / WORD → copy text) — QUY TẮC CHUẨN (RÕ RÀNG, KHÔNG CHỒNG CHÉO)
+// File Word mẫu: mau-import-bai-giang-sample.docx (bản ngắn)
+// File Word mẫu (mới): mau-import-bai-giang-sample-v2.docx
+// Khi có mục "CÁC DẠNG TOÁN & VÍ DỤ" thì PHẢI có tiêu đề "LÝ THUYẾT TRỌNG TÂM" phía trên — nội dung giữa hai mục → ô Lý thuyết trọng tâm trên web.
+// - Các dòng bắt đầu bằng // là ghi chú, không đưa vào nội dung.
+// - Có thể dùng LaTeX: $...$ hoặc $$...$$
+// - Có thể dùng thẻ khối (format mới) để tự đóng khung đẹp trên web:
+//   #[Định nghĩa: ...]#  #[Ghi nhớ: ...]#  #[Phương pháp: ...]#  #[Ví dụ: ...]#  #[Lời giải: ...]#
+// - Vẫn tương thích format cũ: {Định nghĩa: ...} (để không hỏng bài đã soạn)
+// - Ảnh thường: dùng Markdown ![mô tả](https://...) hoặc <img src="https://..." alt="..." />
+//
+// QUY TẮC CHÈN ẢNH SVG (RẤT QUAN TRỌNG — ĐỂ WEB HIỂN THỊ ĐÚNG):
+// - Web HỖ TRỢ 2 cách nhúng SVG:
+//   (1) Khối fenced code:
+//       ```svg
+//       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200">
+//         ... nội dung svg ...
+//       </svg>
+//       ```
+//   (2) Dán trực tiếp thẻ <svg>...</svg> vào nội dung (không cần ```svg).
+// - BẮT BUỘC có: xmlns="http://www.w3.org/2000/svg" và viewBox="0 0 W H".
+// - Không dùng script/foreignObject/onload/onclick/... và không link ra ngoài; hệ thống sẽ sanitize và có thể xoá.
+// - Ưu tiên SVG đơn giản (path/line/rect/circle/text), dùng stroke/fill rõ ràng, font-size hợp lý.
+// - Nếu SVG dài: ưu tiên dùng khối ```svg ... ``` để AI/Word không làm hỏng dấu < >.
+//
+// QUY TẮC TÁCH MỤC (ưu tiên theo tiêu đề mục, tránh đoán mò):
+// - "LÝ THUYẾT TRỌNG TÂM" hoặc "LÝ THUYẾT"  → từ đây đến trước mục kế tiếp là Lý thuyết trọng tâm (theory_core)
+// - "CÁC DẠNG TOÁN & VÍ DỤ" (hoặc "DẠNG TOÁN & VÍ DỤ") → từ đây đến trước mục kế tiếp là Các dạng toán & ví dụ (examples_core)
+// - "BÀI TẬP TỰ LUYỆN" → từ đây đến trước mục kế tiếp là Bài tập tự luyện (practice)
+// - "TÓM TẮT BÀI HỌC" (hoặc "TÓM TẮT BÀI GIẢNG") → sơ đồ tóm tắt (TITLE:/ROOT:/danh sách thụt đầu dòng)
+// - "TÀI LIỆU PDF" / "LINK PDF" → lấy URL (hoặc dùng @pdf_url)
+//
+// QUY TẮC TÓM TẮT BÀI HỌC (tuỳ chọn):
+// - TITLE: tiêu đề hiển thị trên tab Tóm tắt bài học
+// - ROOT: nút gốc của sơ đồ
+// - Các dòng "- Mục ..." (thụt 2 khoảng trắng mỗi cấp) tạo nhánh con
+// - Giữ thụt đầu dòng trong TXT/Word để phân cấp đúng
+//
+// QUY TẮC THẺ KHỐI (trong Lý thuyết và trong Các dạng toán):
+// - Thẻ luôn có dạng: #[Tên thẻ: ... ]#
+// - Tên thẻ cho phép: Phương pháp | Ví dụ | Lời giải | Ghi nhớ | Định nghĩa
+// - Nội dung có thể nhiều dòng.
+//
+// QUY TẮC BÀI TẬP TỰ LUYỆN:
+// - Mỗi câu bắt đầu bằng "Câu 1:" hoặc "Câu 1." (web tự nhận diện và giữ đúng thứ tự).
+// - Có thể ngăn block bằng dòng phân cách: --- hoặc ===
+// - Trắc nghiệm: dùng A./B./C./D. và dòng "Đáp án: B"
+// - Điền đáp án: không có A/B/C/D nhưng có "Đáp án: <giá trị>"
+// - (Tùy chọn) Gợi ý hướng dẫn: ... — hiện khi học sinh bấm "Xem gợi ý" (trước nộp bài)
+// - (Tùy chọn) Lời giải: ... — hiện sau khi nộp bài (đáp án chi tiết)
+// - (Tương thích cũ) dòng bắt đầu bằng "§" hoặc "ID: ..." vẫn import được nhưng không bắt buộc.
+
+@grade_level: 11
+@chapter: 1
+@lesson_no: 1
+@title: Hàm số bậc nhất
+@video_url:
+@pdf_url:
+@seo_description: Tóm tắt ngắn để hiển thị/SEO.
+@focus_keyword: hàm số bậc nhất
+@keywords: đồ thị, hệ số góc, giao điểm, tính đơn điệu
+
+LÝ THUYẾT TRỌNG TÂM
+#[Định nghĩa:
+Hàm số bậc nhất có dạng $y=ax+b$ với $a\\ne 0$.
+]#
+
+#[Ghi nhớ:
+- Đồng biến nếu $a>0$, nghịch biến nếu $a<0$.
+- Hai đường thẳng song song khi $a=a'$.
+]#
+
+CÁC DẠNG TOÁN & VÍ DỤ
+Dạng 1: Nhận biết đồ thị và hệ số góc
+#[Phương pháp:
+Từ $y=ax+b$ suy ra hệ số góc là $a$, giao điểm với trục $Oy$ là $b$.
+]#
+
+#[Ví dụ:
+Cho $y=2x-1$. Tìm hệ số góc và giao điểm với $Oy$.
+]#
+
+#[Lời giải:
+Hệ số góc $a=2$; giao điểm với $Oy$ là điểm $(0,-1)$.
+]#
+
+// BÀI TẬP LUYỆN TẬP (tên cũ BÀI TẬP TỰ LUYỆN vẫn import được)
+BÀI TẬP LUYỆN TẬP
+Câu 1. Cho $y=-3x+2$. Hệ số góc bằng bao nhiêu?
+A. 2
+B. -3
+C. 3
+D. 0
+Đáp án: B
+Gợi ý hướng dẫn: Nhớ dạng $y=ax+b$ — hệ số góc là hệ số của $x$.
+Lời giải: Vì $y=ax+b$ nên $a=-3$.
+
+---
+
+Câu 2. Cho $y=2x-1$. Tính $f(1)$.
+Đáp án: 1
+Lời giải: $f(1)=2\\cdot 1-1=1$.
+
+---
+
+Câu 3. [đúng sai]
+Đồ thị hàm số $y=ax^2$ với $a>0$ luôn mở hướng lên trên.
+Đáp án: Đúng
+Lời giải: Khi $a>0$, parabol có nhánh hướng lên.
+
+---
+
+Câu 4. [sắp xếp]
+Sắp xếp các bước tìm tọa độ điểm thuộc đồ thị $y=x^2$:
+1. Gọi hoành độ là $x$
+2. Thay vào công thức tính $y=x^2$
+3. Viết cặp tọa độ $(x;y)$
+Đáp án: 1,2,3
+
+---
+
+Câu 5. [kéo thả]
+Kéo tọa độ đúng vào từng điểm trên $y=x^2$.
+Ô 1: Điểm có $x=2$
+Ô 2: Điểm có $x=-1$
+Lựa chọn: (2; 4) | (-1; 1) | (0; 0)
+Đáp án: Ô1=(2; 4); Ô2=(-1; 1)
+
+---
+
+Câu 6. [điền chỗ trống]
+Điền các chỗ trống trong đoạn văn sau:
+Đoạn: Parabol $y=ax^2$ ($a \neq 0$) có đỉnh tại {{1}} và trục đối xứng là đường thẳng {{2}}.
+Đáp án: 1=(0; 0); 2=x=0
+Lời giải: Đỉnh parabol $y=ax^2$ luôn ở gốc tọa độ; trục đối xứng là trục $Oy$ ($x=0$).
+
+TÓM TẮT BÀI HỌC
+TITLE: Hàm số bậc nhất — Tóm tắt
+ROOT: Hàm số bậc nhất $y=ax+b$
+- Định nghĩa & điều kiện $a \neq 0$
+- Đồ thị là đường thẳng
+  - Hệ số góc $a$
+  - Giao điểm với $Oy$: $(0; b)$
+- Đơn điệu
+  - Đồng biến khi $a>0$
+  - Nghịch biến khi $a<0$
+- Ứng dụng nhanh
+  - Song song khi cùng hệ số góc
+
+// TÀI LIỆU (tuỳ chọn) — nếu có link PDF có thể để ở @pdf_url hoặc chèn ở mục TÀI LIỆU
+TÀI LIỆU PDF
+https://drive.google.com/file/d/xxxxxxxx/view?usp=sharing
+
