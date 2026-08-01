@@ -1,0 +1,91 @@
+================================================================================
+HƯỚNG DẪN BẮT BUỘC — TẠO BÀI GIẢNG TRÊN bai-viet-ai
+Website: https://bai-viet-ai.vercel.app/
+================================================================================
+Agent / người soạn PHẢI làm đúng các bước dưới đây. Không bỏ bước.
+Không hỏi lại trừ khi UI/API chặn sau khi đã thử đúng cách.
+
+--------------------------------------------------------------------------------
+1) CHỌN ĐÚNG LỚP – CHƯƠNG – BÀI
+--------------------------------------------------------------------------------
+- Chọn đúng Lớp (vd. Lớp 9).
+- Chọn đúng Chương theo tên thư mục nguồn (vd. CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA).
+- Chọn đúng Bài theo tên thư mục nguồn (vd. Bài 8. Khai căn bậc hai với phép nhân và phép chia).
+- Tiêu đề trên web phải khớp TÊN THƯ MỤC, không lấy theo tên file nếu tên file lệch.
+
+--------------------------------------------------------------------------------
+2) CẤU HÌNH BÀI GIẢNG
+--------------------------------------------------------------------------------
+- Bật «Có mục Lý thuyết».
+- Ví dụ / dạng: đặt = 2 (mỗi dạng có 2 ví dụ, trừ khi user chỉ định khác).
+- Bài tập tự luyện: đặt = 10 (trừ khi user chỉ định khác).
+
+--------------------------------------------------------------------------------
+3) Ô «YÊU CẦU THÊM» — DÁN ĐÚNG NỘI DUNG SAU (hoặc tương đương cùng ý)
+--------------------------------------------------------------------------------
+Tạo bài giảng cho tôi lấy từ các bài toán từ tài liệu, chia ra các dạng toán phù hợp,
+mỗi dạng toán sẽ có một số ví dụ phù hợp, có lời giải chi tiết (bạn tự nghĩ), sau đó
+là phần bài tập tự luyện kèm lời giải. Tất cả các công thức dùng chuẩn latex và yêu
+cầu nghiêm ngặt bỏ trong dấu $[...]$, thêm cặp dấu {...} vào mỗi công thức.
+
+Ý bắt buộc:
+- Dạng bài và bài tập PHẢI lấy từ tài liệu đã tải lên (không bịa đề ngoài tài liệu).
+- Có lời giải chi tiết cho ví dụ và bài tập tự luyện.
+- Công thức LaTeX: bọc trong $[...]$ và thêm cặp `{...}` trong mỗi công thức
+  (dạng `$[{...}]$`).
+
+--------------------------------------------------------------------------------
+4) FILE NGUỒN — CHỈ PDF HOẶC ẢNH
+--------------------------------------------------------------------------------
+Ưu tiên / chấp nhận khi upload lên bai-viet-ai:
+- .pdf
+- ảnh: .png, .jpg, .jpeg, .webp, .gif, .bmp, .tif, .tiff
+
+KHÔNG dùng file .doc / .docx làm file nguồn trên bai-viet-ai.
+(File .docx trong thư mục chỉ để tham khảo / lưu trữ; bước soạn AI upload PDF hoặc ảnh.)
+
+Nếu thư mục bài có nhiều ảnh: upload TẤT CẢ ảnh (theo thứ tự tên file).
+Nếu có cả PDF và ảnh: ưu tiên PDF; có thể kèm ảnh nếu cần đủ tư liệu.
+
+Model: chọn model mạnh nhất còn dùng được; mặc định dùng gemini-2.5-flash (khuyến nghị)
+nếu Pro không có / bị quota.
+
+API key: điền GEMINI_API_KEY_1; nếu lỗi quota/invalid → GEMINI_API_KEY_2.
+Không in key ra báo cáo / chat / commit.
+
+--------------------------------------------------------------------------------
+5) TẠO BÀI GIẢNG
+--------------------------------------------------------------------------------
+- Nhấn «Tạo bài giảng» / Generate.
+- Chờ hoàn tất.
+- Kiểm tra nhanh: đúng lớp/chương/bài, có lý thuyết, dạng + ví dụ từ tài liệu,
+  bài tập tự luyện (~10), công thức có dạng `$[{...}]$`.
+
+--------------------------------------------------------------------------------
+6) LƯU VÀO THƯ MỤC (BẮT BUỘC SAU KHI TẠO XONG)
+--------------------------------------------------------------------------------
+Sau khi tạo bài giảng xong PHẢI nhấn nút xanh «Lưu vào thư mục».
+Không bỏ qua bước này.
+
+Sau đó tải file Word/TXT kết quả về máy ảo / repo:
+tai-lieu-dang-web/Toán {grade}/Bài Giảng/{TÊN CHƯƠNG}/{TÊN BÀI}/output/
+Tên gợi ý: Bai-{n}-import.docx (và/hoặc .txt nếu có).
+
+--------------------------------------------------------------------------------
+7) BƯỚC TIẾP (ĐĂNG WEB) — tóm tắt
+--------------------------------------------------------------------------------
+Import file vừa lưu lên https://thayphatdaytoan-7832c.web.app (Admin giáo viên),
+chọn đúng Chương/Bài, Lưu bài giảng lên hệ thống.
+Meta import: @chapter dùng SỐ (vd. 3), không dùng chữ La Mã "III".
+
+================================================================================
+CHECKLIST NHANH
+================================================================================
+[ ] Đúng Lớp / Chương / Bài
+[ ] Ví dụ/dạng = 2 ; Bài tập tự luyện = 10 ; có Lý thuyết
+[ ] Đã dán «Yêu cầu thêm» (dạng toán từ tài liệu + LaTeX `$[{...}]$`)
+[ ] File nguồn = PDF hoặc ảnh (KHÔNG .doc/.docx)
+[ ] Đã Tạo bài giảng
+[ ] Đã nhấn «Lưu vào thư mục»
+[ ] Đã lưu file vào .../output/ rồi mới sang bước đăng web
+================================================================================
