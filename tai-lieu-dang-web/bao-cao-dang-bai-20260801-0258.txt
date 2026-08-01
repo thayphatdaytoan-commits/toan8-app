@@ -1,0 +1,59 @@
+================================================================================
+BÁO CÁO ĐĂNG BÀI GIẢNG
+================================================================================
+ĐÂY LÀ LẦN CHẠY LẠI.
+
+Thời gian chạy: 2026-08-01 09:53–09:58 (Asia/Ho_Chi_Minh, +07)
+Chế độ: chạy lại (1 bài)
+Khối đã xử lý: Toán 9
+Phạm vi: CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA / Bài 7. Căn bậc hai và căn thức bậc hai
+Nhịp nghỉ 5 bài: đã bỏ (chế độ chạy lại)
+
+--------------------------------------------------------------------------------
+NGUỒN TÀI LIỆU
+--------------------------------------------------------------------------------
+Thư mục:
+tai-lieu-dang-web/Toán 9/Bài Giảng/CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA/Bài 7. Căn bậc hai và căn thức bậc hai/
+
+File nguồn có sẵn:
+- Bài 7. Căn bậc hai và căn thức bậc hai.docx
+- Bài 7. Căn bậc hai và căn thức bậc hai.pdf
+
+--------------------------------------------------------------------------------
+BÀI ĐÃ ĐĂNG THÀNH CÔNG
+--------------------------------------------------------------------------------
+(Không có)
+
+--------------------------------------------------------------------------------
+BÀI LỖI / BỎ QUA
+--------------------------------------------------------------------------------
+1) Toán 9 / CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA / Bài 7. Căn bậc hai và căn thức bậc hai
+   - Bước 1 (bai-viet-ai.vercel.app):
+     + Form đã chọn đúng Lớp 9, Chương III, Bài 7; đã upload .docx nguồn.
+     + Model trên UI: gemini-2.5-flash (khuyên nghị).
+     + Thử đọc GEMINI_API_KEY_1 / GEMINI_API_KEY_2 từ process env → cả hai length = 0 (không có giá trị để điền).
+     + Bấm Tạo bài giảng → UI báo: "Chưa có API key. Nhấn API Key để thêm (có thể thêm nhiều key cùng loại)."
+     + Không tạo được Word output → không có file trong .../output/.
+   - Bước 2 (thayphatdaytoan-7832c.web.app/?grade=9):
+     + Vào Khu vực Giáo viên; để trống tên đăng nhập; mật khẩu từ TEACHER_ADMIN_PASSWORD → length = 0.
+     + Bấm Vào → UI báo: "Nhập mật khẩu."
+     + Không vào được Tab Bài Giảng để Sửa / Import / Lưu.
+   - Kết luận: DỪNG (chế độ chạy lại 1 bài; không Import/Lưu được).
+
+--------------------------------------------------------------------------------
+VIỆC CẦN KHẮC PHỤC
+--------------------------------------------------------------------------------
+1. Bảo đảm 3 biến môi trường của automation có giá trị thật khi agent chạy:
+   GEMINI_API_KEY_1, GEMINI_API_KEY_2, TEACHER_ADMIN_PASSWORD.
+   (Kiểm tra bằng thao tác web: tạo bài giảng + đăng nhập GV — không chỉ nhìn inspect.)
+2. Chạy lại đúng lệnh: "Chạy lại Toán 9 Chương III Bài 7" sau khi secrets đã có giá trị.
+3. Khi secrets OK: vì web công khai trước đó đã có Bài 7 Chương III → mở Sửa bài trùng → Import Word output → Lưu.
+4. Không xóa file nguồn .docx/.pdf trong thư mục bài.
+
+--------------------------------------------------------------------------------
+GHI CHÚ KỸ THUẬT
+--------------------------------------------------------------------------------
+- Run automation: environment gắn với run = null (không inject được secret vào process).
+- Python os.environ: cả 3 biến absent / length 0.
+- Không ghi nội dung key/mật khẩu vào báo cáo này.
+================================================================================
