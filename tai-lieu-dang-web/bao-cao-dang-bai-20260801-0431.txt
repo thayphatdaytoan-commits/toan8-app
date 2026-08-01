@@ -1,0 +1,57 @@
+BÁO CÁO ĐĂNG BÀI GIẢNG
+=======================
+Thời gian chạy: 2026-08-01 04:31 UTC
+Run: bc-6a0fc15a-5bf7-4024-96a5-aca6ad0763a2
+Nhánh: cursor/pipeline-ng-b-i-gi-ng-e9b6
+
+CHẾ ĐỘ
+------
+full (trigger không chỉ grade/bài cụ thể; context: present=True / length>0)
+
+KHỐI ĐÃ XỬ LÝ / QUÉT
+--------------------
+- Quét Toán 6 → 12 trong tai-lieu-dang-web/*/Bài Giảng
+- Chỉ Toán 9 có file nguồn thật (.docx/.pdf); các khối 6–8, 10–12 chỉ có thư mục/.gitkeep → bỏ qua (không có tài liệu)
+
+DANH SÁCH BÀI ĐÃ ĐĂNG THÀNH CÔNG
+--------------------------------
+(Không có)
+
+DANH SÁCH BÀI LỖI HOẶC BỎ QUA
+-----------------------------
+Toàn bộ 14 bài có file nguồn (Toán 9) bị chặn trước khi soạn/import:
+
+1. Toán 9 / CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA / Bài 7. Căn bậc hai và căn thức bậc hai
+   Nguồn: Bài 7....docx (+ .pdf)
+2. Toán 9 / CHƯƠNG III… / Bài 8. Khai căn bậc hai với phép nhân và phép chia
+3. Toán 9 / CHƯƠNG III… / Bài 9. Biến đổi đơn giản và rút gọn biểu thức chứa căn thức bậc hai
+4. Toán 9 / CHƯƠNG III… / Bài 10. Căn bậc ba và căn thức bậc ba
+5. Toán 9 / CHƯƠNG III… / ÔN TẬP CHƯƠNG III
+6. Toán 9 / CHƯƠNG IV. HỆ THỨC LƯỢNG TRONG TAM GIÁC VUÔNG / Bài 11. Tỉ số lượng giác của góc nhọn
+7. Toán 9 / CHƯƠNG IV… / Bài 12. Một số hệ thức giữa cạnh, góc trong tam giác vuông và ứng dụng
+8. Toán 9 / CHƯƠNG IV… / ÔN TẬP CHƯƠNG IV
+9. Toán 9 / CHƯƠNG V. ĐƯỜNG TRÒN / Bài 13. Mở đầu về đường tròn
+10. Toán 9 / CHƯƠNG V… / Bài 14. Cung và dây của một đường tròn
+11. Toán 9 / CHƯƠNG V… / Bài 15. Độ dài của cung tròn. Diện tích hình quạt tròn và hình vành khuyên
+12. Toán 9 / CHƯƠNG V… / Bài 16. Vị trí tương đối của đường thẳng và đường tròn
+13. Toán 9 / CHƯƠNG V… / Bài 17. Vị trí tương đối của hai đường tròn
+14. Toán 9 / CHƯƠNG V… / ÔN TẬP CHƯƠNG V
+
+Nguyên nhân chặn (đã thử thao tác web thật):
+- Biến môi trường GEMINI_API_KEY_1, GEMINI_API_KEY_2, TEACHER_ADMIN_PASSWORD trong process: present=False, length=0; CLOUD_AGENT_INJECTED_SECRET_NAMES unset; environment của run = null.
+- Bước 1 (https://bai-viet-ai.vercel.app/): upload được file nguồn Bài 7.docx; bấm "Tạo bài giảng" → UI: "Chưa có API key. Nhấn API Key để thêm (có thể thêm nhiều key cùng loại)." Không thể thử key 2 vì cả hai key đều rỗng. Model UI chỉ có các biến thể Flash (gemini-2.5-flash khuyến nghị); không thấy Pro.
+- Bước 2 (https://thayphatdaytoan-7832c.web.app/?grade=9): Khu vực Giáo viên, để trống tên + mật khẩu rỗng → UI: "Nhập mật khẩu." Login thất bại.
+- Nhịp nghỉ 5 phút / 15 phút: chưa áp dụng vì chưa đăng được bài nào.
+
+Ghi chú web công khai (không login):
+- Trang học sinh vẫn thấy Toán 9 Chương III Bài 7–10 (bài đã có từ trước); lần chạy này không import/lưu bài mới.
+
+VIỆC CẦN KHẮC PHỤC
+------------------
+1. Gắn Cloud Environment cho automation này (hiện environment=null) để 3 biến GEMINI_API_KEY_1, GEMINI_API_KEY_2, TEACHER_ADMIN_PASSWORD được inject vào process khi chạy.
+2. Sau khi inject OK: xác nhận bằng python os.environ length > 0 (không in giá trị) rồi chạy lại pipeline.
+3. Có thể chạy lại từng bài (mode rerun) sau khi secrets hoạt động, ví dụ: "Chạy lại Toán 9 Chương III Bài 7".
+4. Dọn file lệch thư mục (không chặn lần này nhưng nên sửa):
+   - Bài 10 folder chứa PDF Bài 9
+   - CHƯƠNG IV Bài 11 / Bài 12 / ÔN TẬP còn file "Bài 7...." lệch chỗ
+5. Model trên bai-viet-ai hiện chỉ Flash — nếu cần Pro, kiểm tra lại danh sách model khi đã có API key hợp lệ.
