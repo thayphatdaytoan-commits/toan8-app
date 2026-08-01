@@ -1,0 +1,60 @@
+BÁO CÁO ĐĂNG BÀI GIẢNG
+================================================================================
+ĐÂY LÀ LẦN CHẠY LẠI.
+
+Thời gian chạy: 2026-08-01 03:29 UTC
+Chế độ: chạy lại (rerun) — 1 bài
+Khối đã xử lý: Toán 9
+Phạm vi: Chương III · Bài 7
+Trigger: "Chay lai Toan 9 Chuong III Bai 7"
+
+================================================================================
+THÔNG TIN BÀI MỤC TIÊU
+================================================================================
+- Khối: Toán 9
+- Chương (tên thư mục): CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA
+- Bài (tên thư mục): Bài 7. Căn bậc hai và căn thức bậc hai
+- File nguồn:
+  - Bài 7. Căn bậc hai và căn thức bậc hai.docx (ưu tiên upload)
+  - Bài 7. Căn bậc hai và căn thức bậc hai.pdf
+- File Word output: KHÔNG tạo được (Bước 1 bị chặn)
+
+================================================================================
+DANH SÁCH BÀI ĐÃ ĐĂNG THÀNH CÔNG
+================================================================================
+(Không có)
+
+================================================================================
+DANH SÁCH BÀI LỖI / BỎ QUA
+================================================================================
+1) Toán 9 / CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA / Bài 7. Căn bậc hai và căn thức bậc hai
+   - Bước 1 (bai-viet-ai.vercel.app):
+     + Đã chọn đúng Lớp 9 / Chương III / Bài 7.
+     + Đã upload file nguồn .docx.
+     + Đã thử đọc GEMINI_API_KEY_1 và GEMINI_API_KEY_2 từ Environment Variable rồi điền form.
+     + Kết quả: cả hai biến absent / length = 0.
+     + UI báo: "Chưa có API key. Nhấn API Key để thêm (có thể thêm nhiều key cùng loại)."
+     + Không tạo được bài / không tải được Word output.
+   - Bước 2 (thayphatdaytoan-7832c.web.app/?grade=9):
+     + Đăng nhập → Khu vực Giáo viên; để trống tên đăng nhập.
+     + Đã thử đọc TEACHER_ADMIN_PASSWORD từ Environment Variable rồi điền form.
+     + Kết quả: biến absent / length = 0.
+     + UI báo: "Nhập mật khẩu."
+     + Không vào được khu vực giáo viên → không Import / không Lưu.
+   - Theo chế độ chạy lại 1 bài: DỪNG sau khi thao tác thật thất bại (đã thử đúng cách).
+
+Ghi chú kỹ thuật (không lộ secret):
+- Kiểm tra bằng python os.environ.get (độ dài): GEMINI_API_KEY_1 / GEMINI_API_KEY_2 / TEACHER_ADMIN_PASSWORD đều present=False, length=0.
+- cursor-cloud environment-info: environment = null (run không gắn environment có secrets).
+- Không bỏ nhịp nghỉ 5 bài (đúng chế độ chạy lại).
+
+================================================================================
+VIỆC CẦN KHẮC PHỤC
+================================================================================
+1) Gắn Environment của automation với 3 biến:
+   - GEMINI_API_KEY_1
+   - GEMINI_API_KEY_2
+   - TEACHER_ADMIN_PASSWORD
+   rồi kích hoạt lại: "Chạy lại Toán 9 Chương III Bài 7".
+2) Sau khi có secrets: mở Sửa bài trùng trên web (Bài 7 Chương III đã từng có trên hệ thống công khai ở các lần trước) → Import Word output → Lưu.
+3) Không cần sửa file nguồn Bài 7 (đã có .docx + .pdf đúng tên thư mục).
