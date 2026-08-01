@@ -1,0 +1,156 @@
+@grade_level: 9
+@chapter: 3
+@lesson_no: 10
+@title: Căn bậc ba và căn thức bậc ba
+@focus_keyword: căn bậc ba toán 9
+@keywords: căn bậc ba, căn thức bậc ba, toán 9, định nghĩa, tính chất, bài tập căn bậc ba
+@seo_description: Tìm hiểu định nghĩa, tính chất và cách tính căn bậc ba trong Toán 9. Ôn tập lý thuyết và luyện tập các dạng bài tập cơ bản về căn bậc ba.
+@video_url:
+@pdf_url:
+
+// File bài giảng Toán 9 - Chương 3 - Bài 10: Căn bậc ba và căn thức bậc ba
+
+LÝ THUYẾT TRỌNG TÂM
+#[Định nghĩa: Căn bậc ba của một số thực $a$ là số thực $x$ thỏa mãn $x^3 = a$.]#
+Mỗi số thực $a$ đều có đúng một căn bậc ba, được kí hiệu là $\sqrt[3]{a}$.
+
+#[Ghi nhớ:
+- Với mọi số thực $a$, ta luôn có $(\sqrt[3]{a})^3 = a$.
+- Căn bậc ba của số dương là số dương.
+- Căn bậc ba của số âm là số âm.
+- Căn bậc ba của số 0 là 0.
+- $\sqrt[3]{a^3} = a$.
+]#
+
+**Tính chất của căn bậc ba:**
+1.  **So sánh:** Với $a < b \Leftrightarrow \sqrt[3]{a} < \sqrt[3]{b}$.
+2.  **Tính chất nhân:** Với mọi số thực $a, b$, ta có $\sqrt[3]{ab} = \sqrt[3]{a} \cdot \sqrt[3]{b}$.
+3.  **Tính chất chia:** Với mọi số thực $a$ và $b \neq 0$, ta có $\sqrt[3]{\frac{a}{b}} = \frac{\sqrt[3]{a}}{\sqrt[3]{b}}$.
+
+CÁC DẠNG TOÁN & VÍ DỤ
+
+**Dạng 1: Tính giá trị của căn bậc ba và biểu thức chứa căn bậc ba**
+#[Phương pháp:
+- Áp dụng định nghĩa căn bậc ba: Nếu $x^3 = a$ thì $x = \sqrt[3]{a}$.
+- Sử dụng các tính chất của căn bậc ba để rút gọn hoặc tính toán.
+- Lưu ý đến dấu của số dưới dấu căn.
+]#
+
+#[Ví dụ: Tính giá trị của các biểu thức sau:
+a) $\sqrt[3]{8}$
+b) $\sqrt[3]{-27}$
+c) $\sqrt[3]{0.125}$
+d) $2\sqrt[3]{-64} + \sqrt[3]{125}$
+]#
+
+#[Lời giải:
+a) Vì $2^3 = 8$ nên $\sqrt[3]{8} = 2$.
+b) Vì $(-3)^3 = -27$ nên $\sqrt[3]{-27} = -3$.
+c) Vì $(0.5)^3 = 0.125$ nên $\sqrt[3]{0.125} = 0.5$.
+d) Ta có:
+$\sqrt[3]{-64} = -4$ (vì $(-4)^3 = -64$)
+$\sqrt[3]{125} = 5$ (vì $5^3 = 125$)
+Vậy $2\sqrt[3]{-64} + \sqrt[3]{125} = 2 \cdot (-4) + 5 = -8 + 5 = -3$.
+]#
+
+**Dạng 2: So sánh các số có chứa căn bậc ba**
+#[Phương pháp:
+- Sử dụng tính chất: Với $a < b \Leftrightarrow \sqrt[3]{a} < \sqrt[3]{b}$.
+- Đưa các số về cùng dạng (cùng là căn bậc ba hoặc cùng là số nguyên/thập phân) rồi so sánh các số dưới dấu căn.
+]#
+
+#[Ví dụ: So sánh $3$ và $\sqrt[3]{28}$.]#
+#[Lời giải:
+Ta có $3 = \sqrt[3]{3^3} = \sqrt[3]{27}$.
+Vì $27 < 28$ nên $\sqrt[3]{27} < \sqrt[3]{28}$.
+Vậy $3 < \sqrt[3]{28}$.
+]#
+
+**Dạng 3: Giải phương trình dạng $x^3 = a$**
+#[Phương pháp:
+- Áp dụng định nghĩa căn bậc ba: Nếu $x^3 = a$ thì $x = \sqrt[3]{a}$.
+- Thực hiện các phép biến đổi đại số để đưa phương trình về dạng $x^3 = a$.
+]#
+
+#[Ví dụ: Tìm $x$ biết $(x+2)^3 = -64$.]#
+#[Lời giải:
+Ta có $(x+2)^3 = -64$.
+Theo định nghĩa căn bậc ba, $x+2 = \sqrt[3]{-64}$.
+Vì $(-4)^3 = -64$ nên $\sqrt[3]{-64} = -4$.
+Do đó, $x+2 = -4$.
+$x = -4 - 2$.
+$x = -6$.
+Vậy $x = -6$.
+]#
+
+BÀI TẬP TỰ LUYỆN
+
+ID: btcb3_01
+§ Giá trị của $\sqrt[3]{27}$ là bao nhiêu?
+Đáp án: 3
+---
+ID: btcb3_02
+§ Căn bậc ba của $-125$ là:
+A. 5
+B. -5
+C. 25
+D. -25
+Đáp án: B
+---
+ID: btcb3_03
+§ Tính giá trị của biểu thức $A = \sqrt[3]{64} - \sqrt[3]{-8}$.
+A. 2
+B. 6
+C. -2
+D. -6
+Đáp án: B
+Lời giải: Ta có $\sqrt[3]{64} = 4$ và $\sqrt[3]{-8} = -2$. Vậy $A = 4 - (-2) = 4 + 2 = 6$.
+---
+ID: btcb3_04
+§ So sánh $4$ và $\sqrt[3]{63}$.
+A. $4 < \sqrt[3]{63}$
+B. $4 > \sqrt[3]{63}$
+C. $4 = \sqrt[3]{63}$
+D. Không thể so sánh
+Đáp án: B
+Lời giải: Ta có $4 = \sqrt[3]{4^3} = \sqrt[3]{64}$. Vì $64 > 63$ nên $\sqrt[3]{64} > \sqrt[3]{63}$. Vậy $4 > \sqrt[3]{63}$.
+---
+ID: btcb3_05
+§ Tìm $x$ biết $x^3 = 216$.
+Đáp án: 6
+---
+ID: btcb3_06
+§ Kết quả của phép tính $\sqrt[3]{0.008}$ là:
+A. 0.02
+B. 0.2
+C. 2
+D. 0.002
+Đáp án: B
+---
+ID: btcb3_07
+§ Giá trị của biểu thức $\sqrt[3]{-0.027} + \sqrt[3]{0.001}$ là:
+A. -0.2
+B. -0.4
+C. 0.2
+D. 0.4
+Đáp án: A
+Lời giải: Ta có $\sqrt[3]{-0.027} = -0.3$ và $\sqrt[3]{0.001} = 0.1$. Vậy $-0.3 + 0.1 = -0.2$.
+---
+ID: btcb3_08
+§ Cho biết $\sqrt[3]{x} = -7$. Giá trị của $x$ là bao nhiêu?
+Đáp án: -343
+Lời giải: Nếu $\sqrt[3]{x} = -7$ thì $x = (-7)^3 = -343$.
+---
+ID: btcb3_09
+§ Giải phương trình $(x-3)^3 = 27$.
+Đáp án: 6
+Lời giải: $(x-3)^3 = 27 \Rightarrow x-3 = \sqrt[3]{27} \Rightarrow x-3 = 3 \Rightarrow x = 6$.
+---
+ID: btcb3_10
+§ Khẳng định nào sau đây là SAI?
+A. $\sqrt[3]{a^3} = a$ với mọi số thực $a$.
+B. $\sqrt[3]{ab} = \sqrt[3]{a} \cdot \sqrt[3]{b}$ với mọi số thực $a, b$.
+C. $\sqrt[3]{a} < \sqrt[3]{b}$ khi và chỉ khi $a < b$.
+D. Căn bậc ba của một số âm là một số dương.
+Đáp án: D
+Lời giải: Căn bậc ba của một số âm là một số âm. Ví dụ: $\sqrt[3]{-8} = -2$.

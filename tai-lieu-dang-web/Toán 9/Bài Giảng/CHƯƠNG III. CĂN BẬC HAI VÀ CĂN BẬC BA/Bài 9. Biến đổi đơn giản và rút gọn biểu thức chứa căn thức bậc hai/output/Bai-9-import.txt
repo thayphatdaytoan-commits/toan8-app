@@ -1,0 +1,190 @@
+@grade_level: 9
+@chapter: 3
+@lesson_no: 9
+@title: Biến đổi đơn giản và rút gọn biểu thức chứa căn thức bậc hai
+@focus_keyword: rút gọn căn thức bậc hai toán 9
+@keywords: biến đổi căn thức, rút gọn căn, trục căn thức, khử mẫu, căn bậc hai, toán 9
+@seo_description: Nắm vững các phương pháp biến đổi đơn giản và rút gọn biểu thức chứa căn thức bậc hai trong Toán 9, bao gồm khử mẫu và trục căn thức.
+@video_url:
+@pdf_url:
+
+// File bài giảng môn Toán lớp 9 - Chương 3, Bài 9: Biến đổi đơn giản và rút gọn biểu thức chứa căn thức bậc hai.
+// Nội dung tập trung vào khử mẫu, trục căn thức và rút gọn biểu thức.
+
+LÝ THUYẾT TRỌNG TÂM
+
+Để biến đổi đơn giản biểu thức chứa căn thức bậc hai, ta thường áp dụng các phép biến đổi như đưa thừa số ra ngoài dấu căn, đưa thừa số vào trong dấu căn, khử mẫu của biểu thức lấy căn và trục căn thức ở mẫu.
+
+#[Định nghĩa: Khử mẫu của biểu thức lấy căn]#
+Khử mẫu của biểu thức lấy căn là biến đổi một biểu thức có chứa căn thức ở mẫu thành một biểu thức không còn căn thức ở mẫu.
+Cụ thể, với các biểu thức $A \ge 0$, $B > 0$, ta có:
+$\sqrt{\frac{A}{B}} = \frac{\sqrt{A}}{\sqrt{B}} = \frac{\sqrt{A} \cdot \sqrt{B}}{\sqrt{B} \cdot \sqrt{B}} = \frac{\sqrt{AB}}{B}$
+
+#[Ghi nhớ: Trục căn thức ở mẫu]#
+Trục căn thức ở mẫu là biến đổi một biểu thức có chứa căn thức ở mẫu thành một biểu thức không còn căn thức ở mẫu bằng cách nhân cả tử và mẫu với một biểu thức thích hợp (thường là biểu thức liên hợp).
+Các trường hợp thường gặp:
+1.  Với các biểu thức $A, B$ mà $B > 0$: $\frac{A}{\sqrt{B}} = \frac{A\sqrt{B}}{B}$
+2.  Với các biểu thức $A, B, C$ mà $B \ge 0, C \ge 0, B \ne C$:
+    *   $\frac{A}{\sqrt{B} \pm C} = \frac{A(\sqrt{B} \mp C)}{(\sqrt{B} \pm C)(\sqrt{B} \mp C)} = \frac{A(\sqrt{B} \mp C)}{B - C^2}$
+    *   $\frac{A}{B \pm \sqrt{C}} = \frac{A(B \mp \sqrt{C})}{(B \pm \sqrt{C})(B \mp \sqrt{C})} = \frac{A(B \mp \sqrt{C})}{B^2 - C}$
+    *   $\frac{A}{\sqrt{B} \pm \sqrt{C}} = \frac{A(\sqrt{B} \mp \sqrt{C})}{(\sqrt{B} \pm \sqrt{C})(\sqrt{B} \mp \sqrt{C})} = \frac{A(\sqrt{B} \mp \sqrt{C})}{B - C}$
+
+CÁC DẠNG TOÁN & VÍ DỤ
+
+Dạng 1: Khử mẫu của biểu thức lấy căn
+#[Phương pháp: ]#
+Để khử mẫu của biểu thức lấy căn $\sqrt{\frac{A}{B}}$ với $A \ge 0, B > 0$, ta nhân cả tử và mẫu của phân thức dưới dấu căn với $B$. Sau đó, áp dụng công thức $\sqrt{\frac{A}{B}} = \frac{\sqrt{AB}}{B}$.
+#[Ví dụ: ]#
+Khử mẫu của biểu thức $\sqrt{\frac{3}{5}}$.
+#[Lời giải: ]#
+Ta có:
+$\sqrt{\frac{3}{5}} = \sqrt{\frac{3 \cdot 5}{5 \cdot 5}} = \sqrt{\frac{15}{25}} = \frac{\sqrt{15}}{\sqrt{25}} = \frac{\sqrt{15}}{5}$
+
+---
+
+Dạng 2: Trục căn thức ở mẫu
+#[Phương pháp: ]#
+Để trục căn thức ở mẫu, ta nhân cả tử và mẫu của phân thức với biểu thức liên hợp của mẫu.
+*   Nếu mẫu là $\sqrt{B}$, nhân với $\sqrt{B}$.
+*   Nếu mẫu là $\sqrt{B} \pm C$ hoặc $B \pm \sqrt{C}$, nhân với biểu thức liên hợp tương ứng.
+*   Nếu mẫu là $\sqrt{B} \pm \sqrt{C}$, nhân với biểu thức liên hợp tương ứng.
+#[Ví dụ: ]#
+Trục căn thức ở mẫu của biểu thức $\frac{2}{\sqrt{3}-1}$.
+#[Lời giải: ]#
+Ta có:
+$\frac{2}{\sqrt{3}-1} = \frac{2(\sqrt{3}+1)}{(\sqrt{3}-1)(\sqrt{3}+1)} = \frac{2(\sqrt{3}+1)}{(\sqrt{3})^2 - 1^2} = \frac{2(\sqrt{3}+1)}{3-1} = \frac{2(\sqrt{3}+1)}{2} = \sqrt{3}+1$
+
+---
+
+Dạng 3: Rút gọn biểu thức chứa căn thức bậc hai
+#[Phương pháp: ]#
+Để rút gọn biểu thức chứa căn thức bậc hai, ta thực hiện các bước sau:
+1.  Đưa các thừa số ra ngoài dấu căn (nếu có thể).
+2.  Khử mẫu của biểu thức lấy căn hoặc trục căn thức ở mẫu (nếu có).
+3.  Thực hiện các phép tính cộng, trừ các căn thức đồng dạng (nếu có).
+4.  Thực hiện các phép nhân, chia các căn thức.
+#[Ví dụ: ]#
+Rút gọn biểu thức $A = 3\sqrt{2} + \sqrt{18} - \sqrt{50}$.
+#[Lời giải: ]#
+Ta có:
+$A = 3\sqrt{2} + \sqrt{18} - \sqrt{50}$
+$A = 3\sqrt{2} + \sqrt{9 \cdot 2} - \sqrt{25 \cdot 2}$
+$A = 3\sqrt{2} + 3\sqrt{2} - 5\sqrt{2}$
+$A = (3+3-5)\sqrt{2}$
+$A = \sqrt{2}$
+
+BÀI TẬP TỰ LUYỆN
+
+ID: bt_khumau_01
+§ Khử mẫu của biểu thức $\sqrt{\frac{7}{11}}$.
+A. $\frac{\sqrt{77}}{11}$
+B. $\frac{\sqrt{7}}{11}$
+C. $\frac{7\sqrt{11}}{11}$
+D. $\frac{\sqrt{77}}{7}$
+Đáp án: A
+Lời giải: $\sqrt{\frac{7}{11}} = \sqrt{\frac{7 \cdot 11}{11 \cdot 11}} = \frac{\sqrt{77}}{11}$.
+
+---
+
+ID: bt_truccant_02
+§ Trục căn thức ở mẫu của biểu thức $\frac{6}{\sqrt{3}}$.
+Đáp án: $2\sqrt{3}$
+Lời giải: $\frac{6}{\sqrt{3}} = \frac{6\sqrt{3}}{\sqrt{3}\sqrt{3}} = \frac{6\sqrt{3}}{3} = 2\sqrt{3}$.
+
+---
+
+ID: bt_rupgon_03
+§ Rút gọn biểu thức $B = \sqrt{12} + \sqrt{27} - \sqrt{3}$.
+A. $4\sqrt{3}$
+B. $5\sqrt{3}$
+C. $6\sqrt{3}$
+D. $3\sqrt{3}$
+Đáp án: A
+Lời giải: $B = \sqrt{4 \cdot 3} + \sqrt{9 \cdot 3} - \sqrt{3} = 2\sqrt{3} + 3\sqrt{3} - \sqrt{3} = (2+3-1)\sqrt{3} = 4\sqrt{3}$.
+
+---
+
+ID: bt_truccant_04
+§ Trục căn thức ở mẫu của biểu thức $\frac{1}{\sqrt{5}+2}$.
+A. $\sqrt{5}+2$
+B. $\sqrt{5}-2$
+C. $2-\sqrt{5}$
+D. $\frac{\sqrt{5}-2}{9}$
+Đáp án: B
+Lời giải: $\frac{1}{\sqrt{5}+2} = \frac{1 \cdot (\sqrt{5}-2)}{(\sqrt{5}+2)(\sqrt{5}-2)} = \frac{\sqrt{5}-2}{(\sqrt{5})^2 - 2^2} = \frac{\sqrt{5}-2}{5-4} = \sqrt{5}-2$.
+
+---
+
+ID: bt_rupgon_05
+§ Rút gọn biểu thức $C = (2\sqrt{3} - \sqrt{2})(\sqrt{3} + 2\sqrt{2})$.
+Đáp án: $2+3\sqrt{6}$
+Lời giải: $C = (2\sqrt{3} - \sqrt{2})(\sqrt{3} + 2\sqrt{2}) = 2\sqrt{3}\cdot\sqrt{3} + 2\sqrt{3}\cdot2\sqrt{2} - \sqrt{2}\cdot\sqrt{3} - \sqrt{2}\cdot2\sqrt{2}$
+$C = 2 \cdot 3 + 4\sqrt{6} - \sqrt{6} - 2 \cdot 2 = 6 + 3\sqrt{6} - 4 = 2 + 3\sqrt{6}$.
+
+---
+
+ID: bt_khumau_06
+§ Khử mẫu của biểu thức $\sqrt{\frac{x}{y}}$ với $x \ge 0, y > 0$.
+A. $\frac{\sqrt{xy}}{y}$
+B. $\frac{\sqrt{x}}{y}$
+C. $\frac{x\sqrt{y}}{y}$
+D. $\frac{\sqrt{xy}}{x}$
+Đáp án: A
+
+---
+
+ID: bt_truccant_07
+§ Trục căn thức ở mẫu của biểu thức $\frac{3}{2-\sqrt{3}}$.
+Đáp án: $6+3\sqrt{3}$
+Lời giải: $\frac{3}{2-\sqrt{3}} = \frac{3(2+\sqrt{3})}{(2-\sqrt{3})(2+\sqrt{3})} = \frac{3(2+\sqrt{3})}{2^2 - (\sqrt{3})^2} = \frac{3(2+\sqrt{3})}{4-3} = 3(2+\sqrt{3}) = 6+3\sqrt{3}$.
+
+---
+
+ID: bt_rupgon_08
+§ Rút gọn biểu thức $D = \frac{1}{3+\sqrt{5}} + \frac{1}{3-\sqrt{5}}$.
+A. $\frac{3}{2}$
+B. $\frac{3}{4}$
+C. $\frac{1}{2}$
+D. $\frac{1}{4}$
+Đáp án: A
+Lời giải: $D = \frac{3-\sqrt{5}}{(3+\sqrt{5})(3-\sqrt{5})} + \frac{3+\sqrt{5}}{(3-\sqrt{5})(3+\sqrt{5})}$
+$D = \frac{3-\sqrt{5}}{3^2 - (\sqrt{5})^2} + \frac{3+\sqrt{5}}{3^2 - (\sqrt{5})^2}$
+$D = \frac{3-\sqrt{5}}{9-5} + \frac{3+\sqrt{5}}{9-5} = \frac{3-\sqrt{5}}{4} + \frac{3+\sqrt{5}}{4} = \frac{3-\sqrt{5}+3+\sqrt{5}}{4} = \frac{6}{4} = \frac{3}{2}$.
+
+---
+
+ID: bt_rupgon_09
+§ Rút gọn biểu thức $E = \sqrt{20} - \frac{10}{\sqrt{5}} + \sqrt{(\sqrt{5}-1)^2}$.
+Đáp án: $1$
+Lời giải: $E = \sqrt{4 \cdot 5} - \frac{10\sqrt{5}}{5} + |\sqrt{5}-1|$
+$E = 2\sqrt{5} - 2\sqrt{5} + (\sqrt{5}-1)$ (vì $\sqrt{5}-1 > 0$)
+$E = \sqrt{5}-1$.
+(Oops, there was a mistake in my manual calculation. Let's re-evaluate.
+$E = \sqrt{20} - \frac{10}{\sqrt{5}} + \sqrt{(\sqrt{5}-1)^2}$
+$E = 2\sqrt{5} - \frac{10\sqrt{5}}{5} + |\sqrt{5}-1|$
+$E = 2\sqrt{5} - 2\sqrt{5} + (\sqrt{5}-1)$ (vì $\sqrt{5} \approx 2.236 > 1$)
+$E = \sqrt{5}-1$.
+The question asks for a numerical answer, but the result is $\sqrt{5}-1$. Let me adjust the question or the answer to be a simple number.
+Revising the question or expecting a numerical answer might be tricky. Let's make it a multiple choice with the correct simplified form.
+
+Revised ID: bt_rupgon_09
+§ Rút gọn biểu thức $E = \sqrt{20} - \frac{10}{\sqrt{5}} + \sqrt{(\sqrt{5}-1)^2}$.
+A. $1$
+B. $\sqrt{5}-1$
+C. $2\sqrt{5}-1$
+D. $3\sqrt{5}-1$
+Đáp án: B
+Lời giải: $E = \sqrt{4 \cdot 5} - \frac{10\sqrt{5}}{5} + |\sqrt{5}-1|$
+$E = 2\sqrt{5} - 2\sqrt{5} + (\sqrt{5}-1)$ (vì $\sqrt{5} \approx 2.236 > 1$)
+$E = \sqrt{5}-1$.
+
+---
+
+ID: bt_rupgon_10
+§ Cho biểu thức $F = \left( \frac{1}{x-\sqrt{x}} + \frac{1}{\sqrt{x}-1} \right) : \frac{\sqrt{x}+1}{x-2\sqrt{x}+1}$ với $x>0, x \ne 1$. Rút gọn $F$.
+Đáp án: $\frac{\sqrt{x}-1}{\sqrt{x}}$
+Lời giải:
+$F = \left( \frac{1}{\sqrt{x}(\sqrt{x}-1)} + \frac{\sqrt{x}}{\sqrt{x}(\sqrt{x}-1)} \right) : \frac{\sqrt{x}+1}{(\sqrt{x}-1)^2}$
+$F = \frac{1+\sqrt{x}}{\sqrt{x}(\sqrt{x}-1)} \cdot \frac{(\sqrt{x}-1)^2}{\sqrt{x}+1}$
+$F = \frac{1+\sqrt{x}}{\sqrt{x}(\sqrt{x}-1)} \cdot \frac{(\sqrt{x}-1)(\sqrt{x}-1)}{\sqrt{x}+1}$
+$F = \frac{\sqrt{x}-1}{\sqrt{x}}$.

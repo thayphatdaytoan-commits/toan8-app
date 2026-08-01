@@ -1,0 +1,160 @@
+@grade_level: 9
+@chapter: 3
+@lesson_no: 8
+@title: Khai căn bậc hai với phép nhân và phép chia
+@focus_keyword: khai căn bậc hai toán 9
+@keywords: khai căn bậc hai, phép nhân căn, phép chia căn, đưa thừa số ra ngoài căn, đưa thừa số vào trong căn, rút gọn căn bậc hai, toán 9
+@seo_description: Tìm hiểu cách khai căn bậc hai với phép nhân và phép chia trong Toán 9. Nắm vững các công thức và phương pháp rút gọn biểu thức chứa căn.
+@video_url:
+@pdf_url:
+
+// File bài giảng môn Toán lớp 9 - Chương 3, Bài 8: Khai căn bậc hai với phép nhân và phép chia.
+// Nội dung bao gồm lý thuyết, các dạng toán ví dụ và bài tập tự luyện.
+
+LÝ THUYẾT TRỌNG TÂM
+
+Trong bài học này, chúng ta sẽ tìm hiểu các quy tắc khai căn bậc hai đối với một tích và một thương, cùng với các kỹ thuật đưa thừa số ra ngoài hoặc vào trong dấu căn để rút gọn biểu thức.
+
+#[Định nghĩa: Với số $A \ge 0$, căn bậc hai số học của $A$ là $\sqrt{A}$. Với mọi số thực $A$, ta có $\sqrt{A^2} = |A|$.]#
+
+1.  **Quy tắc khai phương một tích**
+    Với hai số $A, B$ không âm ($A \ge 0, B \ge 0$), ta có:
+    $$\sqrt{A \cdot B} = \sqrt{A} \cdot \sqrt{B}$$
+    Ngược lại, với hai số $A, B$ không âm ($A \ge 0, B \ge 0$), ta có:
+    $$\sqrt{A} \cdot \sqrt{B} = \sqrt{A \cdot B}$$
+    #[Ghi nhớ: Quy tắc này cho phép ta khai phương một tích bằng cách khai phương từng thừa số rồi nhân các kết quả lại với nhau, hoặc nhân các căn bậc hai bằng cách nhân các biểu thức dưới dấu căn rồi khai phương kết quả đó. Điều kiện $A, B \ge 0$ là bắt buộc.]#
+
+2.  **Quy tắc khai phương một thương**
+    Với số $A$ không âm ($A \ge 0$) và số $B$ dương ($B > 0$), ta có:
+    $$\sqrt{\frac{A}{B}} = \frac{\sqrt{A}}{\sqrt{B}}$$
+    Ngược lại, với số $A$ không âm ($A \ge 0$) và số $B$ dương ($B > 0$), ta có:
+    $$\frac{\sqrt{A}}{\sqrt{B}} = \sqrt{\frac{A}{B}}$$
+    Quy tắc này cho phép ta khai phương một thương bằng cách khai phương số bị chia và số chia, rồi chia kết quả thứ nhất cho kết quả thứ hai, hoặc chia các căn bậc hai bằng cách chia các biểu thức dưới dấu căn rồi khai phương kết quả đó.
+
+3.  **Đưa thừa số ra ngoài dấu căn**
+    Với hai biểu thức $A, B$ mà $B \ge 0$, ta có:
+    $$\sqrt{A^2 B} = |A|\sqrt{B}$$
+    Nếu $A \ge 0$, thì $\sqrt{A^2 B} = A\sqrt{B}$.
+    Nếu $A < 0$, thì $\sqrt{A^2 B} = -A\sqrt{B}$.
+
+4.  **Đưa thừa số vào trong dấu căn**
+    Với hai biểu thức $A, B$ mà $B \ge 0$:
+    *   Nếu $A \ge 0$, thì $A\sqrt{B} = \sqrt{A^2 B}$.
+    *   Nếu $A < 0$, thì $A\sqrt{B} = -\sqrt{A^2 B}$.
+
+CÁC DẠNG TOÁN & VÍ DỤ
+
+**Dạng 1: Áp dụng quy tắc nhân, chia các căn bậc hai để tính giá trị hoặc rút gọn biểu thức.**
+
+#[Phương pháp:
+1.  Sử dụng công thức $\sqrt{A \cdot B} = \sqrt{A} \cdot \sqrt{B}$ hoặc $\sqrt{A} \cdot \sqrt{B} = \sqrt{A \cdot B}$ khi $A, B \ge 0$.
+2.  Sử dụng công thức $\sqrt{\frac{A}{B}} = \frac{\sqrt{A}}{\sqrt{B}}$ hoặc $\frac{\sqrt{A}}{\sqrt{B}} = \sqrt{\frac{A}{B}}$ khi $A \ge 0, B > 0$.
+3.  Tìm cách nhóm các thừa số hoặc biểu thức để tạo thành bình phương hoàn hảo dưới dấu căn.]#
+
+#[Ví dụ: Tính giá trị của các biểu thức sau:
+a) $\sqrt{25 \cdot 144}$
+b) $\sqrt{1,6} \cdot \sqrt{10}$
+c) $\frac{\sqrt{125}}{\sqrt{5}}$]#
+
+#[Lời giải:
+a) $\sqrt{25 \cdot 144} = \sqrt{25} \cdot \sqrt{144} = 5 \cdot 12 = 60$
+b) $\sqrt{1,6} \cdot \sqrt{10} = \sqrt{1,6 \cdot 10} = \sqrt{16} = 4$
+c) $\frac{\sqrt{125}}{\sqrt{5}} = \sqrt{\frac{125}{5}} = \sqrt{25} = 5$]#
+
+**Dạng 2: Đưa thừa số ra ngoài dấu căn và rút gọn biểu thức.**
+
+#[Phương pháp:
+1.  Phân tích biểu thức dưới dấu căn thành tích của một số chính phương (hoặc bình phương của một biểu thức) và một số (hoặc biểu thức) khác.
+2.  Áp dụng công thức $\sqrt{A^2 B} = |A|\sqrt{B}$ (với $B \ge 0$).
+3.  Nếu có nhiều căn thức, đưa thừa số ra ngoài dấu căn rồi cộng trừ các căn thức đồng dạng (nếu có).]#
+
+#[Ví dụ: Rút gọn các biểu thức sau:
+a) $\sqrt{72}$
+b) $\sqrt{48a^2}$ với $a < 0$
+c) $3\sqrt{20} - \sqrt{45}$]#
+
+#[Lời giải:
+a) $\sqrt{72} = \sqrt{36 \cdot 2} = \sqrt{36} \cdot \sqrt{2} = 6\sqrt{2}$
+b) $\sqrt{48a^2} = \sqrt{16 \cdot 3 \cdot a^2} = \sqrt{16a^2} \cdot \sqrt{3} = \sqrt{(4a)^2} \cdot \sqrt{3} = |4a|\sqrt{3}$.
+Vì $a < 0$ nên $4a < 0$, suy ra $|4a| = -4a$.
+Vậy $\sqrt{48a^2} = -4a\sqrt{3}$.
+c) $3\sqrt{20} - \sqrt{45} = 3\sqrt{4 \cdot 5} - \sqrt{9 \cdot 5} = 3 \cdot 2\sqrt{5} - 3\sqrt{5} = 6\sqrt{5} - 3\sqrt{5} = (6-3)\sqrt{5} = 3\sqrt{5}$]#
+
+**Dạng 3: Đưa thừa số vào trong dấu căn.**
+
+#[Phương pháp:
+1.  Xác định dấu của thừa số $A$.
+2.  Nếu $A \ge 0$, áp dụng công thức $A\sqrt{B} = \sqrt{A^2 B}$ (với $B \ge 0$).
+3.  Nếu $A < 0$, áp dụng công thức $A\sqrt{B} = -\sqrt{A^2 B}$ (với $B \ge 0$).]#
+
+#[Ví dụ: Đưa thừa số vào trong dấu căn:
+a) $5\sqrt{3}$
+b) $-2\sqrt{7}$
+c) $x\sqrt{2}$ với $x > 0$]#
+
+#[Lời giải:
+a) Vì $5 > 0$, nên $5\sqrt{3} = \sqrt{5^2 \cdot 3} = \sqrt{25 \cdot 3} = \sqrt{75}$.
+b) Vì $-2 < 0$, nên $-2\sqrt{7} = -\sqrt{(-2)^2 \cdot 7} = -\sqrt{4 \cdot 7} = -\sqrt{28}$.
+c) Vì $x > 0$, nên $x\sqrt{2} = \sqrt{x^2 \cdot 2} = \sqrt{2x^2}$.]#
+
+BÀI TẬP TỰ LUYỆN
+
+ID: kcbn_01
+§ Tính giá trị của biểu thức: $\sqrt{0,09 \cdot 100}$
+Đáp án: 3
+---
+ID: kcbn_02
+§ Rút gọn biểu thức: $\sqrt{1,21} \cdot \sqrt{10000}$
+A. 110
+B. 1100
+C. 11
+D. 1,1
+Đáp án: B
+---
+ID: kcbn_03
+§ Tính giá trị của biểu thức: $\frac{\sqrt{169}}{\sqrt{1,69}}$
+Đáp án: 10
+---
+ID: kcbn_04
+§ Rút gọn biểu thức: $\sqrt{12} \cdot \sqrt{3}$
+Đáp án: 6
+---
+ID: kcbn_05
+§ Rút gọn biểu thức: $\sqrt{180}$
+A. $6\sqrt{5}$
+B. $5\sqrt{6}$
+C. $3\sqrt{20}$
+D. $4\sqrt{45}$
+Đáp án: A
+---
+ID: kcbn_06
+§ Đưa thừa số vào trong dấu căn của biểu thức $4\sqrt{5}$.
+Đáp án: $\sqrt{80}$
+---
+ID: kcbn_07
+§ Đưa thừa số vào trong dấu căn của biểu thức $-3\sqrt{2}$.
+A. $\sqrt{18}$
+B. $-\sqrt{18}$
+C. $\sqrt{12}$
+D. $-\sqrt{12}$
+Đáp án: B
+---
+ID: kcbn_08
+§ Rút gọn biểu thức: $\sqrt{50} - \sqrt{8} + \sqrt{18}$
+Đáp án: $6\sqrt{2}$
+---
+ID: kcbn_09
+§ Biểu thức $\sqrt{27x^2}$ với $x < 0$ sau khi rút gọn là:
+A. $3x\sqrt{3}$
+B. $-3x\sqrt{3}$
+C. $3|x|\sqrt{3}$
+D. $x\sqrt{27}$
+Đáp án: B
+---
+ID: kcbn_10
+§ So sánh $2\sqrt{6}$ và $\sqrt{25}$.
+A. $2\sqrt{6} > \sqrt{25}$
+B. $2\sqrt{6} < \sqrt{25}$
+C. $2\sqrt{6} = \sqrt{25}$
+D. Không thể so sánh
+Đáp án: B

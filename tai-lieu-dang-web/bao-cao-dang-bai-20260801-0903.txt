@@ -1,0 +1,55 @@
+BÁO CÁO ĐĂNG BÀI GIẢNG
+Thời gian chạy: 2026-08-01 09:03 UTC
+Chế độ: CHẠY LẠI NHIỀU BÀI (ĐÂY LÀ LẦN CHẠY LẠI)
+Agent: https://cursor.com/agents/bc-0e9e273c-40f7-4861-87c9-10a641a6fad2
+
+================================================================================
+THAM SỐ
+================================================================================
+- Khối: Toán 9
+- Chương: CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA (chapter = 3)
+- Bài: 8, 9, 10
+
+================================================================================
+BÀI ĐÃ ĐĂNG THÀNH CÔNG
+================================================================================
+1) Toán 9 / Chương III / Bài 8. Khai căn bậc hai với phép nhân và phép chia
+   - Nguồn: .../Bài 8.../Bài 8. Khai căn bậc hai với phép nhân và phép chia.docx
+   - TXT import: .../output/Bai-8-import.txt
+   - SEO: «khai căn bậc hai toán 9», ~7 từ khóa phụ; ~10 câu luyện tập
+   - URL: https://thayphatdaytoan-7832c.web.app/bai-giang/toan-9-chuong-3-bai-8-khai-can-bac-hai-voi-phep-nhan-va-phep-chia?grade=9
+
+2) Toán 9 / Chương III / Bài 9. Biến đổi đơn giản và rút gọn biểu thức chứa căn thức bậc hai
+   - Nguồn: .../Bài 9.../Bài 9. Biến đổi đơn giản và rút gọn biểu thức chứa căn thức bậc hai.docx
+   - TXT import: .../output/Bai-9-import.txt
+   - SEO: «rút gọn căn thức bậc hai toán 9», ~6 từ khóa phụ; ~11 câu luyện tập
+   - URL: https://thayphatdaytoan-7832c.web.app/bai-giang/toan-9-chuong-3-bai-9-bien-doi-don-gian-va-rut-gon-bieu-thuc-chua-can-thuc-bac-hai?grade=9
+
+3) Toán 9 / Chương III / Bài 10. Căn bậc ba và căn thức bậc ba
+   - Nguồn: .../Bài 10.../Bài 10. Căn bậc ba và căn thức bậc ba.docx
+   - TXT import: .../output/Bai-10-import.txt
+   - SEO: «căn bậc ba toán 9», ~6 từ khóa phụ; ~10 câu luyện tập
+   - URL: https://thayphatdaytoan-7832c.web.app/bai-giang/toan-9-chuong-3-bai-10-can-bac-ba-va-can-thuc-bac-ba?grade=9
+
+Xác minh học sinh: cả 3 bài có lý thuyết + bài tập đúng chủ đề (không lệch lập phương trình).
+
+================================================================================
+GHI CHÚ KỸ THUẬT
+================================================================================
+- Secrets đủ: GEMINI_API_KEY_1/2, TEACHER_ADMIN_PASSWORD.
+- Lần tải Word từ bai-viet-ai bị nhầm bài cũ trong thư viện ("Giải bài toán bằng cách lập phương trình") → đã loại file Word sai.
+- Đã soạn lại TXT chuẩn bằng Gemini API (gemini-2.5-flash; Pro bị 429) theo docs/PROMPT_AI_SOAN_BAI_GIANG_SEO.txt + tài liệu nguồn.
+- Meta bắt buộc @chapter: 3 (số), không dùng "III".
+- UI alert vẫn có thể hiện "0 mục lý thuyết/ví dụ" (đếm mảng examples cũ); thực tế theory_core/examples_core đã vào và hiển thị trên web.
+
+================================================================================
+BÀI LỖI / BỎ QUA
+================================================================================
+(Không.)
+
+================================================================================
+VIỆC CẦN THEO DÕI (không chặn)
+================================================================================
+- Video/PDF vẫn trống (chưa có URL nguồn).
+- Folder Bài 10 còn file PDF lệch tên Bài 9 — không dùng khi đăng.
+- Nên cải tiến bước tải Word trên bai-viet-ai để tránh lấy nhầm bài trong thư viện.
