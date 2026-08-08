@@ -61,7 +61,7 @@ Khi KHÔNG có file nguồn:
 3A) CÓ tài liệu nguồn — dán:
 Tạo bài giảng cho tôi lấy từ các bài toán từ tài liệu, chia ra các dạng toán phù hợp,
 mỗi dạng toán sẽ có một số ví dụ phù hợp, có lời giải chi tiết (bạn tự nghĩ), sau đó
-là phần bài tập tự luyện kèm lời giải. Tất cả các công thức dùng môn chuẩn latex và yêu
+là phần bài tập tự luyện kèm lời giải. Tất cả các công thức dùng chuẩn latex và yêu
 cầu nghiêm ngặt bỏ trong dấu $[...]$, thêm cặp dấu {...} vào mỗi công thức.
 
 (Giữ đúng ý: dạng/bài tập lấy từ tài liệu; LaTeX dạng `$[{...}]$`.)
