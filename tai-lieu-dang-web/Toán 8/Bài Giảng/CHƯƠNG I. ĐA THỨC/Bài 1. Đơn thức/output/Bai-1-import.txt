@@ -1,0 +1,323 @@
+@grade_level: 8
+@chapter: 1
+@lesson_no: 1
+@title: Đơn thức
+@focus_keyword: đơn thức toán 8
+@keywords: đơn thức, đơn thức đồng dạng, hệ số, phần biến, bậc của đơn thức
+@seo_description: Lý thuyết đơn thức Toán 8: định nghĩa, đồng dạng, bậc đơn thức, dạng toán và bài tập có lời giải.
+@video_url:
+@pdf_url:
+
+LÝ THUYẾT TRỌNG TÂM
+1. Đơn thức
+#[Định nghĩa:
+Đơn thức là biểu thức đại số chỉ gồm một số, hoặc một biến, hoặc tích giữa các số và các biến.
+]#
+
+Ví dụ:
+Các số: $[{5}]$, $[{-10}]$, $[{\frac{3}{4}}]$.
+Các biến: $[{x}]$, $[{y}]$, $[{z}]$.
+Tích giữa số và biến: $[{3x}]$, $[{-2xy}]$, $[{\frac{1}{2}x^2y^3}]$.
+Mỗi đơn thức trên đều được xem là một đơn thức.
+Lưu ý:
+Các biểu thức có chứa phép cộng, phép trừ, hoặc biến ở mẫu không phải là đơn thức.
+    Ví dụ: $[{x+y}]$, $[{2x-3}]$, $[{\frac{1}{x}}]$, $[{\frac{x}{y}}]$ không phải là đơn thức.
+2. Đơn thức thu gọn
+#[Định nghĩa:
+Đơn thức thu gọn là đơn thức chỉ gồm tích của một số với các biến, mà mỗi biến đã được nâng lên lũy thừa với số mũ nguyên dương và chỉ xuất hiện một lần.
+]#
+
+Ví dụ:
+Đơn thức $[{5x^2y^3z}]$ là đơn thức thu gọn.
+Đơn thức $[{3x \cdot 2y \cdot x^2}]$ chưa phải là đơn thức thu gọn vì biến $[{x}]$ xuất hiện $[{2}]$ lần và có thể nhân các số với nhau. Để thu gọn, ta viết: $[{3x \cdot 2y \cdot x^2 = (3 \cdot 2) \cdot (x \cdot x^2) \cdot y = 6x^3y}]$.
+3. Hệ số, phần biến, bậc của đơn thức
+Đối với một đơn thức thu gọn khác $[{0}]$:
+Hệ số: Là phần số của đơn thức.
+Phần biến: Là phần còn lại (bao gồm các biến với số mũ của chúng).
+Bậc của đơn thức: Là tổng số mũ của tất cả các biến có trong đơn thức đó.
+    *   Số $[{0}]$ không có bậc.
+    *   Các số khác $[{0}]$ (ví dụ $[{5}]$, $[{-2}]$...) là các đơn thức có bậc là $[{0}]$.
+Ví dụ: Cho đơn thức $[{-7x^2yz^3}]$:
+Hệ số là $[{-7}]$.
+Phần biến là $[{x^2yz^3}]$.
+Bậc của đơn thức là $[{2+1+3 = 6}]$.
+4. Đơn thức đồng dạng
+#[Định nghĩa:
+Hai đơn thức đồng dạng là hai đơn thức có phần biến giống hệt nhau (chỉ khác nhau về hệ số).
+]#
+
+Ví dụ:
+$[{3x^2y}]$ và $[{-5x^2y}]$ là hai đơn thức đồng dạng.
+$[{2xy^2}]$ và $[{7xy^2}]$ là hai đơn thức đồng dạng.
+$[{3x^2y}]$ và $[{3xy^2}]$ không đồng dạng vì phần biến khác nhau ($[{x^2y}]$ khác $[{xy^2}]$).
+Mọi số khác $[{0}]$ đều là các đơn thức đồng dạng với nhau (ví dụ: $[{5}]$ và $[{-2}]$).
+Cộng, trừ các đơn thức đồng dạng:
+Để cộng (hay trừ) các đơn thức đồng dạng, ta cộng (hay trừ) các hệ số với nhau và giữ nguyên phần biến.
+Ví dụ:
+$[{3x^2y + 5x^2y = (3+5)x^2y = 8x^2y}]$.
+$[{-7ab + 2ab - ab = (-7+2-1)ab = -6ab}]$.
+---
+
+#[Ghi nhớ:
+- Đơn thức gồm số, biến hoặc tích số với biến.
+- Hai đơn thức đồng dạng khi phần biến giống nhau.
+- Bậc đơn thức là tổng số mũ các biến.
+]#
+
+CÁC DẠNG TOÁN & VÍ DỤ
+Dạng 1: Nhận biết Đơn thức
+#[Phương pháp:
+Dựa vào định nghĩa đơn thức: chỉ gồm một số, một biến, hoặc tích giữa các số và các biến. Không chứa phép cộng, trừ giữa các &quot;hạng tử&quot; và không có biến ở mẫu.
+]#
+
+#[Ví dụ:
+Trong các biểu thức sau, biểu thức nào là đơn thức?
+$[{2025}]$; $[{x+y}]$; $[{-3xy^2}]$; $[{\frac{1}{2}x^3}]$; $[{\frac{1}{x}}]$; $[{5(x+y)}]$.
+]#
+
+#[Lời giải:
+
+$[{2025}]$ là đơn thức (một số).
+$[{x+y}]$ không phải đơn thức (có phép cộng).
+$[{-3xy^2}]$ là đơn thức (tích của số và biến).
+$[{\frac{1}{2}x^3}]$ là đơn thức (tích của số và biến).
+$[{\frac{1}{x}}]$ không phải đơn thức (có biến ở mẫu).
+$[{5(x+y)}]$ không phải đơn thức (có phép cộng trong ngoặc, không phải tích của số và biến).
+Vậy các đơn thức là: $[{2025}]$, $[{-3xy^2}]$, $[{\frac{1}{2}x^3}]$.
+]#
+
+#[Ví dụ:
+Trong các biểu thức sau, biểu thức nào không phải là đơn thức?
+$[{2x^2y}]$; $[{3x^2-2x+1}]$; $[{xy^2+z^2}]$; $[{x-y}]$; $[{4xyz}]$.
+]#
+
+#[Lời giải:
+
+$[{2x^2y}]$ là đơn thức.
+$[{3x^2-2x+1}]$ không phải đơn thức (có phép cộng, trừ).
+$[{xy^2+z^2}]$ không phải đơn thức (có phép cộng).
+$[{x-y}]$ không phải đơn thức (có phép trừ).
+$[{4xyz}]$ là đơn thức.
+Vậy các biểu thức không phải đơn thức là: $[{3x^2-2x+1}]$, $[{xy^2+z^2}]$, $[{x-y}]$.
+]#
+
+Dạng 2: Xác định hệ số, phần biến, bậc của đơn thức
+#[Phương pháp:
+Đảm bảo đơn thức đã ở dạng thu gọn. Sau đó, xác định phần số là hệ số, phần còn lại (chứa biến) là phần biến. Bậc là tổng số mũ của tất cả các biến trong phần biến.
+]#
+
+#[Ví dụ:
+Cho biết hệ số, phần biến và bậc của mỗi đơn thức sau:
+a) $[{2xy^2}]$
+b) $[{-3x^3yz}]$
+]#
+
+#[Lời giải:
+
+a) Cho đơn thức $[{2xy^2}]$:
+Hệ số: $[{2}]$.
+Phần biến: $[{xy^2}]$.
+Bậc: $[{1+2 = 3}]$.
+b) Cho đơn thức $[{-3x^3yz}]$:
+Hệ số: $[{-3}]$.
+Phần biến: $[{x^3yz}]$.
+Bậc: $[{3+1+1 = 5}]$.
+]#
+
+#[Ví dụ:
+Xác định hệ số, phần biến và bậc của các đơn thức sau:
+a) $[{-x}]$
+b) $[{\frac{1}{2}xyz}]$
+]#
+
+#[Lời giải:
+
+a) Cho đơn thức $[{-x}]$:
+Ta có thể viết $[{-x}]$ thành $[{-1 \cdot x}]$.
+Hệ số: $[{-1}]$.
+Phần biến: $[{x}]$.
+Bậc: $[{1}]$.
+b) Cho đơn thức $[{\frac{1}{2}xyz}]$:
+Hệ số: $[{\frac{1}{2}}]$.
+Phần biến: $[{xyz}]$.
+Bậc: $[{1+1+1 = 3}]$.
+]#
+
+Dạng 3: Thu gọn đơn thức và xác định các yếu tố
+#[Phương pháp:
+1.  Nhóm các hệ số lại với nhau và nhân chúng.
+2.  Nhóm các biến giống nhau lại với nhau và áp dụng quy tắc nhân lũy thừa cùng cơ số ($[{a^m \cdot a^n = a^{m+n}}]$).
+3.  Sau khi thu gọn, xác định hệ số, phần biến và bậc như Dạng 2.
+]#
+
+#[Ví dụ:
+Thu gọn và chỉ ra hệ số, phần biến, bậc của các đơn thức:
+a) $[{5xy^3 \cdot 2x^2y}]$
+b) $[{(- \frac{1}{2}x^2y) \cdot (- \frac{1}{4}x)}]$
+]#
+
+#[Lời giải:
+
+a) Thu gọn đơn thức $[{5xy^3 \cdot 2x^2y}]$:
+$[{(5 \cdot 2) \cdot (x \cdot x^2) \cdot (y^3 \cdot y) = 10 \cdot x^{1+2} \cdot y^{3+1} = 10x^3y^4}]$.
+Hệ số: $[{10}]$.
+Phần biến: $[{x^3y^4}]$.
+Bậc: $[{3+4=7}]$.
+b) Thu gọn đơn thức $[{(- \frac{1}{2}x^2y) \cdot (- \frac{1}{4}x)}]$:
+$[{(-\frac{1}{2} \cdot -\frac{1}{4}) \cdot (x^2 \cdot x) \cdot y = \frac{1}{8} \cdot x^{2+1} \cdot y = \frac{1}{8}x^3y}]$.
+Hệ số: $[{\frac{1}{8}}]$.
+Phần biến: $[{x^3y}]$.
+Bậc: $[{3+1=4}]$.
+]#
+
+#[Ví dụ:
+Thu gọn và chỉ ra hệ số, phần biến, bậc của các đơn thức:
+a) $[{(-2xy^2z) \cdot (4x^3yz)}]$
+b) $[{(-3x^2y^3)^2 \cdot (\frac{1}{9}x)}]$
+]#
+
+#[Lời giải:
+
+a) Thu gọn đơn thức $[{(-2xy^2z) \cdot (4x^3yz)}]$:
+$[{(-2 \cdot 4) \cdot (x \cdot x^3) \cdot (y^2 \cdot y) \cdot (z \cdot z) = -8 \cdot x^{1+3} \cdot y^{2+1} \cdot z^{1+1} = -8x^4y^3z^2}]$.
+Hệ số: $[{-8}]$.
+Phần biến: $[{x^4y^3z^2}]$.
+Bậc: $[{4+3+2=9}]$.
+b) Thu gọn đơn thức $[{(-3x^2y^3)^2 \cdot (\frac{1}{9}x)}]$:
+Trước hết, ta tính $[{(-3x^2y^3)^2 = (-3)^2 \cdot (x^2)^2 \cdot (y^3)^2 = 9x^4y^6}]$.
+Sau đó, nhân với đơn thức còn lại: $[{9x^4y^6 \cdot (\frac{1}{9}x) = (9 \cdot \frac{1}{9}) \cdot (x^4 \cdot x) \cdot y^6 = 1 \cdot x^{4+1} \cdot y^6 = x^5y^6}]$.
+Hệ số: $[{1}]$.
+Phần biến: $[{x^5y^6}]$.
+Bậc: $[{5+6=11}]$.
+]#
+
+Dạng 4: Cộng, trừ các đơn thức đồng dạng
+#[Phương pháp:
+Nhận biết các đơn thức đồng dạng (có cùng phần biến). Sau đó, cộng hoặc trừ các hệ số của chúng và giữ nguyên phần biến.
+]#
+
+#[Ví dụ:
+Thực hiện phép tính:
+a) $[{3x^2yz - 4x^2yz}]$
+b) $[{-3xy^2 + 2xy^2 - 5xy^2}]$
+]#
+
+#[Lời giải:
+
+a) $[{3x^2yz - 4x^2yz}]$
+Hai đơn thức này đồng dạng vì có cùng phần biến $[{x^2yz}]$.
+$[{(3-4)x^2yz = -1x^2yz = -x^2yz}]$.
+b) $[{-3xy^2 + 2xy^2 - 5xy^2}]$
+Ba đơn thức này đồng dạng vì có cùng phần biến $[{xy^2}]$.
+$[{(-3+2-5)xy^2 = (-1-5)xy^2 = -6xy^2}]$.
+]#
+
+#[Ví dụ:
+Thực hiện phép tính:
+a) $[{\frac{1}{2}x^2y + \frac{3}{4}x^2y - x^2y}]$
+b) $[{5x^2 - 2x^2 + \frac{1}{3}x^2}]$
+]#
+
+#[Lời giải:
+
+a) $[{\frac{1}{2}x^2y + \frac{3}{4}x^2y - x^2y}]$
+Ba đơn thức này đồng dạng vì có cùng phần biến $[{x^2y}]$.
+$[{(\frac{1}{2} + \frac{3}{4} - 1)x^2y = (\frac{2}{4} + \frac{3}{4} - \frac{4}{4})x^2y = (\frac{2+3-4}{4})x^2y = \frac{1}{4}x^2y}]$.
+b) $[{5x^2 - 2x^2 + \frac{1}{3}x^2}]$
+Ba đơn thức này đồng dạng vì có cùng phần biến $[{x^2}]$.
+$[{(5 - 2 + \frac{1}{3})x^2 = (3 + \frac{1}{3})x^2 = (\frac{9}{3} + \frac{1}{3})x^2 = \frac{10}{3}x^2}]$.
+]#
+
+Dạng 5: Thực hiện phép nhân các đơn thức
+#[Phương pháp:
+Áp dụng quy tắc nhân các số và quy tắc nhân lũy thừa cùng cơ số ($[{a^m \cdot a^n = a^{m+n}}]$).
+]#
+
+#[Ví dụ:
+Thực hiện phép nhân các đơn thức sau:
+a) $[{(-2x^2y) \cdot (5xy^3)}]$
+b) $[{(\frac{1}{3}x^3y^2) \cdot (-6xy)}]$
+]#
+
+#[Lời giải:
+
+a) $[{(-2x^2y) \cdot (5xy^3)}]$
+Nhóm hệ số: $[{-2 \cdot 5 = -10}]$.
+Nhóm biến $[{x}]$: $[{x^2 \cdot x = x^{2+1} = x^3}]$.
+Nhóm biến $[{y}]$: $[{y \cdot y^3 = y^{1+3} = y^4}]$.
+Kết quả: $[{-10x^3y^4}]$.
+b) $[{(\frac{1}{3}x^3y^2) \cdot (-6xy)}]$
+Nhóm hệ số: $[{\frac{1}{3} \cdot (-6) = -2}]$.
+Nhóm biến $[{x}]$: $[{x^3 \cdot x = x^{3+1} = x^4}]$.
+Nhóm biến $[{y}]$: $[{y^2 \cdot y = y^{2+1} = y^3}]$.
+Kết quả: $[{-2x^4y^3}]$.
+]#
+
+#[Ví dụ:
+Thực hiện phép nhân các đơn thức sau:
+a) $[{(-3x^2)^2 \cdot (2xy^2)}]$
+b) $[{(\frac{1}{2}x^2y^3)^3 \cdot (-4x)}]$
+]#
+
+#[Lời giải:
+
+a) $[{(-3x^2)^2 \cdot (2xy^2)}]$
+Tính $[{(-3x^2)^2 = (-3)^2 \cdot (x^2)^2 = 9x^4}]$.
+Thực hiện phép nhân: $[{9x^4 \cdot (2xy^2) = (9 \cdot 2) \cdot (x^4 \cdot x) \cdot y^2 = 18x^{4+1}y^2 = 18x^5y^2}]$.
+b) $[{(\frac{1}{2}x^2y^3)^3 \cdot (-4x)}]$
+Tính $[{(\frac{1}{2}x^2y^3)^3 = (\frac{1}{2})^3 \cdot (x^2)^3 \cdot (y^3)^3 = \frac{1}{8}x^6y^9}]$.
+Thực hiện phép nhân: $[{\frac{1}{8}x^6y^9 \cdot (-4x) = (\frac{1}{8} \cdot -4) \cdot (x^6 \cdot x) \cdot y^9 = -\frac{1}{2}x^{6+1}y^9 = -\frac{1}{2}x^7y^9}]$.
+---
+]#
+
+BÀI TẬP TỰ LUYỆN
+Câu 1. Trong các biểu thức sau, biểu thức nào là đơn thức?
+a) $[{5x-y}]$
+b) $[{12}]$
+c) $[{-2x^2yz^3}]$
+d) $[{\frac{3}{x^2}}]$
+e) $[{xy(x+y)}]$
+Câu 2. Cho các biểu thức: $[{-3xy^2}]$, $[{x^2-2y}]$, $[{100}]$, $[{xy \cdot y^2}]$, $[{(\frac{1}{2}x)^3}]$. Có bao nhiêu đơn thức trong các biểu thức trên?
+Câu 3. Xác định hệ số, phần biến và bậc của các đơn thức sau:
+a) $[{15x^3y^2}]$
+b) $[{-z^4}]$
+c) $[{\frac{2}{3}ab^2c^5}]$
+Câu 4. Thu gọn đơn thức và chỉ ra hệ số, phần biến, bậc:
+a) $[{(-3x^2y) \cdot (\frac{2}{3}xy^3)}]$
+b) $[{(-\frac{1}{5}x^2y) \cdot (-5xy^2z)}]$
+Câu 5. Thu gọn đơn thức và chỉ ra hệ số, phần biến, bậc:
+a) $[{(-2x^3y^2)^2 \cdot (\frac{1}{4}x)}]$
+b) $[{(\frac{1}{3}xy^2)^3 \cdot (-9x^2y)}]$
+Câu 6. Tính tổng các đơn thức: $[{7x^3y + (-4x^3y) + x^3y}]$.
+Câu 7. Thực hiện phép tính: $[{10ab^2 - 3ab^2 - 5ab^2}]$.
+Câu 8. Thực hiện phép tính: $[{\frac{1}{5}x^2y^3 - \frac{2}{5}x^2y^3 + x^2y^3}]$.
+Câu 9. Tìm đơn thức $[{M}]$ biết: $[{M + 2x^2y = 7x^2y}]$.
+Câu 10. Cho $[{A = 3x^2y}]$ và $[{B = -2xy^2}]$. Tính $[{A \cdot B}]$.
+---
+ĐÁP ÁN/HƯỚNG DẪN TỰ LUYỆN
+Câu 1.
+Các đơn thức là: b) $[{12}]$, c) $[{-2x^2yz^3}]$.
+*Hướng dẫn: Kiểm tra định nghĩa đơn thức. a) có phép trừ, d) có biến ở mẫu, e) có phép cộng trong ngoặc.*
+Câu 2.
+Có $[{4}]$ đơn thức: $[{-3xy^2}]$, $[{100}]$, $[{xy \cdot y^2 (= xy^3)}]$, $[{(\frac{1}{2}x)^3 (= \frac{1}{8}x^3)}]$.
+*Hướng dẫn: Thu gọn các biểu thức nếu cần để nhận biết.*
+Câu 3.
+a) $[{15x^3y^2}]$: Hệ số $[{15}]$, phần biến $[{x^3y^2}]$, bậc $[{3+2=5}]$.
+b) $[{-z^4}]$: Hệ số $[{-1}]$, phần biến $[{z^4}]$, bậc $[{4}]$.
+c) $[{\frac{2}{3}ab^2c^5}]$: Hệ số $[{\frac{2}{3}}]$, phần biến $[{ab^2c^5}]$, bậc $[{1+2+5=8}]$.
+Câu 4.
+a) $[{(-3x^2y) \cdot (\frac{2}{3}xy^3) = -2x^3y^4}]$. Hệ số $[{-2}]$, phần biến $[{x^3y^4}]$, bậc $[{7}]$.
+b) $[{(-\frac{1}{5}x^2y) \cdot (-5xy^2z) = x^3y^3z}]$. Hệ số $[{1}]$, phần biến $[{x^3y^3z}]$, bậc $[{7}]$.
+Câu 5.
+a) $[{(-2x^3y^2)^2 \cdot (\frac{1}{4}x) = (4x^6y^4) \cdot (\frac{1}{4}x) = x^7y^4}]$. Hệ số $[{1}]$, phần biến $[{x^7y^4}]$, bậc $[{11}]$.
+b) $[{(\frac{1}{3}xy^2)^3 \cdot (-9x^2y) = (\frac{1}{27}x^3y^6) \cdot (-9x^2y) = -\frac{1}{3}x^5y^7}]$. Hệ số $[{-\frac{1}{3}}]$, phần biến $[{x^5y^7}]$, bậc $[{12}]$.
+Câu 6.
+$[{(7-4+1)x^3y = 4x^3y}]$.
+Câu 7.
+$[{(10-3-5)ab^2 = 2ab^2}]$.
+Câu 8.
+$[{(\frac{1}{5} - \frac{2}{5} + 1)x^2y^3 = (\frac{1}{5} - \frac{2}{5} + \frac{5}{5})x^2y^3 = \frac{4}{5}x^2y^3}]$.
+Câu 9.
+$[{M = 7x^2y - 2x^2y = 5x^2y}]$.
+Câu 10.
+$[{A \cdot B = (3x^2y) \cdot (-2xy^2) = (3 \cdot -2) \cdot (x^2 \cdot x) \cdot (y \cdot y^2) = -6x^3y^3}]$.
