@@ -1,0 +1,71 @@
+BÁO CÁO ĐĂNG BÀI — Ôn tập Chương 3 Toán 9
+Thời gian: 2026-08-09 (UTC+7)
+Cách chạy: Agent local (trình duyệt MCP) — không chạy Cloud Automation Play trong phiên này.
+
+══════════════════════════════════════
+KẾT QUẢ: THÀNH CÔNG
+══════════════════════════════════════
+- Đăng nhập Admin tổng: OK
+- Import file: docs/on-tap-chuong-3-toan9-import.txt (bản enriched local 6047 bytes)
+- Lưu Firebase: OK
+- Hiển thị học sinh: OK
+
+Slug:
+https://thayphatdaytoan-7832c.web.app/bai-giang/toan-9-chuong-3-bai-ot3-on-tap-chuong-3-can-bac-hai-va-can-bac-ba
+
+Meta:
+- grade_level: 9
+- chapter: 3
+- lesson_no: OT3
+- title: Ôn tập Chương 3: Căn bậc hai và căn bậc ba
+- Firestore id: o02fxXLel4NxPIS0JoEf
+
+══════════════════════════════════════
+NỘI DUNG ĐÃ KIỂM TRA
+══════════════════════════════════════
+Lý thuyết: có (# Căn bậc hai, # Căn bậc ba)
+Các dạng toán: có Điền đáp án + Điền chỗ trống + Trắc nghiệm + Phương trình
+Bài tập luyện tập (10 câu):
+  1 input
+  2 fill_blanks
+  3 input
+  4 mcq
+  5 fill_blanks
+  6 input
+  7 fill_blanks
+  8 mcq
+  9 true_false_group
+  10 fill_blanks
+Tóm tắt bài học (mind map): có
+
+Trong file import:
+- [điền chỗ trống]: 8 chỗ
+- Placeholder (điền đáp án): 6 chỗ
+
+══════════════════════════════════════
+LỖI ĐÃ SỬA
+══════════════════════════════════════
+A) KaTeX vỡ ở câu điền chỗ trống vì {{n}} nằm TRONG $...$
+   → Đã chỉnh Đoạn: đưa {{n}} ra ngoài công thức, rồi import lại + Lưu (OK).
+
+══════════════════════════════════════
+CẢNH BÁO / LỖI NHẸ (không chặn lưu)
+══════════════════════════════════════
+1) Alert import hiện "0 mục lý thuyết/ví dụ"
+   → Đếm nEx theo mảng examples; bài này dùng theory_core + examples_core (text).
+   → Lý thuyết & dạng vẫn import đúng (đã xác nhận trên UI).
+
+2) SEO checklist: thiếu link nội bộ trong lý thuyết (không bắt buộc).
+   Gợi ý: dán link bài 7–10 cùng chương.
+
+3) Chưa có video/slides/PDF (không bắt buộc).
+
+4) Nên push GitHub bản import mới (đã sửa blank ngoài $...$) nếu dùng Cloud Automation.
+
+5) Cloud Automation: đã mở form draft; bài đã đăng bằng Agent local (không cần Play lần này trừ khi muốn chạy lại).
+
+══════════════════════════════════════
+FILE NGUỒN
+══════════════════════════════════════
+- docs/on-tap-chuong-3-toan9-import.txt
+- tai-lieu-dang-web/Toán 9/Bài Giảng/CHƯƠNG III.../ÔN TẬP CHƯƠNG III/output/on-tap-chuong-3-import.txt
