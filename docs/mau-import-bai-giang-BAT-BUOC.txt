@@ -1,0 +1,424 @@
+// MẪU IMPORT BÀI GIẢNG (TXT / WORD → copy text) — QUY TẮC CHUẨN (RÕ RÀNG, KHÔNG CHỒNG CHÉO)
+// File Word mẫu: mau-import-bai-giang.docx (đồng bộ 100% với file TXT này)
+// File Word mẫu (bản sao): mau-import-bai-giang-sample-v2.docx
+//
+// ============================================================================
+// 0) NGUYÊN TẮC CHUNG
+// ============================================================================
+// - Các dòng bắt đầu bằng // là GHI CHÚ — parser bỏ qua, không đưa vào nội dung bài.
+// - Thứ tự mục khuyến nghị (sau khối meta @...):
+//     1) LÝ THUYẾT TRỌNG TÂM
+//     2) CÁC DẠNG TOÁN & VÍ DỤ
+//     3) BÀI TẬP LUYỆN TẬP  (tên cũ BÀI TẬP TỰ LUYỆN vẫn nhận)
+//     4) TÓM TẮT BÀI HỌC     (tuỳ chọn)
+//     5) TÀI LIỆU PDF        (tuỳ chọn)
+// - Khi có mục "CÁC DẠNG TOÁN & VÍ DỤ" thì PHẢI có tiêu đề "LÝ THUYẾT TRỌNG TÂM" phía trên —
+//   nội dung giữa hai mục → ô Lý thuyết trọng tâm trên web.
+// - Có thể dùng LaTeX: $...$ (cùng dòng) hoặc $$...$$ (khối).
+// - Không chồng chéo: mỗi đoạn nội dung chỉ thuộc đúng MỘT mục (theo tiêu đề mục gần nhất phía trên).
+//
+// ============================================================================
+// 1) META (@key: value) — đặt Ở ĐẦU FILE, trước mọi tiêu đề mục
+// ============================================================================
+// Khóa thường dùng (value có thể để trống sau dấu :):
+//   @grade_level: 6|7|8|9|10|11|12
+//   @chapter: <số hoặc tên chương>
+//   @lesson_no: <số bài>
+//   @title: <tiêu đề bài — nên 45–62 ký tự nếu tối ưu SEO>
+//   @video_url: <link YouTube bài giảng>
+//   @video_material_url: <link YouTube tài liệu / phụ>
+//   @pdf_url: <link PDF>
+//   @seo_description: <1–2 câu tóm tắt SEO>
+//   @focus_keyword: <từ khóa chính>
+//   @keywords: <từ khóa phụ, ngăn bằng dấu phẩy ; hoặc |>
+//
+// Hoặc dùng dòng tiếng Việt (cũng được):
+//   Chương: 1
+//   Bài: 2
+//   Tiêu đề: ...
+//   Lớp: 11
+//   Link PDF: https://...
+//   YouTube: https://...
+//   Từ khóa chính: ...
+//   Từ khóa phụ: a, b, c
+//
+// ============================================================================
+// 2) QUY TẮC TÁCH MỤC (ưu tiên theo tiêu đề dòng đơn — tránh đoán mò)
+// ============================================================================
+// - "LÝ THUYẾT TRỌNG TÂM" hoặc "LÝ THUYẾT" hoặc "KIẾN THỨC TRỌNG TÂM"
+//     → từ đây đến trước mục kế tiếp = Lý thuyết trọng tâm (theory_core)
+// - "CÁC DẠNG TOÁN & VÍ DỤ" (hoặc "DẠNG TOÁN & VÍ DỤ" / "DẠNG TOÁN VÀ VÍ DỤ")
+//     → từ đây đến trước mục kế tiếp = Các dạng toán & ví dụ (examples_core)
+// - "BÀI TẬP LUYỆN TẬP" / "BÀI TẬP TỰ LUYỆN" / "BÀI TẬP TL" / "PHẦN BÀI TẬP"
+//     → từ đây đến trước mục kế tiếp = Bài tập luyện tập (practice)
+// - "TÓM TẮT BÀI HỌC" / "TÓM TẮT BÀI GIẢNG" / "SƠ ĐỒ TÓM TẮT"
+//     → sơ đồ tóm tắt (TITLE: / ROOT: / danh sách thụt đầu dòng) → content.mindMap
+// - "TÀI LIỆU PDF" / "LINK PDF" / "TÀI LIỆU"
+//     → lấy URL (hoặc dùng @pdf_url)
+//
+// ============================================================================
+// 3) QUY TẮC KHỐI LÝ THUYẾT / DẠNG TOÁN (format mới — khuyến nghị)
+// ============================================================================
+// Không cần #[...]# nữa. Viết tiêu đề khối rồi xuống dòng; phân cách bằng dòng --- (tuỳ chọn nếu khối kế có tiêu đề rõ).
+//
+// Tiêu đề khối được nhận diện:
+//   Định nghĩa: | Định lí: (hoặc Định lý:) | Ghi nhớ: | Chú ý:
+//   Phương pháp: | Ví dụ: | Ví dụ 1: | Bài 1: | Lời giải:
+//
+// Trong LÝ THUYẾT TRỌNG TÂM:
+//   - "Ví dụ:" / "Ví dụ 1:" hiển thị chữ thường (không đóng khung như mục Các dạng toán).
+//   - "Chú ý:" ... --- → đóng khung đỏ (badge Chú ý).
+//   - "# 1. Tiêu đề" / "## 2. ..." / "1. Tiêu đề" → badge tròn số mục.
+//
+// Trong CÁC DẠNG TOÁN / VÍ DỤ:
+//   - Dòng bắt đầu bằng "Ví dụ" (kể cả "Ví dụ 3.5." không cần dấu :) → khung Ví dụ.
+//   - Dòng "Lời giải" / "Lời giải:" / "Lời giải." → khung lời giải (đóng/mở).
+//   - "Dạng 2:" hoặc "Dạng 2." / "Dang 2." đều được nhận là tiêu đề dạng.
+//
+// Ví dụ:
+//   # 1. Khái niệm phương trình bậc nhất hai ẩn:
+//   ...
+//   Chú ý:
+//   - ...
+//   ---
+//   Định nghĩa:
+//   Hàm số bậc nhất có dạng $y=ax+b$ với $a \ne 0$.
+//   ---
+//   Định lí:
+//   ...
+//   ---
+//   Ghi nhớ:
+//   - ...
+//
+// Trong CÁC DẠNG TOÁN:
+//   Dạng 1: <tên dạng>
+//   Phương pháp:
+//   ...
+//   ---
+//   Ví dụ 1:
+//   ...
+//   Lời giải:
+//   ...
+//   ---
+//
+// Cách hiển thị: TỰ ĐỘNG theo từng ví dụ (không cần chọn Cách 1/2 trên admin).
+//   - Chỉ có Lời giải phía sau → khung Ví dụ + Lời giải đóng/mở (như cũ).
+//   - Có đáp án / loại câu (A–D, Đáp án:, [đúng sai], …) → tương tác kiểm tra đáp án
+//     (cùng quy tắc mục 5, chỉ đổi “Câu” → “Ví dụ”).
+//
+// (Tương thích cũ vẫn chạy: #[Định nghĩa: ...]#  và  {Định nghĩa: ...})
+//
+// ============================================================================
+// 4) ẢNH THƯỜNG + SVG
+// ============================================================================
+// Ảnh thường:
+// - Markdown: ![mô tả](https://...)
+// - Hoặc HTML: <img src="https://..." alt="..." />
+// - Import Word (.docx): ảnh nhúng trong file được tự động upload lên Storage và chèn ![ảnh](url)
+//   (cần đăng nhập admin; ưu tiên chèn ảnh PNG/JPEG trong Word — EMF/WMF có thể không đọc được).
+//
+// QUY TẮC CHÈN ẢNH SVG (RẤT QUAN TRỌNG — ĐỂ WEB HIỂN THỊ ĐÚNG):
+// - Web HỖ TRỢ 2 cách nhúng SVG:
+//   (1) Khối fenced code:
+//       ```svg
+//       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200">
+//         ... nội dung svg ...
+//       </svg>
+//       ```
+//   (2) Dán trực tiếp thẻ <svg>...</svg> vào nội dung (không cần ```svg).
+// - BẮT BUỘC có: xmlns="http://www.w3.org/2000/svg" và viewBox="0 0 W H".
+// - Không dùng script/foreignObject/onload/onclick/... và không link ra ngoài;
+//   hệ thống sẽ sanitize và có thể xoá.
+// - Ưu tiên SVG đơn giản (path/line/rect/circle/text), stroke/fill rõ, font-size hợp lý.
+// - Nếu SVG dài: ưu tiên khối ```svg ... ``` để AI/Word không làm hỏng dấu < >.
+//
+// ============================================================================
+// 5) QUY TẮC BÀI TẬP LUYỆN TẬP (practice)
+// ============================================================================
+// - Mỗi câu bắt đầu bằng "Câu 1:" hoặc "Câu 1." (web tự nhận diện và giữ đúng thứ tự).
+// - Có thể ngăn block bằng dòng phân cách: --- hoặc ===
+// - KHÔNG dùng dạng tự luận (text). Mỗi câu phải có đáp án chấm được.
+// - (Tùy chọn sau Đáp án) Gợi ý hướng dẫn: ... — học sinh bấm xem trước khi nộp.
+// - (Tùy chọn sau Đáp án) Lời giải: ... — hiện sau khi nộp bài.
+// - (Tùy chọn) Placeholder: ... — gợi ý ô nhập đáp án (câu nhập đáp án).
+// - (Tương thích cũ) dòng bắt đầu bằng "§" hoặc "ID: ..." vẫn import được nhưng không bắt buộc.
+//
+// --- 5.1 Trắc nghiệm (mcq) ---
+// Cách 1 — dòng Đáp án: (khuyến nghị khi soạn tay/TXT)
+// Câu 1. <đề bài>
+// A. ...
+// B. ...
+// C. ...
+// D. ...
+// Đáp án: B
+// Gợi ý hướng dẫn: ...
+// Lời giải: ...
+//
+// (Cũng nhận 4 phương án trên CÙNG MỘT HÀNG — hay gặp khi soạn Word:)
+// Câu 3. <đề bài>
+// A. ...    B. ...    __C.__ ...    D. ...
+// Lời giải: ...
+//
+// Cách 2 — nhận từ đề Word/PDF kiểu đề thi: "Chọn A/B/C/D" trong phần Lời giải
+// Câu 1. <đề bài>
+// A. ...
+// B. ...
+// C. ...
+// D. ...
+// Lời giải
+// Chọn B
+// <giải thích thêm...>
+//
+// Cách 3 — phương án đúng gạch chân (Word underline → import thành __A.__ ...)
+// Câu 1. <đề bài>
+// __A.__ ...
+// B. ...
+// C. ...
+// D. ...
+// Lời giải: ...
+//
+// --- 5.2 Nhập đáp án (input) ---
+// Câu 2. <đề bài>
+// Đáp án: <giá trị>
+// Placeholder: x = …
+// Lời giải: ...
+// (Nhiều ô nhập: có thể dùng Đáp án dạng 1=...; 2=... nếu soạn theo admin nhiều phần)
+//
+// --- 5.3 Đúng / Sai (một mệnh đề) ---
+// Câu 3. [đúng sai]
+// <mệnh đề>
+// Đáp án: Đúng
+// (hoặc: Sai | True | False | D | S)
+// Lời giải: ...
+//
+// --- 5.3b Đúng / Sai nhóm a–d (kiểu đề thi) ---
+// Câu 7. [đúng sai nhóm]
+// Cho hàm số … Xét các khẳng định sau:
+// a) <mệnh đề a>
+// b) <mệnh đề b>
+// c) <mệnh đề c>
+// d) <mệnh đề d>
+// Lời giải
+// a) Đúng: <giải thích a>
+// b) Sai: <giải thích b>
+// c) Đúng: <giải thích c>
+// d) Đúng: <giải thích d>
+// (Cũng nhận: Đáp án: a Đ; b S; c Đ; d S)
+//
+// --- 5.4 Sắp xếp ---
+// Câu 4. [sắp xếp]
+// <yêu cầu>
+// 1. Bước / mục A
+// 2. Bước / mục B
+// 3. Bước / mục C
+// Đáp án: 1,2,3
+// (Đáp án là thứ tự đúng của các số thứ tự dòng)
+//
+// --- 5.5 Kéo thả ---
+// Câu 5. [kéo thả]
+// <yêu cầu>
+// Ô 1: <nhãn ô 1>
+// Ô 2: <nhãn ô 2>
+// Lựa chọn: đáp án A | đáp án B | đáp án C
+// Đáp án: Ô1=đáp án A; Ô2=đáp án B
+//
+// --- 5.6 Điền chỗ trống ---
+// Câu 6. [điền chỗ trống]
+// <câu dẫn tuỳ chọn>
+// Đoạn: Văn bản có chỗ trống {{1}} và {{2}}.
+// Đáp án: 1=<giá trị 1>; 2=<giá trị 2>
+// Lời giải: ...
+//
+// ============================================================================
+// 6) QUY TẮC TÓM TẮT BÀI HỌC (tuỳ chọn — tab Tóm tắt bài học)
+// ============================================================================
+// TÓM TẮT BÀI HỌC
+// TITLE: <tiêu đề hiển thị>
+// ROOT: <nút gốc sơ đồ>
+// - Nhánh cấp 1
+//   - Nhánh cấp 2 (thụt 2 khoảng trắng mỗi cấp)
+// - Nhánh khác
+// - Giữ thụt đầu dòng trong TXT/Word để phân cấp đúng.
+//
+// ============================================================================
+// 7) TÀI LIỆU PDF (tuỳ chọn)
+// ============================================================================
+// TÀI LIỆU PDF
+// https://drive.google.com/file/d/xxxxxxxx/view?usp=sharing
+// (Hoặc ghi sẵn @pdf_url ở đầu file)
+//
+// ============================================================================
+// 8) LƯU Ý SEO / CHẤT LƯỢNG (khuyến nghị khi soạn bằng AI)
+// ============================================================================
+// - Ít nhất 1 #[Định nghĩa:]# và 1 #[Ghi nhớ:]# trong lý thuyết (nếu phù hợp).
+// - Ít nhất 1 “Dạng 1: …” + #[Phương pháp:]# + #[Ví dụ:]# + #[Lời giải:]#.
+// - 4–10 câu luyện tập (kết hợp mcq + input + các loại tương tác khác; không tự luận text).
+// - Chỉ dùng @video_url / @pdf_url khi thật sự có link.
+//
+// ============================================================================
+// PHẦN MẪU NỘI DUNG (có thể sửa / thay bằng bài thật)
+// ============================================================================
+
+@grade_level: 11
+@chapter: 1
+@lesson_no: 1
+@title: Hàm số bậc nhất
+@video_url:
+@video_material_url:
+@pdf_url:
+@seo_description: Tóm tắt ngắn để hiển thị/SEO về hàm số bậc nhất y=ax+b.
+@focus_keyword: hàm số bậc nhất
+@keywords: đồ thị, hệ số góc, giao điểm, tính đơn điệu
+
+LÝ THUYẾT TRỌNG TÂM
+Định nghĩa:
+Hàm số bậc nhất có dạng $y=ax+b$ với $a\\ne 0$.
+---
+Định lí:
+Hàm số bậc nhất $y=ax+b$ ($a\\ne 0$) có đồ thị là đường thẳng.
+---
+Ghi nhớ:
+- Đồng biến nếu $a>0$, nghịch biến nếu $a<0$.
+- Hai đường thẳng song song khi $a=a'$.
+
+CÁC DẠNG TOÁN & VÍ DỤ
+Dạng 1: Nhận biết đồ thị và hệ số góc
+Phương pháp:
+Từ $y=ax+b$ suy ra hệ số góc là $a$, giao điểm với trục $Oy$ là $b$.
+---
+// Ví dụ tương tác (bật admin: Cách 2 — Tương tác). Cùng quy tắc đáp án như mục 5, chỉ đổi Câu → Ví dụ.
+Ví dụ 1. Cho $y=-3x+2$. Hệ số góc bằng bao nhiêu?
+A. 2
+B. -3
+C. 3
+D. 0
+Đáp án: B
+Lời giải: Vì $y=ax+b$ nên $a=-3$.
+---
+Ví dụ 2. Cho $y=2x-1$. Tính $f(1)$.
+Đáp án: 1
+Placeholder: f(1) = …
+Lời giải: $f(1)=2\\cdot 1-1=1$.
+---
+Ví dụ 3. [đúng sai nhóm]
+Cho hàm số $y=ax+b$ ($a\\ne 0$). Xét các khẳng định sau:
+a) Hệ số góc của đồ thị là $a$
+b) Đồ thị luôn đi qua gốc tọa độ
+c) Đồng biến trên $\\mathbb{R}$ khi $a>0$
+d) Giao điểm với $Oy$ là $(0;b)$
+Lời giải
+a) Đúng: Từ dạng $y=ax+b$ suy ra hệ số góc $a$.
+b) Sai: Chỉ đi qua gốc khi $b=0$.
+c) Đúng: Khi $a>0$ hàm đồng biến trên $\\mathbb{R}$.
+d) Đúng: Thay $x=0$ được $y=b$.
+---
+Dạng 2: Đọc đồ thị (mẫu Lời giải đóng/mở — Cách 1)
+Phương pháp:
+Đọc hệ số góc và giao điểm trực tiếp từ phương trình.
+---
+Ví dụ 1:
+Cho $y=2x-1$. Tìm hệ số góc và giao điểm với $Oy$.
+Lời giải:
+Hệ số góc $a=2$; giao điểm với $Oy$ là điểm $(0,-1)$.
+
+// BÀI TẬP LUYỆN TẬP (tên cũ BÀI TẬP TỰ LUYỆN vẫn import được)
+BÀI TẬP LUYỆN TẬP
+Câu 1. Cho $y=-3x+2$. Hệ số góc bằng bao nhiêu?
+A. 2
+B. -3
+C. 3
+D. 0
+Đáp án: B
+Gợi ý hướng dẫn: Nhớ dạng $y=ax+b$ — hệ số góc là hệ số của $x$.
+Lời giải: Vì $y=ax+b$ nên $a=-3$.
+
+---
+
+Câu 1b. (Mẫu nhận "Chọn B") Hàm số nào đồng biến trên $(-1;0)$?
+A. $(-\infty; -1)$
+B. $(-1; 0)$
+C. $(0; 2)$
+D. $(1; +\infty)$
+Lời giải
+Chọn B
+Xét dấu $y'$ trên từng khoảng.
+
+---
+
+Câu 1c. (Mẫu gạch chân đáp án) Tìm giá trị cực tiểu của $y=-x^3+3x+4$.
+__A.__ $y_{CT}=2$
+B. $y_{CT}=1$
+C. $y_{CT}=6$
+D. $y_{CT}=-1$
+Lời giải: $y'=-3x^2+3=0 \Rightarrow x=\pm 1$; $y_{CT}=y(-1)=2$.
+
+---
+
+Câu 2. Cho $y=2x-1$. Tính $f(1)$.
+Đáp án: 1
+Placeholder: f(1) = …
+Lời giải: $f(1)=2\\cdot 1-1=1$.
+
+---
+
+Câu 3. [đúng sai]
+Đồ thị hàm số $y=ax^2$ với $a>0$ luôn mở hướng lên trên.
+Đáp án: Đúng
+Lời giải: Khi $a>0$, parabol có nhánh hướng lên.
+
+---
+
+Câu 3b. [đúng sai nhóm]
+Cho hàm số $y=f(x)$. Xét các khẳng định sau:
+a) Hàm số nghịch biến trên $(-\infty; 3)$
+b) Đồ thị có tiệm cận đứng $x=0$
+c) Đồ thị cắt trục hoành tại hai điểm
+d) Hàm số đạt cực đại tại $x=1$
+Lời giải
+a) Đúng: Từ bảng biến thiên suy ra nghịch biến trên $(-\infty; 3)$.
+b) Sai: Đồ thị hàm số có tiệm cận đứng $x=3$.
+c) Đúng: Đồ thị giao với trục hoành tại hai điểm phân biệt.
+d) Đúng: Từ bảng biến thiên suy ra cực đại tại $x=1$.
+
+---
+
+Câu 4. [sắp xếp]
+Sắp xếp các bước tìm tọa độ điểm thuộc đồ thị $y=x^2$:
+1. Gọi hoành độ là $x$
+2. Thay vào công thức tính $y=x^2$
+3. Viết cặp tọa độ $(x;y)$
+Đáp án: 1,2,3
+
+---
+
+Câu 5. [kéo thả]
+Kéo tọa độ đúng vào từng điểm trên $y=x^2$.
+Ô 1: Điểm có $x=2$
+Ô 2: Điểm có $x=-1$
+Lựa chọn: (2; 4) | (-1; 1) | (0; 0)
+Đáp án: Ô1=(2; 4); Ô2=(-1; 1)
+
+---
+
+Câu 6. [điền chỗ trống]
+Điền các chỗ trống trong đoạn văn sau:
+Đoạn: Parabol $y=ax^2$ ($a \neq 0$) có đỉnh tại {{1}} và trục đối xứng là đường thẳng {{2}}.
+Đáp án: 1=(0; 0); 2=x=0
+Lời giải: Đỉnh parabol $y=ax^2$ luôn ở gốc tọa độ; trục đối xứng là trục $Oy$ ($x=0$).
+
+TÓM TẮT BÀI HỌC
+TITLE: Hàm số bậc nhất — Tóm tắt
+ROOT: Hàm số bậc nhất $y=ax+b$
+- Định nghĩa & điều kiện $a \neq 0$
+- Đồ thị là đường thẳng
+  - Hệ số góc $a$
+  - Giao điểm với $Oy$: $(0; b)$
+- Đơn điệu
+  - Đồng biến khi $a>0$
+  - Nghịch biến khi $a<0$
+- Ứng dụng nhanh
+  - Song song khi cùng hệ số góc
+
+// TÀI LIỆU (tuỳ chọn) — nếu có link PDF có thể để ở @pdf_url hoặc chèn ở mục TÀI LIỆU
+TÀI LIỆU PDF
+https://drive.google.com/file/d/xxxxxxxx/view?usp=sharing

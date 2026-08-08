@@ -11,13 +11,21 @@ export function resolvePracticeDisplayMode(raw) {
   return m === 'step' ? 'step' : 'list';
 }
 
-export const PRACTICE_INTERACTIVE_TYPES = ['mcq', 'input', 'true_false', 'ordering', 'drag_drop', 'fill_blanks'];
+export const PRACTICE_INTERACTIVE_TYPES = [
+  'mcq',
+  'input',
+  'true_false',
+  'true_false_group',
+  'ordering',
+  'drag_drop',
+  'fill_blanks',
+];
 
 export const PRACTICE_TYPE_LABELS = {
   mcq: 'Trắc nghiệm',
   input: 'Nhập đáp án',
-  text: 'Tự luận',
   true_false: 'Đúng / Sai',
+  true_false_group: 'Đúng / Sai (a–d)',
   ordering: 'Sắp xếp',
   drag_drop: 'Kéo thả',
   fill_blanks: 'Điền chỗ trống',
@@ -187,6 +195,38 @@ export function parseFillBlanksCorrectRaw(raw) {
   return out;
 }
 
+/** Textarea hiển thị đáp án điền chỗ trống (mỗi dòng 1=…). */
+export function formatFillBlanksAnswersText(blanks) {
+  return (Array.isArray(blanks) ? blanks : [])
+    .map((b) =>
+      typeof b === 'object'
+        ? `${b.id}=${b.correctAnswer ?? b.answer ?? ''}`
+        : String(b ?? '')
+    )
+    .join('\n');
+}
+
+/**
+ * Parse ô đáp án điền chỗ trống khi đang gõ.
+ * Giữ dòng trống / dòng chưa đủ dạng id=… trong bản nháp (để Enter xuống dòng được).
+ */
+export function parseFillBlanksAnswersText(raw) {
+  const blanksText = String(raw ?? '');
+  const blanks = blanksText
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .map((l) => {
+      const m = l.match(/^(\d+)\s*=\s*(.+)$/);
+      if (m) return { id: m[1], correctAnswer: m[2].trim() };
+      const m2 = l.match(/^([^=]+)=\s*(.+)$/);
+      if (m2) return { id: m2[1].trim(), correctAnswer: m2[2].trim() };
+      return null;
+    })
+    .filter(Boolean);
+  return { blanks, blanksText };
+}
+
 export function normalizeFillBlanksQuestion(p) {
   const passage = (p?.passage ?? '').toString().trim();
   const question = (p?.question ?? p?.content ?? '').toString().trim();
@@ -274,7 +314,7 @@ export function normalizeInputAnswerParts(p) {
       })
       .filter(Boolean);
   }
-  const correct = String(p?.correctAnswer ?? '').trim();
+  const correct = String(p?.correctAnswer ?? p?.shortCorrect ?? '').trim();
   const ph = String(p?.answerPlaceholder ?? '').trim();
   return [{ id: '1', placeholder: ph, correctAnswer: correct }];
 }
@@ -328,17 +368,63 @@ export function inputPartsAnswerOk(parts, userAnswer) {
   return list.every((part) => inputAnswerLooseOk(part.correctAnswer, values[part.id]));
 }
 
+/**
+ * Chuẩn hóa đáp án TN về chỉ số 0–3.
+ * Firestore/import hay lưu "3" hoặc "D" trong khi UI lưu số 3 → so sánh === bị sai.
+ */
+export function normalizeMcqCorrectIndex(raw, optionsLength = 4) {
+  const len = Math.max(0, Number(optionsLength) || 0);
+  if (typeof raw === 'number' && Number.isFinite(raw)) {
+    const n = Math.trunc(raw);
+    if (n >= 0 && (len === 0 || n < len)) return n;
+    return -1;
+  }
+  const s = String(raw ?? '')
+    .trim()
+    .replace(/^__\s*|\s*__$/g, '');
+  if (!s) return -1;
+  const letter = s.match(/^([A-D])(?:\s*[).\:]?\s*)?$/i);
+  if (letter) {
+    const idx = letter[1].toUpperCase().charCodeAt(0) - 65;
+    if (len === 0 || idx < len) return idx;
+    return -1;
+  }
+  const asNum = Number(s);
+  if (Number.isInteger(asNum) && asNum >= 0 && (len === 0 || asNum < len)) return asNum;
+  return -1;
+}
+
 export function scorePracticeQuestion(q, userAnswer) {
   const t = q?.type;
-  if (t === 'mcq') return userAnswer === q.correctAnswer;
-  if (t === 'input') {
-    const parts = normalizeInputAnswerParts(q);
+  if (t === 'mcq' || t === 'multiple_choice') {
+    const optsLen = Array.isArray(q?.options) ? q.options.length : 4;
+    const expected = normalizeMcqCorrectIndex(q?.correctAnswer, optsLen);
+    const got = normalizeMcqCorrectIndex(userAnswer, optsLen);
+    return expected >= 0 && got >= 0 && expected === got;
+  }
+  if (t === 'input' || t === 'short_answer') {
+    const parts = normalizeInputAnswerParts({
+      ...q,
+      correctAnswer: q?.correctAnswer ?? q?.shortCorrect,
+    });
     return inputPartsAnswerOk(parts, userAnswer);
   }
   if (t === 'true_false') {
     const expected = normalizeTrueFalseAnswer(q.correctAnswer);
     const got = normalizeTrueFalseAnswer(userAnswer);
     return expected != null && got === expected;
+  }
+  if (t === 'true_false_group') {
+    const items = Array.isArray(q?.tfItems) ? q.tfItems : [];
+    if (!items.length) return false;
+    const obj = userAnswer && typeof userAnswer === 'object' && !Array.isArray(userAnswer) ? userAnswer : null;
+    if (!obj) return false;
+    return items.every((it) => {
+      const key = String(it?.key || '').toLowerCase();
+      const expected = normalizeTrueFalseAnswer(it?.correct);
+      if (expected == null) return false;
+      return obj[key] === expected;
+    });
   }
   if (t === 'ordering') {
     const items = parseOrderingItems(q.items);
@@ -358,6 +444,14 @@ export function scorePracticeQuestion(q, userAnswer) {
 
 export function preparePracticeQuestion(q) {
   const type = q?.type;
+  if (type === 'mcq' || type === 'multiple_choice') {
+    const opts = Array.isArray(q?.options) ? q.options : [];
+    const idx = normalizeMcqCorrectIndex(q?.correctAnswer, opts.length || 4);
+    return { ...q, type: 'mcq', options: opts, correctAnswer: idx >= 0 ? idx : 0 };
+  }
+  if (type === 'true_false_group') {
+    return { ...q, tfItems: normalizePracticeTfItems(q?.tfItems) };
+  }
   if (type === 'ordering') {
     const items = parseOrderingItems(q.items);
     const correctOrder = parseOrderingCorrectOrder(q.correctOrder ?? q.correctAnswer, items.length);
@@ -372,18 +466,57 @@ export function preparePracticeQuestion(q) {
     const fb = normalizeFillBlanksQuestion(q);
     return { ...q, ...fb };
   }
-  if (type === 'input') {
-    return { ...q, answerParts: normalizeInputAnswerParts(q) };
+  if (type === 'input' || type === 'short_answer') {
+    return {
+      ...q,
+      type: 'input',
+      correctAnswer: q.correctAnswer ?? q.shortCorrect,
+      answerParts: normalizeInputAnswerParts({
+        ...q,
+        correctAnswer: q.correctAnswer ?? q.shortCorrect,
+      }),
+    };
   }
   return { ...q };
 }
 
-export const PRACTICE_ALL_TYPES = ['mcq', 'input', 'text', 'true_false', 'ordering', 'drag_drop', 'fill_blanks'];
+export const PRACTICE_ALL_TYPES = [
+  'mcq',
+  'input',
+  'true_false',
+  'true_false_group',
+  'ordering',
+  'drag_drop',
+  'fill_blanks',
+];
+
+/** Chuẩn hóa mệnh đề đúng/sai a–d (luôn xếp theo a → b → c → d). */
+export function normalizePracticeTfItems(raw) {
+  const list = Array.isArray(raw) ? raw : [];
+  const mapped = list
+    .filter((it) => it && ((it.text || '').toString().trim() || typeof it.correct === 'boolean'))
+    .map((it, i) => {
+      const key = String(it.key || String.fromCharCode(97 + i))
+        .trim()
+        .toLowerCase()
+        .slice(0, 1);
+      const tf = normalizeTrueFalseAnswer(it.correct);
+      return {
+        key: /^[a-d]$/.test(key) ? key : String.fromCharCode(97 + i),
+        text: (it.text || '').toString().trim(),
+        correct: tf === false ? false : true,
+      };
+    });
+  const order = { a: 0, b: 1, c: 2, d: 3 };
+  return mapped.sort((x, y) => (order[x.key] ?? 99) - (order[y.key] ?? 99));
+}
 
 /** Chuẩn hóa một câu practice từ JSON/Firestore — giữ đủ field cho mọi loại tương tác */
 export function normalizePracticeQuestion(p, index = 0) {
-  const rawType = String(p?.type || 'text').trim();
-  const type = PRACTICE_ALL_TYPES.includes(rawType) ? rawType : 'text';
+  let rawType = String(p?.type || 'mcq').trim();
+  // Legacy: tự luận (text) → nhập đáp án
+  if (rawType === 'text') rawType = 'input';
+  const type = PRACTICE_ALL_TYPES.includes(rawType) ? rawType : 'mcq';
   const base = {
     id: p?.id || `pr_${index}`,
     type,
@@ -394,10 +527,12 @@ export function normalizePracticeQuestion(p, index = 0) {
   };
 
   if (type === 'mcq') {
+    const options = Array.isArray(p?.options) ? p.options : [];
+    const idx = normalizeMcqCorrectIndex(p?.correctAnswer, options.length || 4);
     return {
       ...base,
-      options: Array.isArray(p?.options) ? p.options : [],
-      correctAnswer: p?.correctAnswer,
+      options,
+      correctAnswer: idx >= 0 ? idx : 0,
     };
   }
   if (type === 'input') {
@@ -412,6 +547,9 @@ export function normalizePracticeQuestion(p, index = 0) {
   if (type === 'true_false') {
     const tf = p?.correctAnswer === false ? false : normalizeTrueFalseAnswer(p?.correctAnswer);
     return { ...base, correctAnswer: tf === false ? false : true };
+  }
+  if (type === 'true_false_group') {
+    return { ...base, tfItems: normalizePracticeTfItems(p?.tfItems) };
   }
   if (type === 'ordering') {
     const items = parseOrderingItems(p?.items);
@@ -431,12 +569,17 @@ export function normalizePracticeQuestion(p, index = 0) {
   }
   if (type === 'fill_blanks') {
     const fb = normalizeFillBlanksQuestion(p);
-    return {
+    const blanks = fb.blanks;
+    const out = {
       ...base,
       question: fb.question || base.question,
       passage: fb.passage,
-      blanks: fb.blanks,
+      blanks,
     };
+    // Luôn giữ chuỗi thô đang gõ (Enter / khoảng trắng). Không để undefined.
+    out.blanksText =
+      p?.blanksText != null ? String(p.blanksText) : formatFillBlanksAnswersText(blanks);
+    return out;
   }
   return base;
 }

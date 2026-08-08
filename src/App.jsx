@@ -38,7 +38,7 @@ const DocumentViewerScreen = lazyWithRetry(() => import('./DocumentViewerScreen'
 const StudentDashboardScreen = lazyWithRetry(() => import('./StudentDashboardScreen'), 'StudentDashboardScreen');
 const StudentLessonViewer = lazyWithRetry(() => import('./StudentLessonViewer'), 'StudentLessonViewer');
 import { getSiteOrigin } from './seo/siteConfig';
-import { parseLessonsFromText, lessonFieldsFromImportMeta } from'./LessonParser';
+import { parseLessonsFromText, lessonFieldsFromImportMeta, parsePracticeImportText } from'./LessonParser';
 import {
   parseLessonContentObject,
   mergeLessonContentString,
@@ -52,6 +52,16 @@ import {
   normalizeLessonSections,
   sortLessonSections,
 } from './lessonSections';
+import { emptyLessonMindMap, normalizeLessonMindMap, DEFAULT_LESSON_SUMMARY_IMPORT, parseLessonSummaryImportText } from './lessonMindMap';
+import LessonSummaryTree from './LessonSummaryTree';
+import {
+  emptyLessonSimulation,
+  normalizeLessonSimulation,
+  resolveGeogebraEmbedUrl,
+  DEFAULT_SIMULATION_HTML_SAMPLE,
+} from './lessonSimulation';
+import LessonSimulationPanel from './LessonSimulationPanel';
+import ChuyenDeOnTapRichTextField from './chuyenDeOnTap/ChuyenDeOnTapRichTextField';
 import {
   buildMergedChapterOptions,
   buildMergedLessonNoOptions,
@@ -67,13 +77,16 @@ import { sortQuizQuestions, normalizeImportedQuizQuestion } from './quizQuestion
 import LessonRepositoryPanel from './admin/LessonRepositoryPanel';
 import QuizRepositoryPanel from './admin/QuizRepositoryPanel';
 import { getQuizExamTypeOptions, EXAM_TYPE, normalizeExamType } from './quizExamTypes';
+import { countStudentQuizAttempts, isAttemptAwardEligible } from './classroomConstants';
 import { RichMathContent } from './RichMathContent';
 import { PracticeFillBlanks, PracticeFillBlanksResult } from './PracticeInteractiveQuestions';
-import { fillBlanksAnswerOk, normalizeFillBlanksQuestion } from './practiceQuestionTypes';
-import { User, Lock, Award, ListOrdered, CheckCircle, XCircle, ArrowRight, ShieldCheck, AlertTriangle, Settings, Users, FileText, LogOut, Plus, Trash2, Edit2, Save, Camera, Image as ImageIcon, Eye, EyeOff, Upload, Lightbulb, ArrowLeft, Clock, PlayCircle, BookOpen, Filter, FileEdit, Video, Play, BookText, Home, Trophy, Sparkles, Star, Target, Heart, Link2, Network, Map as MapIcon, LayoutTemplate, MessageCircle, FolderOpen, UserCog } from 'lucide-react';
+import { fillBlanksAnswerOk, normalizeFillBlanksQuestion, normalizePracticeList } from './practiceQuestionTypes';
+import { FillBlanksAnswersField } from './FillBlanksAnswersField';
+import { User, Lock, Award, ListOrdered, CheckCircle, XCircle, ArrowRight, ShieldCheck, AlertTriangle, Settings, Users, FileText, LogOut, Plus, Trash2, Edit2, Save, Camera, Image as ImageIcon, Eye, EyeOff, Upload, Lightbulb, ArrowLeft, Clock, PlayCircle, BookOpen, Filter, FileEdit, Video, Play, BookText, Home, Trophy, Sparkles, Star, Target, Heart, Link2, Network, Map as MapIcon, LayoutTemplate, MessageCircle, FolderOpen, UserCog, Atom } from 'lucide-react';
 import { onAuthStateChanged } from 'firebase/auth';
-import { collection, doc, setDoc, onSnapshot, addDoc, deleteDoc, updateDoc, getDoc } from 'firebase/firestore';
+import { collection, doc, setDoc, onSnapshot, addDoc, deleteDoc, updateDoc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { flushSessionUploads } from './adminSessionStorageCleanup';
 import {
   auth,
   db,
@@ -122,8 +135,11 @@ import {
   findLessonInList,
   fetchLessonForDeepLink,
 } from './lessonDeepLink';
-import mammoth from'mammoth';
 import { compressImageFileToJpegBlob, applyAdminSnippetByKey } from './adminImageUpload';
+import {
+  extractLessonTextFromDocx,
+  summarizeDocxImageWarnings,
+} from './docxLessonImport';
 import { LessonFormattingToolbar } from './LessonFormattingToolbar';
 import { computeAutoGradedScore, DEFAULT_PART_POINTS, formatScoreForDisplay, normalizePartPoints, shortAnswerIsCorrect } from './quizScoring';
 import { slugifyVi, buildLessonSlug, ensureUniqueLessonSlug } from './lessonSlug';
@@ -1270,38 +1286,207 @@ const [pendingOpen, setPendingOpen] = useState(null); // { quizId?: string } | {
     setPostLoginTab(null);
   }, []);
 
+  /** Đếm lần nộp theo quizId — ưu tiên scoresList, fallback truy vấn Firestore. */
+  const resolveStudentQuizAttemptCount = async (name, quizId) => {
+    const qid = String(quizId || '');
+    if (!name || !qid) return 0;
+    if ((scoresList || []).length > 0) {
+      return countStudentQuizAttempts(scoresList, name, qid);
+    }
+    try {
+      const snap = await getDocs(query(collection(db, COLLECTION_SCORES), where('quizId', '==', qid)));
+      const want = normStudentName(name);
+      return snap.docs.filter((d) => normStudentName(d.data()?.name) === want).length;
+    } catch (e) {
+      console.error('Lỗi đếm lần làm bài:', e);
+      return countStudentQuizAttempts(scoresList, name, qid);
+    }
+  };
+
   const handleFinishQuiz = async (score, timeStr, essayImages, answers) => {
 setCurrentScore(score); setStudentAnswers(answers); setStudentEssayImages(essayImages); setAppState('result');
     if (!user || !activeQuiz) return;
     try {
       const docId = Date.now().toString() + Math.random().toString(36).substring(2, 9);
-      await setDoc(doc(db, COLLECTION_SCORES, docId), {
-        name: studentName, className: studentClass, quizId: activeQuiz.id, grade_level: window.currentStudentGrade || '8', quizTitle: activeQuiz.title,
-        score: score, time: timeStr, essayImages: essayImages || {}, answers: answers || {}, timestamp: Date.now()
-      });
+      const grade = window.currentStudentGrade || '8';
+      const examType = normalizeExamType(activeQuiz.exam_type, grade);
+      // Đề theo bài / giữa kỳ / cuối kỳ: chỉ cộng điểm/EXP 2 lần đầu
+      const limitAwardAttempts =
+        examType === EXAM_TYPE.lesson ||
+        examType === EXAM_TYPE.midterm ||
+        examType === EXAM_TYPE.final;
+      const prior = limitAwardAttempts
+        ? await resolveStudentQuizAttemptCount(studentName, activeQuiz.id)
+        : 0;
+      const awardEligible = !limitAwardAttempts || isAttemptAwardEligible(prior);
+      const payload = {
+        name: studentName,
+        className: studentClass,
+        quizId: activeQuiz.id,
+        grade_level: grade,
+        quizTitle: activeQuiz.title,
+        score: score,
+        time: timeStr,
+        essayImages: essayImages || {},
+        answers: answers || {},
+        timestamp: Date.now(),
+      };
+      if (limitAwardAttempts) {
+        payload.award_eligible = awardEligible;
+        if (!awardEligible) payload.exp_points = 0;
+      }
+      await setDoc(doc(db, COLLECTION_SCORES, docId), payload);
     } catch (error) { console.error("Lỗi lưu điểm:", error); }
   };
 
-  const handleLessonPracticeScore = async ({ lessonId, lessonTitle, score, total, gradeLevel }) => {
+  const handleLessonPracticeScore = async ({ lessonId, lessonTitle, score, total, gradeLevel, skipExp }) => {
     if (!user || !studentName || !lessonId) return;
     try {
       const docId = Date.now().toString() + Math.random().toString(36).substring(2, 9);
-      await setDoc(doc(db, COLLECTION_SCORES, docId), {
+      const correctCount = Math.max(0, Math.round(Number(score) || 0));
+      const practiceQuizId = `lesson_practice_${lessonId}`;
+      const prior = await resolveStudentQuizAttemptCount(studentName, practiceQuizId);
+      const awardEligible = !skipExp && isAttemptAwardEligible(prior);
+      const payload = {
         name: studentName,
         className: studentClass,
-        quizId: `lesson_practice_${lessonId}`,
+        quizId: practiceQuizId,
         grade_level: gradeLevel || window.currentStudentGrade || '8',
         quizTitle: `Bài tập luyện tập — ${lessonTitle || 'Bài giảng'}`,
-        score,
-        time: `${score}/${total}`,
+        score: correctCount,
+        time: `${correctCount}/${total}`,
         essayImages: {},
         answers: {},
         timestamp: Date.now(),
         kind: 'lesson_practice',
         practiceTotal: total,
-      });
+        award_eligible: awardEligible,
+      };
+      // Chế độ từng câu: EXP đã cộng theo câu → ghi tiến trình với exp_points: 0
+      // Chế độ danh sách: +10 EXP mỗi câu đúng — tối đa 2 lần làm
+      if (skipExp || !awardEligible) payload.exp_points = 0;
+      else payload.exp_points = correctCount * 10;
+      await setDoc(doc(db, COLLECTION_SCORES, docId), payload);
     } catch (e) {
       console.error('Lỗi lưu điểm bài tập luyện tập:', e);
+    }
+  };
+
+  const handleLessonPracticeStepExp = async ({ lessonId, lessonTitle, questionId, expPoints, gradeLevel }) => {
+    if (!user || !studentName || !lessonId || !questionId) return;
+    const grade = gradeLevel || window.currentStudentGrade || rosterGrade || '8';
+    const safeName = normStudentName(studentName).replace(/[^a-z0-9_]/gi, '_').slice(0, 48);
+    const safeLesson = String(lessonId).replace(/[/\\]/g, '_').slice(0, 64);
+    const safeQ = String(questionId).replace(/[/\\]/g, '_').slice(0, 64);
+    const practiceQuizId = `lesson_practice_${lessonId}`;
+    const priorFinishes = await resolveStudentQuizAttemptCount(studentName, practiceQuizId);
+    const attemptIndex = priorFinishes + 1;
+    if (!isAttemptAwardEligible(priorFinishes)) return;
+    // Lần 1 giữ id cũ (tránh cộng lại cho HS đã làm); lần 2 dùng hậu tố _a2
+    const docId = (
+      attemptIndex <= 1
+        ? `lesson_prac_step_${safeName}_${safeLesson}_${safeQ}`
+        : `lesson_prac_step_${safeName}_${safeLesson}_${safeQ}_a${attemptIndex}`
+    ).slice(0, 750);
+    try {
+      const ref = doc(db, COLLECTION_SCORES, docId);
+      const snap = await getDoc(ref);
+      if (snap.exists()) return;
+      const pts = Math.round(Number(expPoints) || 0);
+      if (!pts) return;
+      await setDoc(ref, {
+        name: studentName,
+        className: studentClass,
+        quizId: docId,
+        quizTitle: `Bài tập luyện tập (từng câu) — ${lessonTitle || 'Bài giảng'}`,
+        grade_level: grade,
+        score: 0,
+        exp_points: pts,
+        time: String(questionId),
+        essayImages: {},
+        answers: {},
+        timestamp: Date.now(),
+        kind: 'lesson_practice_step',
+        lessonId,
+        questionId,
+        practice_attempt: attemptIndex,
+        award_eligible: true,
+      });
+    } catch (e) {
+      console.error('Lỗi lưu EXP bài tập từng câu:', e);
+    }
+  };
+
+  const handleSaveLessonDangProgress = async ({
+    lessonId,
+    sectionKey,
+    unlockedDangIndex,
+    completedByDang,
+    allComplete,
+  }) => {
+    if (!user || !studentName || !lessonId) return;
+    const { lessonDangProgressDocId } = await import('./lessonDangExamples');
+    const docId = lessonDangProgressDocId(studentName, lessonId, sectionKey);
+    const grade = window.currentStudentGrade || rosterGrade || '8';
+    try {
+      await setDoc(
+        doc(db, COLLECTION_SCORES, docId),
+        {
+          name: studentName,
+          className: studentClass,
+          quizId: docId,
+          quizTitle: 'Tiến trình các dạng toán',
+          grade_level: grade,
+          score: 0,
+          exp_points: 0,
+          time: String(unlockedDangIndex ?? 0),
+          essayImages: {},
+          answers: {},
+          timestamp: Date.now(),
+          updated_at: Date.now(),
+          kind: 'lesson_dang_progress',
+          lessonId,
+          section_key: String(sectionKey ?? '0'),
+          unlocked_dang_index: Math.max(0, Number(unlockedDangIndex) || 0),
+          completed_by_dang: completedByDang && typeof completedByDang === 'object' ? completedByDang : {},
+          all_complete: Boolean(allComplete),
+        },
+        { merge: true }
+      );
+    } catch (e) {
+      console.error('Lỗi lưu tiến trình dạng toán:', e);
+    }
+  };
+
+  const handleCompleteLessonDangExp = async ({ lessonId, sectionKey, expPoints }) => {
+    if (!user || !studentName || !lessonId) return;
+    const { lessonDangCompleteExpDocId, LESSON_DANG_COMPLETE_EXP } = await import('./lessonDangExamples');
+    const docId = lessonDangCompleteExpDocId(studentName, lessonId, sectionKey);
+    const grade = window.currentStudentGrade || rosterGrade || '8';
+    try {
+      const ref = doc(db, COLLECTION_SCORES, docId);
+      const snap = await getDoc(ref);
+      if (snap.exists()) return;
+      const pts = Math.round(Number(expPoints) || LESSON_DANG_COMPLETE_EXP || 45);
+      if (!pts) return;
+      await setDoc(ref, {
+        name: studentName,
+        className: studentClass,
+        quizId: docId,
+        quizTitle: 'Hoàn thành Các dạng toán',
+        grade_level: grade,
+        score: 0,
+        exp_points: pts,
+        time: 'dang_complete',
+        essayImages: {},
+        answers: {},
+        timestamp: Date.now(),
+        kind: 'lesson_dang_complete',
+        lessonId,
+        section_key: String(sectionKey ?? '0'),
+      });
+    } catch (e) {
+      console.error('Lỗi lưu EXP hoàn thành dạng toán:', e);
     }
   };
 
@@ -1393,6 +1578,33 @@ setCurrentScore(score); setStudentAnswers(answers); setStudentEssayImages(essayI
     () => quizzesList.filter((q) => q.grade_level === publicGrade || !q.grade_level),
     [quizzesList, publicGrade]
   );
+
+  /** Sidebar / đề luyện trong bài giảng luôn theo khối của bài đang xem (không theo khối tài khoản). */
+  const lessonViewerGrade = useMemo(() => {
+    const g = String(selectedLesson?.grade_level || '').trim();
+    if (g) return g;
+    return String((studentName ? rosterGrade : publicGrade) || '8').trim();
+  }, [selectedLesson?.grade_level, studentName, rosterGrade, publicGrade]);
+
+  const lessonViewerLessons = useMemo(() => {
+    const g = lessonViewerGrade;
+    const list = (lessonsList || []).filter((l) => {
+      const lg = String(l?.grade_level || '').trim();
+      return !lg || lg === g;
+    });
+    if (selectedLesson?.id && !list.some((l) => l.id === selectedLesson.id)) {
+      return [...list, selectedLesson];
+    }
+    return list;
+  }, [lessonsList, lessonViewerGrade, selectedLesson]);
+
+  const lessonViewerQuizzes = useMemo(() => {
+    const g = lessonViewerGrade;
+    return (quizzesList || []).filter((q) => {
+      const qg = String(q?.grade_level || '').trim();
+      return !qg || qg === g;
+    });
+  }, [quizzesList, lessonViewerGrade]);
 
   const isStudentExperience = appState !== 'admin';
   const isStudentDashboard = Boolean(studentName && appState === 'dashboard' && studentPortalOpen);
@@ -1717,14 +1929,15 @@ setCurrentScore(score); setStudentAnswers(answers); setStudentEssayImages(essayI
 {appState ==='lesson_viewer' && selectedLesson && (
           <StudentLessonViewer
             lesson={selectedLesson}
-            lessonsList={studentName ? studentLessonsFiltered : publicLessonsFiltered}
-            quizzesList={studentName ? studentQuizzesFiltered : publicQuizzesFiltered}
+            lessonsList={lessonViewerLessons}
+            quizzesList={lessonViewerQuizzes}
             scoresList={studentName ? scoresList : []}
             studentName={studentName || ''}
             studentClass={studentClass || ''}
             studentProfile={studentProfile}
-            rosterGrade={studentName ? rosterGrade : publicGrade}
-            externalHomeUrl={publicGradeHomeUrl(studentName ? rosterGrade : publicGrade)}
+            rosterGrade={lessonViewerGrade}
+            studentRosterGrade={studentName ? rosterGrade : publicGrade}
+            externalHomeUrl={publicGradeHomeUrl(lessonViewerGrade)}
             onBack={handleStudentGoBack}
             onBackToOverview={backToStudentOverview}
             onOpenExamsRoom={
@@ -1744,6 +1957,9 @@ setCurrentScore(score); setStudentAnswers(answers); setStudentEssayImages(essayI
             resumePapersTabRef={resumeLessonPapersTabRef}
             onSelectLesson={(id) => openLessonById(id)}
             onRecordLessonPracticeScore={studentName ? handleLessonPracticeScore : undefined}
+            onRecordLessonPracticeStepExp={studentName ? handleLessonPracticeStepExp : undefined}
+            onSaveLessonDangProgress={studentName ? handleSaveLessonDangProgress : undefined}
+            onCompleteLessonDangExp={studentName ? handleCompleteLessonDangExp : undefined}
           />
         )}
 {appState ==='quiz' && activeQuiz && (
@@ -2715,11 +2931,21 @@ function AdminScreen({
     }
   }, [staffIsSuper, staff?.grade_levels?.join(','), activeGrade]);
 
+  const lessonSessionUploadsRef = useRef(new Set());
+  const quizSessionUploadsRef = useRef(new Set());
+  const editorUploadTargetRef = useRef('lesson'); // 'lesson' | 'quiz'
+
   const goTab = (tabId) => {
     if (!canAccessAdminTab(staff, tabId)) return;
     setActiveTab(tabId);
-    if (tabId === 'lessons') setEditingLesson(null);
-    if (tabId === 'quizzes') setEditingQuiz(null);
+    if (tabId === 'lessons') {
+      void flushSessionUploads(lessonSessionUploadsRef.current, storage, {});
+      setEditingLesson(null);
+    }
+    if (tabId === 'quizzes') {
+      void flushSessionUploads(quizSessionUploadsRef.current, storage, {});
+      setEditingQuiz(null);
+    }
     if (tabId === 'bank') setEditingBankQuestion(null);
   };
 
@@ -2785,6 +3011,49 @@ function AdminScreen({
   const [savingCustomTopic, setSavingCustomTopic] = useState(false);
   const [viewingImage, setViewingImage] = useState(null);
   const [isSavingQuiz, setIsSavingQuiz] = useState(false);
+
+  useEffect(() => {
+    if (editingLesson) editorUploadTargetRef.current = 'lesson';
+    else if (editingQuiz) editorUploadTargetRef.current = 'quiz';
+  }, [editingLesson, editingQuiz]);
+
+  const trackSessionUploadUrl = useCallback((url) => {
+    const u = String(url || '').trim();
+    if (!u) return;
+    if (editorUploadTargetRef.current === 'quiz') quizSessionUploadsRef.current.add(u);
+    else lessonSessionUploadsRef.current.add(u);
+  }, []);
+
+  /** Đóng form bài giảng: hủy → xóa ảnh session; lưu → chỉ xóa ảnh session không còn trong nội dung. */
+  const closeLessonEditor = useCallback((opts = {}) => {
+    setEditingLesson(null);
+    if (opts.keptText != null) {
+      void flushSessionUploads(lessonSessionUploadsRef.current, storage, { keptText: String(opts.keptText) });
+    } else {
+      void flushSessionUploads(lessonSessionUploadsRef.current, storage, {});
+    }
+  }, []);
+
+  const openLessonEditor = useCallback((lesson) => {
+    void flushSessionUploads(lessonSessionUploadsRef.current, storage, {});
+    editorUploadTargetRef.current = 'lesson';
+    setEditingLesson(lesson);
+  }, []);
+
+  const closeQuizEditor = useCallback((opts = {}) => {
+    setEditingQuiz(null);
+    if (opts.keptText != null) {
+      void flushSessionUploads(quizSessionUploadsRef.current, storage, { keptText: String(opts.keptText) });
+    } else {
+      void flushSessionUploads(quizSessionUploadsRef.current, storage, {});
+    }
+  }, []);
+
+  const openQuizEditor = useCallback((quiz) => {
+    void flushSessionUploads(quizSessionUploadsRef.current, storage, {});
+    editorUploadTargetRef.current = 'quiz';
+    setEditingQuiz(quiz);
+  }, []);
 
   const filteredLessons = (activeGrade === 'ALL')
     ? lessonsList
@@ -3154,6 +3423,7 @@ function AdminScreen({
           90000,
           'Tải lên quá lâu (hết thời gian 90s). Kiểm tra mạng/VPN; trên Firebase Console bật Storage và deploy rules (firebase deploy --only storage).'
         );
+        trackSessionUploadUrl(url);
         const markdown = `\n![](${url})\n`;
         const ta = adminTextTargetRef.current;
         if (ta && document.body.contains(ta) && ta.dataset.adminSnippet) {
@@ -3186,7 +3456,7 @@ function AdminScreen({
         setImageUploadBusy(false);
       }
     },
-    [storage, user, withTimeout]
+    [storage, user, withTimeout, trackSessionUploadUrl]
   );
 
 
@@ -3237,7 +3507,7 @@ function AdminScreen({
     try {
       if (editingLesson.isNew) { dataToSave.timestamp = Date.now(); await addDoc(collection(db, COLLECTION_LESSONS), dataToSave); }
       else await updateDoc(doc(db, COLLECTION_LESSONS, editingLesson.id), dataToSave);
-      setEditingLesson(null);
+      closeLessonEditor({ keptText: JSON.stringify(dataToSave) });
     } catch { alert("Lỗi lưu bài giảng"); }
   };
 
@@ -3250,18 +3520,33 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
     if (!file) return;
     const ext = (file.name.split('.').pop() || '').toLowerCase();
     let t = '';
+    let imageCount = 0;
+    let skippedImages = 0;
+    const importWarnings = [];
     try {
       if (ext === 'docx') {
         const buf = await file.arrayBuffer();
-        const res = await mammoth.extractRawText({ arrayBuffer: buf });
-        t = (res.value || '').trim();
+                if (typeof setImageUploadBusy === 'function') setImageUploadBusy(true);
+        const extracted = await extractLessonTextFromDocx(buf, {
+          storage,
+          user,
+          onProgress: () => {},
+          onImageUploaded: trackSessionUploadUrl,
+        });
+        t = (extracted.text || '').trim();
+        imageCount = extracted.imageCount || 0;
+        skippedImages = extracted.skippedImages || 0;
+        if (Array.isArray(extracted.warnings)) importWarnings.push(...extracted.warnings);
       } else {
         t = (await file.text()).trim();
       }
-    } catch {
-      alert('Đọc file thất bại. Thử lại với .txt hoặc .docx.');
+    } catch (err) {
+      alert(`Đọc file thất bại: ${err?.message || 'Thử lại với .txt hoặc .docx.'}`);
       e.target.value = '';
+      setImageUploadBusy(false);
       return;
+    } finally {
+      setImageUploadBusy(false);
     }
     if (!t) {
       alert('File không có nội dung text.');
@@ -3273,6 +3558,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
     const fromMeta = lessonFieldsFromImportMeta(meta);
     const nEx = parsed.examples?.length ?? 0;
     const nPr = parsed.practice?.length ?? 0;
+    const hasSummary = Boolean(parsed?.mindMap?.summaryRoot?.text);
     const fk = String(parsed?.seo?.focus_keyword || '').trim();
     const nk = Array.isArray(parsed?.seo?.keywords) ? parsed.seo.keywords.length : 0;
     setEditingLesson({
@@ -3287,8 +3573,122 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
       description: fromMeta.description || editingLesson?.description || '',
       content: JSON.stringify(parsed),
     });
+    const imgMsg =
+      imageCount > 0
+        ? `, ${imageCount} ảnh Word đã upload`
+        : skippedImages > 0
+          ? `, ${skippedImages} ảnh Word bị bỏ qua`
+          : '';
+    const warnSummary = summarizeDocxImageWarnings(importWarnings);
+    const warnMsg = warnSummary ? `\n\nLưu ý: ${warnSummary}` : '';
     alert(
-      `Đã import: ${nEx} mục lý thuyết/ví dụ${nPr ? `, ${nPr} phần bài tập luyện tập` : ''}${fromMeta.pdfUrl ? ', đã nhận link PDF' : ''}${fk || nk ? ` — SEO: ${fk ? `TK chính «${fk}»` : ''}${fk && nk ? ', ' : ''}${nk ? `${nk} từ khóa phụ` : ''}` : ''}. Kiểm tra Chương/Bài/Tiêu đề rồi Lưu.`
+      `Đã import: ${nEx} mục lý thuyết/ví dụ${nPr ? `, ${nPr} phần bài tập luyện tập` : ''}${hasSummary ? ', có tóm tắt bài học' : ''}${imgMsg}${fromMeta.pdfUrl ? ', đã nhận link PDF' : ''}${fk || nk ? ` — SEO: ${fk ? `TK chính «${fk}»` : ''}${fk && nk ? ', ' : ''}${nk ? `${nk} từ khóa phụ` : ''}` : ''}. Kiểm tra Chương/Bài/Tiêu đề rồi Lưu.${warnMsg}`
+    );
+    e.target.value = '';
+  };
+
+  const handleImportPracticeAppend = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!editingLesson) {
+      e.target.value = '';
+      return;
+    }
+    const ext = (file.name.split('.').pop() || '').toLowerCase();
+    let t = '';
+    let imageCount = 0;
+    let skippedImages = 0;
+    const importWarnings = [];
+    try {
+      if (ext === 'docx') {
+        const buf = await file.arrayBuffer();
+        setImageUploadBusy(true);
+        const extracted = await extractLessonTextFromDocx(buf, {
+          storage,
+          user,
+          onProgress: () => {},
+          onImageUploaded: trackSessionUploadUrl,
+        });
+        t = (extracted.text || '').trim();
+        imageCount = extracted.imageCount || 0;
+        skippedImages = extracted.skippedImages || 0;
+        if (Array.isArray(extracted.warnings)) importWarnings.push(...extracted.warnings);
+      } else {
+        t = (await file.text()).trim();
+      }
+    } catch (err) {
+      alert(`Đọc file thất bại: ${err?.message || 'Thử lại với .txt hoặc .docx.'}`);
+      e.target.value = '';
+      setImageUploadBusy(false);
+      return;
+    } finally {
+      setImageUploadBusy(false);
+    }
+    if (!t) {
+      alert('File không có nội dung text.');
+      e.target.value = '';
+      return;
+    }
+
+    const imported = parsePracticeImportText(t);
+    if (!imported.length) {
+      alert(
+        'Không nhận được câu bài tập nào. Kiểm tra file có dòng «Câu 1:» / «Câu 1.» (và đáp án), hoặc tiêu đề «Bài tập tự luyện».'
+      );
+      e.target.value = '';
+      return;
+    }
+
+    const { obj: curObj, error: curErr } = parseLessonContentObject(editingLesson.content);
+    if (curErr) {
+      alert('JSON nội dung bài đang lỗi — sửa tab JSON trước khi import thêm bài tập.');
+      e.target.value = '';
+      return;
+    }
+
+    const sections = normalizeLessonSections(curObj?.sections, { keepEmpty: true });
+    const hasSections = sections.length > 0;
+    const activeIdx = hasSections
+      ? Math.min(Math.max(0, Number(editingSectionIndex) || 0), sections.length - 1)
+      : -1;
+    const existing = hasSections
+      ? Array.isArray(sections[activeIdx]?.practice)
+        ? sections[activeIdx].practice
+        : []
+      : Array.isArray(curObj?.practice)
+        ? curObj.practice
+        : [];
+
+    const stamp = Date.now();
+    const appended = imported.map((p, i) => ({
+      ...p,
+      id: `pr_imp_${stamp}_${existing.length + i}_${Math.random().toString(36).slice(2, 8)}`,
+    }));
+    const nextPractice = [...existing, ...appended];
+
+    if (hasSections) {
+      const nextSections = sections.map((s, i) => (i === activeIdx ? { ...s, practice: nextPractice } : s));
+      setEditingLesson({
+        ...editingLesson,
+        content: mergeLessonContentString(editingLesson.content, { sections: nextSections }),
+      });
+    } else {
+      setEditingLesson({
+        ...editingLesson,
+        content: mergeLessonContentString(editingLesson.content, { practice: nextPractice }),
+      });
+    }
+
+    const imgMsg =
+      imageCount > 0
+        ? `, ${imageCount} ảnh Word đã upload`
+        : skippedImages > 0
+          ? `, ${skippedImages} ảnh Word bị bỏ qua`
+          : '';
+    const warnSummary = summarizeDocxImageWarnings(importWarnings);
+    const warnMsg = warnSummary ? `\n\nLưu ý: ${warnSummary}` : '';
+    alert(
+      `Đã thêm ${appended.length} câu vào cuối danh sách bài tập luyện tập (trước đó ${existing.length} câu → nay ${nextPractice.length} câu)${imgMsg}. Nhớ Lưu bài giảng.${warnMsg}`
     );
     e.target.value = '';
   };
@@ -3396,7 +3796,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
         </div>
       ) : null;
     const noSectionsContentBanner =
-      !hasSections && !['sections', 'raw', 'materials'].includes(lessonAdminPane) ? (
+      !hasSections && !['sections', 'raw', 'materials', 'mindmap', 'simulation'].includes(lessonAdminPane) ? (
         <div className="shrink-0 rounded-lg border border-amber-200 bg-amber-50/80 px-3 py-2 text-xs text-amber-900 leading-relaxed">
           <strong>Một khối duy nhất.</strong> Lý thuyết / ví dụ / bài tập dưới đây dùng chung cho cả bài. Muốn chia thành nhiều phần học (vd.{' '}
           <em>1. Hàm số…</em>, <em>2. Đồ thị…</em>), mở tab{' '}
@@ -3420,7 +3820,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
       ? []
       : hasSections
         ? (sectionsList[activeSectionIdx]?.practice ?? [])
-        : (cObj?.practice ?? []);
+        : normalizePracticeList(cObj?.practice ?? []);
     const examples = jsonBroken ? [] : (cObj?.examples ?? []);
     const practiceDisplayMode = jsonBroken
       ? 'list'
@@ -3495,9 +3895,13 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
       lessonAdminPane === 'practice'
         ? 'practice'
         : lessonAdminPane === 'examples_core'
-          ? 'theory'
+          ? 'dang'
         : lessonAdminPane === 'materials'
           ? 'pdf'
+        : lessonAdminPane === 'mindmap'
+          ? 'mindmap'
+        : lessonAdminPane === 'simulation'
+          ? 'simulation'
           : lessonAdminPane === 'raw'
             ? undefined
             : 'theory';
@@ -3513,7 +3917,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
               <Video size={18} className="shrink-0" />{' '}
               <span className="truncate">{editingLesson.isNew ? 'Thêm Bài Giảng Mới' : 'Sửa Bài Giảng'}</span>
             </h3>
-            <button type="button" onClick={() => setEditingLesson(null)} className="text-slate-400 hover:text-red-500 shrink-0">
+            <button type="button" onClick={() => closeLessonEditor()} className="text-slate-400 hover:text-red-500 shrink-0">
               <XCircle size={22} />
             </button>
           </div>
@@ -3732,6 +4136,8 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                 { id: 'theory', label: 'Lý thuyết', Icon: BookOpen },
                 { id: 'examples_core', label: 'Các dạng toán & ví dụ', Icon: FileEdit },
                 { id: 'practice', label: 'Bài tập luyện tập', Icon: ListOrdered },
+                { id: 'mindmap', label: 'Tóm tắt bài học', Icon: Network },
+                { id: 'simulation', label: 'Mô phỏng', Icon: Atom },
                 { id: 'materials', label: 'Tài liệu (JSON)', Icon: Link2 },
                 { id: 'raw', label: 'JSON nâng cao', Icon: FileText },
               ].map(({ id, label, Icon }) => (
@@ -3883,11 +4289,11 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                 <p className="text-[11px] text-slate-600 shrink-0 leading-snug">
                   <code className="bg-slate-200/80 px-1 rounded">theory_core</code> — LaTeX{' '}
                   <code className="bg-slate-200/80 px-0.5 rounded">$...$</code> / <code className="bg-slate-200/80 px-0.5 rounded">$$...$$</code>
-                  {' '}· Thẻ khối: <code className="bg-slate-200/80 px-1 rounded">{`#[Phương pháp: ...]#`}</code>{' '}
-                  <code className="bg-slate-200/80 px-1 rounded">{`#[Ví dụ: ...]#`}</code>{' '}
-                  <code className="bg-slate-200/80 px-1 rounded">{`#[Định nghĩa: ...]#`}</code>{' '}
-                  <code className="bg-slate-200/80 px-1 rounded">{`#[Ghi nhớ: ...]#`}</code>{' '}
-                  <code className="bg-slate-200/80 px-1 rounded">{`#[Lời giải: ...]#`}</code> (vẫn tương thích <code className="bg-slate-200/80 px-1 rounded">{`{...}`}</code>).
+                  {' '}· Khối: viết <code className="bg-slate-200/80 px-1 rounded">Định nghĩa:</code> /{' '}
+                  <code className="bg-slate-200/80 px-1 rounded">Định lí:</code> /{' '}
+                  <code className="bg-slate-200/80 px-1 rounded">Ghi nhớ:</code> rồi nội dung; phân cách bằng{' '}
+                  <code className="bg-slate-200/80 px-1 rounded">---</code>
+                  {' '}(vẫn tương thích <code className="bg-slate-200/80 px-1 rounded">{`#[...]#`}</code>).
                 </p>
                 <LessonFormattingToolbar
                   textareaRef={lessonTheoryTextareaRef}
@@ -3942,8 +4348,20 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                 {sectionEditorBanner}
                 {noSectionsContentBanner}
                 <p className="text-[11px] text-slate-600 shrink-0 leading-snug">
-                  <code className="bg-slate-200/80 px-1 rounded">examples_core</code> — nhập nội dung “Các dạng toán & ví dụ” theo cùng cú pháp như Lý thuyết (có thẻ khối).
+                  <code className="bg-slate-200/80 px-1 rounded">examples_core</code> — “Các dạng toán & ví dụ”: viết{' '}
+                  <code className="bg-slate-200/80 px-1 rounded">Dạng 1:</code> /{' '}
+                  <code className="bg-slate-200/80 px-1 rounded">Phương pháp:</code> /{' '}
+                  <code className="bg-slate-200/80 px-1 rounded">Ví dụ 1:</code> /{' '}
+                  <code className="bg-slate-200/80 px-1 rounded">Lời giải:</code>. Hệ thống tự nhận: ví dụ chỉ có Lời giải → khung đóng/mở; ví dụ có đáp án/loại câu (giống bài tập, đổi Câu→Ví dụ) → tương tác kiểm tra đáp án.
                 </p>
+                <a
+                  href="/mau-import-bai-giang.txt"
+                  download
+                  className="text-[11px] font-bold text-indigo-700 underline w-fit"
+                  title="Mẫu soạn các dạng toán & ví dụ"
+                >
+                  Xem mẫu import
+                </a>
                 {!examplesCoreVal.trim() && Array.isArray(examples) && examples.length > 0 ? (
                   <div className="rounded-lg border border-amber-200 bg-amber-50/70 px-3 py-2 text-[11px] text-amber-900 flex flex-wrap items-center justify-between gap-2">
                     <span className="min-w-0">
@@ -4028,6 +4446,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                 {noSectionsContentBanner}
                 <p className="text-xs text-slate-600">
                   Mảng <code className="bg-slate-200/80 px-1 rounded">practice</code> — tab “Bài tập luyện tập” của học sinh.
+                  Không còn dạng tự luận (text); dùng trắc nghiệm, nhập đáp án, đúng/sai, sắp xếp, kéo thả hoặc điền chỗ trống.
                 </p>
                 <label className="flex flex-wrap items-center gap-2 text-sm font-semibold text-slate-700">
                   <span>Cách hiển thị cho học sinh:</span>
@@ -4041,22 +4460,45 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                     <option value="step">Từng câu — làm xong mới qua câu tiếp</option>
                   </select>
                 </label>
-                <button
-                  type="button"
-                  disabled={jsonBroken}
-                  onClick={() =>
-                    patchPracticeList([...practiceList, emptyPracticeTemplate(practiceList.length)])
-                  }
-                  className="text-sm font-bold text-indigo-600 hover:text-indigo-800 disabled:opacity-40"
-                >
-                  + Thêm câu
-                </button>
+                <div className="flex flex-wrap items-center gap-3">
+                  <button
+                    type="button"
+                    disabled={jsonBroken}
+                    onClick={() =>
+                      patchPracticeList([...practiceList, emptyPracticeTemplate(practiceList.length)])
+                    }
+                    className="text-sm font-bold text-indigo-600 hover:text-indigo-800 disabled:opacity-40"
+                  >
+                    + Thêm câu
+                  </button>
+                  <label
+                    className={`inline-flex items-center gap-1.5 text-sm font-bold px-2.5 py-1.5 rounded-lg border cursor-pointer ${
+                      jsonBroken || imageUploadBusy
+                        ? 'opacity-40 pointer-events-none border-slate-200 text-slate-400'
+                        : 'border-violet-300 bg-violet-50 text-violet-800 hover:bg-violet-100'
+                    }`}
+                    title="Import TXT/Word — các câu mới được thêm vào CUỐI danh sách hiện có"
+                  >
+                    <Upload size={14} />
+                    Import thêm TXT/Word
+                    <input
+                      type="file"
+                      accept=".txt,.docx"
+                      className="hidden"
+                      disabled={jsonBroken || imageUploadBusy}
+                      onChange={handleImportPracticeAppend}
+                    />
+                  </label>
+                  <span className="text-[11px] text-slate-500">
+                    Câu mới nối vào cuối danh sách (không ghi đè câu đã có)
+                  </span>
+                </div>
                 {practiceList.map((p, idx) => (
                   <div key={p.id || idx} className="border border-slate-200 rounded-lg p-3 bg-white space-y-2">
                     <div className="flex flex-wrap justify-between gap-2 items-center">
                       <select
                         disabled={jsonBroken}
-                        value={(p.type || 'text').toString()}
+                        value={(p.type || 'mcq').toString()}
                         onChange={(e) => {
                           const t = e.target.value;
                           const next = practiceList.map((x, j) =>
@@ -4078,10 +4520,10 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                         <option value="mcq">Trắc nghiệm (mcq)</option>
                         <option value="input">Nhập đáp án (input)</option>
                         <option value="true_false">Đúng / Sai</option>
+                        <option value="true_false_group">Đúng / Sai (a–d)</option>
                         <option value="ordering">Sắp xếp</option>
                         <option value="drag_drop">Kéo thả</option>
                         <option value="fill_blanks">Điền chỗ trống</option>
-                        <option value="text">Tự luận (text)</option>
                       </select>
                       <button
                         type="button"
@@ -4103,13 +4545,13 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                         patchPracticeList(next);
                       }}
                       placeholder={
-                        (p.type || 'text') === 'fill_blanks'
+                        (p.type || 'mcq') === 'fill_blanks'
                           ? 'Câu dẫn (tuỳ chọn) — ví dụ: Điền các chỗ trống trong đoạn văn sau'
                           : 'Đề bài / nội dung câu'
                       }
                       className="w-full p-2 border rounded text-sm min-h-[192px] disabled:opacity-50 resize-y"
                     />
-                    {(p.type || 'text') === 'mcq' ? (
+                    {(p.type || 'mcq') === 'mcq' ? (
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {(Array.isArray(p.options) && p.options.length ? p.options : ['', '', '', '']).map((opt, oi) => (
                           <div key={oi} className="flex items-center gap-2">
@@ -4151,7 +4593,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                         </label>
                       </div>
                     ) : null}
-                    {(p.type || 'text') === 'input' ? (
+                    {(p.type || 'mcq') === 'input' ? (
                       <div className="space-y-2 rounded-lg border border-slate-200 bg-slate-50/80 p-3">
                         <div className="flex items-center justify-between gap-2">
                           <p className="text-xs font-bold text-slate-600 uppercase tracking-wide">
@@ -4264,7 +4706,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                         </p>
                       </div>
                     ) : null}
-                    {(p.type || 'text') === 'true_false' ? (
+                    {(p.type || 'mcq') === 'true_false' ? (
                       <label className="flex items-center gap-2 text-sm font-semibold text-slate-600">
                         <span>Đáp án đúng:</span>
                         <select
@@ -4283,7 +4725,57 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                         </select>
                       </label>
                     ) : null}
-                    {(p.type || 'text') === 'ordering' ? (
+                    {(p.type || 'mcq') === 'true_false_group' ? (
+                      <div className="space-y-2 rounded-lg border border-slate-200 bg-slate-50/80 p-3">
+                        <p className="text-xs font-bold text-slate-600 uppercase tracking-wide">Mệnh đề a–d</p>
+                        {(['a', 'b', 'c', 'd']).map((key) => {
+                          const items = Array.isArray(p.tfItems) ? p.tfItems : [];
+                          const it = items.find((x) => x && x.key === key) || { key, text: '', correct: true };
+                          return (
+                            <div key={key} className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
+                              <span className="text-xs font-bold text-slate-500 w-6 shrink-0">{key})</span>
+                              <input
+                                disabled={jsonBroken}
+                                value={(it.text || '').toString()}
+                                onChange={(e) => {
+                                  const prev = Array.isArray(p.tfItems) ? [...p.tfItems] : [];
+                                  const i = prev.findIndex((x) => x && x.key === key);
+                                  const row = { key, text: e.target.value, correct: i >= 0 ? prev[i].correct !== false : true };
+                                  if (i >= 0) prev[i] = row;
+                                  else prev.push(row);
+                                  const next = practiceList.map((x, j) => (j === idx ? { ...x, tfItems: prev } : x));
+                                  patchPracticeList(next);
+                                }}
+                                className="flex-1 p-2 border rounded text-sm disabled:opacity-50 bg-white"
+                                placeholder={`Nội dung mệnh đề ${key}`}
+                              />
+                              <select
+                                disabled={jsonBroken}
+                                value={it.correct === false ? 'false' : 'true'}
+                                onChange={(e) => {
+                                  const prev = Array.isArray(p.tfItems) ? [...p.tfItems] : [];
+                                  const i = prev.findIndex((x) => x && x.key === key);
+                                  const row = {
+                                    key,
+                                    text: i >= 0 ? prev[i].text || '' : '',
+                                    correct: e.target.value === 'true',
+                                  };
+                                  if (i >= 0) prev[i] = row;
+                                  else prev.push(row);
+                                  const next = practiceList.map((x, j) => (j === idx ? { ...x, tfItems: prev } : x));
+                                  patchPracticeList(next);
+                                }}
+                                className="p-2 border rounded text-sm disabled:opacity-50 bg-white w-28"
+                              >
+                                <option value="true">Đúng</option>
+                                <option value="false">Sai</option>
+                              </select>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ) : null}
+                    {(p.type || 'mcq') === 'ordering' ? (
                       <div className="space-y-2">
                         <textarea
                           disabled={jsonBroken}
@@ -4335,7 +4827,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                         />
                       </div>
                     ) : null}
-                    {(p.type || 'text') === 'drag_drop' ? (
+                    {(p.type || 'mcq') === 'drag_drop' ? (
                       <div className="space-y-2">
                         <textarea
                           disabled={jsonBroken}
@@ -4398,7 +4890,7 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                         />
                       </div>
                     ) : null}
-                    {(p.type || 'text') === 'fill_blanks' ? (
+                    {(p.type || 'mcq') === 'fill_blanks' ? (
                       <div className="space-y-2">
                         <textarea
                           disabled={jsonBroken}
@@ -4412,33 +4904,17 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                           placeholder="Đoạn văn — dùng {{1}}, {{2}}… để đánh dấu chỗ trống. Ví dụ: Hàm số $y=x^2$ có đỉnh {{1}}."
                           className="w-full p-2 border rounded text-sm min-h-[264px] disabled:opacity-50 font-mono text-[13px] resize-y"
                         />
-                        <textarea
+                        <FillBlanksAnswersField
                           disabled={jsonBroken}
-                          value={(Array.isArray(p.blanks) ? p.blanks : [])
-                            .map((b) =>
-                              typeof b === 'object'
-                                ? `${b.id}=${b.correctAnswer ?? b.answer ?? ''}`
-                                : String(b ?? '')
-                            )
-                            .join('\n')}
-                          onChange={(e) => {
-                            const blanks = e.target.value
-                              .split('\n')
-                              .map((l) => l.trim())
-                              .filter(Boolean)
-                              .map((l) => {
-                                const m = l.match(/^(\d+)\s*=\s*(.+)$/);
-                                if (m) return { id: m[1], correctAnswer: m[2].trim() };
-                                const m2 = l.match(/^([^=]+)=\s*(.+)$/);
-                                if (m2) return { id: m2[1].trim(), correctAnswer: m2[2].trim() };
-                                return null;
-                              })
-                              .filter(Boolean);
-                            const next = practiceList.map((x, j) => (j === idx ? { ...x, blanks } : x));
+                          blanks={p.blanks}
+                          blanksText={p.blanksText}
+                          data-admin-snippet={`lesson-practice-fb-ans:${idx}`}
+                          onBlanksChange={(blanks, blanksText) => {
+                            const next = practiceList.map((x, j) =>
+                              j === idx ? { ...x, blanks, blanksText } : x
+                            );
                             patchPracticeList(next);
                           }}
-                          placeholder="Đáp án từng chỗ trống — mỗi dòng: 1=(0; 0) hoặc 2=x=0"
-                          className="w-full p-2 border rounded text-sm min-h-[216px] disabled:opacity-50 resize-y"
                         />
                       </div>
                     ) : null}
@@ -4487,6 +4963,374 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                 {practiceList.length === 0 ? (
                   <p className="text-sm text-slate-500 italic">Chưa có bài tập luyện tập — thêm câu hoặc import.</p>
                 ) : null}
+              </div>
+            )}
+
+            {lessonAdminPane === 'mindmap' && (
+              <div className="animate-in fade-in flex-1 min-h-0 flex flex-col gap-3 overflow-y-auto pr-0.5">
+                {(() => {
+                  const mindMap = normalizeLessonMindMap(cObj?.mindMap ?? emptyLessonMindMap());
+                  const patchMindMap = (partial) => {
+                    patchLessonContent({
+                      mindMap: normalizeLessonMindMap({ ...mindMap, ...partial }),
+                    });
+                  };
+                  return (
+                    <>
+                      <p className="text-[11px] text-slate-600 leading-snug">
+                        Tab <strong>Tóm tắt bài học</strong> chỉ hiện với học sinh khi bật và có nội dung. Có thể dùng{' '}
+                        <strong>ảnh</strong> full khung (zoom) hoặc <strong>sơ đồ hệ thống</strong> ngang (import TXT thụt dòng).
+                      </p>
+                      <label className="inline-flex items-center gap-2 text-sm font-bold text-slate-700">
+                        <input
+                          type="checkbox"
+                          disabled={jsonBroken}
+                          checked={Boolean(mindMap.enabled)}
+                          onChange={(e) => patchMindMap({ enabled: e.target.checked })}
+                        />
+                        Hiện tab Tóm tắt bài học trên bài giảng
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          disabled={jsonBroken}
+                          onClick={() => patchMindMap({ mode: 'image' })}
+                          className={`px-3 py-1.5 rounded-md text-xs font-bold border ${
+                            mindMap.mode === 'image'
+                              ? 'bg-indigo-600 text-white border-indigo-600'
+                              : 'bg-white text-slate-600 border-slate-200'
+                          }`}
+                        >
+                          Ảnh tóm tắt (zoom)
+                        </button>
+                        <button
+                          type="button"
+                          disabled={jsonBroken}
+                          onClick={() => patchMindMap({ mode: 'tree' })}
+                          className={`px-3 py-1.5 rounded-md text-xs font-bold border ${
+                            mindMap.mode === 'tree'
+                              ? 'bg-indigo-600 text-white border-indigo-600'
+                              : 'bg-white text-slate-600 border-slate-200'
+                          }`}
+                        >
+                          Sơ đồ hệ thống (tóm tắt)
+                        </button>
+                      </div>
+
+                      {mindMap.mode === 'image' ? (
+                        <div className="space-y-2 rounded-lg border border-slate-200 bg-white p-3">
+                          <label className="block text-xs font-bold text-slate-600">
+                            Link ảnh tóm tắt
+                            <input
+                              disabled={jsonBroken}
+                              type="url"
+                              value={mindMap.imageUrl || ''}
+                              onChange={(e) => patchMindMap({ imageUrl: e.target.value, enabled: true })}
+                              placeholder="https://… hoặc tải ảnh bên dưới"
+                              className="mt-1 w-full p-2 border rounded text-sm disabled:opacity-50"
+                            />
+                          </label>
+                          <label className="inline-flex items-center gap-2 text-xs font-bold text-indigo-700 cursor-pointer">
+                            <Upload size={14} />
+                            Tải ảnh lên (full khung)
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              disabled={jsonBroken || !storage}
+                              onChange={async (e) => {
+                                const file = e.target.files?.[0];
+                                e.target.value = '';
+                                if (!file || !storage) return;
+                                try {
+                                  const blob = await compressImageFileToJpegBlob(file, {
+                                    maxEdge: 2400,
+                                    quality: 0.85,
+                                    blobTimeoutMs: 60000,
+                                  });
+                                  const fname = `lesson_mindmap_${Date.now()}_${Math.random().toString(36).slice(2, 8)}.jpg`;
+                                  const r = storageRef(storage, `site-content/${fname}`);
+                                  await uploadBytes(r, blob, { contentType: 'image/jpeg' });
+                                  const url = await getDownloadURL(r);
+                                  trackSessionUploadUrl(url);
+                                  patchMindMap({ imageUrl: url, enabled: true, mode: 'image' });
+                                } catch (err) {
+                                  alert(err?.message || 'Không tải được ảnh');
+                                }
+                              }}
+                            />
+                          </label>
+                          {mindMap.imageUrl ? (
+                            <div className="rounded-xl border border-slate-200 overflow-hidden bg-slate-50 max-h-64">
+                              <img src={mindMap.imageUrl} alt="Xem trước tóm tắt" className="w-full h-auto object-contain max-h-64" />
+                            </div>
+                          ) : null}
+                        </div>
+                      ) : (
+                        <div className="space-y-3 rounded-lg border border-slate-200 bg-white p-3">
+                          <p className="text-[11px] text-slate-600 leading-snug">
+                            Import TXT: <code className="bg-slate-100 px-1 rounded">TITLE:</code> /{' '}
+                            <code className="bg-slate-100 px-1 rounded">ROOT:</code>, các mục dùng{' '}
+                            <code className="bg-slate-100 px-1 rounded">-</code> và thụt đầu dòng cho mục con.
+                          </p>
+                          <label className="block text-xs font-bold text-slate-600">
+                            Tiêu đề hiển thị (tuỳ chọn)
+                            <input
+                              disabled={jsonBroken}
+                              value={mindMap.summaryTitle || ''}
+                              onChange={(e) => patchMindMap({ summaryTitle: e.target.value })}
+                              placeholder="VD: Tứ giác Sơ đồ"
+                              className="mt-1 w-full p-2 border rounded text-sm disabled:opacity-50"
+                            />
+                          </label>
+                          <textarea
+                            disabled={jsonBroken}
+                            defaultValue=""
+                            key={`mm-import-${editingLesson?.id || 'new'}-${mindMap.summaryRoot?.id || 'empty'}`}
+                            placeholder={DEFAULT_LESSON_SUMMARY_IMPORT}
+                            className="w-full min-h-[160px] p-2 border rounded text-xs font-mono disabled:opacity-50"
+                            id="lesson-mindmap-import-text"
+                          />
+                          <div className="flex flex-wrap gap-2">
+                            <button
+                              type="button"
+                              disabled={jsonBroken}
+                              onClick={() => {
+                                const el = document.getElementById('lesson-mindmap-import-text');
+                                const text = (el?.value || '').trim();
+                                if (!text) {
+                                  alert('Dán nội dung TXT vào ô import.');
+                                  return;
+                                }
+                                try {
+                                  const parsed = parseLessonSummaryImportText(text);
+                                  if (!parsed.summaryRoot?.text) {
+                                    alert('Không đọc được ROOT / các mục trong nội dung.');
+                                    return;
+                                  }
+                                  patchMindMap({
+                                    mode: 'tree',
+                                    enabled: true,
+                                    summaryTitle: parsed.summaryTitle || mindMap.summaryTitle,
+                                    summaryRoot: parsed.summaryRoot,
+                                    logicTrees: [],
+                                  });
+                                } catch (err) {
+                                  alert(err?.message || 'Import thất bại');
+                                }
+                              }}
+                              className="px-3 py-1.5 rounded-md text-xs font-bold bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-40"
+                            >
+                              Import / ghi đè sơ đồ
+                            </button>
+                            <button
+                              type="button"
+                              disabled={jsonBroken}
+                              onClick={() => {
+                                const el = document.getElementById('lesson-mindmap-import-text');
+                                if (el) el.value = DEFAULT_LESSON_SUMMARY_IMPORT;
+                              }}
+                              className="px-3 py-1.5 rounded-md text-xs font-bold border border-slate-200 bg-slate-50 text-slate-700"
+                            >
+                              Chèn mẫu TXT
+                            </button>
+                            <button
+                              type="button"
+                              disabled={jsonBroken}
+                              onClick={() =>
+                                patchMindMap({
+                                  summaryRoot: null,
+                                  logicTrees: [],
+                                  enabled: mindMap.mode === 'image' && Boolean(mindMap.imageUrl),
+                                })
+                              }
+                              className="px-3 py-1.5 rounded-md text-xs font-bold border border-rose-200 text-rose-700 bg-rose-50"
+                            >
+                              Xóa sơ đồ
+                            </button>
+                          </div>
+                          {mindMap.summaryRoot?.text ? (
+                            <LessonSummaryTree
+                              root={mindMap.summaryRoot}
+                              title={mindMap.summaryTitle || mindMap.summaryRoot.text || 'Tóm tắt bài học'}
+                            />
+                          ) : (
+                            <p className="text-xs text-slate-500 italic">Chưa có sơ đồ — import TXT để bắt đầu.</p>
+                          )}
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
+              </div>
+            )}
+
+            {lessonAdminPane === 'simulation' && (
+              <div className="animate-in fade-in flex-1 min-h-0 flex flex-col gap-3 overflow-y-auto pr-0.5">
+                {(() => {
+                  const simulation = normalizeLessonSimulation(cObj?.simulation ?? emptyLessonSimulation());
+                  const patchSimulation = (partial) => {
+                    patchLessonContent({
+                      simulation: normalizeLessonSimulation({ ...simulation, ...partial }),
+                    });
+                  };
+                  const ggPreview = resolveGeogebraEmbedUrl(simulation.geogebraUrl);
+                  return (
+                    <>
+                      <p className="text-[11px] text-slate-600 leading-snug">
+                        Tab <strong>Mô phỏng</strong> chỉ hiện với học sinh khi bật và có nội dung. Chọn{' '}
+                        <strong>GeoGebra</strong> (kèm khung hướng dẫn bên phải trên máy tính) hoặc{' '}
+                        <strong>HTML nhúng</strong> (hiển thị full khung trắng).
+                      </p>
+                      <label className="inline-flex items-center gap-2 text-sm font-bold text-slate-700">
+                        <input
+                          type="checkbox"
+                          disabled={jsonBroken}
+                          checked={Boolean(simulation.enabled)}
+                          onChange={(e) => patchSimulation({ enabled: e.target.checked })}
+                        />
+                        Hiện tab Mô phỏng trên bài giảng
+                      </label>
+                      <label className="block text-xs font-bold text-slate-600">
+                        Tiêu đề hiển thị
+                        <input
+                          type="text"
+                          disabled={jsonBroken}
+                          value={simulation.title || ''}
+                          onChange={(e) => patchSimulation({ title: e.target.value })}
+                          placeholder="VD: Đường tròn lượng giác"
+                          className="mt-1 w-full rounded-md border border-slate-200 px-2.5 py-1.5 text-sm font-normal text-slate-800"
+                        />
+                      </label>
+                      <label className="block text-xs font-bold text-slate-600">
+                        Chiều cao khung (px)
+                        <input
+                          type="number"
+                          min={280}
+                          max={1200}
+                          step={20}
+                          disabled={jsonBroken}
+                          value={simulation.height || 560}
+                          onChange={(e) => patchSimulation({ height: Number(e.target.value) || 560 })}
+                          className="mt-1 w-36 rounded-md border border-slate-200 px-2.5 py-1.5 text-sm font-normal text-slate-800"
+                        />
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          disabled={jsonBroken}
+                          onClick={() => patchSimulation({ mode: 'geogebra' })}
+                          className={`px-3 py-1.5 rounded-md text-xs font-bold border ${
+                            simulation.mode === 'geogebra'
+                              ? 'bg-indigo-600 text-white border-indigo-600'
+                              : 'bg-white text-slate-600 border-slate-200'
+                          }`}
+                        >
+                          GeoGebra
+                        </button>
+                        <button
+                          type="button"
+                          disabled={jsonBroken}
+                          onClick={() => patchSimulation({ mode: 'html' })}
+                          className={`px-3 py-1.5 rounded-md text-xs font-bold border ${
+                            simulation.mode === 'html'
+                              ? 'bg-indigo-600 text-white border-indigo-600'
+                              : 'bg-white text-slate-600 border-slate-200'
+                          }`}
+                        >
+                          HTML nhúng (AI)
+                        </button>
+                      </div>
+
+                      {simulation.mode === 'geogebra' ? (
+                        <div className="space-y-2">
+                          <label className="block text-xs font-bold text-slate-600">
+                            Link / mã GeoGebra / thẻ iframe
+                            <textarea
+                              disabled={jsonBroken}
+                              rows={3}
+                              value={simulation.geogebraUrl || ''}
+                              onChange={(e) => patchSimulation({ geogebraUrl: e.target.value })}
+                              placeholder="https://www.geogebra.org/classic/h5x8nnkt"
+                              className="mt-1 w-full rounded-md border border-slate-200 px-2.5 py-1.5 text-sm font-mono font-normal text-slate-800"
+                            />
+                          </label>
+                          <p className="text-[11px] text-slate-500 leading-snug">
+                            GeoGebra → Chia sẻ → copy link, hoặc dán nguyên thẻ &lt;iframe …&gt;. Hệ thống tự chuyển sang URL nhúng.
+                          </p>
+                          {ggPreview ? (
+                            <p className="text-[11px] text-emerald-700 break-all">Embed: {ggPreview}</p>
+                          ) : simulation.geogebraUrl ? (
+                            <p className="text-[11px] text-amber-700">Chưa nhận dạng được link GeoGebra.</p>
+                          ) : null}
+                          <div className="rounded-xl border border-amber-200/80 bg-amber-50/40 p-2.5 space-y-2">
+                            <p className="text-[11px] text-slate-600 leading-snug">
+                              <strong>Khung hướng dẫn (bên phải)</strong> — hiện trên máy tính cạnh GeoGebra; ẩn trên điện thoại.
+                              Dùng thanh định dạng (cỡ chữ, màu, đậm, nghiêng, công thức…).
+                            </p>
+                            <ChuyenDeOnTapRichTextField
+                              label="Nội dung hướng dẫn / giải thích"
+                              value={simulation.guideText || ''}
+                              onChange={(v) => patchSimulation({ guideText: v })}
+                              rows={8}
+                              disabled={jsonBroken}
+                              storage={storage}
+                              user={user}
+                              gradeLevel={editorGrade}
+                              showHeadings
+                              showPreview
+                              placeholder={'Ví dụ:\n**Cách thao tác:**\n1. Kéo thanh *Dài / Rộng / Cao*\n2. Quan sát khối lập phương đơn vị…'}
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <div className="flex flex-wrap gap-2">
+                            <button
+                              type="button"
+                              disabled={jsonBroken}
+                              onClick={() =>
+                                patchSimulation({
+                                  htmlCode: DEFAULT_SIMULATION_HTML_SAMPLE,
+                                  enabled: true,
+                                  mode: 'html',
+                                })
+                              }
+                              className="px-3 py-1.5 rounded-md text-xs font-bold border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                            >
+                              Chèn mẫu HTML
+                            </button>
+                          </div>
+                          <label className="block text-xs font-bold text-slate-600">
+                            Code HTML tự chứa (DOCTYPE hoặc fragment + CSS/JS)
+                            <textarea
+                              disabled={jsonBroken}
+                              rows={14}
+                              value={simulation.htmlCode || ''}
+                              onChange={(e) => patchSimulation({ htmlCode: e.target.value })}
+                              placeholder="<!DOCTYPE html>..."
+                              className="mt-1 w-full rounded-md border border-slate-200 px-2.5 py-1.5 text-[12px] font-mono font-normal text-slate-800 leading-snug"
+                            />
+                          </label>
+                          <p className="text-[11px] text-slate-500 leading-snug">
+                            Định dạng khuyến nghị cho AI: một file HTML đầy đủ (&lt;!DOCTYPE html&gt;…), hoặc khối HTML+CSS+JS không phụ thuộc CDN bên ngoài.
+                            Chạy trong iframe sandbox (không truy cập được trang chính).
+                          </p>
+                        </div>
+                      )}
+
+                      {simulation.enabled && (ggPreview || simulation.htmlCode) ? (
+                        <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-2">
+                          <p className="text-[11px] font-bold text-slate-600 mb-2 px-1">Xem trước</p>
+                          <LessonSimulationPanel
+                            simulation={simulation}
+                            title={simulation.title || 'Mô phỏng'}
+                          />
+                        </div>
+                      ) : null}
+                    </>
+                  );
+                })()}
               </div>
             )}
 
@@ -4574,13 +5418,31 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
 
           <LessonSeoAdminPanel lesson={editingLesson} theoryCore={theoryCoreVal} lessonsList={lessonsList} />
 
-          <button
-            type="button"
-            onClick={handleSaveLesson}
-            className="shrink-0 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-lg text-sm flex items-center justify-center gap-2"
-          >
-            <Save size={18} /> Lưu Bài Giảng Lên Hệ Thống
-          </button>
+          <div className="shrink-0 flex flex-col sm:flex-row gap-2">
+            <button
+              type="button"
+              onClick={handleSaveLesson}
+              className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-lg text-sm flex items-center justify-center gap-2"
+            >
+              <Save size={18} /> Lưu Bài Giảng Lên Hệ Thống
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                const n = lessonSessionUploadsRef.current?.size || 0;
+                const msg =
+                  n > 0
+                    ? `Xóa bản đang sửa?\n\n• Nội dung đang soạn sẽ bị hủy (không lưu).\n• ${n} ảnh vừa tải lên trong phiên này sẽ bị xóa khỏi Storage.\n• Bài đã lưu trên hệ thống (nếu có) không bị ảnh hưởng.`
+                    : 'Xóa bản đang sửa?\n\nNội dung đang soạn sẽ bị hủy (không lưu). Không có ảnh mới nào trong phiên này.';
+                if (!window.confirm(msg)) return;
+                closeLessonEditor();
+              }}
+              className="sm:w-auto sm:min-w-[11rem] bg-white hover:bg-red-50 text-red-700 border border-red-200 font-bold py-2.5 px-3 rounded-lg text-sm flex items-center justify-center gap-2"
+              title="Hủy bản đang soạn và xóa ảnh vừa upload trong phiên này"
+            >
+              <Trash2 size={18} /> Xóa bản đang sửa
+            </button>
+          </div>
         </div>
 
         <div className="w-full xl:flex-[3] xl:min-w-0 min-w-0 xl:sticky xl:top-2 flex flex-col gap-1.5 min-h-[45vh] xl:min-h-0 xl:max-h-[calc(100dvh-5.25rem)]">
@@ -4674,7 +5536,7 @@ if (!(editingQuiz.title || '').toString().trim() || editingQuiz.questions.length
       setIsSavingQuiz(true);
       if (editingQuiz.isNew) await withTimeout(addDoc(collection(db, COLLECTION_QUIZZES), dataToSave), 20000, "Lưu đề thi quá lâu (timeout).");
 else await withTimeout(updateDoc(doc(db, COLLECTION_QUIZZES, editingQuiz.id), dataToSave), 20000,"Cập nhật đề thi quá lâu (timeout).");
-      setEditingQuiz(null);
+      closeQuizEditor({ keptText: JSON.stringify(dataToSave) });
 alert("Đã lưu đề thi thành công!");
     } catch (e) {
 console.error("Lỗi lưu đề thi:", e);
@@ -4919,16 +5781,38 @@ if (ext ==='txt') {
       }
 if (ext ==='docx') {
         const buf = await file.arrayBuffer();
-        const res = await mammoth.extractRawText({ arrayBuffer: buf });
-const t = res.value ||'';
+        setImageUploadBusy(true);
+        const extracted = await extractLessonTextFromDocx(buf, {
+          storage,
+          user,
+          onProgress: () => {},
+          onImageUploaded: trackSessionUploadUrl,
+        });
+const t = extracted.text ||'';
         setImportText(t);
         runParseImport(t);
+        const imageCount = Number(extracted.imageCount) || 0;
+        const skippedImages = Number(extracted.skippedImages) || 0;
+        const warningText = summarizeDocxImageWarnings(extracted.warnings);
+        if (imageCount > 0 || skippedImages > 0 || warningText) {
+          alert(
+            [
+              `Đã đọc file Word và tải lên ${imageCount} ảnh.`,
+              skippedImages > 0 ? `${skippedImages} ảnh không đọc/tải được.` : '',
+              warningText,
+            ]
+              .filter(Boolean)
+              .join('\n\n')
+          );
+        }
         return;
       }
       alert("Chỉ hỗ trợ .txt hoặc .docx");
     } catch (e) {
       console.error(e);
-alert("Đọc file thất bại.");
+alert(`Đọc file thất bại: ${e?.message || 'Thử lại với file .docx khác.'}`);
+    } finally {
+      setImageUploadBusy(false);
     }
   };
 
@@ -4988,7 +5872,7 @@ alert("Đọc file thất bại.");
               return;
             }
             const qs = randomizeOrder(picked).map((bq) => bankQuestionToQuizQuestion(bq));
-            setEditingQuiz({
+            openQuizEditor({
               isNew: true,
               title: 'Đề tạo từ ma trận',
               duration: Number(duration || 45),
@@ -5013,7 +5897,7 @@ alert("Đọc file thất bại.");
 <div><h2 className="font-bold text-lg text-slate-800">Kho Bài Giảng</h2><p className="text-sm text-slate-500">Thư mục theo lớp → chương SGK. Bài lưu đúng chương đã chọn khi soạn.</p></div>
 <button
   onClick={() =>
-    setEditingLesson({
+    openLessonEditor({
       isNew: true,
       title: '',
       videoUrl: '',
@@ -5036,7 +5920,7 @@ alert("Đọc file thất bại.");
   lessonsList={lessonsList}
   activeGrade={activeGrade}
   onCreateLesson={({ grade_level, chapter, lesson_no }) =>
-    setEditingLesson({
+    openLessonEditor({
       isNew: true,
       title: '',
       videoUrl: '',
@@ -5050,7 +5934,7 @@ alert("Đọc file thất bại.");
       grade_level: grade_level || (activeGrade !== 'ALL' ? activeGrade : '9'),
     })
   }
-  onEditLesson={(l) => setEditingLesson(l)}
+  onEditLesson={(l) => openLessonEditor(l)}
   onDeleteLesson={handleDeleteLesson}
 />
 </div>
@@ -5070,7 +5954,7 @@ alert("Đọc file thất bại.");
                       <h3 className="font-bold text-base text-blue-800 flex gap-2 items-center min-w-0">
                         <BookOpen size={18} className="shrink-0" /> <span className="truncate">Tạo/Sửa Đề Kiểm Tra</span>
                       </h3>
-                      <button type="button" onClick={() => setEditingQuiz(null)} className="text-slate-400 hover:text-red-500 shrink-0">
+                      <button type="button" onClick={() => closeQuizEditor()} className="text-slate-400 hover:text-red-500 shrink-0">
                         <XCircle size={22} />
                       </button>
                     </div>
@@ -5324,13 +6208,26 @@ alert("Đọc file thất bại.");
 
                   <div className="p-2 rounded-lg border border-dashed border-slate-300 bg-white shrink-0">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                      <p
-                        className="font-bold text-slate-800 text-sm shrink-0"
-                        title="Định dạng mẫu: tải mau-import-de-thi.txt (thư mục public)"
-                      >
-                        Import Word/TXT
-                      </p>
+                      <p className="font-bold text-slate-800 text-sm shrink-0">Import Word/TXT</p>
                       <div className="flex flex-wrap gap-2 shrink-0 items-center sm:justify-end">
+                        <div className="flex flex-col items-end gap-0.5 mr-1">
+                          <a
+                            href="/mau-import-de-thi.txt"
+                            download
+                            className="text-[11px] font-bold text-indigo-700 hover:text-indigo-900 underline decoration-indigo-300"
+                            title="Tải mẫu import đề thi (.txt)"
+                          >
+                            mau-import-de-thi.txt
+                          </a>
+                          <a
+                            href="/mau-import-de-thi-sample-v2.docx"
+                            download="mau-import-de-thi.docx"
+                            className="text-[11px] font-bold text-indigo-700 hover:text-indigo-900 underline decoration-indigo-300"
+                            title="Tải mẫu import đề thi (Word .docx)"
+                          >
+                            mau-import-de-thi.docx
+                          </a>
+                        </div>
                         <AdminImageUploadControl
                           storage={storage}
                           user={user}
@@ -5350,9 +6247,10 @@ alert("Đọc file thất bại.");
                         <button
                           type="button"
                           onClick={() => importFileRef.current?.click()}
-                          className="px-3 py-1.5 rounded-md bg-white border text-xs font-bold text-slate-700 hover:bg-slate-50"
+                          disabled={imageUploadBusy}
+                          className="px-3 py-1.5 rounded-md bg-white border text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-wait"
                         >
-                          Chọn file
+                          {imageUploadBusy ? 'Đang đọc Word và tải ảnh…' : 'Chọn file'}
                         </button>
                         <button
                           type="button"
@@ -5676,34 +6574,16 @@ alert("Đọc file thất bại.");
                                 placeholder="Đoạn văn — dùng {{1}}, {{2}}… để đánh dấu chỗ trống. Ví dụ: Hàm số $y=x^2$ có đỉnh {{1}}."
                                 className="w-full p-2 border rounded text-sm min-h-[16rem] font-mono text-[13px] resize-y"
                               />
-                              <textarea
+                              <FillBlanksAnswersField
                                 data-admin-snippet={`quiz-fb-answers:${qIdx}`}
-                                value={(Array.isArray(q.blanks) ? q.blanks : [])
-                                  .map((b) =>
-                                    typeof b === 'object'
-                                      ? `${b.id}=${b.correctAnswer ?? b.answer ?? ''}`
-                                      : String(b ?? '')
-                                  )
-                                  .join('\n')}
-                                onChange={(e) => {
-                                  const blanks = e.target.value
-                                    .split('\n')
-                                    .map((l) => l.trim())
-                                    .filter(Boolean)
-                                    .map((l) => {
-                                      const m = l.match(/^(\d+)\s*=\s*(.+)$/);
-                                      if (m) return { id: m[1], correctAnswer: m[2].trim() };
-                                      const m2 = l.match(/^([^=]+)=\s*(.+)$/);
-                                      if (m2) return { id: m2[1].trim(), correctAnswer: m2[2].trim() };
-                                      return null;
-                                    })
-                                    .filter(Boolean);
+                                blanks={q.blanks}
+                                blanksText={q.blanksText}
+                                className="w-full p-2 border-2 border-slate-300 rounded text-sm min-h-[12rem] disabled:opacity-50 resize-y whitespace-pre-wrap leading-relaxed focus:border-indigo-500 font-mono"
+                                onBlanksChange={(blanks, blanksText) => {
                                   const nq = [...editingQuiz.questions];
-                                  nq[qIdx].blanks = blanks;
+                                  nq[qIdx] = { ...nq[qIdx], blanks, blanksText };
                                   commitQuizQuestions(nq);
                                 }}
-                                placeholder="Đáp án từng chỗ trống — mỗi dòng: 1=(0; 0) hoặc 2=x=0"
-                                className="w-full p-2 border rounded text-sm min-h-[12rem] resize-y"
                               />
                             </div>
                           )}
@@ -5744,16 +6624,35 @@ alert("Đọc file thất bại.");
                     >
                       <Plus size={18} /> Thêm câu
                     </button>
-                    <button
-                      type="button"
-                      onClick={handleSaveQuiz}
-                      disabled={isSavingQuiz}
-                      className={`w-full font-bold py-3.5 rounded-xl flex justify-center items-center gap-2 text-sm shadow-md ${
-                        isSavingQuiz ? 'bg-blue-300 text-white cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'
-                      }`}
-                    >
-                      <Save size={18} /> {isSavingQuiz ? 'Đang lưu...' : 'Lưu Đề Thi Lên Hệ Thống'}
-                    </button>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <button
+                        type="button"
+                        onClick={handleSaveQuiz}
+                        disabled={isSavingQuiz}
+                        className={`flex-1 font-bold py-3.5 rounded-xl flex justify-center items-center gap-2 text-sm shadow-md ${
+                          isSavingQuiz ? 'bg-blue-300 text-white cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'
+                        }`}
+                      >
+                        <Save size={18} /> {isSavingQuiz ? 'Đang lưu...' : 'Lưu Đề Thi Lên Hệ Thống'}
+                      </button>
+                      <button
+                        type="button"
+                        disabled={isSavingQuiz}
+                        onClick={() => {
+                          const n = quizSessionUploadsRef.current?.size || 0;
+                          const msg =
+                            n > 0
+                              ? `Xóa bản đề thi đang sửa?\n\n• Nội dung đang soạn sẽ bị hủy (không lưu).\n• ${n} ảnh vừa tải lên trong phiên này sẽ bị xóa khỏi Storage.\n• Đề đã lưu trên hệ thống (nếu có) không bị ảnh hưởng.`
+                              : 'Xóa bản đề thi đang sửa?\n\nNội dung đang soạn sẽ bị hủy (không lưu). Không có ảnh mới nào trong phiên này.';
+                          if (!window.confirm(msg)) return;
+                          closeQuizEditor();
+                        }}
+                        className="sm:w-auto sm:min-w-[11rem] bg-white hover:bg-red-50 text-red-700 border border-red-200 font-bold py-3.5 px-3 rounded-xl text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+                        title="Hủy bản đề thi đang soạn và xóa ảnh vừa upload trong phiên này"
+                      >
+                        <Trash2 size={18} /> Xóa bản đang sửa
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -5838,7 +6737,7 @@ alert("Đọc file thất bại.");
 {filteredQuizzes.length === 0 && <button onClick={() => Promise.all(SAMPLE_QUIZZES.map(q => addDoc(collection(db, COLLECTION_QUIZZES), { ...q, grade_level: activeGrade === 'ALL' ? '8' : activeGrade })))} className="bg-emerald-100 text-emerald-700 px-3 py-1.5 rounded font-bold text-sm">Nạp Đề Mẫu</button>}
 <button
                   onClick={() =>
-                    setEditingQuiz({
+                    openQuizEditor({
                       isNew: true,
                       title: '',
                       duration: 15,
@@ -5864,7 +6763,7 @@ alert("Đọc file thất bại.");
   quizzesList={quizzesList}
   activeGrade={activeGrade}
   onCreateQuiz={({ exam_type, chapter, grade_level }) =>
-    setEditingQuiz({
+    openQuizEditor({
       isNew: true,
       title: '',
       duration: 15,
@@ -5881,7 +6780,7 @@ alert("Đọc file thất bại.");
     })
   }
   onEditQuiz={(q) =>
-    setEditingQuiz({
+    openQuizEditor({
       ...q,
       level: 'test',
       exam_type: normalizeExamType(q.exam_type, q.grade_level),
