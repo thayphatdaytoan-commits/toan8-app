@@ -61,18 +61,17 @@ Khi KHÔNG có file nguồn:
 3A) CÓ tài liệu nguồn — dán:
 Tạo bài giảng cho tôi lấy từ các bài toán từ tài liệu, chia ra các dạng toán phù hợp,
 mỗi dạng toán sẽ có một số ví dụ phù hợp, có lời giải chi tiết (bạn tự nghĩ), sau đó
-là phần bài tập tự luyện kèm lời giải. Tất cả các công thức dùng chuẩn latex và yêu
-cầu nghiêm ngặt bỏ trong dấu $[...]$, thêm cặp dấu {...} vào mỗi công thức.
+là phần bài tập tự luyện kèm lời giải. Tất cả công thức dùng chuẩn LaTeX, bọc bằng
+$...$ hoặc $$...$$. KHÔNG dùng dấu ngoặc vuông $[...]$ hay $[{...}]$ (web sẽ hiện ngoặc vuông).
 
-(Giữ đúng ý: dạng/bài tập lấy từ tài liệu; LaTeX dạng `$[{...}]$`.)
+(Giữ đúng ý: dạng/bài tập lấy từ tài liệu; LaTeX web = `$...$` / `$$...$$`.)
 
 3B) KHÔNG có tài liệu nguồn — dán:
 Không có file tài liệu nguồn. Hãy soạn bài giảng Toán đúng SGK theo Lớp/Chương/Bài đã chọn.
 Chia thành các dạng toán phù hợp với bài; MỖI dạng toán phải có tối thiểu 2 đến 3 ví dụ
 minh họa kèm lời giải chi tiết. Phần BÀI TẬP TỰ LUYỆN phải có TỐI THIỂU 20 câu (trắc nghiệm
-và/hoặc điền đáp án), mỗi câu có đáp án và lời giải. Tất cả công thức dùng chuẩn LaTeX,
-nghiêm ngặt bọc trong dấu $[...]$ và thêm cặp {...} trong mỗi công thức (dạng `$[{...}]$`).
-Không viết lệch chủ đề bài.
+và/hoặc điền đáp án), mỗi câu có đáp án và lời giải. Công thức LaTeX bọc bằng $...$ hoặc
+$$...$$; KHÔNG dùng $[...]$ / $[{...}]$. Không viết lệch chủ đề bài.
 
 --------------------------------------------------------------------------------
 4) FILE NGUỒN
@@ -98,7 +97,7 @@ API key: GEMINI_API_KEY_1; lỗi quota/invalid → GEMINI_API_KEY_2. Không in k
   * Đúng lớp/chương/bài, đúng chủ đề
   * Có lý thuyết; có dạng + ví dụ (mỗi dạng ≥ 2–3 ví dụ khi không nguồn)
   * Bài tập tự luyện: ≥ 10 nếu có nguồn; ≥ 20 nếu không nguồn
-  * Công thức dạng `$[{...}]$` khi yêu cầu đã dán
+  * Công thức nên là `$...$` / `$$...$$` (không còn `$[...]$`)
 
 --------------------------------------------------------------------------------
 6) LƯU VÀO THƯ MỤC (BẮT BUỘC SAU KHI TẠO XONG)
@@ -108,6 +107,15 @@ Sau khi tạo xong PHẢI nhấn nút xanh «Lưu vào thư mục». Không bỏ
 Tải Word/TXT kết quả về:
 tai-lieu-dang-web/Toán {grade}/Bài Giảng/{TÊN CHƯƠNG}/{TÊN BÀI}/output/
 Tên gợi ý: Bai-{n}-import.docx (và/hoặc .txt).
+
+--------------------------------------------------------------------------------
+6B) CHUẨN HÓA CÔNG THỨC TRƯỚC KHI IMPORT WEB (BẮT BUỘC)
+--------------------------------------------------------------------------------
+Xem docs/QUY_TAC_CONG_THUC_LATEX_WEB.txt.
+
+Trang thayphatdaytoan chỉ render đúng `$...$` / `$$...$$`.
+Nếu file từ bai-viet-ai còn `$[{formula}]$` hoặc `$[formula]$` → đổi thành `$formula$`.
+KHÔNG import khi còn ngoặc vuông quanh công thức (học sinh sẽ thấy [5], [x], …).
 
 --------------------------------------------------------------------------------
 7) ĐĂNG WEB (tóm tắt)
@@ -127,5 +135,6 @@ CHECKLIST NHANH
 [ ] Đã dán «Yêu cầu thêm» phù hợp (3A hoặc 3B)
 [ ] Đã Tạo bài giảng
 [ ] Đã nhấn «Lưu vào thư mục»
+[ ] Công thức đã chuẩn `$...$` (không `$[...]$` / `$[{...}]$`)
 [ ] Đã lưu file vào .../output/ rồi Import/Lưu lên thayphatdaytoan
 ================================================================================

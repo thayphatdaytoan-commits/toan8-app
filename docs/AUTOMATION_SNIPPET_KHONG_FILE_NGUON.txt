@@ -1,0 +1,14 @@
+================================================================================
+ĐOẠN CHÈN VÀO PROMPT AUTOMATION «Đăng bài giảng từ TAI LIEU DANG WEB»
+================================================================================
+
+KHÔNG CÓ FILE NGUỒN — VẪN TẠO VÀ ĐĂNG (BẮT BUỘC)
+Nếu bài không có PDF/ảnh nguồn: vẫn mở bai-viet-ai, chọn đúng Lớp/Chương/Bài,
+không upload file; Ví dụ/dạng ≥ 2 (khuyến nghị 3, mỗi dạng 2–3 ví dụ); BT tự luyện ≥ 20;
+dán «Yêu cầu thêm» bản không nguồn; Tạo → Lưu vào thư mục → chuẩn hóa công thức → Import web.
+
+CÔNG THỨC LATEX (BẮT BUỘC — TRÁNH NGOẶC VUÔNG TRÊN WEB)
+- Import web chỉ dùng $...$ hoặc $$...$$.
+- CẤM để $[...]$ / $[{...}]$ trong file import (học sinh sẽ thấy [5], [x]).
+- Nếu bai-viet-ai xuất $[{formula}]$ → đổi thành $formula$ trước khi Import.
+Chi tiết: docs/QUY_TAC_CONG_THUC_LATEX_WEB.txt và docs/HUONG_DAN_BAI_VIET_AI_BAT_BUOC.txt

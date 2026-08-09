@@ -3504,11 +3504,18 @@ function AdminScreen({
     };
     delete dataToSave.isNew;
     delete dataToSave.id;
+    // Firestore reject field = undefined → làm sạch trước khi lưu
+    Object.keys(dataToSave).forEach((k) => {
+      if (dataToSave[k] === undefined) delete dataToSave[k];
+    });
     try {
       if (editingLesson.isNew) { dataToSave.timestamp = Date.now(); await addDoc(collection(db, COLLECTION_LESSONS), dataToSave); }
       else await updateDoc(doc(db, COLLECTION_LESSONS, editingLesson.id), dataToSave);
       closeLessonEditor({ keptText: JSON.stringify(dataToSave) });
-    } catch { alert("Lỗi lưu bài giảng"); }
+    } catch (err) {
+      console.error('Lỗi lưu bài giảng', err);
+      alert(`Lỗi lưu bài giảng: ${err?.message || err}`);
+    }
   };
 
   const handleDeleteLesson = async (id) => {
