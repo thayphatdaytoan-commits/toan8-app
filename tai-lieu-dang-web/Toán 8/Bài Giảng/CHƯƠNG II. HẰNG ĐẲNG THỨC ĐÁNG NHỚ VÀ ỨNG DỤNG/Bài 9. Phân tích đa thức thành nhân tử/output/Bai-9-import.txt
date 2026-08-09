@@ -1,0 +1,352 @@
+@grade_level: 8
+@chapter: 2
+@lesson_no: 9
+@title: Phân tích đa thức thành nhân tử bằng hằng đẳng thức
+@focus_keyword: phân tích đa thức thành nhân tử toán 8
+@keywords: hằng đẳng thức, toán 8, chương 2, phân tích đa thức
+@seo_description: Học cách phân tích đa thức thành nhân tử bằng việc vận dụng các hằng đẳng thức đáng nhớ trong Toán 8, Chương 2.
+
+LÝ THUYẾT TRỌNG TÂM
+
+Phân tích đa thức thành nhân tử là biến đổi đa thức đó thành một tích của các đa thức.
+Trong bài này, chúng ta sẽ sử dụng các hằng đẳng thức đáng nhớ để phân tích đa thức thành nhân tử.
+
+Ghi nhớ:
+Các hằng đẳng thức đáng nhớ thường dùng:
+1.  Bình phương của một tổng: $(A+B)^2 = A^2 + 2AB + B^2$
+2.  Bình phương của một hiệu: $(A-B)^2 = A^2 - 2AB + B^2$
+3.  Hiệu hai bình phương: $A^2 - B^2 = (A-B)(A+B)$
+4.  Lập phương của một tổng: $(A+B)^3 = A^3 + 3A^2B + 3AB^2 + B^3$
+5.  Lập phương của một hiệu: $(A-B)^3 = A^3 - 3A^2B + 3AB^2 - B^3$
+6.  Tổng hai lập phương: $A^3 + B^3 = (A+B)(A^2 - AB + B^2)$
+7.  Hiệu hai lập phương: $A^3 - B^3 = (A-B)(A^2 + AB + B^2)$
+
+Phương pháp:
+Để phân tích đa thức thành nhân tử bằng phương pháp dùng hằng đẳng thức, ta cần nhận dạng đa thức đã cho có dạng một trong các vế phải của các hằng đẳng thức trên. Sau đó, ta biến đổi đa thức đó về dạng vế trái của hằng đẳng thức tương ứng.
+
+Ví dụ:
+Phân tích đa thức $x^2 - 9$ thành nhân tử.
+Lời giải:
+Ta nhận thấy $x^2 - 9$ có dạng $A^2 - B^2$ với $A=x$ và $B=3$.
+Áp dụng hằng đẳng thức hiệu hai bình phương, ta có:
+$x^2 - 9 = x^2 - 3^2 = (x-3)(x+3)$.
+
+---
+
+CÁC DẠNG TOÁN & VÍ DỤ
+
+Dạng 1: Áp dụng trực tiếp một hằng đẳng thức
+Phương pháp:
+Nhận dạng đa thức có dạng vế phải của một trong 7 hằng đẳng thức đáng nhớ và biến đổi về dạng vế trái.
+
+Ví dụ 1:
+Phân tích đa thức $4x^2 + 4x + 1$ thành nhân tử.
+Lời giải:
+Ta nhận thấy $4x^2 + 4x + 1 = (2x)^2 + 2 \cdot (2x) \cdot 1 + 1^2$.
+Đây là dạng bình phương của một tổng $A^2 + 2AB + B^2$ với $A=2x$ và $B=1$.
+Vậy $4x^2 + 4x + 1 = (2x+1)^2$.
+
+---
+
+Ví dụ 2:
+Phân tích đa thức $27x^3 - 8y^3$ thành nhân tử.
+Lời giải:
+Ta nhận thấy $27x^3 - 8y^3 = (3x)^3 - (2y)^3$.
+Đây là dạng hiệu hai lập phương $A^3 - B^3$ với $A=3x$ và $B=2y$.
+Áp dụng hằng đẳng thức, ta có:
+$27x^3 - 8y^3 = (3x - 2y)((3x)^2 + (3x)(2y) + (2y)^2)$
+$= (3x - 2y)(9x^2 + 6xy + 4y^2)$.
+
+---
+
+Ví dụ 3:
+Phân tích đa thức $x^2 - 6xy + 9y^2$ thành nhân tử.
+Lời giải:
+Ta nhận thấy $x^2 - 6xy + 9y^2 = x^2 - 2 \cdot x \cdot (3y) + (3y)^2$.
+Đây là dạng bình phương của một hiệu $A^2 - 2AB + B^2$ với $A=x$ và $B=3y$.
+Vậy $x^2 - 6xy + 9y^2 = (x-3y)^2$.
+
+---
+
+Dạng 2: Nhóm các hạng tử để xuất hiện hằng đẳng thức
+Phương pháp:
+Nhóm các hạng tử một cách thích hợp để tạo ra các biểu thức có dạng hằng đẳng thức, sau đó tiếp tục phân tích.
+
+Ví dụ 1:
+Phân tích đa thức $x^2 - y^2 + 2x + 1$ thành nhân tử.
+Lời giải:
+Ta nhóm các hạng tử:
+$x^2 - y^2 + 2x + 1 = (x^2 + 2x + 1) - y^2$
+Nhận thấy $(x^2 + 2x + 1)$ là bình phương của một tổng $(x+1)^2$.
+$= (x+1)^2 - y^2$
+Đây là dạng hiệu hai bình phương $A^2 - B^2$ với $A=x+1$ và $B=y$.
+$= ((x+1) - y)((x+1) + y)$
+$= (x - y + 1)(x + y + 1)$.
+
+---
+
+Ví dụ 2:
+Phân tích đa thức $x^2 - 2xy + y^2 - 4z^2$ thành nhân tử.
+Lời giải:
+Ta nhóm các hạng tử:
+$x^2 - 2xy + y^2 - 4z^2 = (x^2 - 2xy + y^2) - 4z^2$
+Nhận thấy $(x^2 - 2xy + y^2)$ là bình phương của một hiệu $(x-y)^2$.
+$= (x-y)^2 - (2z)^2$
+Đây là dạng hiệu hai bình phương $A^2 - B^2$ với $A=x-y$ và $B=2z$.
+$= ((x-y) - 2z)((x-y) + 2z)$
+$= (x - y - 2z)(x - y + 2z)$.
+
+---
+
+Ví dụ 3:
+Phân tích đa thức $x^3 + x^2 - 4x - 4$ thành nhân tử.
+Lời giải:
+Ta nhóm các hạng tử:
+$x^3 + x^2 - 4x - 4 = (x^3 + x^2) - (4x + 4)$
+$= x^2(x+1) - 4(x+1)$
+$= (x+1)(x^2 - 4)$
+Nhận thấy $(x^2 - 4)$ là hiệu hai bình phương $x^2 - 2^2 = (x-2)(x+2)$.
+$= (x+1)(x-2)(x+2)$.
+
+---
+
+Dạng 3: Thêm bớt hạng tử để xuất hiện hằng đẳng thức
+Phương pháp:
+Thêm và bớt cùng một hạng tử thích hợp để biến đổi đa thức về dạng có thể áp dụng hằng đẳng thức.
+
+Ví dụ 1:
+Phân tích đa thức $x^2 + 4x + 3$ thành nhân tử.
+Lời giải:
+Ta muốn tạo ra bình phương của một tổng. Ta có $x^2 + 4x$. Để có $(x+A)^2$, ta cần $2Ax = 4x \Rightarrow A=2$. Vậy ta cần thêm $A^2 = 2^2 = 4$.
+$x^2 + 4x + 3 = (x^2 + 4x + 4) - 4 + 3$
+$= (x+2)^2 - 1$
+Đây là dạng hiệu hai bình phương $A^2 - B^2$ với $A=x+2$ và $B=1$.
+$= ((x+2) - 1)((x+2) + 1)$
+$= (x+1)(x+3)$.
+
+---
+
+Ví dụ 2:
+Phân tích đa thức $x^4 + 4$ thành nhân tử.
+Lời giải:
+Ta muốn tạo ra bình phương của một tổng. Ta có $x^4 = (x^2)^2$ và $4 = 2^2$.
+Để có $(A+B)^2 = A^2 + 2AB + B^2$, ta cần thêm $2AB = 2 \cdot x^2 \cdot 2 = 4x^2$.
+$x^4 + 4 = x^4 + 4x^2 + 4 - 4x^2$
+$= (x^2 + 2)^2 - (2x)^2$
+Đây là dạng hiệu hai bình phương $A^2 - B^2$ với $A=x^2+2$ và $B=2x$.
+$= ((x^2+2) - 2x)((x^2+2) + 2x)$
+$= (x^2 - 2x + 2)(x^2 + 2x + 2)$.
+
+---
+
+Dạng 4: Phối hợp nhiều phương pháp (đặt nhân tử chung, hằng đẳng thức, nhóm hạng tử)
+Phương pháp:
+Ưu tiên đặt nhân tử chung trước (nếu có), sau đó áp dụng hằng đẳng thức hoặc nhóm hạng tử.
+
+Ví dụ 1:
+Phân tích đa thức $5x^3 - 20x$ thành nhân tử.
+Lời giải:
+Đầu tiên, ta đặt nhân tử chung $5x$:
+$5x^3 - 20x = 5x(x^2 - 4)$
+Trong ngoặc, ta nhận thấy $x^2 - 4$ là hiệu hai bình phương $x^2 - 2^2 = (x-2)(x+2)$.
+Vậy $5x^3 - 20x = 5x(x-2)(x+2)$.
+
+---
+
+Ví dụ 2:
+Phân tích đa thức $x^3 - x^2y - xy^2 + y^3$ thành nhân tử.
+Lời giải:
+Ta nhóm các hạng tử:
+$x^3 - x^2y - xy^2 + y^3 = (x^3 + y^3) - (x^2y + xy^2)$
+$= (x+y)(x^2 - xy + y^2) - xy(x+y)$
+Đặt nhân tử chung $(x+y)$:
+$= (x+y)(x^2 - xy + y^2 - xy)$
+$= (x+y)(x^2 - 2xy + y^2)$
+Trong ngoặc, ta nhận thấy $x^2 - 2xy + y^2$ là bình phương của một hiệu $(x-y)^2$.
+Vậy $x^3 - x^2y - xy^2 + y^3 = (x+y)(x-y)^2$.
+
+---
+
+Ví dụ 3:
+Phân tích đa thức $2x^4 - 2x^2$ thành nhân tử.
+Lời giải:
+Đầu tiên, ta đặt nhân tử chung $2x^2$:
+$2x^4 - 2x^2 = 2x^2(x^2 - 1)$
+Trong ngoặc, ta nhận thấy $x^2 - 1$ là hiệu hai bình phương $x^2 - 1^2 = (x-1)(x+1)$.
+Vậy $2x^4 - 2x^2 = 2x^2(x-1)(x+1)$.
+
+---
+
+Dạng 5: Ứng dụng hằng đẳng thức để tính nhanh giá trị biểu thức
+Phương pháp:
+Biến đổi biểu thức số về dạng có thể áp dụng hằng đẳng thức để tính toán nhanh hơn.
+
+Ví dụ 1:
+Tính nhanh giá trị của biểu thức $101^2 - 1$.
+Lời giải:
+Ta nhận thấy biểu thức có dạng hiệu hai bình phương $A^2 - B^2$ với $A=101$ và $B=1$.
+$101^2 - 1 = (101 - 1)(101 + 1)$
+$= 100 \cdot 102$
+$= 10200$.
+
+---
+
+Ví dụ 2:
+Tính nhanh giá trị của biểu thức $73^2 + 2 \cdot 73 \cdot 27 + 27^2$.
+Lời giải:
+Ta nhận thấy biểu thức có dạng bình phương của một tổng $A^2 + 2AB + B^2$ với $A=73$ và $B=27$.
+$73^2 + 2 \cdot 73 \cdot 27 + 27^2 = (73 + 27)^2$
+$= 100^2$
+$= 10000$.
+
+---
+
+Ví dụ 3:
+Tính nhanh giá trị của biểu thức $36 \cdot 44$.
+Lời giải:
+Ta biến đổi biểu thức về dạng hiệu hai bình phương:
+$36 \cdot 44 = (40 - 4)(40 + 4)$
+Đây là dạng $(A-B)(A+B) = A^2 - B^2$ với $A=40$ và $B=4$.
+$= 40^2 - 4^2$
+$= 1600 - 16$
+$= 1584$.
+
+---
+
+BÀI TẬP LUYỆN TẬP
+
+Câu 1. Phân tích đa thức $x^2 - 16$ thành nhân tử.
+A. $(x-4)^2$
+B. $(x+4)^2$
+C. $(x-4)(x+4)$
+D. $x(x-16)$
+Đáp án: C
+Lời giải:
+Ta nhận thấy $x^2 - 16 = x^2 - 4^2$.
+Đây là dạng hiệu hai bình phương $A^2 - B^2 = (A-B)(A+B)$ với $A=x$ và $B=4$.
+Vậy $x^2 - 16 = (x-4)(x+4)$.
+
+---
+
+Câu 2. Phân tích đa thức $9x^2 - 6x + 1$ thành nhân tử.
+A. $(3x-1)^2$
+B. $(3x+1)^2$
+C. $(9x-1)^2$
+D. $3x(3x-2)+1$
+Đáp án: A
+Lời giải:
+Ta nhận thấy $9x^2 - 6x + 1 = (3x)^2 - 2 \cdot (3x) \cdot 1 + 1^2$.
+Đây là dạng bình phương của một hiệu $A^2 - 2AB + B^2 = (A-B)^2$ với $A=3x$ và $B=1$.
+Vậy $9x^2 - 6x + 1 = (3x-1)^2$.
+
+---
+
+Câu 3. Kết quả phân tích đa thức $x^3 + 8$ thành nhân tử là:
+A. $(x+2)(x^2+2x+4)$
+B. $(x+2)(x^2-2x+4)$
+C. $(x-2)(x^2+2x+4)$
+D. $(x+2)^3$
+Đáp án: B
+Lời giải:
+Ta nhận thấy $x^3 + 8 = x^3 + 2^3$.
+Đây là dạng tổng hai lập phương $A^3 + B^3 = (A+B)(A^2 - AB + B^2)$ với $A=x$ và $B=2$.
+Vậy $x^3 + 8 = (x+2)(x^2 - x \cdot 2 + 2^2) = (x+2)(x^2 - 2x + 4)$.
+
+---
+
+Câu 4. Đa thức $x^2 - y^2 - 2x + 1$ được phân tích thành nhân tử là:
+A. $(x-1-y)(x-1+y)$
+B. $(x+1-y)(x+1+y)$
+C. $(x-y)(x+y-2x+1)$
+D. $(x-y-1)(x+y+1)$
+Đáp án: A
+Lời giải:
+Ta nhóm các hạng tử: $x^2 - y^2 - 2x + 1 = (x^2 - 2x + 1) - y^2$.
+Nhận thấy $(x^2 - 2x + 1)$ là bình phương của một hiệu $(x-1)^2$.
+$= (x-1)^2 - y^2$.
+Đây là dạng hiệu hai bình phương $A^2 - B^2 = (A-B)(A+B)$ với $A=x-1$ và $B=y$.
+$= ((x-1) - y)((x-1) + y) = (x-1-y)(x-1+y)$.
+
+---
+
+Câu 5. Phân tích đa thức $3x^2 - 12$ thành nhân tử.
+A. $3(x-2)^2$
+B. $3(x-2)(x+2)$
+C. $3x(x-4)$
+D. $3(x^2-4)$
+Đáp án: B
+Lời giải:
+Đầu tiên, ta đặt nhân tử chung $3$:
+$3x^2 - 12 = 3(x^2 - 4)$.
+Trong ngoặc, ta nhận thấy $x^2 - 4$ là hiệu hai bình phương $x^2 - 2^2 = (x-2)(x+2)$.
+Vậy $3x^2 - 12 = 3(x-2)(x+2)$.
+
+---
+
+Câu 6. Điền biểu thức thích hợp vào chỗ trống để được đẳng thức đúng: $x^2 - 10x + 25 = (\text{...})^2$.
+Đáp án: $x-5$
+Lời giải:
+Ta nhận thấy $x^2 - 10x + 25 = x^2 - 2 \cdot x \cdot 5 + 5^2$.
+Đây là dạng bình phương của một hiệu $A^2 - 2AB + B^2 = (A-B)^2$ với $A=x$ và $B=5$.
+Vậy $x^2 - 10x + 25 = (x-5)^2$.
+
+---
+
+Câu 7. Điền biểu thức thích hợp vào chỗ trống để được đẳng thức đúng: $x^3 - 1 = (x-1)(\text{...})$.
+Đáp án: $x^2+x+1$
+Lời giải:
+Ta nhận thấy $x^3 - 1 = x^3 - 1^3$.
+Đây là dạng hiệu hai lập phương $A^3 - B^3 = (A-B)(A^2 + AB + B^2)$ với $A=x$ và $B=1$.
+Vậy $x^3 - 1 = (x-1)(x^2 + x \cdot 1 + 1^2) = (x-1)(x^2 + x + 1)$.
+
+---
+
+Câu 8. Phân tích đa thức $x^2 + 6x + 8$ thành nhân tử.
+Đáp án: $(x+2)(x+4)$
+Lời giải:
+Ta muốn tạo ra bình phương của một tổng. Ta có $x^2 + 6x$. Để có $(x+A)^2$, ta cần $2Ax = 6x \Rightarrow A=3$. Vậy ta cần thêm $A^2 = 3^2 = 9$.
+$x^2 + 6x + 8 = (x^2 + 6x + 9) - 9 + 8$
+$= (x+3)^2 - 1$
+Đây là dạng hiệu hai bình phương $A^2 - B^2 = (A-B)(A+B)$ với $A=x+3$ và $B=1$.
+$= ((x+3) - 1)((x+3) + 1)$
+$= (x+2)(x+4)$.
+
+---
+
+Câu 9. Tính giá trị của biểu thức $2023^2 - 2022^2$.
+Đáp án: 4045
+Lời giải:
+Ta nhận thấy biểu thức có dạng hiệu hai bình phương $A^2 - B^2 = (A-B)(A+B)$ với $A=2023$ và $B=2022$.
+$2023^2 - 2022^2 = (2023 - 2022)(2023 + 2022)$
+$= 1 \cdot 4045$
+$= 4045$.
+
+---
+
+Câu 10. Phân tích đa thức $x^2y - 4y$ thành nhân tử.
+Đáp án: $y(x-2)(x+2)$
+Lời giải:
+Đầu tiên, ta đặt nhân tử chung $y$:
+$x^2y - 4y = y(x^2 - 4)$.
+Trong ngoặc, ta nhận thấy $x^2 - 4$ là hiệu hai bình phương $x^2 - 2^2 = (x-2)(x+2)$.
+Vậy $x^2y - 4y = y(x-2)(x+2)$.
+
+---
+
+Câu 11. [đúng sai]
+Mệnh đề sau đúng hay sai?
+Đa thức $x^2 + 2x + 1$ có thể phân tích thành nhân tử là $(x+1)^2$.
+Đáp án: Đúng
+Lời giải:
+Ta nhận thấy $x^2 + 2x + 1 = x^2 + 2 \cdot x \cdot 1 + 1^2$.
+Đây là dạng bình phương của một tổng $A^2 + 2AB + B^2 = (A+B)^2$ với $A=x$ và $B=1$.
+Vậy $x^2 + 2x + 1 = (x+1)^2$. Mệnh đề là đúng.
+
+---
+
+Câu 12. [đúng sai]
+Mệnh đề sau đúng hay sai?
+Đa thức $x^2 + 4$ có thể phân tích thành nhân tử bằng hằng đẳng thức hiệu hai bình phương.
+Đáp án: Sai
+Lời giải:
+Đa thức $x^2 + 4$ là tổng của hai bình phương, không phải hiệu hai bình phương. Hằng đẳng thức hiệu hai bình phương là $A^2 - B^2 = (A-B)(A+B)$. Tổng hai bình phương $A^2+B^2$ không thể phân tích thành nhân tử trên tập số thực. Mệnh đề là sai.

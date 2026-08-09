@@ -1,0 +1,303 @@
+@grade_level: 8
+@chapter: 2
+@lesson_no: 8
+@title: Tổng và hiệu hai lập phương
+@focus_keyword: tổng hai lập phương hiệu hai lập phương
+@keywords: hằng đẳng thức, toán 8, chương 2
+@seo_description: Tìm hiểu và vận dụng hằng đẳng thức tổng và hiệu hai lập phương để giải các bài toán đại số lớp 8.
+
+LÝ THUYẾT TRỌNG TÂM
+Trong bài học này, chúng ta sẽ tìm hiểu về hai hằng đẳng thức đáng nhớ quan trọng: tổng hai lập phương và hiệu hai lập phương. Đây là những công cụ hữu ích để phân tích đa thức thành nhân tử, rút gọn biểu thức và giải các bài toán liên quan.
+
+1. Tổng hai lập phương
+Với $A$ và $B$ là các biểu thức tùy ý, ta có hằng đẳng thức:
+$$A^3 + B^3 = (A+B)(A^2 - AB + B^2)$$
+Đọc là: Tổng hai lập phương bằng tổng của hai biểu thức nhân với bình phương thiếu của hiệu.
+
+Ví dụ:
+$x^3 + 8 = x^3 + 2^3 = (x+2)(x^2 - x \cdot 2 + 2^2) = (x+2)(x^2 - 2x + 4)$.
+
+---
+
+2. Hiệu hai lập phương
+Với $A$ và $B$ là các biểu thức tùy ý, ta có hằng đẳng thức:
+$$A^3 - B^3 = (A-B)(A^2 + AB + B^2)$$
+Đọc là: Hiệu hai lập phương bằng hiệu của hai biểu thức nhân với bình phương thiếu của tổng.
+
+Ví dụ:
+$y^3 - 27 = y^3 - 3^3 = (y-3)(y^2 + y \cdot 3 + 3^2) = (y-3)(y^2 + 3y + 9)$.
+
+---
+
+#[Ghi nhớ:
+- Dấu của nhân tử thứ nhất $(A \pm B)$ giống dấu của phép toán ban đầu ($A^3 \pm B^3$).
+- Dấu của tích $AB$ trong nhân tử thứ hai $(A^2 \mp AB + B^2)$ ngược lại với dấu của phép toán ban đầu.
+- $A^2 - AB + B^2$ và $A^2 + AB + B^2$ được gọi là bình phương thiếu của hiệu và bình phương thiếu của tổng.
+]#
+
+CÁC DẠNG TOÁN & VÍ DỤ
+
+Dạng 1: Khai triển biểu thức sử dụng hằng đẳng thức
+Phương pháp: Áp dụng trực tiếp công thức tổng hoặc hiệu hai lập phương để khai triển các tích đã cho.
+
+Ví dụ 1:
+Khai triển biểu thức $(x+3)(x^2-3x+9)$.
+Lời giải:
+Ta nhận thấy biểu thức có dạng $(A+B)(A^2-AB+B^2)$ với $A=x$ và $B=3$.
+Áp dụng hằng đẳng thức tổng hai lập phương, ta có:
+$(x+3)(x^2-3x+9) = x^3 + 3^3 = x^3 + 27$.
+
+---
+
+Ví dụ 2:
+Khai triển biểu thức $(2x-y)(4x^2+2xy+y^2)$.
+Lời giải:
+Ta nhận thấy biểu thức có dạng $(A-B)(A^2+AB+B^2)$ với $A=2x$ và $B=y$.
+Áp dụng hằng đẳng thức hiệu hai lập phương, ta có:
+$(2x-y)(4x^2+2xy+y^2) = (2x)^3 - y^3 = 8x^3 - y^3$.
+
+---
+
+Ví dụ 3:
+Khai triển biểu thức $(x^2+1)(x^4-x^2+1)$.
+Lời giải:
+Ta nhận thấy biểu thức có dạng $(A+B)(A^2-AB+B^2)$ với $A=x^2$ và $B=1$.
+Áp dụng hằng đẳng thức tổng hai lập phương, ta có:
+$(x^2+1)(x^4-x^2+1) = (x^2)^3 + 1^3 = x^6 + 1$.
+
+---
+
+Dạng 2: Rút gọn biểu thức
+Phương pháp: Sử dụng hằng đẳng thức tổng và hiệu hai lập phương để biến đổi các thành phần của biểu thức, sau đó thực hiện các phép tính cộng, trừ để rút gọn.
+
+Ví dụ 1:
+Rút gọn biểu thức $A = (x+1)(x^2-x+1) - (x-1)(x^2+x+1)$.
+Lời giải:
+Áp dụng hằng đẳng thức tổng hai lập phương cho $(x+1)(x^2-x+1)$, ta được $x^3+1^3 = x^3+1$.
+Áp dụng hằng đẳng thức hiệu hai lập phương cho $(x-1)(x^2+x+1)$, ta được $x^3-1^3 = x^3-1$.
+Thay vào biểu thức $A$, ta có:
+$A = (x^3+1) - (x^3-1)$
+$A = x^3+1 - x^3+1$
+$A = 2$.
+
+---
+
+Ví dụ 2:
+Rút gọn biểu thức $B = (2x+3)(4x^2-6x+9) - 8x^3$.
+Lời giải:
+Ta nhận thấy $(2x+3)(4x^2-6x+9)$ có dạng $(A+B)(A^2-AB+B^2)$ với $A=2x$ và $B=3$.
+Áp dụng hằng đẳng thức tổng hai lập phương, ta có:
+$(2x+3)(4x^2-6x+9) = (2x)^3 + 3^3 = 8x^3 + 27$.
+Thay vào biểu thức $B$, ta có:
+$B = (8x^3 + 27) - 8x^3$
+$B = 27$.
+
+---
+
+Dạng 3: Tính giá trị biểu thức
+Phương pháp: Rút gọn biểu thức bằng cách sử dụng hằng đẳng thức tổng và hiệu hai lập phương, sau đó thay giá trị của biến vào biểu thức đã rút gọn để tính giá trị.
+
+Ví dụ 1:
+Tính giá trị của biểu thức $A = (x-2)(x^2+2x+4) - x^3 + 10$ tại $x=2023$.
+Lời giải:
+Rút gọn biểu thức $A$:
+Ta nhận thấy $(x-2)(x^2+2x+4)$ có dạng $(A-B)(A^2+AB+B^2)$ với $A=x$ và $B=2$.
+Áp dụng hằng đẳng thức hiệu hai lập phương, ta có:
+$(x-2)(x^2+2x+4) = x^3 - 2^3 = x^3 - 8$.
+Thay vào biểu thức $A$:
+$A = (x^3 - 8) - x^3 + 10$
+$A = x^3 - 8 - x^3 + 10$
+$A = 2$.
+Giá trị của biểu thức $A$ tại $x=2023$ là $2$.
+
+---
+
+Ví dụ 2:
+Tính giá trị của biểu thức $B = (x+3)(x^2-3x+9) - (x-1)(x^2+x+1)$ tại $x=-1$.
+Lời giải:
+Rút gọn biểu thức $B$:
+$(x+3)(x^2-3x+9) = x^3 + 3^3 = x^3 + 27$.
+$(x-1)(x^2+x+1) = x^3 - 1^3 = x^3 - 1$.
+Thay vào biểu thức $B$:
+$B = (x^3 + 27) - (x^3 - 1)$
+$B = x^3 + 27 - x^3 + 1$
+$B = 28$.
+Giá trị của biểu thức $B$ tại $x=-1$ là $28$.
+
+---
+
+Dạng 4: Phân tích đa thức thành nhân tử
+Phương pháp: Nhận diện các biểu thức có dạng $A^3 \pm B^3$ và áp dụng hằng đẳng thức để phân tích thành tích của các nhân tử.
+
+Ví dụ 1:
+Phân tích đa thức $x^3 + 64$ thành nhân tử.
+Lời giải:
+Ta có $x^3 + 64 = x^3 + 4^3$.
+Áp dụng hằng đẳng thức tổng hai lập phương $A^3+B^3=(A+B)(A^2-AB+B^2)$ với $A=x, B=4$:
+$x^3 + 4^3 = (x+4)(x^2 - x \cdot 4 + 4^2) = (x+4)(x^2 - 4x + 16)$.
+
+---
+
+Ví dụ 2:
+Phân tích đa thức $8y^3 - 125$ thành nhân tử.
+Lời giải:
+Ta có $8y^3 - 125 = (2y)^3 - 5^3$.
+Áp dụng hằng đẳng thức hiệu hai lập phương $A^3-B^3=(A-B)(A^2+AB+B^2)$ với $A=2y, B=5$:
+$(2y)^3 - 5^3 = (2y-5)((2y)^2 + 2y \cdot 5 + 5^2) = (2y-5)(4y^2 + 10y + 25)$.
+
+---
+
+Ví dụ 3:
+Phân tích đa thức $x^6 - y^6$ thành nhân tử.
+Lời giải:
+Cách 1: Áp dụng hiệu hai lập phương trước.
+$x^6 - y^6 = (x^2)^3 - (y^2)^3 = (x^2-y^2)((x^2)^2 + x^2y^2 + (y^2)^2)$
+$= (x-y)(x+y)(x^4 + x^2y^2 + y^4)$.
+Cách 2: Áp dụng hiệu hai bình phương trước.
+$x^6 - y^6 = (x^3)^2 - (y^3)^2 = (x^3-y^3)(x^3+y^3)$
+$= (x-y)(x^2+xy+y^2)(x+y)(x^2-xy+y^2)$.
+Cả hai cách đều cho kết quả đúng, tuy nhiên cách 2 thường được ưu tiên vì phân tích triệt để hơn.
+
+BÀI TẬP LUYỆN TẬP
+
+Câu 1.
+Khai triển biểu thức $(x+1)(x^2-x+1)$.
+A. $x^3-1$
+B. $x^3+1$
+C. $(x+1)^3$
+D. $x^3-x^2+x+1$
+Đáp án: B
+Lời giải:
+Áp dụng hằng đẳng thức tổng hai lập phương $A^3+B^3=(A+B)(A^2-AB+B^2)$ với $A=x, B=1$.
+$(x+1)(x^2-x+1) = x^3 + 1^3 = x^3+1$.
+
+---
+
+Câu 2.
+Kết quả của phép tính $(3x-2)(9x^2+6x+4)$ là:
+A. $27x^3-8$
+B. $27x^3+8$
+C. $(3x-2)^3$
+D. $9x^3-4$
+Đáp án: A
+Lời giải:
+Áp dụng hằng đẳng thức hiệu hai lập phương $A^3-B^3=(A-B)(A^2+AB+B^2)$ với $A=3x, B=2$.
+$(3x-2)(9x^2+6x+4) = (3x)^3 - 2^3 = 27x^3 - 8$.
+
+---
+
+Câu 3.
+Biểu thức nào sau đây KHÔNG phải là dạng khai triển của $x^3+y^3$?
+A. $(x+y)(x^2-xy+y^2)$
+B. $(x+y)^3 - 3xy(x+y)$
+C. $(x+y)(x^2+xy+y^2)$
+D. $x^3+y^3$
+Đáp án: C
+Lời giải:
+Theo hằng đẳng thức, $x^3+y^3 = (x+y)(x^2-xy+y^2)$.
+Ngoài ra, ta có $(x+y)^3 = x^3+3x^2y+3xy^2+y^3 = x^3+y^3+3xy(x+y)$, suy ra $x^3+y^3 = (x+y)^3 - 3xy(x+y)$.
+Phương án C sai dấu của $xy$.
+
+---
+
+Câu 4.
+Rút gọn biểu thức $(x-5)(x^2+5x+25) - x^3$.
+A. $-125$
+B. $125$
+C. $x^3-125$
+D. $x^3+125$
+Đáp án: A
+Lời giải:
+Áp dụng hằng đẳng thức hiệu hai lập phương:
+$(x-5)(x^2+5x+25) = x^3 - 5^3 = x^3 - 125$.
+Vậy, $(x-5)(x^2+5x+25) - x^3 = (x^3-125) - x^3 = -125$.
+
+---
+
+Câu 5.
+Cho biểu thức $M = (x+2)(x^2-2x+4) - (x-1)(x^2+x+1)$. Giá trị của $M$ là:
+A. $7$
+B. $9$
+C. $x^3+7$
+D. $x^3+9$
+Đáp án: B
+Lời giải:
+$(x+2)(x^2-2x+4) = x^3+2^3 = x^3+8$.
+$(x-1)(x^2+x+1) = x^3-1^3 = x^3-1$.
+$M = (x^3+8) - (x^3-1) = x^3+8-x^3+1 = 9$.
+
+---
+
+Câu 6.
+Điền vào chỗ trống để được đẳng thức đúng: $(x+5)(x^2-5x+25) = x^3 + \_\_\_\_$.
+Đáp án: 125
+Lời giải:
+Áp dụng hằng đẳng thức tổng hai lập phương $A^3+B^3=(A+B)(A^2-AB+B^2)$ với $A=x, B=5$.
+$(x+5)(x^2-5x+25) = x^3 + 5^3 = x^3 + 125$.
+
+---
+
+Câu 7.
+Điền vào chỗ trống để được đẳng thức đúng: $(4-y)(16+4y+y^2) = \_\_\_\_ - y^3$.
+Đáp án: 64
+Lời giải:
+Áp dụng hằng đẳng thức hiệu hai lập phương $A^3-B^3=(A-B)(A^2+AB+B^2)$ với $A=4, B=y$.
+$(4-y)(16+4y+y^2) = 4^3 - y^3 = 64 - y^3$.
+
+---
+
+Câu 8.
+Giá trị của biểu thức $P = (x-3)(x^2+3x+9) - x^3$ tại $x=10$ là bao nhiêu?
+Đáp án: -27
+Lời giải:
+Rút gọn biểu thức $P$:
+$(x-3)(x^2+3x+9) = x^3 - 3^3 = x^3 - 27$.
+$P = (x^3 - 27) - x^3 = -27$.
+Giá trị của $P$ không phụ thuộc vào $x$, nên tại $x=10$, $P=-27$.
+
+---
+
+Câu 9.
+Phân tích đa thức $m^3 + 27$ thành nhân tử, ta được $(m+3)(m^2 - \_\_\_\_ + 9)$.
+Đáp án: 3m
+Lời giải:
+$m^3 + 27 = m^3 + 3^3$.
+Áp dụng hằng đẳng thức tổng hai lập phương: $(m+3)(m^2 - m \cdot 3 + 3^2) = (m+3)(m^2 - 3m + 9)$.
+
+---
+
+Câu 10.
+Phân tích đa thức $64a^3 - b^3$ thành nhân tử, ta được $(4a-b)(\_\_\_\_ + 4ab + b^2)$.
+Đáp án: 16a^2
+Lời giải:
+$64a^3 - b^3 = (4a)^3 - b^3$.
+Áp dụng hằng đẳng thức hiệu hai lập phương: $(4a-b)((4a)^2 + 4ab + b^2) = (4a-b)(16a^2 + 4ab + b^2)$.
+
+---
+
+Câu 11. [đúng sai]
+Đẳng thức $(x-y)(x^2+xy+y^2) = x^3-y^3$ là đúng.
+Đáp án: Đúng
+Lời giải:
+Đây chính là hằng đẳng thức hiệu hai lập phương.
+
+---
+
+Câu 12. [đúng sai]
+Đẳng thức $(2x+1)(4x^2-2x+1) = (2x+1)^3$ là đúng.
+Đáp án: Sai
+Lời giải:
+$(2x+1)(4x^2-2x+1) = (2x)^3 + 1^3 = 8x^3+1$.
+Trong khi đó, $(2x+1)^3 = (2x)^3 + 3(2x)^2(1) + 3(2x)(1)^2 + 1^3 = 8x^3 + 12x^2 + 6x + 1$.
+Hai biểu thức không bằng nhau.
+
+---
+
+Câu 13. [đúng sai]
+Giá trị của biểu thức $(x^2+y)(x^4-x^2y+y^2)$ tại $x=1, y=2$ là $9$.
+Đáp án: Đúng
+Lời giải:
+Biểu thức $(x^2+y)(x^4-x^2y+y^2)$ có dạng $(A+B)(A^2-AB+B^2)$ với $A=x^2, B=y$.
+Vậy, $(x^2+y)(x^4-x^2y+y^2) = (x^2)^3 + y^3 = x^6 + y^3$.
+Thay $x=1, y=2$ vào biểu thức đã rút gọn:
+$1^6 + 2^3 = 1 + 8 = 9$.

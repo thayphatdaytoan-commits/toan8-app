@@ -1,0 +1,22 @@
+BÁO CÁO ĐĂNG TOÁN 8 CHƯƠNG II
+Thời gian: 2026-08-09
+Chương: CHƯƠNG II. HẰNG ĐẲNG THỨC ĐÁNG NHỚ VÀ ỨNG DỤNG
+Nguồn: KHÔNG có PDF/ảnh (thư mục chỉ .gitkeep) → tạo theo quy tắc không nguồn
+
+================================================================================
+ĐÃ ĐĂNG (Firestore CREATED)
+================================================================================
+Bài 6  mzAJXixg5ZaHCGWpqxK9  practice=15  (mcq6/input6/tf3)
+Bài 7  4wHMNk2pfKp5ONJ0bRjl  practice=13  (mcq6/input5/tf2)
+Bài 8  PLxA3oGWtcLc2rvCI5hv  practice=13  (mcq5/input5/tf3)
+Bài 9  veuVrfg0nY1SUWRREjkA  practice=12  (mcq5/input5/tf2)
+Ôn tập x9WEuyirkSxMhviOfZLB  practice=24  (mcq9/input10/tf5)
+
+Định dạng: không ####; tách ý điền đáp án; đa dạng TN/điền/đúng-sai; LaTeX $...$
+Ôn tập ≥ 20 câu; mỗi bài thường ≥ 2–3 ví dụ/dạng trong TXT.
+
+================================================================================
+OUTPUT
+================================================================================
+tai-lieu-dang-web/Toán 8/Bài Giảng/CHƯƠNG II.../*/output/*-import.txt
+Script: scripts/create-toan8-chuong2.mjs
