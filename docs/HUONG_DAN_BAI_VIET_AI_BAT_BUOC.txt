@@ -55,8 +55,11 @@ Khi KHÔNG có file nguồn:
   mỗi dạng có 2–3 ví dụ kèm lời giải.
 
 --------------------------------------------------------------------------------
-3) Ô «YÊU CẦU THÊM»
+3) Ô «YÊU CẦU THÊM» (BẮT BUỘC — gồm định dạng câu hỏi)
 --------------------------------------------------------------------------------
+Luôn dán: (3A hoặc 3B) + đoạn ĐỊNH DẠNG ở 3C.
+Chi tiết ngắn: docs/YEU_CAU_THEM_DINH_DANG_CAU_HOI.txt
+Mẫu import 100%: docs/mau-import-bai-giang-BAT-BUOC.txt
 
 3A) CÓ tài liệu nguồn — dán:
 Tạo bài giảng cho tôi lấy từ các bài toán từ tài liệu, chia ra các dạng toán phù hợp,
@@ -64,14 +67,35 @@ mỗi dạng toán sẽ có một số ví dụ phù hợp, có lời giải chi
 là phần bài tập tự luyện kèm lời giải. Tất cả công thức dùng chuẩn LaTeX, bọc bằng
 $...$ hoặc $$...$$. KHÔNG dùng dấu ngoặc vuông $[...]$ hay $[{...}]$ (web sẽ hiện ngoặc vuông).
 
+Định dạng xuất ra phải tuân thủ 100% file mẫu import bài giảng.
+Không dùng Markdown heading nhiều dấu # (###, ####…). CẤM #### Ví dụ 5.1:
+— viết «Ví dụ 1:» / «Ví dụ 1.» ; câu hỏi «Câu 1.» ; dạng «Dạng 1: …».
+Ví dụ và bài tập tự luyện phải đa dạng, phù hợp web chấm được: trắc nghiệm A/B/C/D,
+điền đáp án, đúng/sai, (có thể điền chỗ trống). Mỗi câu có Đáp án và Lời giải.
+Câu điền đáp án có nhiều ý a) b) c) PHẢI TÁCH thành từng Câu riêng (mỗi ý một ô nhập).
+CẤM gộp a/b/c trong một câu chỉ có một ô điền. Ngăn câu bằng ---.
+
 (Giữ đúng ý: dạng/bài tập lấy từ tài liệu; LaTeX web = `$...$` / `$$...$$`.)
 
 3B) KHÔNG có tài liệu nguồn — dán:
 Không có file tài liệu nguồn. Hãy soạn bài giảng Toán đúng SGK theo Lớp/Chương/Bài đã chọn.
 Chia thành các dạng toán phù hợp với bài; MỖI dạng toán phải có tối thiểu 2 đến 3 ví dụ
-minh họa kèm lời giải chi tiết. Phần BÀI TẬP TỰ LUYỆN phải có TỐI THIỂU 20 câu (trắc nghiệm
-và/hoặc điền đáp án), mỗi câu có đáp án và lời giải. Công thức LaTeX bọc bằng $...$ hoặc
-$$...$$; KHÔNG dùng $[...]$ / $[{...}]$. Không viết lệch chủ đề bài.
+minh họa kèm lời giải chi tiết. Phần BÀI TẬP TỰ LUYỆN phải có TỐI THIỂU 20 câu
+(trắc nghiệm, điền đáp án, đúng/sai — đa dạng), mỗi câu có đáp án và lời giải.
+Công thức LaTeX bọc bằng $...$ hoặc $$...$$; KHÔNG dùng $[...]$ / $[{...}]$.
+Không viết lệch chủ đề bài.
+
+Định dạng xuất ra phải tuân thủ 100% file mẫu import bài giảng.
+Không dùng ### / #### cho tiêu đề Ví dụ/Câu. Viết «Ví dụ 1:», «Câu 1.», «Dạng 1: …».
+Câu điền đáp án nhiều ý a) b) c) phải tách thành từng Câu riêng (mỗi ý một ô nhập).
+CẤM gộp nhiều ý trong một câu chỉ có một ô điền. Ngăn câu bằng ---.
+
+3C) QUY TẮC ĐỊNH DẠNG — Agent PHẢI nhớ (kể cả khi sửa tay output):
+- Tuân thủ 100% docs/mau-import-bai-giang-BAT-BUOC.txt (và public/mau-import-bai-giang.txt).
+- CẤM #### Ví dụ… / ### Câu… — hệ thống không nhận diện được ví dụ và câu hỏi.
+- Tiêu đề mục chuẩn: LÝ THUYẾT TRỌNG TÂM / CÁC DẠNG TOÁN & VÍ DỤ / BÀI TẬP LUYỆN TẬP.
+- Điền đáp án: mỗi ý = một «Câu n.» riêng + «Đáp án: …» riêng.
+- Sau khi tạo: nếu output còn #### hoặc gộp a/b/c một ô → sửa trước Import.
 
 --------------------------------------------------------------------------------
 4) FILE NGUỒN
@@ -98,6 +122,9 @@ API key: GEMINI_API_KEY_1; lỗi quota/invalid → GEMINI_API_KEY_2. Không in k
   * Có lý thuyết; có dạng + ví dụ (mỗi dạng ≥ 2–3 ví dụ khi không nguồn)
   * Bài tập tự luyện: ≥ 10 nếu có nguồn; ≥ 20 nếu không nguồn
   * Công thức nên là `$...$` / `$$...$$` (không còn `$[...]$`)
+  * Không còn #### / ### dày quanh Ví dụ/Câu; có «Ví dụ 1:», «Câu 1.»
+  * Câu điền đáp án đã tách từng ý (không gộp a/b/c một ô)
+  * Có cả trắc nghiệm và điền đáp án (đa dạng), mỗi câu có Đáp án
 
 --------------------------------------------------------------------------------
 6) LƯU VÀO THƯ MỤC (BẮT BUỘC SAU KHI TẠO XONG)
@@ -132,9 +159,11 @@ CHECKLIST NHANH
 [ ] Có nguồn → PDF/ảnh (không .doc/.docx); Không nguồn → vẫn tạo, không bỏ bài
 [ ] Có nguồn: ví dụ/dạng ≥ 2 ; BT tự luyện ≥ 10 ; dạng/bài lấy từ tài liệu
 [ ] Không nguồn: mỗi dạng ≥ 2–3 ví dụ ; BT tự luyện ≥ 20 ; đúng SGK/chủ đề bài
-[ ] Đã dán «Yêu cầu thêm» phù hợp (3A hoặc 3B)
+[ ] Đã dán «Yêu cầu thêm» phù hợp (3A hoặc 3B + định dạng câu hỏi 3C)
 [ ] Đã Tạo bài giảng
 [ ] Đã nhấn «Lưu vào thư mục»
 [ ] Công thức đã chuẩn `$...$` (không `$[...]$` / `$[{...}]$`)
+[ ] Không #### / ### phá nhận diện; đúng mẫu import 100%
+[ ] Điền đáp án đã tách từng ý; câu hỏi đa dạng (TN / điền / đúng-sai…)
 [ ] Đã lưu file vào .../output/ rồi Import/Lưu lên thayphatdaytoan
 ================================================================================

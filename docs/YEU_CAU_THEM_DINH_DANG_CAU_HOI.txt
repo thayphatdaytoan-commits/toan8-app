@@ -1,0 +1,56 @@
+================================================================================
+YÊU CẦU THÊM — ĐỊNH DẠNG CÂU HỎI / VÍ DỤ (BẮT BUỘC DÁN VÀO bai-viet-ai)
+Website: https://bai-viet-ai.vercel.app/
+Tham chiếu mẫu import 100%: docs/mau-import-bai-giang-BAT-BUOC.txt
+                              public/mau-import-bai-giang.txt
+================================================================================
+GHI NHỚ: Mỗi lần tạo bài trên bai-viet-ai, PHẢI dán nội dung dưới đây
+(cộng với bản có-nguồn / không-nguồn) vào ô «Yêu cầu thêm».
+
+--------------------------------------------------------------------------------
+ĐOẠN DÁN CHUNG (luôn thêm vào «Yêu cầu thêm»)
+--------------------------------------------------------------------------------
+Định dạng xuất ra phải tuân thủ 100% file mẫu import bài giảng (không bịa format riêng).
+
+1) Tiêu đề mục chỉ dùng đúng các dòng nhận diện của hệ thống:
+   LÝ THUYẾT TRỌNG TÂM
+   CÁC DẠNG TOÁN & VÍ DỤ
+   BÀI TẬP LUYỆN TẬP
+   Không dùng Markdown heading nhiều dấu # (###, ####, #####…).
+   CẤM viết #### Ví dụ 5.1: — hệ thống sẽ không nhận diện ví dụ/câu hỏi.
+   Ví dụ viết: Ví dụ 1: hoặc Ví dụ 1.
+   Câu hỏi viết: Câu 1. hoặc Câu 1:
+   Dạng toán viết: Dạng 1: <tên dạng>
+
+2) Ví dụ và BÀI TẬP TỰ LUYỆN phải đa dạng, phù hợp dạng câu hỏi web chấm được:
+   - Trắc nghiệm A/B/C/D + dòng Đáp án: A|B|C|D
+   - Điền đáp án (nhập số/biểu thức) + dòng Đáp án: <giá trị>
+   - Đúng/Sai: Câu n. [đúng sai]
+   - Có thể dùng [đúng sai nhóm], [điền chỗ trống] theo mẫu
+   Mỗi câu/ví dụ tương tác phải có Đáp án và Lời giải.
+
+3) Câu hỏi ĐIỀN ĐÁP ÁN / nhiều ý a), b), c):
+   PHẢI TÁCH thành từng câu riêng (mỗi ý = một Câu riêng, một ô nhập riêng).
+   Ví dụ ĐÚNG:
+     Câu 3a. Xác định hệ số của đơn thức $15x^3y^2$.
+     Đáp án: 15
+     ---
+     Câu 3b. Xác định phần biến của đơn thức $15x^3y^2$.
+     Đáp án: $x^3y^2$
+     ---
+   Ví dụ SAI (CẤM): gộp a) b) c) trong MỘT câu rồi chỉ có một ô điền —
+   học sinh chỉ thấy 1 ô nhập cho cả 3 ý.
+
+4) Công thức LaTeX: chỉ $...$ hoặc $$...$$. CẤM $[{...}]$ / $[...]$ quanh công thức.
+
+5) Ngăn câu bằng dòng --- . Không chồng chéo mục.
+
+--------------------------------------------------------------------------------
+GHI CHÚ CHO AGENT
+--------------------------------------------------------------------------------
+- Sau khi bai-viet-ai tạo xong: kiểm tra output không còn #### / ### dày đặc
+  quanh «Ví dụ» / «Câu»; nếu còn thì sửa trước khi Import.
+- Nếu thấy một câu điền đáp án chứa a) b) c) chung một khối → tách tay
+  thành Câu riêng trước khi Import/Lưu.
+- File mẫu bắt buộc: docs/mau-import-bai-giang-BAT-BUOC.txt
+================================================================================

@@ -12,3 +12,13 @@ CÔNG THỨC LATEX (BẮT BUỘC — TRÁNH NGOẶC VUÔNG TRÊN WEB)
 - CẤM để $[...]$ / $[{...}]$ trong file import (học sinh sẽ thấy [5], [x]).
 - Nếu bai-viet-ai xuất $[{formula}]$ → đổi thành $formula$ trước khi Import.
 Chi tiết: docs/QUY_TAC_CONG_THUC_LATEX_WEB.txt và docs/HUONG_DAN_BAI_VIET_AI_BAT_BUOC.txt
+
+ĐỊNH DẠNG CÂU HỎI / VÍ DỤ TRONG «YÊU CẦU THÊM» (BẮT BUỘC)
+- Dán thêm docs/YEU_CAU_THEM_DINH_DANG_CAU_HOI.txt (hoặc đoạn 3C trong HUONG_DAN).
+- Ví dụ + bài tập tự luyện: định dạng câu hỏi phù hợp, ĐA DẠNG
+  (trắc nghiệm, điền đáp án, đúng/sai…).
+- Câu điền đáp án nhiều ý a) b) c): TÁCH thành từng Câu riêng (mỗi ý một ô nhập).
+  CẤM gộp a/b/c chung một câu chỉ còn 1 ô điền trên web.
+- CẤM dùng quá nhiều ### / #### (vd. #### Ví dụ 5.1:) — hệ thống không nhận diện
+  ví dụ và câu hỏi. Viết «Ví dụ 1:», «Câu 1.», «Dạng 1: …».
+- Tuân thủ 100% file mẫu import: docs/mau-import-bai-giang-BAT-BUOC.txt
