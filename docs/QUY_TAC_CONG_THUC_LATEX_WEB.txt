@@ -17,6 +17,10 @@ GHI NHỚ (để lần sau không lỗi ngoặc vuông trên web):
        $[{formula}]$  →  $formula$
        $[formula]$    →  $formula$
        ${formula}$    →  $formula$   (nếu Word xuất dạng này)
+   - Nếu công thức có `\sqrt[3]{...}` / căn bậc n: KHÔNG dùng replace regex kiểu
+     `[^\]]*` (sẽ cắt nhầm tại dấu `]` của `[3]`). Dùng parser theo độ sâu `{}`
+     hoặc chạy `node scripts/scan-fix-brackets.mjs --apply`.
+   - Giữ nguyên ngoặc nhóm đại số hợp lệ trong lời giải, ví dụ `$[3(x-1)]^2`.
 
 4) Ô «Yêu cầu thêm» khi soạn cho web nên ghi rõ:
    "Công thức LaTeX bọc bằng $...$ hoặc $$...$$. KHÔNG dùng dấu ngoặc vuông
