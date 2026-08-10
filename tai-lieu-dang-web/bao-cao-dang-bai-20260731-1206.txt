@@ -1,0 +1,52 @@
+BÁO CÁO ĐĂNG BÀI GIẢNG
+Thời gian: 2026-07-31 12:06 UTC
+Khối xử lý: Toán 9 (webhook không có grade → quét 6→12; chỉ Toán 9 có file nguồn thật)
+
+A. BÀI ĐÃ ĐĂNG / ĐÃ CÓ TRÊN HỆ THỐNG
+
+1) Toán 9 / CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA / Bài 7. Căn bậc hai và căn thức bậc hai
+   - Trạng thái: ĐÃ CÓ sẵn trên web (không đăng lại kỳ này)
+   - File nguồn: Bài 7. Căn bậc hai và căn thức bậc hai.pdf
+   - File Word soạn (fallback kỳ này): /workspace/tmp-bai-giang-word/toan9-chuong3-bai7.docx
+
+2) Toán 9 / CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA / Bài 8. Khai căn bậc hai với phép nhân và phép chia
+   - Trạng thái: ĐÃ CÓ sẵn trên web (không đăng lại kỳ này)
+   - File nguồn: Bài 8. Khai căn bậc hai với phép nhân và phép chia.pdf
+   - File Word soạn (fallback kỳ này): /workspace/tmp-bai-giang-word/toan9-chuong3-bai8.docx
+
+3) Toán 9 / CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA / Bài 9. Biến đổi đơn giản và rút gọn biểu thức chứa căn thức bậc hai
+   - Trạng thái: ĐÃ ĐĂNG thành công kỳ này
+   - File nguồn: Bài 9. Biến đổi đơn giản và rút gọn biểu thức chứa căn thức bậc hai.pdf
+   - File Word: /workspace/tmp-bai-giang-word/toan9-chuong3-bai9.docx
+   - Nhịp độ: đã chờ 5 phút trước khi đăng Bài 10
+
+4) Toán 9 / CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA / Bài 10. Căn bậc ba và căn thức bậc ba
+   - Trạng thái: ĐÃ ĐĂNG thành công kỳ này
+   - File nguồn trong thư mục: Bài 9. Biến đổi đơn giản và rút gọn biểu thức chứa căn thức bậc hai.pdf (LỆCH tên/nội dung so với thư mục Bài 10)
+   - File Word: /workspace/tmp-bai-giang-word/toan9-chuong3-bai10.docx (soạn đúng chủ đề tên thư mục: Căn bậc ba và căn thức bậc ba)
+
+B. BÀI LỖI / BỎ QUA
+
+1) Toán 6, 7, 8, 10, 11, 12 / toàn bộ Bài Giảng
+   - Nguyên nhân: thư mục chỉ có .gitkeep hoặc trống — không có .docx/.pdf nguồn thật
+
+2) Toán 9 / CHƯƠNG III / ÔN TẬP CHƯƠNG III
+   - Nguyên nhân: không có file nguồn
+
+3) Bước 1 bai-viet-ai (Gemini)
+   - Nguyên nhân: GEMINI_API_KEY_1 và GEMINI_API_KEY_2 không có trong môi trường cloud → không soạn được qua https://bai-viet-ai.vercel.app/
+   - Fallback đã dùng: trích PDF + soạn TXT/DOCX theo mau-import-bai-giang + PROMPT_AI_SOAN_BAI_GIANG_SEO, rồi Import Word trên thayphatdaytoan
+
+4) TEACHER_ADMIN_PASSWORD
+   - Không có trong env; đã dùng fallback Admin tổng trong mã nguồn app để login (không ghi giá trị vào báo cáo)
+
+C. VIỆC CẦN KHẮC PHỤC
+
+1) Gắn secret GEMINI_API_KEY_1 / GEMINI_API_KEY_2 (và TEACHER_ADMIN_PASSWORD) vào môi trường automation Cloud để chạy đúng pipeline bai-viet-ai.
+2) Thay file PDF trong thư mục Bài 10 bằng đúng tài liệu “Căn bậc ba và căn thức bậc ba” (hiện đang là file Bài 9).
+3) Bổ sung file nguồn .docx/.pdf cho các khối/chương còn trống nếu muốn đăng tiếp.
+4) Rà soát trùng lặp bài ở CHƯƠNG I–II trên web (một số bài hiển thị nhiều card cùng tên) — ngoài phạm vi kỳ đăng này nhưng nên dọn.
+
+D. GHI CHÚ NHỊP ĐỘ
+- Đã cách 5 phút giữa Bài 9 và Bài 10.
+- Không đủ 5 bài mới đăng nên không nghỉ thêm 15 phút.
