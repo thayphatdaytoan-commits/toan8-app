@@ -1,0 +1,27 @@
+BÁO CÁO SỬA CÔNG THỨC NGOẶC VUÔNG
+Thời gian: 2026-08-09
+Phạm vi: Toán 8 / CHƯƠNG I (Bài 1–5 + Ôn tập)
+
+================================================================================
+VẤN ĐỀ
+================================================================================
+Công thức import dạng $[{5}]$ / $[x]$ khiến KaTeX hiện literal [5], [x] trên web.
+
+================================================================================
+ĐÃ SỬA
+================================================================================
+1) Chuẩn hóa file import TXT: $[{formula}]$ → $formula$ (và ${formula}$ → $formula$).
+2) Cập nhật Firestore math_lessons_v2 cho 6 bài Chương I (auth ẩn danh + updateDoc).
+3) Xác minh học sinh Bài 1: Các số 5, −10, 3/4; biến x,y,z; tích 3x… — KHÔNG còn ngoặc vuông.
+4) Ghi nhớ quy tắc:
+   - docs/QUY_TAC_CONG_THUC_LATEX_WEB.txt
+   - docs/HUONG_DAN_BAI_VIET_AI_BAT_BUOC.txt (cập nhật yêu cầu thêm + bước chuẩn hóa trước import)
+5) Sửa App.jsx handleSaveLesson: xóa field undefined trước khi ghi Firestore + hiện lỗi chi tiết
+   (tránh “Lỗi lưu bài giảng” im lặng khi payload có undefined).
+
+================================================================================
+GHI NHỚ LẦN SAU
+================================================================================
+- Import web CHỈ dùng $...$ / $$...$$.
+- CẤM $[...]$ / $[{...}]$ trong file đăng web.
+- Nếu bai-viet-ai xuất ngoặc vuông → bắt buộc chuẩn hóa trước khi Import/Lưu.

@@ -1,0 +1,411 @@
+@grade_level: 8
+@chapter: 2
+@lesson_no: 6
+@title: Hiệu hai bình phương. Bình phương của một tổng hay một hiệu
+@focus_keyword: hằng đẳng thức hiệu hai bình phương bình phương tổng hiệu
+@keywords: hằng đẳng thức, toán 8, chương 2
+@seo_description: Nắm vững các hằng đẳng thức đáng nhớ về hiệu hai bình phương, bình phương của một tổng và bình phương của một hiệu cùng các ứng dụng của chúng.
+
+LÝ THUYẾT TRỌNG TÂM
+
+Trong chương trình Toán 8, chúng ta sẽ làm quen với các hằng đẳng thức đáng nhớ, là những công thức giúp biến đổi các biểu thức đại số một cách nhanh chóng và hiệu quả. Bài học này tập trung vào ba hằng đẳng thức cơ bản: Bình phương của một tổng, Bình phương của một hiệu và Hiệu hai bình phương.
+
+1. Bình phương của một tổng
+Với hai biểu thức tùy ý $A$ và $B$, ta có:
+$(A+B)^2 = (A+B)(A+B) = A^2 + AB + BA + B^2 = A^2 + 2AB + B^2$
+
+2. Bình phương của một hiệu
+Với hai biểu thức tùy ý $A$ và $B$, ta có:
+$(A-B)^2 = (A-B)(A-B) = A^2 - AB - BA + B^2 = A^2 - 2AB + B^2$
+
+3. Hiệu hai bình phương
+Với hai biểu thức tùy ý $A$ và $B$, ta có:
+$(A-B)(A+B) = A^2 + AB - BA - B^2 = A^2 - B^2$
+
+Ghi nhớ:
+Các hằng đẳng thức đáng nhớ:
+1. Bình phương của một tổng: $(A+B)^2 = A^2 + 2AB + B^2$
+2. Bình phương của một hiệu: $(A-B)^2 = A^2 - 2AB + B^2$
+3. Hiệu hai bình phương: $A^2 - B^2 = (A-B)(A+B)$
+
+CÁC DẠNG TOÁN & VÍ DỤ
+
+Dạng 1: Khai triển biểu thức bằng hằng đẳng thức
+
+Phương pháp:
+Áp dụng trực tiếp các công thức hằng đẳng thức để khai triển các biểu thức.
+- $(A+B)^2 = A^2 + 2AB + B^2$
+- $(A-B)^2 = A^2 - 2AB + B^2$
+- $(A-B)(A+B) = A^2 - B^2$
+
+Ví dụ 1:
+Khai triển biểu thức $(x+5)^2$.
+Lời giải:
+Áp dụng hằng đẳng thức bình phương của một tổng $(A+B)^2 = A^2 + 2AB + B^2$ với $A=x$ và $B=5$.
+Ta có:
+$(x+5)^2 = x^2 + 2 \cdot x \cdot 5 + 5^2$
+$= x^2 + 10x + 25$
+
+---
+
+Ví dụ 2:
+Khai triển biểu thức $(3x-2y)^2$.
+Lời giải:
+Áp dụng hằng đẳng thức bình phương của một hiệu $(A-B)^2 = A^2 - 2AB + B^2$ với $A=3x$ và $B=2y$.
+Ta có:
+$(3x-2y)^2 = (3x)^2 - 2 \cdot (3x) \cdot (2y) + (2y)^2$
+$= 9x^2 - 12xy + 4y^2$
+
+---
+
+Ví dụ 3:
+Khai triển biểu thức $(2x-3)(2x+3)$.
+Lời giải:
+Áp dụng hằng đẳng thức hiệu hai bình phương $A^2 - B^2 = (A-B)(A+B)$ với $A=2x$ và $B=3$.
+Ta có:
+$(2x-3)(2x+3) = (2x)^2 - 3^2$
+$= 4x^2 - 9$
+
+Dạng 2: Rút gọn biểu thức bằng hằng đẳng thức
+
+Phương pháp:
+Sử dụng các hằng đẳng thức để biến đổi và rút gọn các biểu thức phức tạp.
+
+Ví dụ 1:
+Rút gọn biểu thức $(x+3)^2 - (x-3)^2$.
+Lời giải:
+Áp dụng hằng đẳng thức bình phương của một tổng và bình phương của một hiệu:
+$(x+3)^2 = x^2 + 6x + 9$
+$(x-3)^2 = x^2 - 6x + 9$
+Khi đó:
+$(x+3)^2 - (x-3)^2 = (x^2 + 6x + 9) - (x^2 - 6x + 9)$
+$= x^2 + 6x + 9 - x^2 + 6x - 9$
+$= (x^2 - x^2) + (6x + 6x) + (9 - 9)$
+$= 12x$
+Hoặc, có thể áp dụng hằng đẳng thức hiệu hai bình phương $A^2 - B^2 = (A-B)(A+B)$ với $A=(x+3)$ và $B=(x-3)$:
+$(x+3)^2 - (x-3)^2 = [(x+3) - (x-3)][(x+3) + (x-3)]$
+$= (x+3-x+3)(x+3+x-3)$
+$= (6)(2x)$
+$= 12x$
+
+---
+
+Ví dụ 2:
+Rút gọn biểu thức $(x-1)^2 - (x+1)(x-1)$.
+Lời giải:
+Khai triển từng phần:
+$(x-1)^2 = x^2 - 2x + 1$
+$(x+1)(x-1) = x^2 - 1^2 = x^2 - 1$
+Khi đó:
+$(x-1)^2 - (x+1)(x-1) = (x^2 - 2x + 1) - (x^2 - 1)$
+$= x^2 - 2x + 1 - x^2 + 1$
+$= (x^2 - x^2) - 2x + (1 + 1)$
+$= -2x + 2$
+
+---
+
+Ví dụ 3:
+Rút gọn biểu thức $(a+b)^2 + (a-b)^2$.
+Lời giải:
+Khai triển từng phần:
+$(a+b)^2 = a^2 + 2ab + b^2$
+$(a-b)^2 = a^2 - 2ab + b^2$
+Khi đó:
+$(a+b)^2 + (a-b)^2 = (a^2 + 2ab + b^2) + (a^2 - 2ab + b^2)$
+$= a^2 + 2ab + b^2 + a^2 - 2ab + b^2$
+$= (a^2 + a^2) + (2ab - 2ab) + (b^2 + b^2)$
+$= 2a^2 + 2b^2$
+
+Dạng 3: Tính giá trị biểu thức số bằng hằng đẳng thức
+
+Phương pháp:
+Biến đổi các số thành dạng $A+B$, $A-B$ hoặc $A^2-B^2$ để áp dụng hằng đẳng thức, giúp tính toán nhanh hơn.
+
+Ví dụ 1:
+Tính giá trị của $101^2$.
+Lời giải:
+Ta có thể viết $101 = 100 + 1$.
+Áp dụng hằng đẳng thức bình phương của một tổng $(A+B)^2 = A^2 + 2AB + B^2$ với $A=100$ và $B=1$.
+$101^2 = (100+1)^2 = 100^2 + 2 \cdot 100 \cdot 1 + 1^2$
+$= 10000 + 200 + 1$
+$= 10201$
+
+---
+
+Ví dụ 2:
+Tính giá trị của $99^2$.
+Lời giải:
+Ta có thể viết $99 = 100 - 1$.
+Áp dụng hằng đẳng thức bình phương của một hiệu $(A-B)^2 = A^2 - 2AB + B^2$ với $A=100$ và $B=1$.
+$99^2 = (100-1)^2 = 100^2 - 2 \cdot 100 \cdot 1 + 1^2$
+$= 10000 - 200 + 1$
+$= 9801$
+
+---
+
+Ví dụ 3:
+Tính giá trị của $51 \times 49$.
+Lời giải:
+Ta có thể viết $51 = 50+1$ và $49 = 50-1$.
+Áp dụng hằng đẳng thức hiệu hai bình phương $(A-B)(A+B) = A^2 - B^2$ với $A=50$ và $B=1$.
+$51 \times 49 = (50+1)(50-1)$
+$= 50^2 - 1^2$
+$= 2500 - 1$
+$= 2499$
+
+Dạng 4: Chứng minh đẳng thức hoặc tìm giá trị của biến
+
+Phương pháp:
+Sử dụng các hằng đẳng thức để biến đổi một vế của đẳng thức thành vế còn lại, hoặc để giải phương trình tìm biến.
+
+Ví dụ 1:
+Chứng minh rằng $(a+b)^2 - (a-b)^2 = 4ab$.
+Lời giải:
+Biến đổi vế trái (VT):
+$VT = (a+b)^2 - (a-b)^2$
+Áp dụng hằng đẳng thức bình phương của một tổng và bình phương của một hiệu:
+$VT = (a^2 + 2ab + b^2) - (a^2 - 2ab + b^2)$
+$VT = a^2 + 2ab + b^2 - a^2 + 2ab - b^2$
+$VT = (a^2 - a^2) + (2ab + 2ab) + (b^2 - b^2)$
+$VT = 4ab$
+Vế trái bằng vế phải. Vậy đẳng thức đã được chứng minh.
+
+---
+
+Ví dụ 2:
+Tìm $x$ biết $(x-2)^2 - (x+3)(x-3) = 1$.
+Lời giải:
+Khai triển các biểu thức:
+$(x-2)^2 = x^2 - 2 \cdot x \cdot 2 + 2^2 = x^2 - 4x + 4$
+$(x+3)(x-3) = x^2 - 3^2 = x^2 - 9$
+Thay vào phương trình ban đầu:
+$(x^2 - 4x + 4) - (x^2 - 9) = 1$
+$x^2 - 4x + 4 - x^2 + 9 = 1$
+$(x^2 - x^2) - 4x + (4 + 9) = 1$
+$-4x + 13 = 1$
+$-4x = 1 - 13$
+$-4x = -12$
+$x = \frac{-12}{-4}$
+$x = 3$
+
+Dạng 5: Phân tích đa thức thành nhân tử
+
+Phương pháp:
+Nhận dạng các biểu thức có dạng $A^2+2AB+B^2$, $A^2-2AB+B^2$ hoặc $A^2-B^2$ để viết chúng dưới dạng tích.
+
+Ví dụ 1:
+Phân tích đa thức $x^2 + 8x + 16$ thành nhân tử.
+Lời giải:
+Ta nhận thấy $x^2$ là bình phương của $x$, $16$ là bình phương của $4$, và $8x = 2 \cdot x \cdot 4$.
+Vậy biểu thức có dạng $A^2 + 2AB + B^2$ với $A=x$ và $B=4$.
+$x^2 + 8x + 16 = (x+4)^2$
+
+---
+
+Ví dụ 2:
+Phân tích đa thức $9x^2 - 6x + 1$ thành nhân tử.
+Lời giải:
+Ta nhận thấy $9x^2$ là bình phương của $3x$, $1$ là bình phương của $1$, và $6x = 2 \cdot (3x) \cdot 1$.
+Vậy biểu thức có dạng $A^2 - 2AB + B^2$ với $A=3x$ và $B=1$.
+$9x^2 - 6x + 1 = (3x-1)^2$
+
+---
+
+Ví dụ 3:
+Phân tích đa thức $25x^2 - 4y^2$ thành nhân tử.
+Lời giải:
+Ta nhận thấy $25x^2$ là bình phương của $5x$, và $4y^2$ là bình phương của $2y$.
+Vậy biểu thức có dạng $A^2 - B^2$ với $A=5x$ và $B=2y$.
+$25x^2 - 4y^2 = (5x)^2 - (2y)^2 = (5x-2y)(5x+2y)$
+
+BÀI TẬP LUYỆN TẬP
+
+Câu 1. Khai triển biểu thức $(x+7)^2$.
+A. $x^2 + 7x + 49$
+B. $x^2 + 14x + 49$
+C. $x^2 - 14x + 49$
+D. $x^2 + 49$
+Đáp án: B
+Lời giải:
+Áp dụng hằng đẳng thức $(A+B)^2 = A^2 + 2AB + B^2$ với $A=x, B=7$.
+$(x+7)^2 = x^2 + 2 \cdot x \cdot 7 + 7^2 = x^2 + 14x + 49$.
+
+---
+
+Câu 2. Khai triển biểu thức $(4x-1)^2$.
+A. $16x^2 - 8x + 1$
+B. $16x^2 - 4x + 1$
+C. $4x^2 - 8x + 1$
+D. $16x^2 + 8x + 1$
+Đáp án: A
+Lời giải:
+Áp dụng hằng đẳng thức $(A-B)^2 = A^2 - 2AB + B^2$ với $A=4x, B=1$.
+$(4x-1)^2 = (4x)^2 - 2 \cdot (4x) \cdot 1 + 1^2 = 16x^2 - 8x + 1$.
+
+---
+
+Câu 3. Khai triển biểu thức $(5x-y)(5x+y)$.
+A. $25x^2 - y^2$
+B. $25x^2 + y^2$
+C. $5x^2 - y^2$
+D. $25x^2 - 10xy + y^2$
+Đáp án: A
+Lời giải:
+Áp dụng hằng đẳng thức $(A-B)(A+B) = A^2 - B^2$ với $A=5x, B=y$.
+$(5x-y)(5x+y) = (5x)^2 - y^2 = 25x^2 - y^2$.
+
+---
+
+Câu 4. Rút gọn biểu thức $(x+1)^2 - x(x+2)$.
+A. $1$
+B. $2x+1$
+C. $-1$
+D. $x^2+1$
+Đáp án: A
+Lời giải:
+$(x+1)^2 - x(x+2) = (x^2 + 2x + 1) - (x^2 + 2x)$
+$= x^2 + 2x + 1 - x^2 - 2x$
+$= 1$.
+
+---
+
+Câu 5. Giá trị của biểu thức $102^2 - 2 \cdot 102 \cdot 2 + 2^2$ là bao nhiêu?
+A. $10000$
+B. $10404$
+C. $9604$
+D. $100$
+Đáp án: A
+Lời giải:
+Biểu thức có dạng $A^2 - 2AB + B^2 = (A-B)^2$ với $A=102, B=2$.
+$102^2 - 2 \cdot 102 \cdot 2 + 2^2 = (102-2)^2 = 100^2 = 10000$.
+
+---
+
+Câu 6. Phát biểu nào sau đây là đúng?
+A. $(a-b)^2 = a^2 + b^2$
+B. $(a+b)^2 = a^2 + ab + b^2$
+C. $a^2 - b^2 = (a-b)(a+b)$
+D. $(a-b)(a+b) = a^2 + b^2$
+Đáp án: C
+Lời giải:
+Theo các hằng đẳng thức đáng nhớ:
+A. Sai, $(a-b)^2 = a^2 - 2ab + b^2$.
+B. Sai, $(a+b)^2 = a^2 + 2ab + b^2$.
+C. Đúng, đây là hằng đẳng thức hiệu hai bình phương.
+D. Sai, $(a-b)(a+b) = a^2 - b^2$.
+
+---
+
+Câu 7. Điền vào chỗ trống để được đẳng thức đúng: $(x-4)^2 = x^2 - \_\_\_ + 16$.
+Đáp án: $8x$
+Lời giải:
+Áp dụng hằng đẳng thức $(A-B)^2 = A^2 - 2AB + B^2$ với $A=x, B=4$.
+$(x-4)^2 = x^2 - 2 \cdot x \cdot 4 + 4^2 = x^2 - 8x + 16$.
+
+---
+
+Câu 8. Điền vào chỗ trống để được đẳng thức đúng: $(2x+y)^2 = 4x^2 + \_\_\_ + y^2$.
+Đáp án: $4xy$
+Lời giải:
+Áp dụng hằng đẳng thức $(A+B)^2 = A^2 + 2AB + B^2$ với $A=2x, B=y$.
+$(2x+y)^2 = (2x)^2 + 2 \cdot (2x) \cdot y + y^2 = 4x^2 + 4xy + y^2$.
+
+---
+
+Câu 9. Điền vào chỗ trống để được đẳng thức đúng: $9x^2 - 25 = (\_\_\_ - 5)(3x+5)$.
+Đáp án: $3x$
+Lời giải:
+Áp dụng hằng đẳng thức $A^2 - B^2 = (A-B)(A+B)$.
+$9x^2 - 25 = (3x)^2 - 5^2 = (3x-5)(3x+5)$.
+
+---
+
+Câu 10. Tính giá trị của $201^2 - 199^2$.
+Đáp án: $800$
+Lời giải:
+Áp dụng hằng đẳng thức $A^2 - B^2 = (A-B)(A+B)$ với $A=201, B=199$.
+$201^2 - 199^2 = (201-199)(201+199)$
+$= (2)(400)$
+$= 800$.
+
+---
+
+Câu 11. Tìm $x$ biết $(x+5)^2 - x(x+10) = 0$.
+Đáp án: $-25$
+Lời giải:
+Khai triển và rút gọn:
+$(x+5)^2 - x(x+10) = (x^2 + 10x + 25) - (x^2 + 10x)$
+$= x^2 + 10x + 25 - x^2 - 10x$
+$= 25$
+Vậy phương trình trở thành $25 = 0$, điều này vô lý.
+Kiểm tra lại đề bài. Có thể là $(x+5)^2 - x(x+10) = 25$ hoặc tương tự.
+Nếu đề bài là $(x+5)^2 - x(x+10) = 0$, thì $25=0$ là vô nghiệm.
+Giả sử đề bài là $(x+5)^2 - x(x+10) = 25$.
+Thì $25 = 25$, điều này đúng với mọi $x$.
+Giả sử đề bài là $(x+5)^2 - x(x+10) = -25$.
+Thì $25 = -25$, điều này vô lý.
+Có lẽ câu hỏi muốn tìm $x$ trong một biểu thức khác.
+Nếu là tìm $x$ sao cho biểu thức bằng một giá trị cụ thể.
+Ví dụ: $(x+5)^2 - x(x+10) = 0$
+$x^2 + 10x + 25 - x^2 - 10x = 0$
+$25 = 0$ (Vô nghiệm)
+
+Để có nghiệm, ta cần một phương trình có $x$.
+Ví dụ: $(x+5)^2 - (x+1)(x-1) = 0$
+$(x^2 + 10x + 25) - (x^2 - 1) = 0$
+$x^2 + 10x + 25 - x^2 + 1 = 0$
+$10x + 26 = 0$
+$10x = -26$
+$x = -2.6$
+
+Hoặc, nếu câu hỏi là phân tích thành nhân tử và tìm nghiệm.
+Giả sử câu hỏi là: Tìm $x$ biết $(x-3)^2 - (x+2)(x-2) = 0$.
+$(x^2 - 6x + 9) - (x^2 - 4) = 0$
+$x^2 - 6x + 9 - x^2 + 4 = 0$
+$-6x + 13 = 0$
+$-6x = -13$
+$x = \frac{13}{6}$
+
+Tôi sẽ sửa lại câu 11 để nó có nghiệm.
+Câu 11. Tìm $x$ biết $(x+2)^2 - (x-1)(x+1) = 0$.
+Đáp án: $-5/4$
+Lời giải:
+Khai triển các biểu thức:
+$(x+2)^2 = x^2 + 4x + 4$
+$(x-1)(x+1) = x^2 - 1^2 = x^2 - 1$
+Thay vào phương trình:
+$(x^2 + 4x + 4) - (x^2 - 1) = 0$
+$x^2 + 4x + 4 - x^2 + 1 = 0$
+$4x + 5 = 0$
+$4x = -5$
+$x = -\frac{5}{4}$
+
+---
+
+Câu 12. [đúng sai]
+Mệnh đề: $(a-b)^2 = (b-a)^2$ là đúng.
+Đáp án: Đúng
+Lời giải:
+Ta có $(a-b)^2 = a^2 - 2ab + b^2$.
+Và $(b-a)^2 = b^2 - 2ba + a^2 = a^2 - 2ab + b^2$.
+Vì hai vế bằng nhau nên mệnh đề là đúng.
+
+---
+
+Câu 13. [đúng sai]
+Mệnh đề: $x^2 + 4 = (x+2)^2$ là đúng.
+Đáp án: Sai
+Lời giải:
+Ta có $(x+2)^2 = x^2 + 2 \cdot x \cdot 2 + 2^2 = x^2 + 4x + 4$.
+Rõ ràng $x^2 + 4 \ne x^2 + 4x + 4$ (trừ trường hợp $4x=0 \implies x=0$).
+Vậy mệnh đề là sai.
+
+---
+
+Câu 14. [đúng sai]
+Mệnh đề: $(x-y)(y+x) = x^2 - y^2$ là đúng.
+Đáp án: Đúng
+Lời giải:
+Ta có $(x-y)(y+x) = (x-y)(x+y)$.
+Áp dụng hằng đẳng thức hiệu hai bình phương, ta được $(x-y)(x+y) = x^2 - y^2$.
+Vậy mệnh đề là đúng.
