@@ -1,0 +1,24 @@
+================================================================================
+ĐOẠN CHÈN VÀO PROMPT AUTOMATION «Đăng bài giảng từ TAI LIEU DANG WEB»
+Dán vào phần NGUỒN TÀI LIỆU / BƯỚC 1 — sau quy tắc chọn file nguồn.
+================================================================================
+
+--------------------------------------------------------------------------------
+KHÔNG CÓ FILE NGUỒN — VẪN TẠO VÀ ĐĂNG (BẮT BUỘC)
+--------------------------------------------------------------------------------
+Nếu bài được yêu cầu tạo/chạy lại KHÔNG có file nguồn chấp nhận được
+(.pdf hoặc ảnh) trong thư mục bài (chỉ .gitkeep / trống / chỉ .doc/.docx):
+
+1) KHÔNG bỏ qua bài. Vẫn mở https://bai-viet-ai.vercel.app/
+2) Chọn đúng Lớp / Chương / Bài theo yêu cầu hoặc tên thư mục / SGK.
+3) Không upload file nguồn.
+4) Cấu hình BẮT BUỘC:
+   - Có mục Lý thuyết: bật
+   - Ví dụ / dạng: ≥ 2 (khuyến nghị 3) — mỗi dạng toán tối thiểu 2–3 ví dụ minh họa
+   - Bài tập tự luyện: ≥ 20
+5) Ô «Yêu cầu thêm» dán bản KHÔNG-NGUỒN trong docs/HUONG_DAN_BAI_VIET_AI_BAT_BUOC.txt (mục 3B).
+6) Tạo bài giảng → kiểm tra đủ ≥20 câu tự luyện và mỗi dạng ≥2–3 ví dụ.
+7) Nhấn «Lưu vào thư mục» → tải output vào .../output/ → Import/Lưu lên thayphatdaytoan.
+
+Chi tiết đầy đủ: docs/HUONG_DAN_BAI_VIET_AI_BAT_BUOC.txt
+================================================================================
