@@ -1,0 +1,51 @@
+BÁO CÁO ĐĂNG BÀI GIẢNG
+Thời gian chạy: 2026-08-08 ~18:38 UTC
+Chế độ: CHẠY THEO KHỐI/CHƯƠNG — Toán 8 Chương I (theo quy tắc automation bai-viet-ai)
+Agent: https://cursor.com/agents/bc-0e9e273c-40f7-4861-87c9-10a641a6fad2
+
+================================================================================
+PHẠM VI
+================================================================================
+- Khối: Toán 8
+- Chương: CHƯƠNG I. ĐA THỨC (chapter = 1)
+- Bài: Bài 1–5 (có PDF) + ÔN TẬP CHƯƠNG I (không PDF → quy tắc không nguồn)
+
+================================================================================
+QUY TRÌNH ĐÃ ÁP DỤNG
+================================================================================
+Có PDF (Bài 1–5):
+- Upload PDF (không .docx)
+- Lý thuyết ON; Ví dụ/dạng = 2; Bài tập tự luyện = 10
+- Dán «Yêu cầu thêm» bản có nguồn; gemini-2.5-flash
+- Tạo → Lưu vào thư mục → chuẩn hóa TXT (@chapter: 1) → Import/Lưu Admin
+
+Không nguồn (ÔN TẬP CHƯƠNG I):
+- Không upload file
+- Ví dụ/dạng = 3; Bài tập tự luyện = 20
+- Dán «Yêu cầu thêm» bản không nguồn
+- Tạo → Lưu vào thư mục → Import/Lưu Admin
+
+================================================================================
+BÀI ĐÃ ĐĂNG THÀNH CÔNG (6/6)
+================================================================================
+1) Bài 1. Đơn thức — PDF nguồn; output Bai-1-import.docx/.txt — Admin OK
+2) Bài 2. Đa thức — PDF nguồn; output Bai-2-import.docx/.txt — Admin OK
+3) Bài 3. Phép cộng và phép trừ đa thức — PDF nguồn; output Bai-3-import.docx/.txt — Admin OK
+4) Bài 4. Phép nhân đa thức — PDF nguồn; output Bai-4-import.docx/.txt — Admin OK
+5) Bài 5. Phép chia đa thức cho đơn thức — PDF nguồn; output Bai-5-import.docx/.txt — Admin OK
+6) ÔN TẬP CHƯƠNG I — không PDF; output On-tap-chuong-I-import.docx/.txt — Admin OK (~41 phần BT)
+
+Trang: https://thayphatdaytoan-7832c.web.app/?grade=8 → CHƯƠNG I. ĐA THỨC (6 bài giảng)
+
+================================================================================
+BÀI LỖI / BỎ QUA
+================================================================================
+(Không.)
+
+================================================================================
+GHI CHÚ
+================================================================================
+- Folder Bài 1–5 còn file lệch «ÔN TẬP CHƯƠNG III.docx» — không dùng làm nguồn.
+- Ôn tập chỉ có docx lệch tên; đã tạo theo quy tắc không nguồn (≥20 BT).
+- UI alert có thể hiện "0 mục lý thuyết/ví dụ"; nội dung vẫn vào web.
+- Video/PDF URL trên web vẫn trống.

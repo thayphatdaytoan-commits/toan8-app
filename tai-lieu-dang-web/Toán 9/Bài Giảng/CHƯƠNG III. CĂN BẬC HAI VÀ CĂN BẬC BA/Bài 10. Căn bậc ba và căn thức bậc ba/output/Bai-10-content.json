@@ -1,0 +1,119 @@
+{
+  "meta": {
+    "grade_level": "9",
+    "chapter": "3",
+    "lesson_no": "10",
+    "title": "Căn bậc ba và căn thức bậc ba",
+    "focus_keyword": "căn bậc ba toán 9",
+    "keywords": "căn bậc ba, căn thức bậc ba, ký hiệu căn bậc ba, tính chất căn bậc ba",
+    "seo_description": "Lý thuyết căn bậc ba và căn thức bậc ba Toán 9: định nghĩa, tính chất, dạng toán và bài tập có lời giải.",
+    "video_url": "",
+    "pdf_url": "",
+    "video_material_url": ""
+  },
+  "title": "Căn bậc ba và căn thức bậc ba",
+  "examples_core": "Dạng 1: Tính giá trị của biểu thức chứa căn bậc ba.\nPhương pháp giải:\nSử dụng định nghĩa và các tính chất của căn bậc ba để đơn giản hóa các căn thức, sau đó thực hiện các phép tính thông thường.\n#[Ví dụ:\nTính giá trị của biểu thức $A = \\sqrt[3]{64} + \\sqrt[3]{-27}$.\nLời giải chi tiết:\nTa có:\nVì $4^3 = 64$ nên $\\sqrt[3]{64} = 4$.\nVì $(-3)^3 = -27$ nên $\\sqrt[3]{-27} = -3$.\nThay các giá trị này vào biểu thức $A$, ta được:\n$A = 4 + (-3)$\n$A = 4 - 3$\n$A = 1$\nVậy $A = 1$.\n]#\n#[Ví dụ:\nTính giá trị của biểu thức $C = 0.5\\sqrt[3]{27000} + 50\\sqrt[3]{0.001}$.\nLời giải chi tiết:\nTa có:\n$\\sqrt[3]{27000} = \\sqrt[3]{27 \\cdot 1000} = \\sqrt[3]{27} \\cdot \\sqrt[3]{1000} = 3 \\cdot 10 = 30$.\n$\\sqrt[3]{0.001} = \\sqrt[3]{\\frac{1}{1000}} = \\frac{\\sqrt[3]{1}}{\\sqrt[3]{1000}} = \\frac{1}{10} = 0.1$.\nThay các giá trị này vào biểu thức $C$, ta được:\n$C = 0.5 \\cdot 30 + 50 \\cdot 0.1$\n$C = 15 + 5$\n$C = 20$\nVậy $C = 20$.\n]#\nDạng 2: Giải phương trình chứa căn bậc ba.\nPhương pháp giải:\nMục tiêu là cô lập biểu thức chứa căn bậc ba, sau đó lập phương hai vế của phương trình để loại bỏ căn bậc ba và giải phương trình đại số thu được.\n#[Ví dụ:\nTìm $x$, biết $\\sqrt[3]{x} = -8$.\nLời giải chi tiết:\nĐể tìm $x$, ta lập phương cả hai vế của phương trình:\n$\\left(\\sqrt[3]{x}\\right)^3 = (-8)^3$\n$x = -512$\nVậy $x = -512$.\n]#\n#[Ví dụ:\nTìm $x$, biết $2\\sqrt[3]{x} + 1 = 1$.\nLời giải chi tiết:\nĐầu tiên, ta cô lập biểu thức chứa căn bậc ba:\n$2\\sqrt[3]{x} = 1 - 1$\n$2\\sqrt[3]{x} = 0$\n$\\sqrt[3]{x} = \\frac{0}{2}$\n$\\sqrt[3]{x} = 0$\nTiếp theo, ta lập phương cả hai vế của phương trình:\n$\\left(\\sqrt[3]{x}\\right)^3 = 0^3$\n$x = 0$\nVậy $x = 0$.\n---\n]#",
+  "examples": [],
+  "practice": [
+    {
+      "id": "q_1",
+      "type": "input",
+      "question": "Tính giá trị của biểu thức $A = \\sqrt[3]{12^3} - \\sqrt[3]{3^3} - \\sqrt[3]{(-11)^3}$.",
+      "correctAnswer": "",
+      "answerPlaceholder": "",
+      "hint": "",
+      "explanation": ""
+    },
+    {
+      "id": "q_2",
+      "type": "input",
+      "question": "Tính giá trị của biểu thức $B = (2\\sqrt[3]{13})^3 - \\frac{1}{125}\\sqrt[3]{10^3}$.",
+      "correctAnswer": "",
+      "answerPlaceholder": "",
+      "hint": "",
+      "explanation": ""
+    },
+    {
+      "id": "q_3",
+      "type": "input",
+      "question": "Tính giá trị của biểu thức $D = \\left(\\sqrt[3]{\\frac{27}{8}}\\right)^2 \\cdot \\sqrt[3]{(-2)^3} : \\sqrt[3]{2^3}$.",
+      "correctAnswer": "",
+      "answerPlaceholder": "",
+      "hint": "",
+      "explanation": ""
+    },
+    {
+      "id": "q_4",
+      "type": "input",
+      "question": "Tính giá trị của biểu thức $E = \\sqrt[3]{-0.001} + \\sqrt[3]{\\frac{8}{27}}$.",
+      "correctAnswer": "",
+      "answerPlaceholder": "",
+      "hint": "",
+      "explanation": ""
+    },
+    {
+      "id": "q_5",
+      "type": "input",
+      "question": "So sánh $3$ và $\\sqrt[3]{26}$.",
+      "correctAnswer": "",
+      "answerPlaceholder": "",
+      "hint": "",
+      "explanation": ""
+    },
+    {
+      "id": "q_6",
+      "type": "input",
+      "question": "So sánh $\\sqrt[3]{15}$ và $\\sqrt[3]{21}$.",
+      "correctAnswer": "",
+      "answerPlaceholder": "",
+      "hint": "",
+      "explanation": ""
+    },
+    {
+      "id": "q_7",
+      "type": "input",
+      "question": "So sánh $\\sqrt[3]{-3}$ và $\\sqrt[3]{-5}$.",
+      "correctAnswer": "",
+      "answerPlaceholder": "",
+      "hint": "",
+      "explanation": ""
+    },
+    {
+      "id": "q_8",
+      "type": "input",
+      "question": "Tìm $x$, biết $x^3 = -8$.",
+      "correctAnswer": "",
+      "answerPlaceholder": "",
+      "hint": "",
+      "explanation": ""
+    },
+    {
+      "id": "q_9",
+      "type": "input",
+      "question": "Tìm $x$, biết $x^3 + 27 = 0$.",
+      "correctAnswer": "",
+      "answerPlaceholder": "",
+      "hint": "",
+      "explanation": ""
+    },
+    {
+      "id": "q_10",
+      "type": "input",
+      "question": "Tìm $x$, biết $5\\sqrt[3]{x} + 3 + 2 = 0$.",
+      "correctAnswer": "",
+      "answerPlaceholder": "",
+      "hint": "",
+      "explanation": ""
+    }
+  ],
+  "theory_core": "#[Định nghĩa:\nCho số thực $a$. Căn bậc ba của $a$ là số thực $x$ sao cho $x^3 = a$.\nMỗi số thực $a$ đều có duy nhất một căn bậc ba.\n]#\n1.2. Ký hiệu\nCăn bậc ba của $a$ được ký hiệu là $\\sqrt[3]{a}$.\n1.3. Tính chất\nVới mọi số thực $a$, luôn có $\\left(\\sqrt[3]{a}\\right)^3 = \\sqrt[3]{a^3} = a$.\n    *   Ví dụ: Vì $2^3 = 8$ nên $\\sqrt[3]{8} = 2$.\n    *   Vì $(-2)^3 = -8$ nên $\\sqrt[3]{-8} = -2$.\nCăn bậc ba của một số âm là một số âm. Căn bậc ba của một số dương là một số dương. Căn bậc ba của $0$ là $0$.\nVới mọi số thực $a, b$:\n    *   Nếu $a < b$ thì $\\sqrt[3]{a} < \\sqrt[3]{b}$.\n    *   $\\sqrt[3]{ab} = \\sqrt[3]{a} \\cdot \\sqrt[3]{b}$\n    *   $\\sqrt[3]{\\frac{a}{b}} = \\frac{\\sqrt[3]{a}}{\\sqrt[3]{b}}$ (với $b \\neq 0$)\n---\n#[Ghi nhớ:\n- Mỗi số thực có đúng một căn bậc ba.\n- $(\\sqrt[3]{a})^3=\\sqrt[3]{a^3}=a$.\n- Căn bậc ba của số âm là số âm.\n]#",
+  "seo": {
+    "focus_keyword": "căn bậc ba toán 9",
+    "keywords": [
+      "căn bậc ba",
+      "căn thức bậc ba",
+      "ký hiệu căn bậc ba",
+      "tính chất căn bậc ba"
+    ]
+  }
+}
