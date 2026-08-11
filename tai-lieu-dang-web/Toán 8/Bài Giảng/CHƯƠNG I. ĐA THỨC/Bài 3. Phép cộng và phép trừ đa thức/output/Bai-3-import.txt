@@ -1,0 +1,218 @@
+@grade_level: 8
+@chapter: 1
+@lesson_no: 3
+@title: Phép cộng và phép trừ đa thức
+@focus_keyword: cộng trừ đa thức toán 8
+@keywords: cộng đa thức, trừ đa thức, hạng tử đồng dạng, thu gọn đa thức
+@seo_description: Cộng và trừ đa thức Toán 8: quy tắc, dạng toán và bài tập có lời giải.
+@video_url:
+@pdf_url:
+
+LÝ THUYẾT TRỌNG TÂM
+1. Cộng hai đa thức
+Quy tắc: Để cộng hai đa thức, ta thực hiện các bước sau:
+    *   Bước 1: Bỏ dấu ngoặc (nếu có). Các hạng tử trong ngoặc có dấu &quot;$+$&quot; phía trước sẽ giữ nguyên dấu.
+    *   Bước 2: Nhóm các hạng tử đồng dạng lại với nhau.
+    *   Bước 3: Cộng các hạng tử đồng dạng.
+Lưu ý: Phép cộng đa thức có các tính chất giao hoán và kết hợp tương tự phép cộng các số và các đơn thức.
+2. Trừ hai đa thức
+Quy tắc: Để trừ hai đa thức, ta thực hiện các bước sau:
+    *   Bước 1: Bỏ dấu ngoặc. Khi bỏ dấu ngoặc có dấu &quot;$-$&quot; đứng trước, ta phải đổi dấu tất cả các hạng tử bên trong ngoặc đó (dấu &quot;$+$&quot; thành &quot;$-$&quot;, dấu &quot;$-$&quot; thành &quot;$+$&quot;).
+    *   Bước 2: Nhóm các hạng tử đồng dạng lại với nhau.
+    *   Bước 3: Cộng (trừ) các hạng tử đồng dạng.
+
+#[Ghi nhớ:
+- Cộng đa thức: bỏ ngoặc rồi nhóm hạng tử đồng dạng.
+- Trừ đa thức: đổi dấu hạng tử của đa thức bị trừ rồi cộng.
+]#
+
+CÁC DẠNG TOÁN & VÍ DỤ
+Dạng 1: Cộng và trừ hai đa thức đơn giản
+Phương pháp giải: Áp dụng trực tiếp quy tắc cộng, trừ đa thức. Cẩn thận với việc đổi dấu khi bỏ ngoặc có dấu &quot;$-$&quot; phía trước.
+#### Ví dụ 1.1:
+Cho hai đa thức $A = x + 2y$ và $B = x - 2y$.
+Tính $A + B$ và $A - B$.
+Lời giải:
+Tính $A + B$:
+    $A + B = (x + 2y) + (x - 2y)$
+    $A + B = x + 2y + x - 2y$ (Bỏ dấu ngoặc)
+    $A + B = (x + x) + (2y - 2y)$ (Nhóm các hạng tử đồng dạng)
+    $A + B = 2x + 0$
+    $A + B = 2x$
+Tính $A - B$:
+    $A - B = (x + 2y) - (x - 2y)$
+    $A - B = x + 2y - x + 2y$ (Bỏ dấu ngoặc và đổi dấu các hạng tử của đa thức $B$)
+    $A - B = (x - x) + (2y + 2y)$ (Nhóm các hạng tử đồng dạng)
+    $A - B = 0 + 4y$
+    $A - B = 4y$
+#### Ví dụ 1.2:
+Cho hai đa thức $A = 2x^2 + 3y^2$ và $B = 3x^2 - 4y^2$.
+Tính $A + B$ và $A - B$.
+Lời giải:
+Tính $A + B$:
+    $A + B = (2x^2 + 3y^2) + (3x^2 - 4y^2)$
+    $A + B = 2x^2 + 3y^2 + 3x^2 - 4y^2$ (Bỏ dấu ngoặc)
+    $A + B = (2x^2 + 3x^2) + (3y^2 - 4y^2)$ (Nhóm các hạng tử đồng dạng)
+    $A + B = 5x^2 - y^2$
+Tính $A - B$:
+    $A - B = (2x^2 + 3y^2) - (3x^2 - 4y^2)$
+    $A - B = 2x^2 + 3y^2 - 3x^2 + 4y^2$ (Bỏ dấu ngoặc và đổi dấu các hạng tử của đa thức $B$)
+    $A - B = (2x^2 - 3x^2) + (3y^2 + 4y^2)$ (Nhóm các hạng tử đồng dạng)
+    $A - B = -x^2 + 7y^2$
+Dạng 2: Cộng và trừ hai đa thức nhiều biến, nhiều hạng tử
+Phương pháp giải: Tương tự Dạng 1, nhưng cần cẩn thận hơn trong việc nhóm và rút gọn các hạng tử đồng dạng khi đa thức có nhiều biến và hạng tử phức tạp hơn.
+#### Ví dụ 2.1:
+Cho hai đa thức $A = 2xy^2 - x^2y + 2xy$ và $B = 3xy^2 + 5x^2y - xy$.
+Tính $A + B$ và $A - B$.
+Lời giải:
+Tính $A + B$:
+    $A + B = (2xy^2 - x^2y + 2xy) + (3xy^2 + 5x^2y - xy)$
+    $A + B = 2xy^2 - x^2y + 2xy + 3xy^2 + 5x^2y - xy$ (Bỏ dấu ngoặc)
+    $A + B = (2xy^2 + 3xy^2) + (-x^2y + 5x^2y) + (2xy - xy)$ (Nhóm các hạng tử đồng dạng)
+    $A + B = 5xy^2 + 4x^2y + xy$
+Tính $A - B$:
+    $A - B = (2xy^2 - x^2y + 2xy) - (3xy^2 + 5x^2y - xy)$
+    $A - B = 2xy^2 - x^2y + 2xy - 3xy^2 - 5x^2y + xy$ (Bỏ dấu ngoặc và đổi dấu)
+    $A - B = (2xy^2 - 3xy^2) + (-x^2y - 5x^2y) + (2xy + xy)$ (Nhóm các hạng tử đồng dạng)
+    $A - B = -xy^2 - 6x^2y + 3xy$
+#### Ví dụ 2.2:
+Tính tổng và hiệu của hai đa thức $A = x^2 - 2xy + y^2 - x + 2y$ và $B = 2x^2 + 5xy - 2y^2 - 3$.
+Lời giải:
+Tính $A + B$:
+    $A + B = (x^2 - 2xy + y^2 - x + 2y) + (2x^2 + 5xy - 2y^2 - 3)$
+    $A + B = x^2 - 2xy + y^2 - x + 2y + 2x^2 + 5xy - 2y^2 - 3$ (Bỏ dấu ngoặc)
+    $A + B = (x^2 + 2x^2) + (-2xy + 5xy) + (y^2 - 2y^2) - x + 2y - 3$ (Nhóm các hạng tử đồng dạng)
+    $A + B = 3x^2 + 3xy - y^2 - x + 2y - 3$
+Tính $A - B$:
+    $A - B = (x^2 - 2xy + y^2 - x + 2y) - (2x^2 + 5xy - 2y^2 - 3)$
+    $A - B = x^2 - 2xy + y^2 - x + 2y - 2x^2 - 5xy + 2y^2 + 3$ (Bỏ dấu ngoặc và đổi dấu)
+    $A - B = (x^2 - 2x^2) + (-2xy - 5xy) + (y^2 + 2y^2) - x + 2y + 3$ (Nhóm các hạng tử đồng dạng)
+    $A - B = -x^2 - 7xy + 3y^2 - x + 2y + 3$
+Dạng 3: Cộng và trừ đa thức có chứa phân số hoặc số thập phân
+Phương pháp giải: Tương tự các dạng trên, nhưng cần thực hiện cẩn thận các phép tính với phân số hoặc số thập phân. Cần quy đồng mẫu số (với phân số) hoặc đặt tính theo cột (với số thập phân) nếu cần.
+#### Ví dụ 3.1:
+Cho hai đa thức $A = \frac{1}{2}xy^2 - x^2y + 2x$ và $B = -\frac{2}{3}xy^2 + \frac{1}{2}x^2y - 7x$.
+Tính $A + B$.
+Lời giải:
+Tính $A + B$:
+    $A + B = (\frac{1}{2}xy^2 - x^2y + 2x) + (-\frac{2}{3}xy^2 + \frac{1}{2}x^2y - 7x)$
+    $A + B = \frac{1}{2}xy^2 - x^2y + 2x - \frac{2}{3}xy^2 + \frac{1}{2}x^2y - 7x$ (Bỏ dấu ngoặc)
+    $A + B = (\frac{1}{2}xy^2 - \frac{2}{3}xy^2) + (-x^2y + \frac{1}{2}x^2y) + (2x - 7x)$ (Nhóm các hạng tử đồng dạng)
+    $A + B = (\frac{3}{6} - \frac{4}{6})xy^2 + (-\frac{2}{2} + \frac{1}{2})x^2y - 5x$
+    $A + B = -\frac{1}{6}xy^2 - \frac{1}{2}x^2y - 5x$
+#### Ví dụ 3.2:
+Tính hiệu $A - B$ của hai đa thức $A = 2,3x^3 - 3,2x^2y + 10$ và $B = -0,3x^3 + 2,2x^2y - 5$.
+Lời giải:
+Tính $A - B$:
+    $A - B = (2,3x^3 - 3,2x^2y + 10) - (-0,3x^3 + 2,2x^2y - 5)$
+    $A - B = 2,3x^3 - 3,2x^2y + 10 + 0,3x^3 - 2,2x^2y + 5$ (Bỏ dấu ngoặc và đổi dấu)
+    $A - B = (2,3x^3 + 0,3x^3) + (-3,2x^2y - 2,2x^2y) + (10 + 5)$ (Nhóm các hạng tử đồng dạng)
+    $A - B = 2,6x^3 - 5,4x^2y + 15$
+Dạng 4: Cộng và trừ ba hay nhiều đa thức
+Phương pháp giải: Áp dụng quy tắc cộng, trừ đa thức liên tiếp. Có thể nhóm các hạng tử đồng dạng từ tất cả các đa thức ngay sau khi bỏ ngoặc.
+#### Ví dụ 4.1:
+Cho ba đa thức $M = x^3 - 2x^2y + x + 1$, $N = y^2 + 3x^2y - 2$ và $P = x^3 - 3xy - y^2 + 1$.
+Tính $M + N + P$.
+Lời giải:
+$M + N + P = (x^3 - 2x^2y + x + 1) + (y^2 + 3x^2y - 2) + (x^3 - 3xy - y^2 + 1)$
+$M + N + P = x^3 - 2x^2y + x + 1 + y^2 + 3x^2y - 2 + x^3 - 3xy - y^2 + 1$ (Bỏ dấu ngoặc)
+$M + N + P = (x^3 + x^3) + (-2x^2y + 3x^2y) + (y^2 - y^2) + x - 3xy + (1 - 2 + 1)$ (Nhóm các hạng tử đồng dạng)
+$M + N + P = 2x^3 + x^2y + 0 + x - 3xy + 0$
+$M + N + P = 2x^3 + x^2y + x - 3xy$
+#### Ví dụ 4.2:
+Cho hai đa thức $M = 3x^2yz - 5xyz^2 + xy - 1$ và $N = -x^2yz + 2xyz^2 - 3xy + 6$.
+Tính $M - N$.
+Lời giải:
+$M - N = (3x^2yz - 5xyz^2 + xy - 1) - (-x^2yz + 2xyz^2 - 3xy + 6)$
+$M - N = 3x^2yz - 5xyz^2 + xy - 1 + x^2yz - 2xyz^2 + 3xy - 6$ (Bỏ dấu ngoặc và đổi dấu)
+$M - N = (3x^2yz + x^2yz) + (-5xyz^2 - 2xyz^2) + (xy + 3xy) + (-1 - 6)$ (Nhóm các hạng tử đồng dạng)
+$M - N = 4x^2yz - 7xyz^2 + 4xy - 7$
+Dạng 5: Tìm đa thức chưa biết
+Phương pháp giải: Sử dụng các quy tắc chuyển vế trong phương trình để tìm đa thức cần tìm.
+Nếu $A + C = B$, thì $C = B - A$.
+Nếu $C - A = B$, thì $C = B + A$.
+Nếu $A - C = B$, thì $C = A - B$.
+#### Ví dụ 5.1:
+Tìm đa thức $C$ biết $C + A = B$, với $A = 2x^2 - xy + 1$ và $B = 5x^2 - 2xy - 3$.
+Lời giải:
+Từ $C + A = B$, suy ra $C = B - A$.
+Thực hiện phép trừ $B - A$:
+$C = (5x^2 - 2xy - 3) - (2x^2 - xy + 1)$
+$C = 5x^2 - 2xy - 3 - 2x^2 + xy - 1$ (Bỏ dấu ngoặc và đổi dấu)
+$C = (5x^2 - 2x^2) + (-2xy + xy) + (-3 - 1)$ (Nhóm các hạng tử đồng dạng)
+$C = 3x^2 - xy - 4$
+Vậy, đa thức $C$ là $3x^2 - xy - 4$.
+#### Ví dụ 5.2:
+Tìm đa thức $C$ sao cho $A - C = B$, với $A = 2x^2 - xy + 1$ và $B = 2xy - y^2 - 2$.
+Lời giải:
+Từ $A - C = B$, suy ra $C = A - B$.
+Thực hiện phép trừ $A - B$:
+$C = (2x^2 - xy + 1) - (2xy - y^2 - 2)$
+$C = 2x^2 - xy + 1 - 2xy + y^2 + 2$ (Bỏ dấu ngoặc và đổi dấu)
+$C = 2x^2 + y^2 + (-xy - 2xy) + (1 + 2)$ (Nhóm các hạng tử đồng dạng)
+$C = 2x^2 + y^2 - 3xy + 3$
+Vậy, đa thức $C$ là $2x^2 + y^2 - 3xy + 3$.
+
+BÀI TẬP TỰ LUYỆN
+Câu 1. Tính $A + B$ và $A - B$ của hai đa thức $A = x + 2y$ và $B = x - 2y$.
+Câu 2. Tính $A + B$ và $A - B$ của hai đa thức $A = 2x^2 - xy + 2$ và $B = x^2 + y^2 - 2$.
+Câu 3. Tính tổng và hiệu của hai đa thức $A = x^2y - x^2 - y + 2$ và $B = 5x^2 + 2y - 3$.
+Câu 4. Cho hai đa thức $A = 2xy^2 - x^2y + 2xy$ và $B = 3xy^2 + 5x^2y - xy$.
+Tính $A + B$ và $A - B$.
+Câu 5. Tính $A + B$ và $A - B$ của hai đa thức:
+$A = \frac{1}{2}ab^2 + \frac{2}{3}a^2b - 5$
+$B = -\frac{1}{3}ab^2 + \frac{1}{2}a^2b + 2$
+Câu 6. Tính $A + B$ và $A - B$ của hai đa thức:
+$A = 2,5x^3 - 1,4x^2y + 3y^2$
+$B = -1,5x^3 + 0,8x^2y - 2y^2$
+Câu 7. Cho hai đa thức $M = 3xyz - 5x^2y + xz - 1$ và $N = -xyz + 2x^2y - 3xz + 6$.
+Tính $M + N$ và $M - N$.
+Câu 8. Cho các đa thức $M = x^3 - 2x^2y + x + 1$, $N = y^2 + 3x^2y - 2$ và $P = x^3 - 3xy - y^2 + 1$.
+Tính $M + N + P$.
+Câu 9. Tìm đa thức $C$ sao cho $C + A = B$, biết $A = 2x^2 - xy + 1$ và $B = 5x^2 - 2xy - 3$.
+Câu 10. Tìm đa thức $C$ sao cho $A - C = B$, biết $A = x^3 - 2x^2 + x - 5$ và $B = 2x^2 - 3x + 1$.
+ĐÁP ÁN VÀ HƯỚNG DẪN GIẢI
+Câu 1.
+Hướng dẫn: Áp dụng quy tắc cộng, trừ đa thức.
+Đáp án:
+    *   $A + B = 2x$
+    *   $A - B = 4y$
+Câu 2.
+Hướng dẫn: Áp dụng quy tắc cộng, trừ đa thức, chú ý các hạng tử không đồng dạng giữ nguyên.
+Đáp án:
+    *   $A + B = 3x^2 - xy + y^2$
+    *   $A - B = x^2 - xy - y^2 + 4$
+Câu 3.
+Hướng dẫn: Bỏ ngoặc, đổi dấu khi trừ, sau đó nhóm và cộng/trừ các hạng tử đồng dạng.
+Đáp án:
+    *   $A + B = x^2y + 4x^2 + y - 1$
+    *   $A - B = x^2y - 6x^2 - 3y + 5$
+Câu 4.
+Hướng dẫn: Thực hiện tương tự Bài 3.
+Đáp án:
+    *   $A + B = 5xy^2 + 4x^2y + xy$
+    *   $A - B = -xy^2 - 6x^2y + 3xy$
+Câu 5.
+Hướng dẫn: Cộng, trừ các phân số cẩn thận bằng cách quy đồng mẫu số.
+Đáp án:
+    *   $A + B = \frac{1}{6}ab^2 + \frac{7}{6}a^2b - 3$
+    *   $A - B = \frac{5}{6}ab^2 + \frac{1}{6}a^2b - 7$
+Câu 6.
+Hướng dẫn: Cộng, trừ các số thập phân cẩn thận.
+Đáp án:
+    *   $A + B = x^3 - 0,6x^2y + y^2$
+    *   $A - B = 4x^3 - 2,2x^2y + 5y^2$
+Câu 7.
+Hướng dẫn: Nhóm các hạng tử đồng dạng từ cả hai đa thức để thực hiện phép cộng và trừ.
+Đáp án:
+    *   $M + N = 2xyz - 3x^2y - 2xz + 5$
+    *   $M - N = 4xyz - 7x^2y + 4xz - 7$
+Câu 8.
+Hướng dẫn: Bỏ tất cả các dấu ngoặc, sau đó nhóm các hạng tử đồng dạng của ba đa thức và cộng/trừ chúng.
+Đáp án: $M + N + P = 2x^3 + x^2y + x - 3xy$
+Câu 9.
+Hướng dẫn: Từ $C + A = B$, suy ra $C = B - A$. Sau đó thực hiện phép trừ đa thức.
+Đáp án: $C = 3x^2 - xy - 4$
+Câu 10.
+Hướng dẫn: Từ $A - C = B$, suy ra $C = A - B$. Sau đó thực hiện phép trừ đa thức.
+Đáp án: $C = x^3 - 4x^2 + 4x - 6$

@@ -1,0 +1,140 @@
+================================================================================
+HƯỚNG DẪN BẮT BUỘC — TẠO BÀI GIẢNG TRÊN bai-viet-ai
+Website: https://bai-viet-ai.vercel.app/
+================================================================================
+Agent / người soạn PHẢI làm đúng các bước dưới đây. Không bỏ bước.
+Không hỏi lại trừ khi UI/API chặn sau khi đã thử đúng cách.
+
+--------------------------------------------------------------------------------
+0) PHẠM VI — CÓ FILE NGUỒN / KHÔNG CÓ FILE NGUỒN
+--------------------------------------------------------------------------------
+Khi automation / user yêu cầu tạo (hoặc chạy lại) một bài:
+
+A) CÓ file nguồn trong thư mục bài (hoặc khớp tên ở cấp chương):
+   - Chấp nhận: .pdf, ảnh (.png/.jpg/.jpeg/.webp/.gif/.bmp/.tif/.tiff)
+   - KHÔNG dùng .doc / .docx làm file nguồn upload lên bai-viet-ai
+   - Vẫn PHẢI vào bai-viet-ai → tạo bài → Lưu vào thư mục → đăng web
+
+B) KHÔNG có file nguồn (chỉ .gitkeep / thư mục trống / không có PDF-ảnh):
+   - KHÔNG bỏ qua bài. Vẫn PHẢI truy cập bai-viet-ai, chọn đúng Lớp/Chương/Bài,
+     tạo bài giảng theo SGK + tên bài, rồi Lưu vào thư mục và đăng web.
+   - Không cần upload file (bỏ qua bước File nguồn).
+   - Cấu hình TỐI THIỂU khi không có tài liệu nguồn (BẮT BUỘC):
+       * Ví dụ / dạng ≥ 2 (khuyến nghị 3) — mỗi dạng toán tối thiểu 2–3 ví dụ minh họa
+       * Bài tập tự luyện ≥ 20
+       * Bật «Có mục Lý thuyết»
+   - Ô «Yêu cầu thêm» dùng bản KHÔNG-NGUỒN ở mục 3B bên dưới.
+   - Nội dung phải đúng chủ đề tên bài / chương SGK; có lời giải chi tiết.
+
+Sau khi tạo xong (cả A và B): luôn nhấn «Lưu vào thư mục», tải output vào
+tai-lieu-dang-web/.../output/, rồi Import/Lưu trên thayphatdaytoan.
+
+--------------------------------------------------------------------------------
+1) CHỌN ĐÚNG LỚP – CHƯƠNG – BÀI
+--------------------------------------------------------------------------------
+- Chọn đúng Lớp (vd. Lớp 9).
+- Chọn đúng Chương theo tên thư mục nguồn (vd. CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA).
+- Chọn đúng Bài theo tên thư mục nguồn (vd. Bài 8. Khai căn bậc hai với phép nhân và phép chia).
+- Tiêu đề trên web phải khớp TÊN THƯ MỤC, không lấy theo tên file nếu tên file lệch.
+- Khi không có thư mục bài: vẫn chọn đúng theo yêu cầu user / SGK catalog.
+
+--------------------------------------------------------------------------------
+2) CẤU HÌNH BÀI GIẢNG
+--------------------------------------------------------------------------------
+Chung:
+- Bật «Có mục Lý thuyết».
+
+Khi CÓ file nguồn (PDF/ảnh):
+- Ví dụ / dạng: đặt = 2 (mỗi dạng ≥ 2 ví dụ; nếu UI cho số dạng riêng thì chọn hợp lý).
+- Bài tập tự luyện: đặt = 10 (trừ khi user chỉ định cao hơn).
+
+Khi KHÔNG có file nguồn:
+- Ví dụ / dạng: đặt ≥ 2, khuyến nghị = 3 (mỗi dạng toán tối thiểu 2–3 ví dụ minh họa).
+- Bài tập tự luyện: đặt ≥ 20 (không được dưới 20).
+- Nếu UI chỉ có một ô «Ví dụ / dạng»: đặt 3; trong «Yêu cầu thêm» nhắc rõ
+  mỗi dạng có 2–3 ví dụ kèm lời giải.
+
+--------------------------------------------------------------------------------
+3) Ô «YÊU CẦU THÊM»
+--------------------------------------------------------------------------------
+
+3A) CÓ tài liệu nguồn — dán:
+Tạo bài giảng cho tôi lấy từ các bài toán từ tài liệu, chia ra các dạng toán phù hợp,
+mỗi dạng toán sẽ có một số ví dụ phù hợp, có lời giải chi tiết (bạn tự nghĩ), sau đó
+là phần bài tập tự luyện kèm lời giải. Tất cả công thức dùng chuẩn LaTeX, bọc bằng
+$...$ hoặc $$...$$. KHÔNG dùng dấu ngoặc vuông $[...]$ hay $[{...}]$ (web sẽ hiện ngoặc vuông).
+
+(Giữ đúng ý: dạng/bài tập lấy từ tài liệu; LaTeX web = `$...$` / `$$...$$`.)
+
+3B) KHÔNG có tài liệu nguồn — dán:
+Không có file tài liệu nguồn. Hãy soạn bài giảng Toán đúng SGK theo Lớp/Chương/Bài đã chọn.
+Chia thành các dạng toán phù hợp với bài; MỖI dạng toán phải có tối thiểu 2 đến 3 ví dụ
+minh họa kèm lời giải chi tiết. Phần BÀI TẬP TỰ LUYỆN phải có TỐI THIỂU 20 câu (trắc nghiệm
+và/hoặc điền đáp án), mỗi câu có đáp án và lời giải. Công thức LaTeX bọc bằng $...$ hoặc
+$$...$$; KHÔNG dùng $[...]$ / $[{...}]$. Không viết lệch chủ đề bài.
+
+--------------------------------------------------------------------------------
+4) FILE NGUỒN
+--------------------------------------------------------------------------------
+Khi CÓ nguồn — chỉ upload:
+- .pdf
+- ảnh: .png, .jpg, .jpeg, .webp, .gif, .bmp, .tif, .tiff
+
+KHÔNG dùng .doc / .docx làm file nguồn trên bai-viet-ai.
+
+Nếu nhiều ảnh: upload tất cả (theo thứ tự tên). Có PDF thì ưu tiên PDF.
+
+Khi KHÔNG có nguồn: bỏ qua upload; vẫn chọn Lớp/Chương/Bài + cấu hình + Yêu cầu thêm + Tạo.
+
+Model: gemini-2.5-flash (khuyến nghị) hoặc Pro nếu còn dùng được.
+API key: GEMINI_API_KEY_1; lỗi quota/invalid → GEMINI_API_KEY_2. Không in key.
+
+--------------------------------------------------------------------------------
+5) TẠO BÀI GIẢNG
+--------------------------------------------------------------------------------
+- Nhấn «Tạo bài giảng» / Generate. Chờ hoàn tất.
+- Kiểm tra nhanh:
+  * Đúng lớp/chương/bài, đúng chủ đề
+  * Có lý thuyết; có dạng + ví dụ (mỗi dạng ≥ 2–3 ví dụ khi không nguồn)
+  * Bài tập tự luyện: ≥ 10 nếu có nguồn; ≥ 20 nếu không nguồn
+  * Công thức nên là `$...$` / `$$...$$` (không còn `$[...]$`)
+
+--------------------------------------------------------------------------------
+6) LƯU VÀO THƯ MỤC (BẮT BUỘC SAU KHI TẠO XONG)
+--------------------------------------------------------------------------------
+Sau khi tạo xong PHẢI nhấn nút xanh «Lưu vào thư mục». Không bỏ qua.
+
+Tải Word/TXT kết quả về:
+tai-lieu-dang-web/Toán {grade}/Bài Giảng/{TÊN CHƯƠNG}/{TÊN BÀI}/output/
+Tên gợi ý: Bai-{n}-import.docx (và/hoặc .txt).
+
+--------------------------------------------------------------------------------
+6B) CHUẨN HÓA CÔNG THỨC TRƯỚC KHI IMPORT WEB (BẮT BUỘC)
+--------------------------------------------------------------------------------
+Xem docs/QUY_TAC_CONG_THUC_LATEX_WEB.txt.
+
+Trang thayphatdaytoan chỉ render đúng `$...$` / `$$...$$`.
+Nếu file từ bai-viet-ai còn `$[{formula}]$` hoặc `$[formula]$` → đổi thành `$formula$`.
+KHÔNG import khi còn ngoặc vuông quanh công thức (học sinh sẽ thấy [5], [x], …).
+
+--------------------------------------------------------------------------------
+7) ĐĂNG WEB (tóm tắt)
+--------------------------------------------------------------------------------
+Import file vừa lưu lên https://thayphatdaytoan-7832c.web.app (Admin giáo viên),
+chọn đúng Chương/Bài, Lưu bài giảng lên hệ thống.
+Meta import: @chapter dùng SỐ (vd. 3), không dùng chữ La Mã "III".
+Không có nguồn vẫn đăng bình thường sau khi tạo trên bai-viet-ai.
+
+================================================================================
+CHECKLIST NHANH
+================================================================================
+[ ] Đúng Lớp / Chương / Bài
+[ ] Có nguồn → PDF/ảnh (không .doc/.docx); Không nguồn → vẫn tạo, không bỏ bài
+[ ] Có nguồn: ví dụ/dạng ≥ 2 ; BT tự luyện ≥ 10 ; dạng/bài lấy từ tài liệu
+[ ] Không nguồn: mỗi dạng ≥ 2–3 ví dụ ; BT tự luyện ≥ 20 ; đúng SGK/chủ đề bài
+[ ] Đã dán «Yêu cầu thêm» phù hợp (3A hoặc 3B)
+[ ] Đã Tạo bài giảng
+[ ] Đã nhấn «Lưu vào thư mục»
+[ ] Công thức đã chuẩn `$...$` (không `$[...]$` / `$[{...}]$`)
+[ ] Đã lưu file vào .../output/ rồi Import/Lưu lên thayphatdaytoan
+================================================================================

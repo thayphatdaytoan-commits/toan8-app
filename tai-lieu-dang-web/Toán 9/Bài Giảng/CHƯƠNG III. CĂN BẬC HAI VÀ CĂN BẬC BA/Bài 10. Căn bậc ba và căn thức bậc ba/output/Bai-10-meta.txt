@@ -1,0 +1,7 @@
+@grade_level: 9
+@chapter: 3
+@lesson_no: 10
+@title: Căn bậc ba và căn thức bậc ba
+@slug: toan-9-chuong-3-bai-10-can-bac-ba-va-can-thuc-bac-ba
+@firestore_id: YKANp5L6hwDd99Vd9BqG
+@note: content đã chuẩn hóa $...$ (không $[...]$); xem file *-content.json
