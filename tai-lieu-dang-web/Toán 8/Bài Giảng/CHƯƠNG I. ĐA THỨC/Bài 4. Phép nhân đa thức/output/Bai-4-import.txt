@@ -1,0 +1,347 @@
+@grade_level: 8
+@chapter: 1
+@lesson_no: 4
+@title: Phép nhân đa thức
+@focus_keyword: nhân đa thức toán 8
+@keywords: nhân đơn thức với đa thức, nhân hai đa thức, phân phối, rút gọn biểu thức, tìm x
+@seo_description: Học về phép nhân đa thức trong Toán 8: quy tắc nhân đơn thức với đa thức, nhân hai đa thức, các dạng bài tập rút gọn, tìm x và ứng dụng thực tế.
+
+LÝ THUYẾT TRỌNG TÂM
+1. Nhân đơn thức với đa thức
+Quy tắc: Muốn nhân một đơn thức với một đa thức, ta nhân đơn thức đó với từng hạng tử của đa thức rồi cộng các kết quả lại với nhau.
+Công thức: $A(B+C) = AB+AC$ (với $A, B, C$ là các đơn thức).
+
+2. Nhân đa thức với đa thức
+Quy tắc: Muốn nhân một đa thức với một đa thức, ta nhân mỗi hạng tử của đa thức này với từng hạng tử của đa thức kia rồi cộng các kết quả lại với nhau.
+Công thức: $(A+B)(C+D) = AC+AD+BC+BD$.
+
+Ghi nhớ:
+- Nhân đơn thức với đa thức: nhân với từng hạng tử rồi cộng.
+- Nhân hai đa thức: nhân từng hạng tử rồi thu gọn.
+
+CÁC DẠNG TOÁN & VÍ DỤ
+Dạng 1: Nhân đơn thức với đa thức
+Phương pháp: Áp dụng quy tắc nhân đơn thức với đa thức: nhân đơn thức đó với từng hạng tử của đa thức rồi cộng các kết quả lại.
+---
+Ví dụ 1: Thực hiện phép nhân: $M = 3xy^2(x^2 - 2xy + 1)$
+Lời giải:
+$M = 3xy^2(x^2 - 2xy + 1)$
+$M = (3xy^2) \cdot x^2 + (3xy^2) \cdot (-2xy) + (3xy^2) \cdot 1$
+$M = 3x^{1+2}y^2 - 3 \cdot 2 x^{1+1}y^{2+1} + 3xy^2$
+$M = 3x^3y^2 - 6x^2y^3 + 3xy^2$
+---
+Ví dụ 2: Thực hiện phép nhân: $N = -\frac{1}{2}x^2y(4x^3 - 8xy + 2y^2)$
+Lời giải:
+$N = -\frac{1}{2}x^2y(4x^3 - 8xy + 2y^2)$
+$N = (-\frac{1}{2}x^2y) \cdot (4x^3) + (-\frac{1}{2}x^2y) \cdot (-8xy) + (-\frac{1}{2}x^2y) \cdot (2y^2)$
+$N = -\frac{1}{2} \cdot 4 x^{2+3}y + (-\frac{1}{2}) \cdot (-8) x^{2+1}y^{1+1} + (-\frac{1}{2}) \cdot 2 x^2y^{1+2}$
+$N = -2x^5y + 4x^3y^2 - x^2y^3$
+
+Dạng 2: Nhân đa thức với đa thức
+Phương pháp: Áp dụng quy tắc nhân đa thức với đa thức: nhân mỗi hạng tử của đa thức này với từng hạng tử của đa thức kia rồi cộng các kết quả lại.
+---
+Ví dụ 1: Thực hiện phép nhân: $(x + y)(x^2 - xy)$
+Lời giải:
+$(x + y)(x^2 - xy)$
+$= x \cdot (x^2 - xy) + y \cdot (x^2 - xy)$
+$= x \cdot x^2 + x \cdot (-xy) + y \cdot x^2 + y \cdot (-xy)$
+$= x^3 - x^2y + x^2y - xy^2$
+$= x^3 - xy^2$
+---
+Ví dụ 2: Thực hiện phép nhân: $(x - 2)(x^2 + 2x + 4)$
+Lời giải:
+$(x - 2)(x^2 + 2x + 4)$
+$= x \cdot (x^2 + 2x + 4) + (-2) \cdot (x^2 + 2x + 4)$
+$= x \cdot x^2 + x \cdot 2x + x \cdot 4 + (-2) \cdot x^2 + (-2) \cdot 2x + (-2) \cdot 4$
+$= x^3 + 2x^2 + 4x - 2x^2 - 4x - 8$
+$= x^3 + (2x^2 - 2x^2) + (4x - 4x) - 8$
+$= x^3 - 8$
+
+Dạng 3: Rút gọn biểu thức
+Phương pháp:
+Thực hiện các phép nhân đơn thức với đa thức, đa thức với đa thức.
+Sau đó, nhóm các hạng tử đồng dạng và cộng trừ chúng.
+---
+Ví dụ 1: Rút gọn biểu thức: $A = 2x^2(1 - 3x^2) + x(x - 2x^3)$
+Lời giải:
+$A = 2x^2(1 - 3x^2) + x(x - 2x^3)$
+$A = 2x^2 \cdot 1 - 2x^2 \cdot 3x^2 + x \cdot x - x \cdot 2x^3$
+$A = 2x^2 - 6x^4 + x^2 - 2x^4$
+$A = (-6x^4 - 2x^4) + (2x^2 + x^2)$
+$A = -8x^4 + 3x^2$
+---
+Ví dụ 2: Rút gọn biểu thức: $B = (x - 2)(x + 5) - (x + 1)(x - 4)$
+Lời giải:
+$B = (x - 2)(x + 5) - (x + 1)(x - 4)$
+$B = [x(x+5) - 2(x+5)] - [x(x-4) + 1(x-4)]$
+$B = [x^2 + 5x - 2x - 10] - [x^2 - 4x + x - 4]$
+$B = [x^2 + 3x - 10] - [x^2 - 3x - 4]$
+$B = x^2 + 3x - 10 - x^2 + 3x + 4$
+$B = (x^2 - x^2) + (3x + 3x) + (-10 + 4)$
+$B = 6x - 6$
+
+Dạng 4: Chứng minh biểu thức không phụ thuộc vào giá trị của biến
+Phương pháp:
+Rút gọn biểu thức đã cho.
+Nếu kết quả cuối cùng là một hằng số (không chứa biến), thì biểu thức đó không phụ thuộc vào giá trị của biến.
+---
+Ví dụ 1: Chứng minh biểu thức $A = 4x(1 - 2x) + 2x(5 + 4x) - 14x - 3$ không phụ thuộc vào giá trị của biến $x$.
+Lời giải:
+$A = 4x(1 - 2x) + 2x(5 + 4x) - 14x - 3$
+$A = 4x \cdot 1 - 4x \cdot 2x + 2x \cdot 5 + 2x \cdot 4x - 14x - 3$
+$A = 4x - 8x^2 + 10x + 8x^2 - 14x - 3$
+$A = (-8x^2 + 8x^2) + (4x + 10x - 14x) - 3$
+$A = 0x^2 + 0x - 3$
+$A = -3$
+Vì kết quả là $-3$ (một hằng số), biểu thức $A$ không phụ thuộc vào giá trị của biến $x$.
+---
+Ví dụ 2: Chứng minh biểu thức $B = 3(x - 2)(x + 2) - x(3x - 5) - 5x + 10$ không phụ thuộc vào giá trị của biến $x$.
+Lời giải:
+$B = 3(x - 2)(x + 2) - x(3x - 5) - 5x + 10$
+$B = 3[x(x+2) - 2(x+2)] - (3x^2 - 5x) - 5x + 10$
+$B = 3[x^2 + 2x - 2x - 4] - 3x^2 + 5x - 5x + 10$
+$B = 3[x^2 - 4] - 3x^2 + 5x - 5x + 10$
+$B = 3x^2 - 12 - 3x^2 + 0x + 10$
+$B = (3x^2 - 3x^2) - 12 + 10$
+$B = 0 - 2$
+$B = -2$
+Vì kết quả là $-2$ (một hằng số), biểu thức $B$ không phụ thuộc vào giá trị của biến $x$.
+
+Dạng 5: Tìm $x$ và ứng dụng thực tế
+Phương pháp:
+Tìm $x$: Thực hiện phép nhân, rút gọn biểu thức ở cả hai vế của phương trình (nếu có), sau đó chuyển các hạng tử chứa $x$ về một vế, các hằng số về vế còn lại để tìm $x$.
+Ứng dụng thực tế: Phân tích đề bài để xác định các đại lượng cần tìm, đặt các biểu thức đại số cho chúng, sau đó áp dụng phép nhân đa thức để thiết lập công thức hoặc giải quyết vấn đề.
+---
+Ví dụ 1: Tìm $x$: $3x(x - 2) - 3x^2 + 1 = 0$
+Lời giải:
+$3x(x - 2) - 3x^2 + 1 = 0$
+$3x \cdot x - 3x \cdot 2 - 3x^2 + 1 = 0$
+$3x^2 - 6x - 3x^2 + 1 = 0$
+$(3x^2 - 3x^2) - 6x + 1 = 0$
+$-6x + 1 = 0$
+$-6x = -1$
+$x = \frac{-1}{-6}$
+$x = \frac{1}{6}$
+---
+Ví dụ 2: Tìm $x$: $(x - 2)(x + 3) - (x + 1)(x - 2) = 6$
+Lời giải:
+$(x - 2)(x + 3) - (x + 1)(x - 2) = 6$
+$[x(x+3) - 2(x+3)] - [x(x-2) + 1(x-2)] = 6$
+$[x^2 + 3x - 2x - 6] - [x^2 - 2x + x - 2] = 6$
+$[x^2 + x - 6] - [x^2 - x - 2] = 6$
+$x^2 + x - 6 - x^2 + x + 2 = 6$
+$(x^2 - x^2) + (x + x) + (-6 + 2) = 6$
+$2x - 4 = 6$
+$2x = 6 + 4$
+$2x = 10$
+$x = \frac{10}{2}$
+$x = 5$
+---
+Ví dụ 3: Một mảnh vườn hình chữ nhật có chiều dài là $x + 5$ (m) và chiều rộng là $x - 2$ (m).
+a) Viết biểu thức tính diện tích mảnh vườn theo $x$.
+b) Tính diện tích mảnh vườn khi $x = 8$ (m).
+Lời giải:
+a) Diện tích mảnh vườn hình chữ nhật được tính bằng công thức: Chiều dài $\times$ Chiều rộng.
+Biểu thức tính diện tích mảnh vườn là:
+$S = (x + 5)(x - 2)$
+$S = x(x - 2) + 5(x - 2)$
+$S = x^2 - 2x + 5x - 10$
+$S = x^2 + 3x - 10$ (mét vuông)
+b) Thay $x = 8$ vào biểu thức diện tích $S = x^2 + 3x - 10$:
+$S = (8)^2 + 3(8) - 10$
+$S = 64 + 24 - 10$
+$S = 88 - 10$
+$S = 78$
+Vậy, khi $x = 8$ m, diện tích mảnh vườn là $78$ mét vuông.
+
+BÀI TẬP LUYỆN TẬP
+Câu 1. Thực hiện phép tính: $(-5xy^2)(2x^2y - 3xy + 1)$
+Đáp án: $-10x^3y^3 + 15x^2y^3 - 5xy^2$
+Lời giải:
+$(-5xy^2)(2x^2y - 3xy + 1)$
+$= (-5xy^2)(2x^2y) + (-5xy^2)(-3xy) + (-5xy^2)(1)$
+$= -10x^3y^3 + 15x^2y^3 - 5xy^2$
+---
+Câu 2. Thực hiện phép tính: $(x - 3)(2x + 1)$
+Đáp án: $2x^2 - 5x - 3$
+Lời giải:
+$(x - 3)(2x + 1)$
+$= x(2x + 1) - 3(2x + 1)$
+$= 2x^2 + x - 6x - 3$
+$= 2x^2 - 5x - 3$
+---
+Câu 3. Rút gọn biểu thức: $A = (x - 1)(x + 2) - x(x + 1)$
+Đáp án: $-2$
+Lời giải:
+$A = (x - 1)(x + 2) - x(x + 1)$
+$A = (x^2 + 2x - x - 2) - (x^2 + x)$
+$A = x^2 + x - 2 - x^2 - x$
+$A = (x^2 - x^2) + (x - x) - 2$
+$A = -2$
+---
+Câu 4. Rút gọn biểu thức: $B = (3x - 2y)(x^2 + 2xy - y^2)$
+Đáp án: $3x^3 + 4x^2y - 7xy^2 + 2y^3$
+Lời giải:
+$B = (3x - 2y)(x^2 + 2xy - y^2)$
+$B = 3x(x^2 + 2xy - y^2) - 2y(x^2 + 2xy - y^2)$
+$B = 3x^3 + 6x^2y - 3xy^2 - 2x^2y - 4xy^2 + 2y^3$
+$B = 3x^3 + (6x^2y - 2x^2y) + (-3xy^2 - 4xy^2) + 2y^3$
+$B = 3x^3 + 4x^2y - 7xy^2 + 2y^3$
+---
+Câu 5. Rút gọn biểu thức: $C = x(x^2 - y) - x^2(x + y) + xy(x - 1)$
+Đáp án: $-2xy$
+Lời giải:
+$C = x(x^2 - y) - x^2(x + y) + xy(x - 1)$
+$C = x^3 - xy - (x^3 + x^2y) + (x^2y - xy)$
+$C = x^3 - xy - x^3 - x^2y + x^2y - xy$
+$C = (x^3 - x^3) + (-xy - xy) + (-x^2y + x^2y)$
+$C = -2xy$
+---
+Câu 6. Tìm $x$, biết: $2x(x - 5) + x(3 - 2x) = 26$
+Đáp án: $-\frac{26}{7}$
+Lời giải:
+$2x(x - 5) + x(3 - 2x) = 26$
+$2x^2 - 10x + 3x - 2x^2 = 26$
+$(2x^2 - 2x^2) + (-10x + 3x) = 26$
+$-7x = 26$
+$x = -\frac{26}{7}$
+---
+Câu 7. Tìm $x$, biết: $(x - 1)(x + 1) - x(x - 2) = 3$
+Đáp án: $2$
+Lời giải:
+$(x - 1)(x + 1) - x(x - 2) = 3$
+$(x^2 - 1) - (x^2 - 2x) = 3$
+$x^2 - 1 - x^2 + 2x = 3$
+$(x^2 - x^2) + 2x - 1 = 3$
+$2x - 1 = 3$
+$2x = 3 + 1$
+$2x = 4$
+$x = \frac{4}{2}$
+$x = 2$
+---
+Câu 8. Một sân trường hình chữ nhật có chiều rộng là $x + 3$ (m) và chiều dài là $2x - 1$ (m). Viết biểu thức tính diện tích sân trường theo $x$.
+Đáp án: $2x^2 + 5x - 3$
+Placeholder: $S = ...$
+Lời giải:
+Diện tích sân trường hình chữ nhật được tính bằng công thức: Chiều dài $\times$ Chiều rộng.
+$S = (2x - 1)(x + 3)$
+$S = 2x(x + 3) - 1(x + 3)$
+$S = 2x^2 + 6x - x - 3$
+$S = 2x^2 + 5x - 3$ (mét vuông)
+---
+Câu 9. Tính diện tích sân trường (theo Câu 8) khi $x = 10$ (m).
+Đáp án: $247$
+Placeholder: $S = ...$
+Lời giải:
+Thay $x = 10$ vào biểu thức diện tích $S = 2x^2 + 5x - 3$:
+$S = 2(10)^2 + 5(10) - 3$
+$S = 2(100) + 50 - 3$
+$S = 200 + 50 - 3$
+$S = 250 - 3$
+$S = 247$ (mét vuông)
+---
+Câu 10. Tính giá trị của biểu thức $E = (y - 2)(y^2 + 2y + 4) - y^3 + 5$ tại $y = -3$.
+Đáp án: $-3$
+Lời giải:
+$E = (y - 2)(y^2 + 2y + 4) - y^3 + 5$
+$E = y(y^2 + 2y + 4) - 2(y^2 + 2y + 4) - y^3 + 5$
+$E = y^3 + 2y^2 + 4y - 2y^2 - 4y - 8 - y^3 + 5$
+$E = (y^3 - y^3) + (2y^2 - 2y^2) + (4y - 4y) - 8 + 5$
+$E = -3$
+Vì biểu thức đã rút gọn ra hằng số không chứa $y$, giá trị của biểu thức $E$ tại $y = -3$ là $-3$.
+---
+Câu 11. [đúng sai]
+Biểu thức $D = (2x - 1)(x - 3) - x(2x + 1) + 4x - 5$ không phụ thuộc vào giá trị của biến $x$.
+Đáp án: Sai
+Lời giải:
+Rút gọn biểu thức $D$:
+$D = (2x - 1)(x - 3) - x(2x + 1) + 4x - 5$
+$D = (2x^2 - 6x - x + 3) - (2x^2 + x) + 4x - 5$
+$D = 2x^2 - 7x + 3 - 2x^2 - x + 4x - 5$
+$D = (2x^2 - 2x^2) + (-7x - x + 4x) + (3 - 5)$
+$D = -4x - 2$
+Vì kết quả rút gọn vẫn chứa biến $x$, biểu thức $D$ phụ thuộc vào giá trị của biến $x$. Do đó, mệnh đề là Sai.
+---
+Câu 12. [đúng sai]
+Khi nhân một đơn thức với một đa thức, ta chỉ cần nhân đơn thức đó với hạng tử đầu tiên của đa thức.
+Đáp án: Sai
+Lời giải:
+Theo quy tắc nhân đơn thức với đa thức, ta phải nhân đơn thức đó với TỪNG hạng tử của đa thức rồi cộng các kết quả lại với nhau.
+---
+Câu 13. [đúng sai]
+Tích của hai đa thức $(x+1)$ và $(x-1)$ là $x^2-1$.
+Đáp án: Đúng
+Lời giải:
+$(x+1)(x-1) = x(x-1) + 1(x-1) = x^2 - x + x - 1 = x^2 - 1$. Đây là một hằng đẳng thức đáng nhớ.
+---
+Câu 14. Kết quả của phép nhân $2x(x^2 - 3x + 1)$ là:
+A. $2x^3 - 6x^2 + 1$
+B. $2x^3 - 6x^2 + 2x$
+C. $2x^3 - 3x + 1$
+D. $2x^3 - 6x + 2x$
+Đáp án: B
+Lời giải:
+$2x(x^2 - 3x + 1) = 2x \cdot x^2 - 2x \cdot 3x + 2x \cdot 1 = 2x^3 - 6x^2 + 2x$.
+---
+Câu 15. Tích của $(x - 5)(x + 2)$ là:
+A. $x^2 - 3x - 10$
+B. $x^2 + 3x - 10$
+C. $x^2 - 7x - 10$
+D. $x^2 - 3x + 10$
+Đáp án: A
+Lời giải:
+$(x - 5)(x + 2) = x(x + 2) - 5(x + 2)$
+$= x^2 + 2x - 5x - 10$
+$= x^2 - 3x - 10$
+---
+Câu 16. Giá trị của biểu thức $P = x(x - y) + y(x + y)$ tại $x = 1$ và $y = -2$ là:
+A. $1$
+B. $3$
+C. $5$
+D. $-3$
+Đáp án: C
+Lời giải:
+Rút gọn biểu thức $P$:
+$P = x(x - y) + y(x + y)$
+$P = x^2 - xy + yx + y^2$
+$P = x^2 + y^2$
+Thay $x = 1$ và $y = -2$ vào biểu thức đã rút gọn:
+$P = (1)^2 + (-2)^2 = 1 + 4 = 5$.
+---
+Câu 17. Cho biểu thức $M = (x - 1)(x^2 + x + 1) - x^3$. Giá trị của $M$ là:
+A. $0$
+B. $1$
+C. $-1$
+D. $x^3 - 1$
+Đáp án: C
+Lời giải:
+$M = (x - 1)(x^2 + x + 1) - x^3$
+$M = x(x^2 + x + 1) - 1(x^2 + x + 1) - x^3$
+$M = x^3 + x^2 + x - x^2 - x - 1 - x^3$
+$M = (x^3 - x^3) + (x^2 - x^2) + (x - x) - 1$
+$M = -1$
+---
+Câu 18. Chọn khẳng định đúng:
+A. $(x+2)(x-3) = x^2 - x + 6$
+B. $(2x-1)(x+4) = 2x^2 + 7x - 4$
+C. $3x(x^2+1) = 3x^3 + 1$
+D. $(x-y)(x+y) = x^2 + y^2$
+Đáp án: B
+Lời giải:
+Kiểm tra từng phương án:
+A. $(x+2)(x-3) = x^2 - 3x + 2x - 6 = x^2 - x - 6$. (Sai)
+B. $(2x-1)(x+4) = 2x(x+4) - 1(x+4) = 2x^2 + 8x - x - 4 = 2x^2 + 7x - 4$. (Đúng)
+C. $3x(x^2+1) = 3x \cdot x^2 + 3x \cdot 1 = 3x^3 + 3x$. (Sai)
+D. $(x-y)(x+y) = x^2 - y^2$. (Sai, đây là hằng đẳng thức)
+---
+Câu 19. Cho hình chữ nhật có chiều rộng là $2x$ và chiều dài là $3x+1$. Biểu thức tính chu vi của hình chữ nhật là:
+A. $5x+1$
+B. $10x+2$
+C. $6x^2+2x$
+D. $6x+1$
+Đáp án: B
+Lời giải:
+Chu vi hình chữ nhật = $2 \times (\text{chiều dài} + \text{chiều rộng})$
+$P = 2 \times ( (3x+1) + 2x )$
+$P = 2 \times (5x+1)$
+$P = 10x+2$

@@ -1,0 +1,31 @@
+BÁO CÁO SỬA ĐỊNH DẠNG — TOÁN 8 CHƯƠNG I
+Thời gian: 2026-08-09
+
+================================================================================
+MỤC TIÊU
+================================================================================
+Sửa 6 bài đã đăng (Bài 1–5 + Ôn tập) cho đúng quy tắc mới:
+- Câu hỏi đa dạng: trắc nghiệm / điền đáp án / đúng-sai
+- Điền đáp án tách từng ý (không gộp a/b/c một ô)
+- Không #### / ### quanh Ví dụ
+- Đáp án ngay dưới từng câu (theo mẫu import)
+- LaTeX $...$
+
+================================================================================
+KẾT QUẢ FIRESTORE (UPDATED)
+================================================================================
+Bài 1  v2QeUjIMBd1SZGKzFvZ1  practice=18  mcq=7  input=8  true_false=3
+Bài 2  khCU7nk2DGE8KuOjZecy  practice=15  mcq=6  input=7  true_false=2
+Bài 3  IsLzs3WwZRZpjBTibRFa  practice=17  mcq=3  input=12 true_false=2
+Bài 4  tGZoE6Rb2uNu5RGOaLJv  practice=19  mcq=6  input=10 true_false=3
+Bài 5  lHuuoNRojgCEBTkv0xU0  practice=14  mcq=5  input=7  true_false=2
+Ôn tập tTaXDQPCJrBUH13iqYjd  practice=20  mcq=10 input=6  true_false=4
+
+Tất cả: bundled a/b/c input = 0; type text = 0; #### Ví dụ = 0.
+
+================================================================================
+FILE
+================================================================================
+- Script: scripts/rewrite-toan8-chuong1.mjs
+- TXT đã ghi đè trong từng .../output/*-import.txt
+- Quy tắc: docs/YEU_CAU_THEM_DINH_DANG_CAU_HOI.txt

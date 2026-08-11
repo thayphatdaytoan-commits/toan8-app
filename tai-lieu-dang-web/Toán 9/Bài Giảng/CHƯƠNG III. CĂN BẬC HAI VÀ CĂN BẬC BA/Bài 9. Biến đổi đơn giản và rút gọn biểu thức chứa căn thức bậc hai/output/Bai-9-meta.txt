@@ -1,0 +1,7 @@
+@grade_level: 9
+@chapter: 3
+@lesson_no: 9
+@title: Biến đổi đơn giản và rút gọn biểu thức chứa căn thức bậc hai
+@slug: toan-9-chuong-3-bai-9-bien-doi-don-gian-va-rut-gon-bieu-thuc-chua-can-thuc-bac-hai
+@firestore_id: HaWodiVhNUIIRfrWwRH0
+@note: content đã chuẩn hóa $...$ (không $[...]$); xem file *-content.json

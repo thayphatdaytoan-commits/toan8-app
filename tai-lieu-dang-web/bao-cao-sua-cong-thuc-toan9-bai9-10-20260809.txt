@@ -1,0 +1,36 @@
+BÁO CÁO SỬA CÔNG THỨC NGOẶC VUÔNG — TOÁN 9 CHƯƠNG III BÀI 9 & 10
+Thời gian: 2026-08-09
+
+================================================================================
+VẤN ĐỀ
+================================================================================
+Bài 9 và Bài 10 còn công thức dạng $[{...}]$ trong Firestore
+(field content JSON string) → KaTeX hiện literal [ ] trên web học sinh.
+
+Lưu ý kỹ thuật: wrapper $[{...}]$ chứa \\sqrt[3]{...} không sửa được bằng regex
+đơn giản ([^\]]*), vì dấu ] trong [3] cắt sớm. Cần parser theo độ sâu ngoặc {}.
+
+================================================================================
+ĐÃ SỬA
+================================================================================
+1) scripts/scan-fix-brackets.mjs — chuẩn hóa $[{inner}]$ → $inner$ (hỗ trợ \\sqrt[n]).
+2) Firestore:
+   - Bài 9  HaWodiVhNUIIRfrWwRH0  (101 chỗ, lần 1) → CLEAN
+   - Bài 10 YKANp5L6hwDd99Vd9BqG  (31 chỗ còn sót vì \\sqrt[3], lần 2) → CLEAN
+3) Bài 7, 8, Ôn tập Chương III: CLEAN sẵn.
+4) Snapshot output:
+   - .../Bài 9.../output/Bai-9-content.json (+ Bai-9-meta.txt)
+   - .../Bài 10.../output/Bai-10-content.json (+ Bai-10-meta.txt)
+
+================================================================================
+KHÔNG ĐỤNG
+================================================================================
+Các chuỗi kiểu $[x(x+3)-...]$ / $[3(x-1)]^2$ là ngoặc nhóm đại số trong lời giải
+(không phải wrapper $[{...}]$ của bai-viet-ai) — giữ nguyên.
+
+================================================================================
+GHI NHỚ
+================================================================================
+- Import web CHỈ dùng $...$ / $$...$$.
+- CẤM $[{...}]$ (xem docs/QUY_TAC_CONG_THUC_LATEX_WEB.txt).
+- Khi chuẩn hóa bài có căn bậc n: dùng parser độ sâu {}, không regex [^\]]*.

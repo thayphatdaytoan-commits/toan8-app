@@ -1,0 +1,33 @@
+================================================================================
+QUY TẮC BẮT BUỘC — CÔNG THỨC TOÁN KHI ĐĂNG LÊN thayphatdaytoan
+================================================================================
+GHI NHỚ (để lần sau không lỗi ngoặc vuông trên web):
+
+1) Website render KaTeX chỉ chuẩn với:
+     $công_thức$     hoặc     $$công_thức$$
+   Ví dụ đúng: $5$, $x$, $3x$, $\frac{1}{2}x^2y^3$, $x+y$
+
+2) KHÔNG được để công thức dạng:
+     $[5]$   $[{5}]$   $[x]$   $[{3x}]$
+   → Học sinh sẽ thấy dấu ngoặc vuông literal trên web (ví dụ [5], [x]).
+
+3) Trên bai-viet-ai, nếu UI/prompt yêu cầu `$[...]$` / `$[{...}]$`:
+   - Có thể để AI tạo theo prompt của trang đó.
+   - TRƯỚC KHI import lên thayphatdaytoan PHẢI chuẩn hóa:
+       $[{formula}]$  →  $formula$
+       $[formula]$    →  $formula$
+       ${formula}$    →  $formula$   (nếu Word xuất dạng này)
+   - Nếu công thức có `\sqrt[3]{...}` / căn bậc n: KHÔNG dùng replace regex kiểu
+     `[^\]]*` (sẽ cắt nhầm tại dấu `]` của `[3]`). Dùng parser theo độ sâu `{}`
+     hoặc chạy `node scripts/scan-fix-brackets.mjs --apply`.
+   - Giữ nguyên ngoặc nhóm đại số hợp lệ trong lời giải, ví dụ `$[3(x-1)]^2`.
+
+4) Ô «Yêu cầu thêm» khi soạn cho web nên ghi rõ:
+   "Công thức LaTeX bọc bằng $...$ hoặc $$...$$. KHÔNG dùng dấu ngoặc vuông
+    $[...]$ hay $[{...}]$ vì web sẽ hiện ngoặc vuông."
+
+5) Checklist trước khi Lưu Admin:
+   [ ] Không còn chuỗi $[{ hoặc $[...] $ trong file import
+   [ ] Preview công thức không còn dấu [ ]
+
+================================================================================
