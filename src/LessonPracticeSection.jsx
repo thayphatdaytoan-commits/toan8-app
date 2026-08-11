@@ -13,11 +13,16 @@ import {
   Sparkles,
   Target,
 } from 'lucide-react';
+
+/** EXP mỗi câu đúng ở chế độ từng câu (tương đương 1 điểm × 15). */
+export const PRACTICE_STEP_CORRECT_EXP = 10;
 import { TextWithMath, TextWithMathWithLoiGiai } from './Math11Template';
 import PracticeAnswerInput from './PracticeAnswerInput';
 import {
   PracticeTrueFalse,
   PracticeTrueFalseResult,
+  PracticeTrueFalseGroup,
+  PracticeTrueFalseGroupResult,
   PracticeOrdering,
   PracticeOrderingResult,
   PracticeDragDrop,
@@ -25,7 +30,7 @@ import {
   PracticeFillBlanks,
   PracticeFillBlanksResult,
 } from './PracticeInteractiveQuestions';
-import { isInteractivePracticeType, scorePracticeQuestion, normalizeInputAnswerParts } from './practiceQuestionTypes';
+import { isInteractivePracticeType, scorePracticeQuestion, normalizeInputAnswerParts, normalizeMcqCorrectIndex } from './practiceQuestionTypes';
 import ChuyenDeOnTapFireworks from './chuyenDeOnTap/ChuyenDeOnTapFireworks';
 import { extractYouTubeID, buildYouTubeEmbedUrl, buildYouTubeWatchUrl } from './youtubeUtils';
 
@@ -139,10 +144,17 @@ function PracticeAnswerResult({ q }) {
       {q.type === 'mcq' && Array.isArray(q.options) && q.correctAnswer != null ? (
         <div className="text-slate-800 font-semibold mb-2">
           <span className="text-teal-700">Đáp án đúng: </span>
-          <span className="font-black text-emerald-800">{String.fromCharCode(65 + Number(q.correctAnswer))}.</span>{' '}
-          <span className="font-medium">
-            <TextWithMathWithLoiGiai text={String(q.options[q.correctAnswer] ?? '')} inlineImage />
-          </span>
+          {(() => {
+            const ci = normalizeMcqCorrectIndex(q.correctAnswer, q.options.length);
+            return (
+              <>
+                <span className="font-black text-emerald-800">{String.fromCharCode(65 + Math.max(0, ci))}.</span>{' '}
+                <span className="font-medium">
+                  <TextWithMathWithLoiGiai text={String(q.options[ci] ?? '')} inlineImage />
+                </span>
+              </>
+            );
+          })()}
         </div>
       ) : null}
       {q.type === 'input' ? (
@@ -171,6 +183,12 @@ function PracticeAnswerResult({ q }) {
         <div className="text-slate-800 font-semibold mb-2">
           <span className="text-teal-700">Đáp án đúng: </span>
           <PracticeTrueFalseResult q={q} />
+        </div>
+      ) : null}
+      {q.type === 'true_false_group' ? (
+        <div className="text-slate-800 font-semibold mb-2">
+          <span className="text-teal-700 block mb-2">Đáp án đúng: </span>
+          <PracticeTrueFalseGroupResult q={q} />
         </div>
       ) : null}
       {q.type === 'ordering' ? (
@@ -207,11 +225,9 @@ function PracticeAnswerResult({ q }) {
 
 function PracticeQuestionHeader({ q, index }) {
   const questionText =
-    q.type === 'text'
-      ? q.question || ''
-      : q.type === 'fill_blanks' && !(q.question || '').trim()
-        ? 'Điền các chỗ trống trong đoạn văn dưới đây.'
-        : q.question || '';
+    q.type === 'fill_blanks' && !(q.question || '').trim()
+      ? 'Điền các chỗ trống trong đoạn văn dưới đây.'
+      : q.question || '';
 
   return (
     <div className="lesson-practice-question-header">
@@ -220,11 +236,7 @@ function PracticeQuestionHeader({ q, index }) {
         <span className="lesson-practice-q-label">Câu hỏi luyện tập</span>
       </div>
       <div className="lesson-practice-q-text lesson-math-content text-slate-800 text-base md:text-lg leading-loose">
-        {q.type === 'text' ? (
-          <TextWithMathWithLoiGiai text={questionText} />
-        ) : (
-          <TextWithMathWithLoiGiai text={questionText} />
-        )}
+        <TextWithMathWithLoiGiai text={questionText} />
       </div>
     </div>
   );
@@ -244,11 +256,11 @@ function PracticeQuestionBody({
 
   return (
     <div className="lesson-practice-body-panel lesson-math-content text-base md:text-lg leading-loose text-slate-800">
-      {q.type === 'text' ? null : q.type === 'mcq' ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      {q.type === 'mcq' ? (
+        <div className="grid grid-cols-1 gap-3">
           {(q.options || []).map((opt, oIdx) => {
-            const isSelected = quizAnswers[q.id] === oIdx;
-            const isCorrect = q.correctAnswer === oIdx;
+            const isSelected = normalizeMcqCorrectIndex(quizAnswers[q.id], (q.options || []).length) === oIdx;
+            const isCorrect = normalizeMcqCorrectIndex(q.correctAnswer, (q.options || []).length) === oIdx;
             let btnClass = 'border-slate-200 hover:border-sky-300 hover:bg-sky-50 text-slate-700 bg-white';
             if (highlightMcqResult) {
               if (isCorrect) btnClass = 'border-emerald-500 bg-emerald-50 text-emerald-800';
@@ -283,6 +295,14 @@ function PracticeQuestionBody({
       ) : null}
       {q.type === 'true_false' ? (
         <PracticeTrueFalse q={q} value={quizAnswers[q.id]} disabled={locked} onChange={(val) => onAnswerChange(q.id, val)} />
+      ) : null}
+      {q.type === 'true_false_group' ? (
+        <PracticeTrueFalseGroup
+          q={q}
+          value={quizAnswers[q.id]}
+          disabled={locked}
+          onChange={(val) => onAnswerChange(q.id, val)}
+        />
       ) : null}
       {q.type === 'ordering' ? (
         <PracticeOrdering q={q} value={quizAnswers[q.id]} disabled={locked} onChange={(val) => onAnswerChange(q.id, val)} />
@@ -361,6 +381,7 @@ function PracticeListFooter({
   studentName,
   onSubmit,
   onReset,
+  stepModeExpHint = false,
 }) {
   if (interactivePractice.length === 0) {
     return (
@@ -386,6 +407,7 @@ function PracticeListFooter({
       </>
     );
   }
+  const stepExpTotal = Math.round(Number(quizScore) || 0) * PRACTICE_STEP_CORRECT_EXP;
   return (
     <div className="bg-sky-50/80 p-5 rounded-2xl inline-block min-w-[260px]">
       <h3 className="text-base font-bold text-slate-600 mb-2">Kết quả</h3>
@@ -394,7 +416,9 @@ function PracticeListFooter({
       </p>
       {(studentName || '').trim() ? (
         <p className="text-xs text-sky-800 font-semibold mb-4">
-          +{Math.round(quizScore * 15)} EXP (điểm × 15) — đã ghi vào tiến trình bài học
+          {stepModeExpHint
+            ? `Đã cộng khoảng +${stepExpTotal} EXP (mỗi câu đúng +${PRACTICE_STEP_CORRECT_EXP}) — đã ghi vào tiến trình`
+            : `+${Math.round(quizScore * 15)} EXP (điểm × 15) — đã ghi vào tiến trình bài học`}
         </p>
       ) : (
         <p className="text-xs text-slate-500 mb-4">Đăng nhập bằng tên trong lớp để lưu điểm, EXP và thanh tiến trình.</p>
@@ -410,7 +434,7 @@ function PracticeListFooter({
   );
 }
 
-function PracticeStepFeedbackBanner({ correct, index }) {
+function PracticeStepFeedbackBanner({ correct, index, expGained }) {
   const ok = Boolean(correct);
   return (
     <div
@@ -423,7 +447,14 @@ function PracticeStepFeedbackBanner({ correct, index }) {
       <span className="lesson-practice-feedback-emoji" aria-hidden="true">
         {ok ? '🎉' : '💪'}
       </span>
-      <span className="lesson-practice-feedback-text">{getFeedbackMessage(ok, index)}</span>
+      <span className="lesson-practice-feedback-text">
+        {getFeedbackMessage(ok, index)}
+        {ok && expGained > 0 ? (
+          <span className="ml-2 inline-flex items-center rounded-full bg-amber-100/95 px-2 py-0.5 text-xs font-black text-amber-800 border border-amber-300/80">
+            +{expGained} EXP
+          </span>
+        ) : null}
+      </span>
     </div>
   );
 }
@@ -434,8 +465,11 @@ function PracticeStageFrame({ children, header, banner }) {
       <PracticeFrameDecor />
       <div className="lesson-practice-inner">
         {banner || null}
-        {header}
-        <div className="lesson-practice-scroll">{children}</div>
+        {/* Đề + đáp án cùng vùng cuộn — tránh đề/ảnh chiếm khung khiến đáp án bị cắt */}
+        <div className="lesson-practice-scroll">
+          {header}
+          {children}
+        </div>
       </div>
     </div>
   );
@@ -455,12 +489,14 @@ export default function LessonPracticeSection({
   onToggleHint,
   studentName,
   resetKey,
+  onRecordStepExp,
 }) {
   const [stepIndex, setStepIndex] = useState(0);
   const [stepChecked, setStepChecked] = useState({});
   const [stepVisited, setStepVisited] = useState({ 0: true });
   const [stepFinished, setStepFinished] = useState(false);
   const [fireworksBurstKey, setFireworksBurstKey] = useState(0);
+  const [lastStepExp, setLastStepExp] = useState(0);
 
   const total = shuffledPractice.length;
   const currentQ = shuffledPractice[stepIndex] || null;
@@ -471,6 +507,7 @@ export default function LessonPracticeSection({
     setStepChecked({});
     setStepVisited({ 0: true });
     setStepFinished(false);
+    setLastStepExp(0);
   }, [resetKey]);
 
   useEffect(() => {
@@ -496,13 +533,30 @@ export default function LessonPracticeSection({
 
   const handleStepCheck = useCallback(() => {
     if (!currentQ || !isInteractivePracticeType(currentQ.type)) return;
+    if (stepChecked[currentQ.id]?.checked) return;
     const correct = scorePracticeQuestion(currentQ, quizAnswers[currentQ.id]);
     setStepChecked((prev) => ({ ...prev, [currentQ.id]: { checked: true, correct } }));
-    if (correct) setFireworksBurstKey((k) => k + 1);
-  }, [currentQ, quizAnswers]);
+    if (correct) {
+      setFireworksBurstKey((k) => k + 1);
+      const canAward =
+        typeof onRecordStepExp === 'function' && Boolean(String(studentName || '').trim());
+      if (canAward) {
+        setLastStepExp(PRACTICE_STEP_CORRECT_EXP);
+        void onRecordStepExp({
+          questionId: currentQ.id,
+          expPoints: PRACTICE_STEP_CORRECT_EXP,
+        });
+      } else {
+        setLastStepExp(0);
+      }
+    } else {
+      setLastStepExp(0);
+    }
+  }, [currentQ, quizAnswers, stepChecked, onRecordStepExp, studentName]);
 
   const goStep = (idx) => {
     if (idx < 0 || idx >= total) return;
+    setLastStepExp(0);
     setStepIndex(idx);
   };
 
@@ -510,7 +564,8 @@ export default function LessonPracticeSection({
     if (stepIndex < total - 1) goStep(stepIndex + 1);
     else {
       setStepFinished(true);
-      onSubmitQuiz();
+      // Chế độ từng câu: EXP đã cộng theo từng câu đúng → nộp tổng không cộng EXP lần nữa
+      onSubmitQuiz({ skipExp: true });
     }
   };
 
@@ -528,7 +583,11 @@ export default function LessonPracticeSection({
               <PracticeStageFrame
                 banner={
                   currentChecked?.checked ? (
-                    <PracticeStepFeedbackBanner correct={currentChecked.correct} index={stepIndex} />
+                    <PracticeStepFeedbackBanner
+                      correct={currentChecked.correct}
+                      index={stepIndex}
+                      expGained={currentChecked.correct ? lastStepExp : 0}
+                    />
                   ) : null
                 }
                 header={<PracticeQuestionHeader q={currentQ} index={stepIndex} />}
@@ -576,6 +635,7 @@ export default function LessonPracticeSection({
                     studentName={studentName}
                     onSubmit={onSubmitQuiz}
                     onReset={onResetQuiz}
+                    stepModeExpHint
                   />
                 </div>
               ) : null}

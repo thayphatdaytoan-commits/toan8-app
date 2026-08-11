@@ -82,7 +82,7 @@ import { RichMathContent } from './RichMathContent';
 import { PracticeFillBlanks, PracticeFillBlanksResult } from './PracticeInteractiveQuestions';
 import { fillBlanksAnswerOk, normalizeFillBlanksQuestion, normalizePracticeList } from './practiceQuestionTypes';
 import { FillBlanksAnswersField } from './FillBlanksAnswersField';
-import { User, Lock, Award, ListOrdered, CheckCircle, XCircle, ArrowRight, ShieldCheck, AlertTriangle, Settings, Users, FileText, LogOut, Plus, Trash2, Edit2, Save, Camera, Image as ImageIcon, Eye, EyeOff, Upload, Lightbulb, ArrowLeft, Clock, PlayCircle, BookOpen, Filter, FileEdit, Video, Play, BookText, Home, Trophy, Sparkles, Star, Target, Heart, Link2, Network, Map as MapIcon, LayoutTemplate, MessageCircle, FolderOpen, UserCog, Atom } from 'lucide-react';
+import { User, Lock, Award, ListOrdered, CheckCircle, XCircle, ArrowRight, ShieldCheck, AlertTriangle, Settings, Users, FileText, LogOut, Plus, Trash2, Edit2, Save, Camera, Image as ImageIcon, Eye, EyeOff, Upload, Download, Lightbulb, ArrowLeft, Clock, PlayCircle, BookOpen, Filter, FileEdit, Video, Play, BookText, Home, Trophy, Sparkles, Star, Target, Heart, Link2, Network, Map as MapIcon, LayoutTemplate, MessageCircle, FolderOpen, UserCog, Atom } from 'lucide-react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { collection, doc, setDoc, onSnapshot, addDoc, deleteDoc, updateDoc, getDoc, getDocs, query, where } from 'firebase/firestore';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -141,6 +141,7 @@ import {
   summarizeDocxImageWarnings,
 } from './docxLessonImport';
 import { LessonFormattingToolbar } from './LessonFormattingToolbar';
+import { exportLessonToImportTxt, downloadTextFile } from './lessonExportTxt';
 import { computeAutoGradedScore, DEFAULT_PART_POINTS, formatScoreForDisplay, normalizePartPoints, shortAnswerIsCorrect } from './quizScoring';
 import { slugifyVi, buildLessonSlug, ensureUniqueLessonSlug } from './lessonSlug';
 import LessonSeoAdminPanel from './LessonSeoAdminPanel';
@@ -1548,12 +1549,44 @@ setCurrentScore(score); setStudentAnswers(answers); setStudentEssayImages(essayI
   const backToStudentOverview = () => {
     appNavStackRef.current = [];
     setPostLoginTab('dashboard');
+    setStudentPortalOpen(true);
     handleBackToDashboard();
+  };
+
+  const backToStudentAccount = () => {
+    appNavStackRef.current = [];
+    setPostLoginTab('settings');
+    setStudentPortalOpen(true);
+    handleBackToDashboard();
+  };
+
+  const openPortalTabFromLesson = (tab = 'dashboard') => {
+    appNavStackRef.current = [];
+    setPostLoginTab(tab || 'dashboard');
+    setStudentPortalOpen(true);
+    handleBackToDashboard();
+  };
+
+  const handleStudentLogout = () => {
+    appNavStackRef.current = [];
+    clearStudentSession();
+    setStudentName('');
+    setStudentClass('');
+    setStudentPortalOpen(false);
+    setPostLoginTab(null);
+    setSelectedLesson(null);
+    setAppState('dashboard');
+    try {
+      delete window.currentStudentGrade;
+    } catch {
+      /* ignore */
+    }
   };
 
   const backToStudentExams = () => {
     appNavStackRef.current = [];
     setPostLoginTab('exams');
+    setStudentPortalOpen(true);
     handleBackToDashboard();
   };
 
@@ -1940,6 +1973,33 @@ setCurrentScore(score); setStudentAnswers(answers); setStudentEssayImages(essayI
             externalHomeUrl={publicGradeHomeUrl(lessonViewerGrade)}
             onBack={handleStudentGoBack}
             onBackToOverview={backToStudentOverview}
+            onEnterLearningMode={
+              studentName
+                ? backToStudentOverview
+                : () => {
+                    setPostLoginTab('dashboard');
+                    setAppState('login');
+                  }
+            }
+            onOpenAccount={
+              studentName
+                ? backToStudentAccount
+                : () => {
+                    setPostLoginTab('settings');
+                    setAppState('login');
+                  }
+            }
+            onEnterStudentPortal={
+              studentName
+                ? openPortalTabFromLesson
+                : (tab) => {
+                    setPostLoginTab(tab || 'dashboard');
+                    setAppState('login');
+                  }
+            }
+            onLogout={handleStudentLogout}
+            onRequestLogin={() => setAppState('login')}
+            onRequestRegister={() => setAppState('register')}
             onOpenExamsRoom={
               studentName
                 ? backToStudentExams
@@ -3515,6 +3575,19 @@ function AdminScreen({
 if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTION_LESSONS, id));
   };
 
+  const handleExportLessonTxt = () => {
+    if (!editingLesson) {
+      alert('Chưa mở bài giảng để export.');
+      return;
+    }
+    try {
+      const { text, fileName } = exportLessonToImportTxt(editingLesson);
+      downloadTextFile(text, fileName);
+    } catch (err) {
+      alert(`Export thất bại: ${err?.message || err}`);
+    }
+  };
+
   const handleImportLesson = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -4110,6 +4183,14 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                   Import TXT/Word
                   <input type="file" accept=".txt,.docx" onChange={handleImportLesson} className="hidden" />
                 </label>
+                <button
+                  type="button"
+                  onClick={handleExportLessonTxt}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1.5 rounded-md text-[11px] font-bold inline-flex items-center gap-1.5 shrink-0"
+                  title="Tải toàn bộ bài giảng ra file .txt (định dạng import)"
+                >
+                  <Download size={12} className="shrink-0" /> Export TXT
+                </button>
                 <div className="flex flex-col items-end gap-0.5 shrink-0">
                   <a
                     href="/mau-import-bai-giang.txt"
@@ -4496,35 +4577,38 @@ if (window.confirm("Xóa bài giảng này?")) await deleteDoc(doc(db, COLLECTIO
                 {practiceList.map((p, idx) => (
                   <div key={p.id || idx} className="border border-slate-200 rounded-lg p-3 bg-white space-y-2">
                     <div className="flex flex-wrap justify-between gap-2 items-center">
-                      <select
-                        disabled={jsonBroken}
-                        value={(p.type || 'mcq').toString()}
-                        onChange={(e) => {
-                          const t = e.target.value;
-                          const next = practiceList.map((x, j) =>
-                            j === idx
-                              ? {
-                                  ...emptyPracticeTemplate(j, t),
-                                  id: x.id || `pr_${Date.now()}_${j}`,
-                                  question: x.question ?? x.content ?? '',
-                                  hint: x.hint ?? '',
-                                  hintVideoUrl: x.hintVideoUrl ?? '',
-                                  explanation: x.explanation ?? '',
-                                }
-                              : x
-                          );
-                          patchPracticeList(next);
-                        }}
-                        className="p-2 border rounded text-sm font-bold disabled:opacity-50"
-                      >
-                        <option value="mcq">Trắc nghiệm (mcq)</option>
-                        <option value="input">Nhập đáp án (input)</option>
-                        <option value="true_false">Đúng / Sai</option>
-                        <option value="true_false_group">Đúng / Sai (a–d)</option>
-                        <option value="ordering">Sắp xếp</option>
-                        <option value="drag_drop">Kéo thả</option>
-                        <option value="fill_blanks">Điền chỗ trống</option>
-                      </select>
+                      <div className="flex flex-wrap items-center gap-2 min-w-0">
+                        <p className="font-bold text-sm text-blue-700 shrink-0">Câu {idx + 1}</p>
+                        <select
+                          disabled={jsonBroken}
+                          value={(p.type || 'mcq').toString()}
+                          onChange={(e) => {
+                            const t = e.target.value;
+                            const next = practiceList.map((x, j) =>
+                              j === idx
+                                ? {
+                                    ...emptyPracticeTemplate(j, t),
+                                    id: x.id || `pr_${Date.now()}_${j}`,
+                                    question: x.question ?? x.content ?? '',
+                                    hint: x.hint ?? '',
+                                    hintVideoUrl: x.hintVideoUrl ?? '',
+                                    explanation: x.explanation ?? '',
+                                  }
+                                : x
+                            );
+                            patchPracticeList(next);
+                          }}
+                          className="p-2 border rounded text-sm font-bold disabled:opacity-50"
+                        >
+                          <option value="mcq">Trắc nghiệm (mcq)</option>
+                          <option value="input">Nhập đáp án (input)</option>
+                          <option value="true_false">Đúng / Sai</option>
+                          <option value="true_false_group">Đúng / Sai (a–d)</option>
+                          <option value="ordering">Sắp xếp</option>
+                          <option value="drag_drop">Kéo thả</option>
+                          <option value="fill_blanks">Điền chỗ trống</option>
+                        </select>
+                      </div>
                       <button
                         type="button"
                         disabled={jsonBroken}

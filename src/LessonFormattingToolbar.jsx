@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Bold,
   Italic,
@@ -13,6 +13,8 @@ import {
   Home,
   RotateCcw,
   VectorSquare,
+  Type,
+  ChevronDown,
 } from 'lucide-react';
 import { getSiteOrigin } from './seo/siteConfig';
 
@@ -53,6 +55,7 @@ const COLOR_PRESETS = [
   { hex: '#0f172a', label: 'Đen' },
 ];
 
+const FONT_SIZE_PX_OPTIONS = [6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32];
 /**
  * Thanh công cụ chèn cú pháp markdown nhẹ (khớp theoryCorePlainToHtml).
  * @param {{
@@ -78,6 +81,15 @@ export function LessonFormattingToolbar({
   canUndo = false,
   onUndo,
 }) {
+  const [fontMenuOpen, setFontMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!fontMenuOpen) return undefined;
+    const close = () => setFontMenuOpen(false);
+    document.addEventListener('click', close);
+    return () => document.removeEventListener('click', close);
+  }, [fontMenuOpen]);
+
   const run = useCallback(
     (fn) => {
       if (disabled) return;
@@ -120,6 +132,19 @@ export function LessonFormattingToolbar({
       run((v, s, e) => {
         const inner = v.slice(s, e) || 'nội dung';
         const md = `{{#${hex}}}${inner}{{/}}`;
+        const next = v.slice(0, s) + md + v.slice(e);
+        const pos = s + md.length;
+        return { next, start: pos, end: pos };
+      });
+    },
+    [run]
+  );
+
+  const insertFontSize = useCallback(
+    (sizeKey) => {
+      run((v, s, e) => {
+        const inner = v.slice(s, e) || 'nội dung';
+        const md = `{{@${sizeKey}}}${inner}{{/}}`;
         const next = v.slice(0, s) + md + v.slice(e);
         const pos = s + md.length;
         return { next, start: pos, end: pos };
@@ -181,6 +206,47 @@ export function LessonFormattingToolbar({
         <button type="button" className={BTN} title="Gạch chân __ __" onClick={() => run((v, s, e) => wrapSelection(v, s, e, '__', '__'))}>
           <Underline size={13} />
         </button>
+        <div className="relative shrink-0">
+          <button
+            type="button"
+            className={BTN}
+            title="Chọn cỡ chữ hiển thị (px)"
+            disabled={disabled}
+            aria-expanded={fontMenuOpen}
+            aria-haspopup="listbox"
+            onClick={(e) => {
+              e.stopPropagation();
+              setFontMenuOpen((open) => !open);
+            }}
+          >
+            <Type size={13} />
+            <span>Cỡ chữ</span>
+            <ChevronDown size={11} />
+          </button>
+          {fontMenuOpen ? (
+            <div
+              role="listbox"
+              aria-label="Cỡ chữ"
+              className="absolute left-0 top-full z-50 mt-1 max-h-52 w-[4.75rem] overflow-y-auto rounded-lg border border-slate-200 bg-white py-1 shadow-lg"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {FONT_SIZE_PX_OPTIONS.map((px) => (
+                <button
+                  key={px}
+                  type="button"
+                  role="option"
+                  className="block w-full px-3 py-1.5 text-left text-[11px] font-semibold text-slate-700 hover:bg-teal-50 hover:text-teal-900"
+                  onClick={() => {
+                    insertFontSize(`${px}px`);
+                    setFontMenuOpen(false);
+                  }}
+                >
+                  {px}px
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
         <button type="button" className={BTN} title="Chèn khối SVG (```svg … ```)" onClick={insertSvgBlock}>
           <VectorSquare size={13} /> SVG
         </button>
@@ -224,7 +290,8 @@ export function LessonFormattingToolbar({
       </div>
       <p className="text-[10px] text-slate-500 leading-snug">
         Một dòng bắt đầu bằng <code className="bg-slate-100 px-0.5 rounded"># </code> → tiêu đề H2 (trong khung lý thuyết; trang vẫn có cấu trúc SEO tổng thể). Công thức:{' '}
-        <code className="bg-slate-100 px-0.5 rounded">$...$</code> · ảnh: <code className="bg-slate-100 px-0.5 rounded">![](url)</code> · SVG: nút <strong>SVG</strong> hoặc khối{' '}
+        <code className="bg-slate-100 px-0.5 rounded">$...$</code> · cỡ chữ:{' '}
+        <code className="bg-slate-100 px-0.5 rounded">{`{{@16px}}...{{/}}`}</code> · ảnh: <code className="bg-slate-100 px-0.5 rounded">![](url)</code> · SVG: nút <strong>SVG</strong> hoặc khối{' '}
         <code className="bg-slate-100 px-0.5 rounded">```svg</code> · danh sách: <code className="bg-slate-100 px-0.5 rounded">- mục</code>.
       </p>
     </div>

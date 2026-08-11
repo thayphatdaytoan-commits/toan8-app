@@ -1,82 +1,112 @@
 # =============================================================================
-# MẪU IMPORT ĐỀ THI (TXT) — Toán 11 — copy/sửa rồi import trong Admin
-# File Word mẫu: mau-import-de-thi-sample.docx (bản ngắn)
-# File Word mẫu (mới, đầy đủ tham chiếu “Dạng toán”): mau-import-de-thi-sample-v2.docx
+# MẪU IMPORT ĐỀ THI (TXT / WORD) — BẢN ĐẦY ĐỦ TÍNH NĂNG + VÍ DỤ MINH HỌA
 # =============================================================================
+# File Word mẫu: mau-import-de-thi-sample-v2.docx (đồng bộ phần đề mẫu)
+# Admin → Sửa đề → Import Word/TXT
 #
-# --- QUAN TRỌNG: PHẦN THAM CHIẾU KIẾN THỨC ---
-# Toàn bộ nội dung file "TỔNG HỢP KIẾN THỨC MÔN TOÁN" (CT 2018, lớp 6–12) nằm ở
-# CUỐI file này, mỗi dòng bắt đầu bằng # để TRÌNH IMPORT không hiểu nhầm là đề bài.
-#
-# --- QUY ƯỚC "Dạng toán" KHI IMPORT VÀO HỆ THỐNG (lớp 11) ---
-# - Giá trị sau "Dạng toán:" phải trùng (nguyên văn hoặc gần đúng sau chuẩn hóa) một dòng kiến thức
-#   trong phần # TOÁN LỚP 11 ở cuối file / trong app (src/assets/math11-knowledge.txt).
-# - Word đôi khi đổi dấu ngoặc kép, gạch ngang đặc biệt, hoặc ký tự ẩn — app đã chuẩn hóa khi khớp;
-#   vẫn nên copy từ file # để chắc chắn nhất.
-# - Dòng "Chương: n" (n = 1..9) phải khớp chương Toán 11; mỗi tag chỉ hợp lệ nếu thuộc
-#   đúng chương đó. Tag không nằm trong danh sách chương → hệ thống đổi thành "Các dạng toán khác".
-# - Nhiều tag trên một dòng: chỉ phân tách bằng ; hoặc | (KHÔNG dùng dấu phẩy — tên kiến thức CT có dấu phẩy trong ngoặc / liệt kê)
-# - Luôn có thể dùng: Dạng toán: Các dạng toán khác
-#
-# --- LỚP 8 (và các khối khác): @grade_level: 8 — Chương: chỉ ghi số (1–8), ví dụ Chương: 6
-# --- Dạng toán: copy NGUYÊN VĂN một dòng kiến thức trong phần # TOÁN LỚP 8 (đúng chương) ở cuối file.
-# --- Chương trình không gắn sẵn “dạng toán theo từng bài SGK”; dùng Bài: / @lesson_no khớp bài giảng trên Admin.
-# --- Phân loại câu (TN / ĐS / …): chỉ dùng dòng "Loại: ..." — không dùng "Dạng: trắc nghiệm" (dễ lẫn với Dạng toán kiến thức).
-#
-# --- PROMPT GỢI Ý CHO AI (copy nguyên khối dưới đây khi nhờ soạn/ghi đề) ---
-# Bạn là trợ lý soạn file import đề thi Toán 11 theo đúng định dạng mẫu (meta @..., Câu n:,
-# Loại:, Mức độ:, Chương:, Dạng toán:, A.–D., Đáp án:, Lời giải:...).
+# ---------------------------------------------------------------------------
+# PROMPT GỢI Ý CHO AI (copy nguyên khối này khi nhờ soạn/ghi đề)
+# ---------------------------------------------------------------------------
+# Bạn là trợ lý soạn file import đề thi Toán theo đúng định dạng mẫu.
 #
 # Nhiệm vụ:
-# 1) Đọc khối "TỔNG HỢP KIẾN THỨC" đã nhúng trong cùng file (các dòng bắt đầu #).
-# 2) Với mỗi câu hỏi: xác định nội dung thuộc kiến thức/chương nào của CT 2018 (có thể đối chiếu
-#    cả lớp 6–12 để hiểu bối cảnh), rồi ÁNH XẠ sang Chương 1..9 của TOÁN LỚP 11 tương ứng.
-# 3) Điền "Chương: n" (1–9) và "Dạng toán:" chỉ bằng các câu/nguyên mẫu kiến thức nằm dưới
-#    tiêu đề "# Chương k: ..." trong phần # TOÁN LỚP 11 của khối tham chiếu (sao chép nguyên văn,
-#    kể cả dấu câu và công thức LaTeX $...$ nếu có). Không tự đặt tên kiểu "Đạo hàm cơ bản"
-#    nếu chuỗi đó không xuất hiện trong danh sách.
-# 4) Nếu không chọn được dòng nào khớp chính xác, ghi: Dạng toán: Các dạng toán khác
-# 5) Giữ nguyên quy tắc định dạng ảnh, đúng/sai, trả lời ngắn, tự luận như phần mẫu không comment.
-#    Ảnh thường: dùng Markdown ![mô tả](https://...) hoặc <img src="https://..." alt="..." />.
-#    ẢNH SVG (để AI vẽ hình nhanh, import lên hiển thị được ngay):
-#    - Web HỖ TRỢ nhúng SVG theo 2 cách:
-#      (1) Khối fenced code:
-#          ```svg
-#          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200">
-#            ... nội dung svg ...
-#          </svg>
-#          ```
-#      (2) Dán trực tiếp thẻ <svg>...</svg> vào đề / phương án / mệnh đề / lời giải.
-#    - BẮT BUỘC có: xmlns và viewBox. Không dùng script/foreignObject/onload/onclick/... (hệ thống sẽ sanitize và xoá).
-#    - Ưu tiên SVG đơn giản (path/line/rect/circle/text), nét rõ ràng: stroke="#111827" stroke-width="2", fill="none".
-# 6) Không xóa hoặc sửa khối tham chiếu # ở cuối file.
-# --- HẾT PROMPT GỢI Ý ---
+# 1) Đọc khối "TỔNG HỢP KIẾN THỨC" ở CUỐI file (mọi dòng bắt đầu # — không import).
+# 2) Với mỗi câu: chọn Chương: n và Dạng toán: copy NGUYÊN VĂN một dòng kiến thức
+#    thuộc đúng chương trong phần # TOÁN LỚP <khối> (không tự đặt tên dạng).
+# 3) Không khớp được → Dạng toán: Các dạng toán khác
+# 4) Kiểu câu: chỉ dùng dòng "Loại: ..." — KHÔNG dùng "Dạng: trắc nghiệm"
+#    (Dạng: / Dạng toán: là kiến thức CT, dễ lẫn).
+# 5) Trắc nghiệm: phương án VIẾT HOA A. B. C. D. (không dùng a. b. c. d. cho TN).
+#    Mệnh đề đúng/sai dùng a) b) c) d) chữ thường.
+# 6) Nhiều tag kiến thức trên 1 dòng: chỉ tách bằng ; hoặc | (KHÔNG dùng dấu phẩy).
+# 7) Ảnh: ![mô tả](https://...) hoặc <img .../>. SVG: ```svg ... ``` hoặc <svg ...>
+#    (bắt buộc xmlns + viewBox; không script/onclick).
+# 8) Công thức: $...$ với \frac (không \\frac).
+# 9) Không xóa/sửa khối tham chiếu # ở cuối file.
+# 10) Meta @exam_type: lesson|midterm|final|gifted|combined|entrance_10|entrance_univ
+# ---------------------------------------------------------------------------
 #
-# --- PHẦN ĐỀ MẪU (import thật — các dòng không bắt đầu #, trừ meta @) ---
-# Meta (tuỳ chọn):
+# --- QUY ƯỚC QUAN TRỌNG ---
+# - Dòng bắt đầu # hoặc // = ghi chú / tham chiếu — TRÌNH IMPORT BỎ QUA.
+# - "Dạng toán:" phải trùng (sau chuẩn hóa) một dòng kiến thức CT 2018 đúng chương.
+# - Word có thể đổi ngoặc kép / gạch ngang — app đã chuẩn hóa; vẫn nên copy từ khối #.
+# - Lớp 8: @grade_level: 8 — Chương: 1..8; copy dòng trong # TOÁN LỚP 8.
+# - Lớp 11: Chương: 1..9; copy dòng trong # TOÁN LỚP 11.
+# - Gắn bài giảng: @chapter + @lesson_no (đề theo bài) hoặc meta chuyên đề @topic_*.
+#
+# --- META ĐỀ (tuỳ chọn nhưng khuyến nghị) ---
+# @grade_level: 6|7|8|9|10|11|12
+# @chapter: <số>
+# @lesson_no: <số bài>
+# @title: <tên đề>
+# @duration: <phút>
+# @exam_type: lesson | midterm | final | gifted | combined | entrance_10 | entrance_univ
+# @level: test
+#
+# (Tuỳ chọn) Gán đề theo chuyên đề:
+# @topic_id: ...
+# @topic_name: ...
+# @topic_lesson_id: ...
+# @topic_lesson_title: ...
+#
+# --- NHÃN THEO CÂU ---
+# Mức độ: NB | TH | VD | VDC   (hoặc: Nhận biết | Thông hiểu | Vận dụng | Vận dụng cao)
+# Hoặc gắn ngay sau số câu (đề Word phổ biến):
+#   Câu 1: [Mức độ 1] ...   → Nhận biết
+#   Câu 2: [Mức độ 2] ...   → Thông hiểu
+#   Câu 3: [Mức độ 3] ...   → Vận dụng
+#   Câu 4: [Mức độ 4] ...   → Vận dụng cao
+# Chương: <số>
+# Dạng toán: <một dòng kiến thức CT — nguyên văn>
+# Loại: trắc nghiệm | đúng sai | trả lời ngắn | tự luận
+#
+# --- TIÊU ĐỀ PHẦN (tuỳ chọn — gán loại hàng loạt) ---
+# Phần 1. Câu hỏi trắc nghiệm nhiều lựa chọn
+# Phần 2. Câu hỏi đúng / sai
+# Phần 3. Câu hỏi trả lời ngắn
+# Phần 4. Câu hỏi tự luận
+#
+# --- ĐỦ LOẠI CÂU (tóm tắt) ---
+# 1) Trắc nghiệm: Câu N: … / A.–D. / Đáp án: B
+#    Biến thể: Lời giải + "Chọn B"; hoặc __B.__ gạch chân; hoặc 4 PA một hàng (Word).
+# 2) Đúng/Sai a–d: Loại: đúng sai / a)… + Đáp án: Đúng|Sai từng ý
+#    hoặc Đáp án: a Đ; b S; c Đ; d S
+# 3) Trả lời ngắn: Loại: trả lời ngắn / Đáp án: 8
+#    hoặc Lời giải → Trả lời: 11 → các bước
+# 4) Tự luận: Loại: tự luận / học sinh nộp ảnh — Lời giải: gợi ý chấm
+#
+# Lưu ý: Điền chỗ trống (fill_blanks) có trên form Admin đề thi nhưng KHÔNG parse từ TXT;
+# soạn cloze bằng import bài giảng (Bài tập luyện tập) hoặc thêm tay trên Admin.
+#
+# --- ĐỊNH DẠNG @q (tuỳ chọn, thay cho Câu N:) ---
+# Nếu file có bất kỳ @q nào thì TOÀN BỘ đề dùng kiểu @q (không lẫn Câu N:).
+# @q Nội dung câu hỏi...
+# @opts
+# [] phương án A
+# [x] phương án đúng
+# [] phương án C
+# [] phương án D
+# @exp Lời giải...
+#
+# =============================================================================
+# PHẦN ĐỀ MẪU (import thật — dòng không bắt đầu bằng #)
+# =============================================================================
+
 @grade_level: 11
 @chapter: 1
 @lesson_no: 1
-@title: Đề mẫu đủ loại câu
-@duration: 20
+@title: Đề mẫu đủ loại câu — TN, Đúng/Sai, TL ngắn, Tự luận
+@duration: 45
 @level: test
 @exam_type: lesson
-#
-# (Tuỳ chọn) GÁN ĐỀ THEO CHUYÊN ĐỀ (để hiện trong tab "Đề luyện tập" của đúng bài trong Chuyên đề):
-# - Nếu đề thuộc bài trong Chuyên đề, bạn có thể bỏ @chapter/@lesson_no và dùng:
-#   @topic_id: <id chuyên đề>          (tự sinh trong hệ thống khi tạo chuyên đề)
-#   @topic_name: <tên chuyên đề>       (để hiển thị đẹp)
-#   @topic_lesson_id: <id bài giảng>   (id Firestore của bài giảng trong chuyên đề)
-#   @topic_lesson_title: <tiêu đề bài> (fallback nếu chưa có id; hệ thống sẽ cố resolve theo title)
-# - Gợi ý: trong Admin → Sửa bài giảng (chuyên đề), copy topic_id và id bài giảng để điền vào đây.
 
 Chương: 1
 Bài: 1
-Tiêu đề: Đề mẫu — TN, Đúng/Sai, Trả lời ngắn, Tự luận
+Tiêu đề: Đề mẫu — đủ loại câu (minh họa full tính năng)
 
 # --- PHẦN I: Trắc nghiệm 4 phương án ---
-# Ảnh: dùng ![mô tả](URL) hoặc <img src="URL" alt="..." /> — thay URL bằng link ảnh thật (https)
-# SVG: xem quy tắc ở trên (```svg ... ``` hoặc <svg>...</svg>).
+Phần 1. Câu hỏi trắc nghiệm nhiều lựa chọn
+
 Câu 1: Tính $\sin\frac{\pi}{2}$.
 Mức độ: NB
 Chương: 1
@@ -88,8 +118,50 @@ D. $\frac{1}{2}$
 Đáp án: B
 Lời giải: $\sin\frac{\pi}{2}=1$.
 
-# --- PHẦN II: Đúng / Sai (nhiều mệnh đề a–d) ---
-Câu 2: Cho $f(x)=2x^3$. Khi đó:
+Câu 2: (Mẫu "Chọn …" trong Lời giải) Giá trị $\cos 0$ bằng?
+Mức độ: NB
+Chương: 1
+Dạng toán: Góc lượng giác và giá trị lượng giác của các góc lượng giác.
+A. $0$
+B. $1$
+C. $-1$
+D. $\frac{1}{2}$
+Lời giải
+Chọn B
+Theo bảng giá trị lượng giác cơ bản, $\cos 0=1$.
+
+Câu 3: (Mẫu gạch chân đáp án) $\tan\frac{\pi}{4}$ bằng?
+Mức độ: NB
+Chương: 1
+Dạng toán: Góc lượng giác và giá trị lượng giác của các góc lượng giác.
+A. $0$
+__B.__ $1$
+C. $-1$
+D. Không xác định
+Lời giải: $\tan\frac{\pi}{4}=1$.
+
+Câu 4: Minh họa ảnh Markdown + SVG trong đề (thay URL ảnh thật khi dùng).
+Mức độ: TH
+Chương: 1
+Dạng toán: Các dạng toán khác
+![Hình minh họa](https://via.placeholder.com/320x180.png?text=Do+thi)
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 160">
+  <rect x="20" y="20" width="280" height="120" fill="none" stroke="#111827" stroke-width="2"/>
+  <text x="90" y="90" font-size="16" fill="#111827">Hinh minh hoa SVG</text>
+</svg>
+```
+A. Phương án A
+B. Phương án B
+C. Phương án C
+D. Phương án D
+Đáp án: A
+Lời giải: Câu minh họa định dạng ảnh/SVG — thay nội dung khi soạn đề thật.
+
+# --- PHẦN II: Đúng / Sai (a–d) ---
+Phần 2. Câu hỏi đúng / sai
+
+Câu 5: Cho $f(x)=2x^3$. Khi đó:
 Loại: đúng sai
 Mức độ: TH
 Chương: 7
@@ -104,44 +176,64 @@ d) $f'(2)=24$
 Đáp án: Đúng
 Lời giải: $f'(x)=6x^2$; $f'(1)=6$, $f'(0)=0$, $f'(2)=24$.
 
-# GHI CHÚ (ĐÚNG/SAI):
-# - Chuẩn nhất: mỗi mệnh đề a) b) c) d) đi kèm ngay sau bởi một dòng "Đáp án: Đúng/Sai".
-# - Có thể ghi 1 dòng đáp án gộp:
-#   Đáp án: a Đ; b S; c Đ; d S
-#   (hoặc: Đáp án: a: Đúng; b: Sai; ...)
-# - Tránh ghi dòng "a) Đúng" nếu bạn đang định viết mệnh đề bắt đầu bằng chữ "Đúng ...";
-#   nếu cần thì đổi sang: "a) Khẳng định đúng là ..." để khỏi nhập nhằng.
+Câu 6: (Mẫu đáp án gộp 1 dòng) Cho $g(x)=x^2$. Xét các khẳng định:
+Loại: đúng sai
+Mức độ: TH
+Chương: 7
+Dạng toán: Khái niệm đạo hàm và ý nghĩa hình học (phương trình tiếp tuyến), ý nghĩa vật lí (vận tốc tức thời).
+a) $g'(x)=2x$
+b) $g'(0)=0$
+c) $g'(3)=9$
+d) Tiếp tuyến tại $x=1$ có hệ số góc $2$
+Đáp án: a Đ; b Đ; c S; d Đ
+Lời giải: $g'(x)=2x$ nên $g'(3)=6$ (không phải 9); hệ số góc tiếp tuyến tại $x=1$ là $g'(1)=2$.
+
+# GHI CHÚ ĐÚNG/SAI:
+# - Chuẩn: mỗi a) b) c) d) kèm ngay "Đáp án: Đúng/Sai".
+# - Tránh mệnh đề bắt đầu "a) Đúng là …" — dễ nhập nhằng với dòng đáp án.
 
 # --- PHẦN III: Trả lời ngắn ---
-Câu 3: Tìm $x$ biết $\log_2 x = 3$ (chỉ ghi giá trị $x$).
+Phần 3. Câu hỏi trả lời ngắn
+
+Câu 7: Tìm $x$ biết $\log_2 x = 3$ (chỉ ghi giá trị $x$).
 Loại: trả lời ngắn
 Mức độ: VD
 Chương: 6
 Dạng toán: Phương trình, bất phương trình mũ và lôgarit cơ bản.
-Đáp án: 8
-Gợi ý: Nhập một số...
+Đáp án: 8 | 8.0
+Gợi ý: Nhập một số nguyên.
 Lời giải: $x=2^3=8$.
 
-Câu 4: Số hạng thứ 5 của cấp số cộng có $u_1=3, d=2$ là?
+Câu 8: (Kiểu Word: Lời giải → Trả lời: → bước giải) Số hạng thứ 5 của CSC $u_1=3,d=2$?
 Loại: trả lời ngắn
 Mức độ: TH
 Chương: 2
 Dạng toán: Cấp số cộng: Định nghĩa, số hạng tổng quát, tính chất, tổng $n$ số hạng đầu.
-Đáp án: 11
-Placeholder: Nhập đáp án...
-Lời giải: $u_5=u_1+4d=3+8=11$.
+Lời giải
+Trả lời: 11
+Ta có $u_n=u_1+(n-1)d$.
+Với $n=5$: $u_5=3+4\cdot 2=11$.
 
-# --- PHẦN IV: Tự luận (học sinh nộp ảnh) ---
-Câu 5: Chứng minh hàm số $f(x)=x^2$ liên tục tại mọi $x_0\in\mathbb{R}$.
+# --- PHẦN IV: Tự luận (nộp ảnh) ---
+Phần 4. Câu hỏi tự luận
+
+Câu 9: Chứng minh hàm số $f(x)=x^2$ liên tục tại mọi $x_0\in\mathbb{R}$.
 Loại: tự luận
 Mức độ: VDC
 Chương: 3
 Dạng toán: Hàm số liên tục: Liên tục tại một điểm, liên tục trên một khoảng/đoạn, tính chất và định lí về nghiệm của phương trình.
-Lời giải: Gợi ý chấm: dùng định nghĩa liên tục hoặc $\lim_{x\to x_0} f(x)=f(x_0)$.
+Lời giải: Gợi ý chấm: dùng định nghĩa liên tục hoặc $\lim_{x\to x_0}f(x)=f(x_0)$.
+
+Câu 10: (Đề giữa kỳ — đổi @exam_type: midterm ở meta nếu cần) Viết phương trình tiếp tuyến của $y=x^2$ tại $x=1$.
+Loại: tự luận
+Mức độ: VD
+Chương: 7
+Dạng toán: Khái niệm đạo hàm và ý nghĩa hình học (phương trình tiếp tuyến), ý nghĩa vật lí (vận tốc tức thời).
+Lời giải: $y'=2x$; tại $x=1$: $y'=2$, $y=1$ $\Rightarrow$ tiếp tuyến $Y-1=2(x-1)$.
 
 # =============================================================================
-# HẾT PHẦN IMPORT — DƯỚI ĐÂY CHỈ LÀ THAM CHIẾU (mọi dòng bắt đầu #, parser sẽ bỏ qua)
-# Nguồn: TỔNG HỢP KIẾN THỨC MÔN TOÁN.txt — CT GDPT 2018 (lớp 6–12)
+# HẾT PHẦN IMPORT — DƯỚI ĐÂY CHỈ LÀ THAM CHIẾU (mọi dòng bắt đầu #)
+# Nguồn: CT GDPT 2018 — dùng để ánh xạ "Dạng toán:"
 # =============================================================================
 
 # TỔNG HỢP KIẾN THỨC MÔN TOÁN (LỚP 6 - LỚP 12)
@@ -151,711 +243,707 @@ Lời giải: Gợi ý chấm: dùng định nghĩa liên tục hoặc $\lim_{x\
 # TOÁN LỚP 6
 #
 # HỌC KÌ 1
-#
+# 
 # Chương 1: Số tự nhiên
-#
+# 
 # Tập hợp, phần tử của tập hợp. Tập hợp các số tự nhiên.
-#
+# 
 # Các phép tính trong tập hợp số tự nhiên (cộng, trừ, nhân, chia hết, chia có dư).
-#
+# 
 # Lũy thừa với số mũ tự nhiên. Thứ tự thực hiện các phép tính.
-#
+# 
 # Quan hệ chia hết và tính chất. Dấu hiệu chia hết cho 2, 3, 5, 9.
-#
+# 
 # Số nguyên tố, hợp số. Phân tích một số ra thừa số nguyên tố.
-#
+# 
 # Ước chung, ước chung lớn nhất (ƯCLN).
-#
+# 
 # Bội chung, bội chung nhỏ nhất (BCNN).
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 2: Số nguyên
-#
+# 
 # Số nguyên âm và tập hợp các số nguyên. Thứ tự trong tập hợp số nguyên.
-#
+# 
 # Phép cộng và phép trừ hai số nguyên. Quy tắc dấu ngoặc.
-#
+# 
 # Phép nhân và phép chia hết hai số nguyên.
-#
+# 
 # Bội và ước của một số nguyên.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 3: Hình học trực quan (Các hình phẳng trong thực tiễn)
-#
+# 
 # Tam giác đều, hình vuông, lục giác đều.
-#
+# 
 # Hình chữ nhật, hình thoi, hình bình hành, hình thang cân.
-#
+# 
 # Chu vi và diện tích của một số hình tứ giác đã học.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 4: Tính đối xứng của hình phẳng trong tự nhiên
-#
+# 
 # Hình có trục đối xứng.
-#
+# 
 # Hình có tâm đối xứng.
-#
+# 
 # Vai trò của tính đối xứng trong thế giới tự nhiên.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # HỌC KÌ 2
-#
+# 
 # Chương 5: Phân số
-#
+# 
 # Phân số với tử và mẫu là các số nguyên. Phân số bằng nhau.
-#
+# 
 # Tính chất cơ bản của phân số. Rút gọn phân số.
-#
+# 
 # So sánh phân số.
-#
+# 
 # Các phép tính với phân số: Cộng, trừ, nhân, chia.
-#
+# 
 # Hỗn số dương.
-#
+# 
 # Hai bài toán về phân số (Tìm giá trị phân số của một số; Tìm một số biết giá trị phân số của nó).
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 6: Số thập phân
-#
+# 
 # Số thập phân và các phép tính với số thập phân.
-#
+# 
 # Tỉ số và tỉ số phần trăm.
-#
+# 
 # Hai bài toán về tỉ số phần trăm.
-#
+# 
 # Làm tròn số nguyên và số thập phân. Ước lượng kết quả.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 7: Hình học phẳng cơ bản
-#
+# 
 # Điểm, đường thẳng, tia.
-#
+# 
 # Đoạn thẳng, độ dài đoạn thẳng. Trung điểm của đoạn thẳng.
-#
+# 
 # Góc. Số đo góc. Các góc đặc biệt (góc vuông, góc nhọn, góc tù, góc bẹt).
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 8: Dữ liệu và Xác suất thực nghiệm
-#
+# 
 # Thu thập, tổ chức, phân loại và biểu diễn dữ liệu.
-#
+# 
 # Bảng dữ liệu, Biểu đồ tranh, Biểu đồ cột, Biểu đồ cột kép.
-#
+# 
 # Kết quả có thể và sự kiện trong các trò chơi, thí nghiệm (đồng xu, xúc xắc).
-#
+# 
 # Xác suất thực nghiệm trong một số trò chơi và thí nghiệm đơn giản.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # TOÁN LỚP 7
-#
+# 
 # HỌC KÌ 1
-#
+# 
 # Chương 1: Số hữu tỉ
-#
+# 
 # Tập hợp các số hữu tỉ. Thứ tự trong tập hợp số hữu tỉ.
-#
+# 
 # Các phép tính cộng, trừ, nhân, chia số hữu tỉ.
-#
+# 
 # Lũy thừa của một số hữu tỉ.
-#
+# 
 # Quy tắc dấu ngoặc và quy tắc chuyển vế.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 2: Số thực
-#
+# 
 # Số vô tỉ. Căn bậc hai số học.
-#
+# 
 # Số thực. Giá trị tuyệt đối của một số thực.
-#
+# 
 # Làm tròn số và ước lượng.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 3: Hình học trực quan (Các hình khối trong thực tiễn)
-#
+# 
 # Hình hộp chữ nhật và Hình lập phương (Diện tích xung quanh, thể tích).
-#
+# 
 # Hình lăng trụ đứng tam giác và Hình lăng trụ đứng tứ giác.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 4: Góc và Đường thẳng song song
-#
+# 
 # Góc ở vị trí đặc biệt (kề bù, đối đỉnh). Tia phân giác của một góc.
-#
+# 
 # Hai đường thẳng song song và dấu hiệu nhận biết.
-#
+# 
 # Tiên đề Euclid về đường thẳng song song. Tính chất hai đường thẳng song song.
-#
+# 
 # Định lí và chứng minh một định lí.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 5: Thống kê và Xác suất (Phần 1)
-#
+# 
 # Thu thập và phân loại dữ liệu.
-#
+# 
 # Biểu đồ hình quạt tròn.
-#
+# 
 # Biểu đồ đoạn thẳng.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # HỌC KÌ 2
-#
+# 
 # Chương 6: Tỉ lệ thức và Đại lượng tỉ lệ
-#
+# 
 # Tỉ lệ thức và tính chất.
-#
+# 
 # Dãy tỉ số bằng nhau.
-#
+# 
 # Đại lượng tỉ lệ thuận.
-#
+# 
 # Đại lượng tỉ lệ nghịch.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 7: Biểu thức đại số và Đa thức một biến
-#
+# 
 # Biểu thức số, biểu thức đại số.
-#
+# 
 # Đa thức một biến. Nghiệm của đa thức một biến.
-#
+# 
 # Phép cộng và phép trừ đa thức một biến.
-#
+# 
 # Phép nhân và phép chia đa thức một biến.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 8: Tam giác
-#
+# 
 # Tổng ba góc của một tam giác.
-#
+# 
 # Hai tam giác bằng nhau. Các trường hợp bằng nhau của tam giác (c.c.c, c.g.c, g.c.g).
-#
+# 
 # Các trường hợp bằng nhau của tam giác vuông.
-#
+# 
 # Tam giác cân, tam giác đều.
-#
+# 
 # Quan hệ giữa cạnh và góc trong tam giác. Bất đẳng thức tam giác.
-#
+# 
 # Sự đồng quy của các đường trung tuyến, đường phân giác, đường trung trực, đường cao trong tam giác.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 9: Xác suất (Phần 2)
-#
+# 
 # Làm quen với biến cố ngẫu nhiên, biến cố chắc chắn, biến cố không thể.
-#
+# 
 # Xác suất của biến cố ngẫu nhiên trong một số trò chơi đơn giản.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # TOÁN LỚP 8
-#
-# --- Ánh xạ import: @grade_level: 8 — mỗi câu ghi Chương: 1..8 (số) và Dạng toán: <một dòng y hệt một dòng kiến thức dưới đây, cùng chương>.
-# --- “Bài 1 / Bài 2” SGK không có trong CT tổng hợp; dùng Bài: hoặc @lesson_no để khớp bài giảng đã tạo trên web.
-#
+# 
 # HỌC KÌ 1
-#
+# 
 # Chương 1: Đa thức nhiều biến
-#
+# 
 # Đơn thức và Đa thức nhiều biến.
-#
+# 
 # Các phép toán cộng, trừ, nhân, chia các đa thức nhiều biến.
-#
+# 
 # Hằng đẳng thức đáng nhớ (7 hằng đẳng thức cơ bản).
-#
+# 
 # Phân tích đa thức thành nhân tử.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 2: Phân thức đại số
-#
+# 
 # Phân thức đại số. Tính chất cơ bản của phân thức.
-#
+# 
 # Các phép toán với phân thức đại số (cộng, trừ, nhân, chia).
-#
+# 
 # Rút gọn biểu thức chứa phân thức đại số.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 3: Hình học trực quan
-#
+# 
 # Hình chóp tam giác đều.
-#
+# 
 # Hình chóp tứ giác đều.
-#
+# 
 # Diện tích xung quanh và Thể tích của hình chóp tam giác đều, hình chóp tứ giác đều.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 4: Tứ giác
-#
+# 
 # Định lí Pythagore (Hệ thức và đảo).
-#
+# 
 # Tứ giác. Tổng các góc của một tứ giác.
-#
+# 
 # Hình thang, hình thang cân.
-#
+# 
 # Hình bình hành, hình chữ nhật, hình thoi, hình vuông.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # HỌC KÌ 2
-#
+# 
 # Chương 5: Thống kê và Xác suất
-#
+# 
 # Thu thập và tổ chức dữ liệu nhiều tiêu chí.
-#
+# 
 # Phân tích và xử lý dữ liệu.
-#
+# 
 # Xác suất thực nghiệm của một biến cố trong một số trò chơi và thí nghiệm.
-#
+# 
 # Xác suất lí thuyết và mối liên hệ với xác suất thực nghiệm.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 6: Hàm số và Đồ thị
-#
+# 
 # Khái niệm hàm số và mặt phẳng tọa độ $Oxy$.
-#
+# 
 # Đồ thị của hàm số.
-#
+# 
 # Hàm số bậc nhất $y = ax + b$ $(a \neq 0)$. Đồ thị của hàm số bậc nhất.
-#
+# 
 # Hệ số góc của đường thẳng.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 7: Phương trình bậc nhất một ẩn
-#
+# 
 # Phương trình bậc nhất một ẩn và cách giải.
-#
+# 
 # Giải bài toán bằng cách lập phương trình.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 8: Tam giác đồng dạng và Hình đồng dạng
-#
+# 
 # Định lí Thalès trong tam giác (Thuận, đảo, hệ quả).
-#
+# 
 # Đường trung bình của tam giác.
-#
+# 
 # Tính chất đường phân giác của tam giác.
-#
+# 
 # Hai tam giác đồng dạng. Các trường hợp đồng dạng của hai tam giác (c.c.c, c.g.c, g.g).
-#
+# 
 # Các trường hợp đồng dạng của tam giác vuông.
-#
+# 
 # Hình đồng dạng trong thực tiễn.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # TOÁN LỚP 9
-#
+# 
 # HỌC KÌ 1
-#
+# 
 # Chương 1: Phương trình và Hệ phương trình
-#
+# 
 # Phương trình quy về phương trình bậc nhất một ẩn (Phương trình tích, phương trình chứa ẩn ở mẫu).
-#
+# 
 # Phương trình bậc nhất hai ẩn.
-#
+# 
 # Hệ phương trình bậc nhất hai ẩn.
-#
+# 
 # Giải hệ phương trình bậc nhất hai ẩn (Phương pháp thế, phương pháp cộng đại số).
-#
+# 
 # Giải bài toán bằng cách lập hệ phương trình.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 2: Bất đẳng thức và Bất phương trình
-#
+# 
 # Bất đẳng thức và các tính chất cơ bản.
-#
+# 
 # Bất phương trình bậc nhất một ẩn.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 3: Căn thức
-#
+# 
 # Căn bậc hai. Căn thức bậc hai và hằng đẳng thức $\sqrt{A^2} = |A|$.
-#
+# 
 # Các phép biến đổi đơn giản biểu thức chứa căn thức bậc hai (Đưa thừa số ra ngoài/vào trong dấu căn, khử mẫu, trục căn thức).
-#
+# 
 # Căn bậc ba.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 4: Hệ thức lượng trong tam giác vuông
-#
+# 
 # Tỉ số lượng giác của góc nhọn ($\sin, \cos, \tan, \cot$).
-#
+# 
 # Hệ thức về cạnh và góc trong tam giác vuông.
-#
+# 
 # Ứng dụng tỉ số lượng giác để giải một số bài toán thực tế.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 5: Đường tròn (Phần 1)
-#
+# 
 # Khái niệm đường tròn. Sự xác định đường tròn. Tính đối xứng của đường tròn.
-#
+# 
 # Vị trí tương đối của đường thẳng và đường tròn. Tiếp tuyến của đường tròn.
-#
+# 
 # Góc ở tâm. Số đo cung.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # HỌC KÌ 2
-#
+# 
 # Chương 6: Hàm số $y = ax^2$ và Phương trình bậc hai một ẩn
-#
+# 
 # Hàm số $y = ax^2$ $(a \neq 0)$ và đồ thị.
-#
+# 
 # Phương trình bậc hai một ẩn. Công thức nghiệm và công thức nghiệm thu gọn.
-#
+# 
 # Định lí Viète và ứng dụng.
-#
+# 
 # Giải bài toán bằng cách lập phương trình bậc hai.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 7: Thống kê và Xác suất
-#
+# 
 # Tần số. Bảng tần số. Tần số tương đối. Bảng tần số tương đối.
-#
+# 
 # Biểu đồ tần số, biểu đồ tần số tương đối.
-#
+# 
 # Phép thử ngẫu nhiên và không gian mẫu.
-#
+# 
 # Xác suất của biến cố có liên quan tới phép thử.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 8: Đường tròn (Phần 2)
-#
+# 
 # Góc nội tiếp.
-#
+# 
 # Đường tròn ngoại tiếp, đường tròn nội tiếp tam giác.
-#
+# 
 # Tứ giác nội tiếp.
-#
+# 
 # Độ dài đường tròn, cung tròn.
-#
+# 
 # Diện tích hình tròn, hình quạt tròn.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 9: Hình học không gian (Khối tròn xoay)
-#
+# 
 # Hình trụ: Diện tích xung quanh và Thể tích.
-#
+# 
 # Hình nón: Diện tích xung quanh và Thể tích.
-#
+# 
 # Hình cầu: Diện tích mặt cầu và Thể tích.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # TOÁN LỚP 10
-#
+# 
 # HỌC KÌ 1
-#
+# 
 # Chương 1: Mệnh đề toán học và Tập hợp
-#
+# 
 # Khái niệm mệnh đề toán học, mệnh đề chứa biến.
-#
+# 
 # Mệnh đề phủ định, mệnh đề kéo theo, mệnh đề đảo, hai mệnh đề tương đương.
-#
+# 
 # Khái niệm tập hợp và các tập hợp số cơ bản.
-#
+# 
 # Các phép toán trên tập hợp: Phép giao, phép hợp, phép hiệu và phần bù.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 2: Bất phương trình và Hệ bất phương trình bậc nhất hai ẩn
-#
+# 
 # Bất phương trình bậc nhất hai ẩn và cách biểu diễn miền nghiệm trên mặt phẳng tọa độ.
-#
+# 
 # Hệ bất phương trình bậc nhất hai ẩn và miền nghiệm.
-#
+# 
 # Ứng dụng hệ bất phương trình bậc nhất hai ẩn vào bài toán tối ưu (tìm giá trị lớn nhất, nhỏ nhất).
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 3: Hệ thức lượng trong tam giác
-#
+# 
 # Giá trị lượng giác của một góc từ $0^\circ$ đến $180^\circ$.
-#
+# 
 # Định lí côsin và định lí sin trong tam giác.
-#
+# 
 # Các công thức tính diện tích tam giác.
-#
+# 
 # Ứng dụng giải tam giác và đo đạc thực tế.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 4: Vectơ và các phép toán
-#
+# 
 # Khái niệm vectơ, hai vectơ cùng phương, cùng hướng, hai vectơ bằng nhau.
-#
+# 
 # Tổng và hiệu của hai vectơ (quy tắc ba điểm, quy tắc hình bình hành).
-#
+# 
 # Tích của một số với một vectơ và các tính chất.
-#
+# 
 # Góc giữa hai vectơ và tích vô hướng của hai vectơ.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 5: Thống kê
-#
+# 
 # Số gần đúng và sai số (sai số tuyệt đối, sai số tương đối, số quy tròn).
-#
+# 
 # Các số đặc trưng đo xu thế trung tâm cho mẫu số liệu không ghép nhóm: Số trung bình, trung vị, tứ phân vị, mốt.
-#
+# 
 # Các số đặc trưng đo mức độ phân tán cho mẫu số liệu không ghép nhóm: Khoảng biến thiên, khoảng tứ phân vị, phương sai và độ lệch chuẩn.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # HỌC KÌ 2
-#
+# 
 # Chương 6: Hàm số và Đồ thị
-#
+# 
 # Khái niệm hàm số, tập xác định, tập giá trị.
-#
+# 
 # Tính đồng biến, nghịch biến của hàm số và đồ thị hàm số.
-#
+# 
 # Hàm số bậc hai: Bảng biến thiên, vẽ đồ thị hàm số parabol.
-#
+# 
 # Dấu của tam thức bậc hai và ứng dụng giải bất phương trình bậc hai một ẩn.
-#
+# 
 # Giải phương trình quy về phương trình bậc hai (tập trung vào hai dạng cơ bản: $\sqrt{f(x)} = \sqrt{g(x)}$ và $\sqrt{f(x)} = g(x)$).
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 7: Phương pháp tọa độ trong mặt phẳng
-#
+# 
 # Tọa độ của điểm và tọa độ của vectơ trên mặt phẳng $Oxy$.
-#
+# 
 # Biểu thức tọa độ của các phép toán vectơ.
-#
+# 
 # Phương trình đường thẳng: Phương trình tham số, phương trình tổng quát, khoảng cách từ một điểm đến đường thẳng, góc giữa hai đường thẳng.
-#
+# 
 # Phương trình đường tròn: Nhận dạng, lập phương trình đường tròn và phương trình tiếp tuyến của đường tròn.
-#
+# 
 # Ba đường conic: Lập phương trình chính tắc và nhận biết các tính chất cơ bản của Elip, Hypebol, Parabol.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 8: Đại số Tổ hợp
-#
+# 
 # Quy tắc đếm: Quy tắc cộng và quy tắc nhân.
-#
+# 
 # Hoán vị, Chỉnh hợp và Tổ hợp.
-#
+# 
 # Khai triển nhị thức Newton (giới hạn cho các trường hợp số mũ nhỏ như $n=4$ hoặc $n=5$).
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 9: Xác suất
-#
+# 
 # Không gian mẫu và biến cố.
-#
+# 
 # Định nghĩa cổ điển của xác suất.
-#
+# 
 # Các quy tắc tính xác suất cơ bản: Quy tắc cộng xác suất (cho hai biến cố xung khắc) và quy tắc nhân xác suất (cho hai biến cố độc lập).
-#
+# 
 # Các dạng toán khác
-#
+# 
 # TOÁN LỚP 11
-#
+# 
 # HỌC KÌ 1
-#
+# 
 # Chương 1: Hàm số lượng giác và Phương trình lượng giác
-#
+# 
 # Góc lượng giác và giá trị lượng giác của các góc lượng giác.
-#
+# 
 # Các công thức biến đổi lượng giác (công thức cộng, công thức nhân đôi, công thức biến đổi tích thành tổng, tổng thành tích).
-#
+# 
 # Hàm số lượng giác ($y = \sin x, y = \cos x, y = \tan x, y = \cot x$) và đồ thị.
-#
+# 
 # Phương trình lượng giác cơ bản.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 2: Dãy số. Cấp số cộng và Cấp số nhân
-#
+# 
 # Khái niệm dãy số, cách cho một dãy số, tính tăng/giảm và bị chặn của dãy số.
-#
+# 
 # Cấp số cộng: Định nghĩa, số hạng tổng quát, tính chất, tổng $n$ số hạng đầu.
-#
+# 
 # Cấp số nhân: Định nghĩa, số hạng tổng quát, tính chất, tổng $n$ số hạng đầu.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 3: Giới hạn và Hàm số liên tục
-#
+# 
 # Giới hạn của dãy số: Các định lí về giới hạn, tổng của cấp số nhân lùi vô hạn.
-#
+# 
 # Giới hạn của hàm số: Giới hạn tại một điểm, giới hạn tại vô cực, các dạng vô định.
-#
+# 
 # Hàm số liên tục: Liên tục tại một điểm, liên tục trên một khoảng/đoạn, tính chất và định lí về nghiệm của phương trình.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 4: Đường thẳng và Mặt phẳng. Quan hệ song song trong không gian
-#
+# 
 # Các khái niệm mở đầu về không gian: Điểm, đường thẳng, mặt phẳng. Các tính chất thừa nhận.
-#
+# 
 # Hai đường thẳng chéo nhau và hai đường thẳng song song.
-#
+# 
 # Đường thẳng song song với mặt phẳng.
-#
+# 
 # Hai mặt phẳng song song. Định lí Thales trong không gian.
-#
+# 
 # Phép chiếu song song. Hình biểu diễn của một hình không gian.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 5: Thống kê (Mẫu số liệu ghép nhóm)
-#
+# 
 # Tổ chức dữ liệu: Cách ghép nhóm mẫu số liệu.
-#
+# 
 # Các số đặc trưng đo xu thế trung tâm cho mẫu số liệu ghép nhóm: Số trung bình, trung vị, tứ phân vị và mốt.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # HỌC KÌ 2
-#
+# 
 # Chương 6: Hàm số mũ và Hàm số lôgarit
-#
+# 
 # Phép tính lũy thừa với số mũ nguyên, hữu tỉ, thực.
-#
+# 
 # Khái niệm, tính chất và các quy tắc tính lôgarit.
-#
+# 
 # Hàm số mũ và hàm số lôgarit: Tập xác định, tính biến thiên và đồ thị.
-#
+# 
 # Phương trình, bất phương trình mũ và lôgarit cơ bản.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 7: Đạo hàm
-#
+# 
 # Khái niệm đạo hàm và ý nghĩa hình học (phương trình tiếp tuyến), ý nghĩa vật lí (vận tốc tức thời).
-#
+# 
 # Các quy tắc tính đạo hàm (tổng, hiệu, tích, thương, hàm hợp). Đạo hàm của hàm số lượng giác, mũ, lôgarit.
-#
+# 
 # Đạo hàm cấp hai.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 8: Quan hệ vuông góc trong không gian
-#
+# 
 # Góc giữa hai đường thẳng trong không gian. Hai đường thẳng vuông góc.
-#
+# 
 # Đường thẳng vuông góc với mặt phẳng. Định lí ba đường vuông góc.
-#
+# 
 # Hai mặt phẳng vuông góc. Góc nhị diện.
-#
+# 
 # Khoảng cách: Khoảng cách từ điểm đến đường thẳng/mặt phẳng, khoảng cách giữa hai đường thẳng chéo nhau.
-#
+# 
 # Thể tích của một số khối đa diện (khối lăng trụ, khối chóp).
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 9: Xác suất
-#
+# 
 # Biến cố hợp, biến cố giao, biến cố xung khắc, biến cố độc lập.
-#
+# 
 # Các quy tắc tính xác suất: Quy tắc cộng (mở rộng) và Quy tắc nhân xác suất.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # TOÁN LỚP 12
-#
+# 
 # HỌC KÌ 1
-#
+# 
 # Chương 1: Ứng dụng đạo hàm để khảo sát và vẽ đồ thị hàm số
-#
+# 
 # Tính đơn điệu của hàm số. Mối liên hệ giữa đạo hàm và sự đồng biến, nghịch biến.
-#
+# 
 # Cực trị của hàm số: Điểm cực đại, cực tiểu, giá trị cực trị.
-#
+# 
 # Giá trị lớn nhất và giá trị nhỏ nhất của hàm số trên một tập hợp.
-#
+# 
 # Đường tiệm cận của đồ thị hàm số: Tiệm cận đứng, tiệm cận ngang, tiệm cận xiên.
-#
+# 
 # Khảo sát sự biến thiên và vẽ đồ thị của hàm số. Tương giao đồ thị.
-#
+# 
 # Ứng dụng đạo hàm để giải quyết các bài toán tối ưu thực tế.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 2: Vectơ và Hệ tọa độ trong không gian
-#
+# 
 # Vectơ trong không gian: Các phép toán cộng, trừ, nhân vectơ với một số, tích vô hướng của hai vectơ.
-#
+# 
 # Hệ trục tọa độ $Oxyz$ trong không gian.
-#
+# 
 # Biểu thức tọa độ của vectơ và tọa độ của điểm. Biểu thức tọa độ của các phép toán vectơ.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 3: Thống kê (Mức độ phân tán của mẫu số liệu ghép nhóm)
-#
+# 
 # Khái quát lại mẫu số liệu ghép nhóm.
-#
+# 
 # Các số đặc trưng đo mức độ phân tán cho mẫu số liệu ghép nhóm: Khoảng biến thiên, khoảng tứ phân vị.
-#
+# 
 # Phương sai và độ lệch chuẩn của mẫu số liệu ghép nhóm. Ý nghĩa thực tiễn.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # HỌC KÌ 2
-#
+# 
 # Chương 4: Nguyên hàm và Tích phân
-#
+# 
 # Khái niệm nguyên hàm, các tính chất cơ bản và bảng nguyên hàm các hàm số sơ cấp.
-#
+# 
 # Khái niệm tích phân, tính chất của tích phân. Định lí Newton - Leibniz.
-#
+# 
 # Các phương pháp tính nguyên hàm, tích phân: Phương pháp đổi biến số, phương pháp tích phân từng phần.
-#
+# 
 # Ứng dụng hình học của tích phân: Tính diện tích hình phẳng, thể tích khối tròn xoay.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 5: Phương pháp tọa độ trong không gian
-#
+# 
 # Phương trình mặt phẳng: Vectơ pháp tuyến, cách lập phương trình tổng quát, khoảng cách từ một điểm đến mặt phẳng.
-#
+# 
 # Phương trình đường thẳng trong không gian: Vectơ chỉ phương, phương trình tham số, phương trình chính tắc.
-#
+# 
 # Góc giữa hai đường thẳng, góc giữa đường thẳng và mặt phẳng, góc giữa hai mặt phẳng.
-#
+# 
 # Phương trình mặt cầu: Cách lập phương trình, xác định tâm và bán kính mặt cầu.
-#
+# 
 # Các dạng toán khác
-#
+# 
 # Chương 6: Xác suất (Xác suất có điều kiện)
-#
+# 
 # Khái niệm xác suất có điều kiện $P(B|A)$.
-#
+# 
 # Công thức nhân xác suất đối với hai biến cố không độc lập.
-#
+# 
 # Công thức xác suất toàn phần.
-#
+# 
 # Công thức Bayes và ứng dụng trong các bài toán thực tế (y tế, kiểm định, quyết định).
-#
+# 
 # Các dạng toán khác
-#

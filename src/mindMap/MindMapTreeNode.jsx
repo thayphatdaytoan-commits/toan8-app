@@ -169,16 +169,15 @@ export default function MindMapTreeNode({
       </div>
 
       {node.children && node.children.length > 0 && (
-        <div className="flex justify-center pt-8 relative z-10 w-full">
-          <div className="absolute top-0 left-1/2 w-[3px] h-8 bg-slate-400 -ml-[1.5px]">
+        <div className="flex justify-center pt-10 relative z-10 w-full">
+          <div className="absolute top-0 left-1/2 w-[5px] h-10 bg-red-500 -ml-[2.5px] rounded-full">
             <svg
-              className="absolute -top-[6px] left-1/2 -translate-x-1/2 w-5 h-5 text-red-500 z-10"
-              fill="none"
+              className="absolute -top-[10px] left-1/2 -translate-x-1/2 w-9 h-9 text-red-600 z-10 drop-shadow-sm"
               viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="4"
+              fill="currentColor"
+              aria-hidden
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 9l6-6 6 6" />
+              <path d="M12 3 L21 18 H3 Z" />
             </svg>
           </div>
 
@@ -191,14 +190,14 @@ export default function MindMapTreeNode({
               <div key={child.id} className="relative flex flex-col items-center">
                 {!isOnly && (
                   <div
-                    className={`absolute top-0 h-[3px] bg-slate-400
+                    className={`absolute top-0 h-[5px] bg-red-500 rounded-full
                       ${isFirst ? 'left-1/2 right-0' : ''}
                       ${isLast ? 'left-0 right-1/2' : ''}
                       ${!isFirst && !isLast ? 'left-0 right-0' : ''}
                     `}
                   />
                 )}
-                <div className="w-[3px] h-8 bg-slate-400" />
+                <div className="w-[5px] h-10 bg-red-500 rounded-full" />
                 <MindMapTreeNode
                   node={child}
                   treeId={treeId}

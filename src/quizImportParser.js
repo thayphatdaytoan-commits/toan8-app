@@ -26,6 +26,7 @@ import {
  *
  * (A) Cổ điển:
  *   Câu 1: ... (có thể chèn ảnh; trong đề được phép có dòng a) b) c) chữ thường — không dùng làm phương án)
+ *   Câu 1: [Mức độ 1] ...  → Nhận biết | [Mức độ 2] Thông hiểu | [Mức độ 3] Vận dụng | [Mức độ 4] Vận dụng cao
  *   Phương án trắc nghiệm phải bắt đầu bằng chữ HOA: A. / B. / C. / D. (không dùng a. cho TN)
  *   A. ... B. ... C. ... D. ...
  *   Đáp án: B
@@ -67,10 +68,15 @@ import {
  *
  * (D) Trả lời ngắn:
  *   Câu 2: ...
- *   Loại: trả lời ngắn
+ *   Loại: trả lời ngắn   (hoặc tiêu đề Phần 3 … trả lời ngắn)
  *   Đáp án: 12 | 12.0 | mười hai
  *   Placeholder: ...  hoặc  Gợi ý: ...  (chú thích ô nhập)
  *   Lời giải: ...
+ *
+ *   Hoặc định dạng đề Word phổ biến:
+ *   Lời giải
+ *   Trả lời: 3
+ *   (các bước giải tiếp theo → explanation)
  *
  * (E) Tự luận (nộp ảnh):
  *   Câu 3: ...
@@ -106,14 +112,64 @@ function getKnowledgeForImport(grade) {
 let _activeImportKnowledge = MATH11_KNOWLEDGE;
 
 // ---- Per-question labels (nhãn theo từng câu) ----
+const MUC_DO_TO_COG = {
+  1: 'recognize',
+  2: 'understand',
+  3: 'apply',
+  4: 'apply_high',
+};
+
+/**
+ * NB/TH/VD/VDC hoặc "Mức độ 1"…"Mức độ 4" (đề Word hay ghi [Mức độ 1] ngay sau Câu N:).
+ * 1 → Nhận biết, 2 → Thông hiểu, 3 → Vận dụng, 4 → Vận dụng cao.
+ */
 function normalizeCognitiveLevelVi(raw) {
-  const v = String(raw || '').trim().toLowerCase();
+  let v = String(raw || '')
+    .trim()
+    .toLowerCase()
+    .replace(/^[\[\【「]\s*|\s*[\]\】」]$/g, '')
+    .trim();
   if (!v) return null;
+
+  const mNum =
+    v.match(/^(?:mức\s*độ|muc\s*do|level|độ|do)\s*([1-4])(?:\s*[:.\-–—].*)?$/i) ||
+    v.match(/^([1-4])$/);
+  if (mNum) {
+    const n = Number(mNum[1]);
+    return MUC_DO_TO_COG[n] || null;
+  }
+
   if (/^(nb|nhận\s*biết|nhan\s*biet|recognize|recognise)$/.test(v)) return 'recognize';
   if (/^(th|thông\s*hiểu|thong\s*hieu|understand)$/.test(v)) return 'understand';
-  if (/^(vd|vận\s*dụng|van\s*dung|apply)$/.test(v)) return 'apply';
+  // "vận dụng cao" trước "vận dụng" để không khớp nhầm
   if (/^(vdc|vận\s*dụng\s*cao|van\s*dung\s*cao|apply[_\s-]*high)$/.test(v)) return 'apply_high';
+  if (/^(vd|vận\s*dụng|van\s*dung|apply)$/.test(v)) return 'apply';
   return null;
+}
+
+/** Gỡ tag [Mức độ N] / 【Mức độ N】 khỏi đề và gán cognitive_level. */
+function stripInlineMucDoTag(stem, cur) {
+  let s = String(stem || '');
+  if (!s.trim()) return s;
+  const reBracket = /[\[\【「]\s*mức\s*độ\s*([1-4])\s*[\]\】」]/gi;
+  let hit = null;
+  s = s.replace(reBracket, (_, n) => {
+    if (!hit) hit = n;
+    return ' ';
+  });
+  if (!hit) {
+    const rePrefix = /^\s*mức\s*độ\s*([1-4])\s*[:.\-–—]?\s*/i;
+    const m = s.match(rePrefix);
+    if (m) {
+      hit = m[1];
+      s = s.replace(rePrefix, '').trim();
+    }
+  }
+  if (hit && cur) {
+    const mapped = normalizeCognitiveLevelVi(hit);
+    if (mapped) cur.cognitive_level = mapped;
+  }
+  return s.replace(/[ \t]{2,}/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
 }
 
 /**
@@ -195,7 +251,19 @@ function tryConsumeQuestionLabelLine(line, cur) {
   const L = stripLeadingQuizEnumPrefix(String(line || '').trim());
   if (!L || !cur) return false;
 
-  // Mức độ / độ nhận thức
+  // Mức độ / độ nhận thức — "Mức độ: NB" | "[Mức độ 1]" | "Mức độ 2"
+  const mCogBracket = L.match(/^[\[\【「]\s*mức\s*độ\s*([1-4])\s*[\]\】」]\s*$/i);
+  if (mCogBracket) {
+    const v = normalizeCognitiveLevelVi(mCogBracket[1]);
+    if (v) cur.cognitive_level = v;
+    return true;
+  }
+  const mCogBare = L.match(/^mức\s*độ\s*([1-4])\s*$/i);
+  if (mCogBare) {
+    const v = normalizeCognitiveLevelVi(mCogBare[1]);
+    if (v) cur.cognitive_level = v;
+    return true;
+  }
   const mCog =
     L.match(/^(mức\s*độ|nhận\s*thức|độ\s*nhận\s*thức|cognitive|level)\s*[:：\-]\s*(.+)$/i) ||
     L.match(/^@cog(nitive)?\s*[:：]\s*(.+)$/i) ||
@@ -299,6 +367,42 @@ function normalizeQuizMeta(meta) {
 
 function optionIndexByLetter(letter) {
   return { A: 0, B: 1, C: 2, D: 3 }[String(letter || '').toUpperCase()] ?? null;
+}
+
+/**
+ * Tách phương án A–D khi Word đặt nhiều đáp án trên cùng một dòng.
+ * Dấu `__...__` do bộ đọc DOCX tạo ra từ chữ gạch chân; phương án có
+ * nhãn hoặc nội dung gạch chân được xem là đáp án đúng.
+ */
+function extractInlineMcqOptions(line) {
+  const source = String(line || '');
+  const starts = [];
+  const re =
+    /(?:^|(?<=[\s\t])|(?<=[\$\)\]\}]))(?:__\s*([A-D])\s*[\.\):\-]\s*__|__\s*([A-D])\s*__\s*[\.\):\-]|__\s*([A-D])\s*[\.\):\-]|([A-D])\s*[\.\):\-])/g;
+  let match;
+  while ((match = re.exec(source)) !== null) {
+    const letter = String(match[1] || match[2] || match[3] || match[4] || '').toUpperCase();
+    if (!letter) continue;
+    starts.push({
+      index: match.index,
+      endLabel: match.index + match[0].length,
+      letter,
+      labelUnderlined: Boolean(match[1] || match[2] || match[3]),
+    });
+  }
+  if (!starts.length || starts[0].index !== 0) return [];
+
+  return starts.map((start, index) => {
+    const end = index + 1 < starts.length ? starts[index + 1].index : source.length;
+    const rawText = source.slice(start.endLabel, end).trim();
+    const underlined = start.labelUnderlined || /__[\s\S]*?__/.test(rawText);
+    const text = rawText.replace(/__/g, '').trim();
+    return {
+      index: optionIndexByLetter(start.letter),
+      text,
+      underlined,
+    };
+  });
 }
 
 function newQuestion() {
@@ -506,10 +610,31 @@ function parseLoaiLine(line) {
   return null;
 }
 
+/** Nhận loại câu từ tiêu đề "Phần 1/2/3..." thường dùng trong đề Word. */
+function parseQuestionKindFromSectionHeading(line) {
+  const raw = stripLeadingQuizEnumPrefix(String(line || '').trim());
+  if (!/^phần\s*(?:\d+|[ivxlcdm]+)\b/i.test(raw)) return null;
+  const normalized = raw
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
+    .toLowerCase();
+
+  // Kiểm tra đúng/sai trước vì tiêu đề cũng thường chứa chữ "lựa chọn".
+  if (/dung\s*[-/–—]?\s*sai|lua\s*chon\s*dung\s*sai|trac\s*nghiem\s*dung\s*sai/.test(normalized)) {
+    return 'true_false_group';
+  }
+  if (/tra\s*loi\s*ngan|dap\s*an\s*ngan/.test(normalized)) return 'short_answer';
+  if (/tu\s*luan|nop\s*anh/.test(normalized)) return 'essay';
+  if (/nhieu\s*phuong\s*an|trac\s*nghiem|lua\s*chon/.test(normalized)) return 'multiple_choice';
+  return null;
+}
+
 function parseBoolish(s) {
   const t = (s || '').toString().trim().toLowerCase();
-  if (/^(đúng|dung|true|t|yes|1|có|v|x|\*)$/.test(t)) return true;
-  if (/^(sai|false|f|no|0|không|ko)$/.test(t)) return false;
+  if (/^(đúng|dung|đ|d|true|t|yes|1|có|v|x|\*)$/.test(t)) return true;
+  if (/^(sai|s|false|f|no|0|không|ko)$/.test(t)) return false;
   return null;
 }
 
@@ -573,6 +698,20 @@ function flushTfDraft(cur) {
 function parseTfAnswerPairsFromText(raw) {
   const s0 = String(raw || '').trim();
   if (!s0) return [];
+  // Bảng đáp án Word thường thành một dòng:
+  // "a) Sai   b) Đúng   c) Sai   d) Đúng".
+  const inlinePairs = [];
+  const inlineRe =
+    /(?:^|[\s|;,])([a-d])\s*[\).:\-]?\s*(đúng|dung|sai|true|false|t|f|đ|d|s)(?=\s|$|[|;,])/gi;
+  let inlineMatch;
+  while ((inlineMatch = inlineRe.exec(s0)) !== null) {
+    const boolVal = parseBoolish(inlineMatch[2]);
+    if (boolVal !== null) {
+      inlinePairs.push({ key: inlineMatch[1].toLowerCase(), boolVal, tail: '' });
+    }
+  }
+  if (inlinePairs.length > 1) return inlinePairs;
+
   // Normalize separators a bit: "a.Đ b.S" -> "a:Đ; b:S"
   const s = s0
     .replace(/[，]/g, ',')
@@ -620,6 +759,7 @@ function newLineQuestionDraft() {
     question: '',
     options: ['', '', '', ''],
     correctAnswer: 0,
+    lastMcqOptionIndex: null,
     explanation: '',
     tfItems: [],
     tfDraft: null,
@@ -635,6 +775,8 @@ function newLineQuestionDraft() {
 
 function finalizeLineQuestionDraft(raw, ctx = {}) {
   if (!raw) return null;
+  // Phòng trường hợp tag [Mức độ N] dính vào đề (xuống dòng / Word)
+  raw.question = stripInlineMucDoTag(raw.question || '', raw);
   const stem = (raw.question || '').trim();
   if (!stem && raw.qKind !== 'essay') return null;
   const meta = ctx.meta || {};
@@ -666,7 +808,8 @@ function finalizeLineQuestionDraft(raw, ctx = {}) {
         key: (it.key || 'a').toLowerCase(),
         text: (it.text || '').trim(),
         correct: typeof it.correct === 'boolean' ? it.correct : null,
-      }));
+      }))
+      .sort((a, b) => String(a.key).localeCompare(String(b.key), 'en'));
     return {
       id: raw.id,
       type: 'true_false_group',
@@ -750,6 +893,7 @@ function parseLineFormatQuestions(lines, meta = {}) {
   const errors = [];
   let cur = null;
   let inExplanation = false;
+  let currentSectionKind = 'multiple_choice';
 
   /** Nhãn trước dòng "Câu 1:" (Word hay để Chương / Dạng toán phía trên) — tránh bị bỏ khi finalize câu "ma". */
   const preDraft = newLineQuestionDraft();
@@ -777,6 +921,11 @@ function parseLineFormatQuestions(lines, meta = {}) {
   };
 
   for (const line of lines) {
+    const sectionKind = parseQuestionKindFromSectionHeading(line);
+    if (sectionKind) {
+      currentSectionKind = sectionKind;
+      continue;
+    }
     if (/^phần\s+[ivxlcdm\d]/i.test(line) || /^part\s+[ivx\d]/i.test(line)) continue;
 
     const cauHit = matchCauLine(line);
@@ -789,7 +938,8 @@ function parseLineFormatQuestions(lines, meta = {}) {
         resetQuestionLabelDraft(preDraft);
         sawAnyQuestion = true;
       }
-      cur.question = (mQ[2] || '').trim();
+      cur.qKind = currentSectionKind;
+      cur.question = stripInlineMucDoTag((mQ[2] || '').trim(), cur);
       continue;
     }
 
@@ -834,10 +984,18 @@ function parseLineFormatQuestions(lines, meta = {}) {
         cur.answerPlaceholder = (mPh[2] != null ? mPh[2] : mPh[1] || '').trim();
         continue;
       }
-      const mDa = line.match(/^đáp\s*án\s*[:\-]\s*(.+)$/i);
+      // "Trả lời: …" / "Đáp án: …" — kể cả còn sót ** hoặc __ từ Word.
+      const answerLine = String(line || '')
+        .replace(/^[\s*_]+/, '')
+        .replace(/\*\*|__/g, '');
+      const mDa = answerLine.match(
+        /^(?:đáp\s*án|dap\s*an|đáp\s*số|dap\s*so|trả\s*lời|tra\s*loi)\s*[:：\-]\s*(.+)$/i
+      );
       if (mDa) {
-        cur.shortCorrect = (mDa[1] || '').trim();
-        inExplanation = false;
+        cur.shortCorrect = (mDa[1] || '').trim().replace(/\*\*|__/g, '').trim();
+        // Định dạng Word: Lời giải → Trả lời: … → các bước giải.
+        // Giữ/bật inExplanation để không ghi các bước vào phần đề bài.
+        inExplanation = true;
         continue;
       }
       if (inExplanation) cur.explanation = (cur.explanation ? `${cur.explanation}\n` : '') + line;
@@ -846,6 +1004,14 @@ function parseLineFormatQuestions(lines, meta = {}) {
     }
 
     if (cur.qKind === 'true_false_group') {
+      const inlineTfAnswers = parseTfAnswerPairsFromText(line);
+      if (inlineTfAnswers.length > 1) {
+        inlineTfAnswers.forEach((pair) => applyTfAnswerForKey(cur, pair.key, pair.boolVal));
+        if (inExplanation) {
+          cur.explanation = (cur.explanation ? `${cur.explanation}\n` : '') + line;
+        }
+        continue;
+      }
       const mTfSub = line.match(/^([a-d])\s*[\).:\-]\s*(.*)$/i);
       if (mTfSub) {
         const key = mTfSub[1].toLowerCase();
@@ -936,11 +1102,16 @@ function parseLineFormatQuestions(lines, meta = {}) {
       continue;
     }
 
-    // Phương án TN: chỉ chữ HOA A–D (không dùng /i) — tránh nhầm mệnh đề a) b) c) trong đề bài với phương án
-    const mOpt = line.match(/^([ABCD])\s*[\).:\-]\s*(.*)$/);
-    if (mOpt) {
-      const idx = optionIndexByLetter(mOpt[1].toUpperCase());
-      if (idx !== null) cur.options[idx] = mOpt[2] || '';
+    // Phương án TN: nhận mỗi đáp án một dòng hoặc A/B/C/D cùng một dòng.
+    // Chỉ chữ HOA để tránh nhầm mệnh đề a) b) c) trong đề bài.
+    const inlineOpts = extractInlineMcqOptions(line);
+    if (inlineOpts.length > 0) {
+      inlineOpts.forEach((opt) => {
+        if (opt.index === null) return;
+        cur.options[opt.index] = opt.text;
+        cur.lastMcqOptionIndex = opt.index;
+        if (opt.underlined) cur.correctAnswer = opt.index;
+      });
       inExplanation = false;
       continue;
     }
@@ -956,9 +1127,17 @@ function parseLineFormatQuestions(lines, meta = {}) {
 
     const hasAnyOption = cur.options.some((o) => (o || '').trim().length > 0);
     if (!hasAnyOption) {
-      cur.question = (cur.question ? `${cur.question}\n` : '') + line;
+      if (Number.isInteger(cur.lastMcqOptionIndex)) {
+        const idx = cur.lastMcqOptionIndex;
+        cur.options[idx] = (cur.options[idx] ? `${cur.options[idx]}\n` : '') + line;
+      } else {
+        cur.question = (cur.question ? `${cur.question}\n` : '') + line;
+      }
     } else if (inExplanation) {
       cur.explanation = (cur.explanation ? `${cur.explanation}\n` : '') + line;
+    } else if (Number.isInteger(cur.lastMcqOptionIndex)) {
+      const idx = cur.lastMcqOptionIndex;
+      cur.options[idx] = (cur.options[idx] ? `${cur.options[idx]}\n` : '') + line;
     } else {
       cur.question = (cur.question ? `${cur.question}\n` : '') + line;
     }
@@ -1069,6 +1248,12 @@ export function validateQuizQuestionsAdmin(questions) {
     if (t === 'short_answer') {
       if (!(q?.question || '').toString().trim()) errors.push(`Câu ${n}: thiếu nội dung câu hỏi`);
       if (!(q?.shortCorrect || '').toString().trim()) errors.push(`Câu ${n}: thiếu đáp án (trả lời ngắn)`);
+      return;
+    }
+    if (t === 'fill_blanks') {
+      if (!(q?.passage || '').toString().trim()) errors.push(`Câu ${n}: thiếu đoạn văn (dùng {{1}}, {{2}}…)`);
+      const blanks = Array.isArray(q?.blanks) ? q.blanks : [];
+      if (blanks.length === 0) errors.push(`Câu ${n}: thiếu đáp án các chỗ trống (mỗi dòng 1=…)`);
       return;
     }
     if (t === 'true_false_group') {

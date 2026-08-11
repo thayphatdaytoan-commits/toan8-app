@@ -191,7 +191,8 @@ export default function MindMapTeacherPanel({
       const path = buildTreeImageStoragePath(
         mindMapUploadContext.categoryId,
         mindMapUploadContext.exerciseId,
-        treeId
+        treeId,
+        mindMapUploadContext.gradeLevel
       );
       const url = await uploadMindMapJpegToStorage(file, storage, path);
       setLogicTrees((trees) =>
@@ -221,7 +222,8 @@ export default function MindMapTeacherPanel({
     try {
       const path = buildProblemImageStoragePath(
         mindMapUploadContext.categoryId,
-        mindMapUploadContext.exerciseId
+        mindMapUploadContext.exerciseId,
+        mindMapUploadContext.gradeLevel
       );
       const url = await uploadMindMapJpegToStorage(file, storage, path);
       setProblem((p) => ({ ...(p || {}), imageUrl: url }));
@@ -250,7 +252,8 @@ export default function MindMapTeacherPanel({
     try {
       const path = buildSharedMindMapImageStoragePath(
         mindMapUploadContext.categoryId,
-        mindMapUploadContext.exerciseId
+        mindMapUploadContext.exerciseId,
+        mindMapUploadContext.gradeLevel
       );
       const url = await uploadMindMapJpegToStorage(file, storage, path);
       setSharedMindMapImageUrl(url);

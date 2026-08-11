@@ -1,11 +1,41 @@
+/* eslint-disable */
 import React, { useMemo, useRef, useState } from 'react';
+import katex from 'katex';
 import { Sigma } from 'lucide-react';
+import { mixedMathContentToHtml } from './mathKatexMixed';
+import {
+  HOIDAP_MATH_KEYS,
+  HOIDAP_TEMPLATE_KEYS,
+  insertAtSelection,
+} from './community/mathPalette';
 import {
   normalizeInputAnswerParts,
   resolveInputPartValues,
 } from './practiceQuestionTypes';
 
-const MATH_KEYS = ['(', ')', ';', '/', '²', '√', 'π', 'x', 'y', '-'];
+function katexSafe(tex) {
+  try {
+    return katex.renderToString(tex, { throwOnError: false, displayMode: false, strict: false });
+  } catch {
+    return tex;
+  }
+}
+
+function MathPadKey({ tex, onClick }) {
+  return (
+    <button
+      type="button"
+      onMouseDown={(e) => e.preventDefault()}
+      onClick={onClick}
+      className="h-10 sm:h-11 px-1 rounded-lg bg-white border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50 active:bg-indigo-100 transition-colors flex items-center justify-center shadow-sm"
+    >
+      <span
+        className="[&_.katex]:text-[0.9em] sm:[&_.katex]:text-[1em] pointer-events-none"
+        dangerouslySetInnerHTML={{ __html: katexSafe(tex) }}
+      />
+    </button>
+  );
+}
 
 function inferSinglePlaceholder(q, part) {
   const custom = (part?.placeholder || q?.answerPlaceholder || '').trim();
@@ -14,18 +44,110 @@ function inferSinglePlaceholder(q, part) {
   if (/tọa độ|toa do|hoành|hoanh|tung độ|tung do|\(\s*x\s*[;,]/.test(question)) {
     return 'Ví dụ: 2; -3';
   }
-  if (/phân số|frac|\//.test(question)) return 'Ví dụ: 1/2';
-  if (/căn|sqrt|√/.test(question)) return 'Ví dụ: 2√3';
-  if (/bình phương|\^2|x²/.test(question)) return 'Ví dụ: 4';
-  return 'Ví dụ: 12';
+  if (/phân số|frac|\//.test(question)) return 'Ví dụ: 1/2 hoặc $\\dfrac{1}{2}$';
+  if (/căn|sqrt|√/.test(question)) return 'Ví dụ: 2√3 hoặc $2\\sqrt{3}$';
+  if (/đơn thức|thu gọn|bình phương|\^2|x²/.test(question)) return 'Kết quả = …';
+  return 'Kết quả = …';
 }
 
-/** Độ rộng ô — rộng hơn để chữ Việt + khoảng trắng không bị dính/cắt. */
 function inputMinWidthPx(placeholder) {
   const len = String(placeholder || '').length;
-  // ~0.65rem/ký tự + padding; tối thiểu 7.5rem, tối đa 14rem
   const rem = Math.max(7.5, Math.min(14, len * 0.72 + 2.2));
   return `${rem}rem`;
+}
+
+/** Panel công thức: xem trước + bàn phím LaTeX (chỉ mở khi cần). */
+function FormulaComposerPanel({ value, disabled, onChange, inputRef }) {
+  const [showAllKeys, setShowAllKeys] = useState(false);
+  const selRef = useRef({ start: 0, end: 0 });
+
+  const previewHtml = useMemo(() => {
+    const raw = String(value || '').trim();
+    if (!raw) return '';
+    try {
+      const forPreview = /\$|\\\[|\\\(/.test(raw) ? raw : `$${raw}$`;
+      return mixedMathContentToHtml(forPreview).replace(/\n/g, '<br/>');
+    } catch {
+      return '';
+    }
+  }, [value]);
+
+  const rememberSel = () => {
+    const el = inputRef?.current;
+    if (!el) return;
+    selRef.current = {
+      start: el.selectionStart ?? String(value || '').length,
+      end: el.selectionEnd ?? String(value || '').length,
+    };
+  };
+
+  const applyEdit = (fn) => {
+    if (disabled) return;
+    const el = inputRef?.current;
+    const start = el?.selectionStart ?? selRef.current.start;
+    const end = el?.selectionEnd ?? selRef.current.end;
+    const { next, selStart, selEnd } = fn(value || '', start, end);
+    onChange(next);
+    requestAnimationFrame(() => {
+      const box = inputRef?.current;
+      if (!box) return;
+      box.focus();
+      if (typeof box.setSelectionRange === 'function') {
+        box.setSelectionRange(selStart, selEnd);
+      }
+      selRef.current = { start: selStart, end: selEnd };
+    });
+  };
+
+  const insertChunk = (chunk, cursor = 0) => {
+    rememberSel();
+    applyEdit((v, s, e) => insertAtSelection(v, s, e, chunk, cursor));
+  };
+
+  const keys = showAllKeys ? HOIDAP_MATH_KEYS : HOIDAP_TEMPLATE_KEYS;
+
+  return (
+    <div className="mt-2 w-full max-w-xl rounded-xl border border-sky-200 overflow-hidden bg-white shadow-sm">
+      <div className="mx-2 mt-2 mb-1 rounded-lg border border-sky-200 bg-sky-50/90 px-3 py-2.5 min-h-[48px]">
+        <p className="text-xs font-bold text-sky-700 mb-1">Xem trước:</p>
+        {String(value || '').trim() ? (
+          <div
+            className="text-[16px] text-slate-800 leading-relaxed break-words [&_.katex]:text-[1.1em]"
+            dangerouslySetInnerHTML={{ __html: previewHtml }}
+          />
+        ) : (
+          <p className="text-sm text-slate-400 italic">Công thức sẽ hiện ở đây…</p>
+        )}
+      </div>
+
+      {!disabled ? (
+        <div className="mx-2 mb-2 rounded-lg border border-sky-200 bg-[#e8f4fc] p-2">
+          <div className="grid grid-cols-5 sm:grid-cols-7 md:grid-cols-10 gap-1.5">
+            {keys.map((it, idx) => (
+              <MathPadKey
+                key={`${it.tex}-${idx}`}
+                tex={it.tex}
+                onClick={() => insertChunk(it.insert, it.cursor || 0)}
+              />
+            ))}
+          </div>
+          <div className="mt-2 flex justify-end">
+            <button
+              type="button"
+              onClick={() => setShowAllKeys((v) => !v)}
+              className="text-xs font-bold text-sky-800 hover:underline px-1"
+            >
+              {showAllKeys ? 'Thu gọn ký hiệu' : 'Thêm ký hiệu…'}
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      <p className="px-3 pb-2 text-[11px] text-slate-500">
+        Bấm ký hiệu để chèn LaTeX vào ô nhập phía trên (vd <code className="bg-slate-100 px-1 rounded">$x^2$</code>).
+      </p>
+    </div>
+  );
 }
 
 export default function PracticeAnswerInput({ q, value, disabled, onChange }) {
@@ -45,37 +167,16 @@ export default function PracticeAnswerInput({ q, value, disabled, onChange }) {
     onChange({ ...values, [partId]: nextText });
   };
 
-  const appendKey = (key) => {
-    if (disabled) return;
-    const partId = activePartId || parts[0]?.id;
-    if (!partId) return;
-    const el = inputRefs.current[partId];
-    const cur = String(values[partId] ?? '');
-    if (el && typeof el.selectionStart === 'number') {
-      const start = el.selectionStart;
-      const end = el.selectionEnd ?? start;
-      const next = cur.slice(0, start) + key + cur.slice(end);
-      emitChange(partId, next);
-      requestAnimationFrame(() => {
-        el.focus();
-        const pos = start + key.length;
-        el.setSelectionRange(pos, pos);
-      });
-      return;
-    }
-    emitChange(partId, `${cur}${key}`);
-  };
-
   const fieldClass =
     'lesson-practice-answer-field bg-transparent outline-none font-semibold text-slate-800 text-base md:text-lg text-center w-full';
+
+  const focusedPartId = activePartId || parts[0]?.id;
 
   return (
     <div className="mt-4">
       <div className="flex flex-wrap items-end gap-3">
         {parts.map((part, idx) => {
-          const ph = multi
-            ? part.placeholder || `Ô ${idx + 1}`
-            : inferSinglePlaceholder(q, part);
+          const ph = multi ? part.placeholder || `Ô ${idx + 1}` : inferSinglePlaceholder(q, part);
           const minW = multi ? inputMinWidthPx(ph) : undefined;
           return (
             <div
@@ -99,6 +200,7 @@ export default function PracticeAnswerInput({ q, value, disabled, onChange }) {
                   placeholder={multi ? '…' : ph}
                   aria-label={ph || `Đáp án ${idx + 1}`}
                   onFocus={() => setActivePartId(part.id)}
+                  onSelect={() => setActivePartId(part.id)}
                   onChange={(e) => emitChange(part.id, e.target.value)}
                   className={fieldClass}
                   autoComplete="off"
@@ -113,8 +215,8 @@ export default function PracticeAnswerInput({ q, value, disabled, onChange }) {
             <button
               type="button"
               onClick={() => setMathOpen((v) => !v)}
-              title="Ký hiệu toán học"
-              aria-label="Ký hiệu toán học"
+              title="Công thức / ký hiệu toán"
+              aria-label="Công thức / ký hiệu toán"
               aria-expanded={mathOpen}
               className={`h-[3.25rem] px-3.5 rounded-xl border-2 font-black text-lg transition-all flex items-center justify-center ${
                 mathOpen
@@ -124,27 +226,19 @@ export default function PracticeAnswerInput({ q, value, disabled, onChange }) {
             >
               <Sigma className="w-5 h-5" />
             </button>
-            {mathOpen ? (
-              <div
-                className="absolute right-0 top-full mt-1.5 z-30 p-2 rounded-xl border border-slate-200 bg-white shadow-lg grid grid-cols-5 gap-1 min-w-[11rem]"
-                role="group"
-                aria-label="Phím toán nhanh"
-              >
-                {MATH_KEYS.map((key) => (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => appendKey(key)}
-                    className="min-w-[2rem] h-9 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 text-sm font-bold hover:bg-indigo-50 hover:border-indigo-200 hover:text-indigo-800 transition-colors"
-                  >
-                    {key}
-                  </button>
-                ))}
-              </div>
-            ) : null}
           </div>
         ) : null}
       </div>
+
+      {mathOpen && !disabled && focusedPartId ? (
+        <FormulaComposerPanel
+          value={values[focusedPartId] || ''}
+          disabled={disabled}
+          onChange={(next) => emitChange(focusedPartId, next)}
+          inputRef={{ current: inputRefs.current[focusedPartId] || null }}
+        />
+      ) : null}
+
       {multi ? (
         <p className="mt-2 text-xs text-slate-500">Điền lần lượt từng ô — ví dụ hệ phương trình: x rồi y.</p>
       ) : null}

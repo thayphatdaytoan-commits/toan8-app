@@ -1,19 +1,20 @@
 ================================================================================
-PROMPT CHUẨN 2026 — AI SOẠN FILE TXT IMPORT BÀI GIẢNG (KHÔNG LỖI IMPORT) + CHUẨN SEO
+PROMPT CHUẨN — AI SOẠN FILE TXT IMPORT BÀI GIẢNG (KHÔNG LỖI) + SEO
 ================================================================================
 Copy toàn bộ khối PROMPT bên dưới vào ChatGPT / Claude / Gemini.
-ĐẦU RA BẮT BUỘC là MỘT file .txt đúng quy tắc import của hệ thống.
+ĐẦU RA BẮT BUỘC là MỘT file .txt đúng quy tắc import.
+Tham chiếu đầy đủ + ví dụ: public/mau-import-bai-giang.txt
 
 --------------------------------------------------------------------------------
 [BẮT ĐẦU PROMPT — COPY TỪ DÒNG NÀY]
 --------------------------------------------------------------------------------
 
-Bạn là biên tập viên STEM + chuyên gia SEO tiếng Việt. Nhiệm vụ: tạo MỘT file văn bản
-plain text để import bài giảng Toán vào hệ thống (Admin → Import TXT/Word).
-Yêu cầu quan trọng: KHÔNG để sai cấu trúc, KHÔNG chồng chéo mục, KHÔNG tạo câu rỗng.
+Bạn là biên tập viên STEM + chuyên gia SEO tiếng Việt. Nhiệm vụ: tạo MỘT file plain text
+để import bài giảng Toán (Admin → Import TXT/Word).
+Yêu cầu: KHÔNG sai cấu trúc, KHÔNG chồng mục, KHÔNG câu luyện tập thiếu đáp án.
 
-## A) Thông tin tôi cung cấp (điền hoặc bạn tự suy ra hợp lý nếu trống)
-- Khối/lớp: … (6/7/8/9/10/11/12)
+## A) Thông tin đầu vào (điền hoặc suy ra hợp lý)
+- Khối/lớp: … (6–12)
 - Chương: …
 - Bài số: …
 - Tên bài / chủ đề: …
@@ -21,102 +22,74 @@ Yêu cầu quan trọng: KHÔNG để sai cấu trúc, KHÔNG chồng chéo mụ
 - Link PDF (nếu có): …
 - Mục tiêu: (ôn lý thuyết / luyện dạng / luyện thi) …
 
-## B) OUTPUT — bạn PHẢI xuất đúng 1 file .txt theo thứ tự sau
-1) META (các dòng @key: value) — bắt buộc có đủ các key ở phần D.
-2) (Tuỳ chọn) Ghi chú cho người soạn: chỉ dùng dòng bắt đầu bằng //.
-3) MỤC LÝ THUYẾT TRỌNG TÂM (theory_core) — bắt đầu bằng đúng 1 dòng tiêu đề mục:
-   LÝ THUYẾT TRỌNG TÂM
-   Sau đó là nội dung lý thuyết (đoạn văn, bullet -, công thức $...$ hoặc $$...$$).
-4) MỤC CÁC DẠNG TOÁN & VÍ DỤ (examples_core) — bắt đầu bằng đúng 1 dòng tiêu đề mục:
-   CÁC DẠNG TOÁN & VÍ DỤ
-   Sau đó là nội dung dạng + ví dụ + lời giải theo thẻ khối (phần C).
-5) MỤC BÀI TẬP TỰ LUYỆN (practice) — bắt đầu bằng đúng 1 dòng tiêu đề mục:
-   BÀI TẬP TỰ LUYỆN
-   Sau đó là nhiều câu theo quy tắc phần E (không dùng “Câu 1/2/3” cứng).
-6) (Tuỳ chọn) MỤC TÀI LIỆU PDF (nếu có URL):
-   TÀI LIỆU PDF
-   <URL trên dòng riêng>
+## B) OUTPUT — đúng 1 file .txt theo thứ tự
+1) META @key: value (phần D) — ở ĐẦU file.
+2) (Tuỳ chọn) Ghi chú: chỉ dòng bắt đầu //.
+3) LÝ THUYẾT TRỌNG TÂM
+4) CÁC DẠNG TOÁN & VÍ DỤ
+5) BÀI TẬP LUYỆN TẬP   (cũng nhận tên cũ BÀI TẬP TỰ LUYỆN)
+6) (Tuỳ chọn) TÓM TẮT BÀI HỌC
+7) (Tuỳ chọn) TÀI LIỆU PDF + URL
 
-## C) QUY TẮC THẺ KHỐI (dùng trong 2 mục: LÝ THUYẾT & CÁC DẠNG)
-Bạn CHỈ được dùng các thẻ sau (viết đúng chính tả):
-- #[Định nghĩa: ...]#
-- #[Ghi nhớ: ...]#
-- #[Phương pháp: ...]#
-- #[Ví dụ: ...]#
-- #[Lời giải: ...]#
+## C) KHỐI NỘI DUNG (khuyến nghị — plain label, không bắt buộc #[...]# )
+Viết tiêu đề khối rồi xuống dòng; phân cách bằng dòng --- :
+- Định nghĩa: | Định lí: | Ghi nhớ: | Chú ý: | Phương pháp:
+- Ví dụ: / Ví dụ 1: | Lời giải:
+- Dạng 1: <tên dạng>
 
-Quy tắc thẻ:
-- Thẻ luôn có dạng: #[Tên thẻ: <nội dung> ]#
-- Nội dung có thể nhiều dòng.
-- Không lồng thẻ vào trong thẻ.
-- Không viết sai đóng/mở (phải có cả "#[" ở đầu và "]#" ở cuối).
+Trong LÝ THUYẾT: "Ví dụ:" chỉ minh họa chữ thường.
+Trong CÁC DẠNG TOÁN:
+- Chỉ đề + Lời giải → khung đóng/mở (classic).
+- Có Đáp án / A–D / [đúng sai]… → tương tác (đổi Câu → Ví dụ).
 
-## D) META BẮT BUỘC (viết đúng key)
+Tương thích cũ: #[Định nghĩa: ...]# #[Ghi nhớ: ...]# #[Phương pháp: ...]# #[Ví dụ: ...]# #[Lời giải: ...]#
+(Không lồng thẻ; đóng đúng ]#.)
+
+Công thức: $...$ hoặc $$...$$ — trong $ dùng \frac (không \\frac).
+Ảnh: ![mô tả](https://...) ; SVG: khối ```svg ... ``` (có xmlns + viewBox).
+
+## D) META
 @grade_level: <6|7|8|9|10|11|12>
-@chapter: <số hoặc tên chương>
+@chapter: <số hoặc tên>
 @lesson_no: <số bài>
-@title: <45–62 ký tự nếu có thể, không nhồi nhét>
-@focus_keyword: <2–5 từ, có lớp + chủ đề>
+@title: <45–62 ký tự nếu có thể>
+@focus_keyword: <2–5 từ>
 @keywords: <4–12 từ khóa, ngăn bằng dấu phẩy>
-@seo_description: <1–2 câu, 120–160 ký tự, có focus_keyword 1 lần>
-@video_url: <để trống nếu không có>
-@pdf_url: <để trống nếu không có>
+@seo_description: <1–2 câu, 120–160 ký tự, có focus_keyword>
+@video_url: <trống nếu không có>
+@video_material_url: <trống nếu không có>
+@pdf_url: <trống nếu không có>
 
-## E) BÀI TẬP TỰ LUYỆN (practice) — KHÔNG dùng “Câu 1,2,3” cứng
-Mỗi câu là 1 BLOCK độc lập. BLOCK được nhận diện như sau:
+## E) BÀI TẬP LUYỆN TẬP
+Mỗi câu bắt đầu: Câu N: hoặc Câu N.
+Phân cách block: --- hoặc ===
+KHÔNG tự luận. Mọi câu phải chấm được.
 
-E1) (Khuyên dùng) Dòng ID ổn định (tuỳ chọn):
-ID: <mã_ngắn_không_dấu_không_khoảng_trắng>
-Ví dụ: ID: hsbn_01
+Loại câu (xem mau-import-bai-giang.txt để đủ ví dụ):
+- Trắc nghiệm: A.–D. + Đáp án: B (hoặc Chọn B / __B.__)
+- Nhập đáp án: Đáp án: … + (tuỳ chọn) Placeholder:
+- [đúng sai] / [đúng sai nhóm] / [sắp xếp] / [kéo thả] / [điền chỗ trống]
+- Tuỳ chọn sau đáp án: Gợi ý hướng dẫn: … | Lời giải: …
 
-E2) Dòng bắt đầu câu (BẮT BUỘC):
-Dòng đầu tiên của nội dung câu bắt đầu bằng ký tự đặc biệt:
-§ <nội dung câu hỏi...>
-Lưu ý: ký tự “§” chỉ là marker để parser tách câu và KHÔNG được coi là nội dung hiển thị.
+## F) TÓM TẮT (tuỳ chọn)
+TÓM TẮT BÀI HỌC
+TITLE: …
+ROOT: …
+- Nhánh cấp 1
+  - Nhánh cấp 2
 
-E3) Các loại câu
-- Trắc nghiệm:
-  § ...?
-  A. ...
-  B. ...
-  C. ...
-  D. ...
-  Đáp án: B
-  (tuỳ chọn) Lời giải: ...
+## G) SEO & CHẤT LƯỢNG
+- ≥1 Định nghĩa / Ghi nhớ trong lý thuyết (nếu phù hợp)
+- ≥1 Dạng + Phương pháp + ≥1 ví dụ classic + ≥1 ví dụ tương tác
+- 4–10 câu luyện tập, trộn ≥3 loại
+- Không bịa link video/PDF
 
-- Điền đáp án (input):
-  § ...?
-  Đáp án: <giá trị>
-  (tuỳ chọn) Lời giải: ...
-
-- Tự luận (text):
-  § ... (mô tả)
-  (tuỳ chọn) Lời giải: ...
-
-E4) Dòng phân cách (tuỳ chọn nhưng hữu ích):
-Bạn có thể ngăn các block bằng 1 dòng:
----
-hoặc
-===
-
-## F) SEO & CHẤT LƯỢNG NỘI DUNG (bắt buộc)
-- Dùng tiếng Việt chuẩn, đúng SGK.
-- Có ít nhất:
-  - 1 thẻ #[Định nghĩa: ...]# (nếu phù hợp)
-  - 1 thẻ #[Ghi nhớ: ...]#
-  - 1 “Dạng 1: ...” + 1 thẻ #[Phương pháp: ...]#
-  - 1 thẻ #[Ví dụ: ...]# + 1 thẻ #[Lời giải: ...]#
-  - 4–10 câu tự luyện (kết hợp mcq + input)
-- Không tạo link bừa (chỉ dùng @video_url, @pdf_url nếu thật sự có).
-
-## G) RÀNG BUỘC CUỐI CÙNG (để tránh lỗi import)
-- Chỉ xuất ra NỘI DUNG FILE .txt, không viết giải thích ngoài file.
-- Không dùng “Câu 1/2/3” làm số thứ tự bắt buộc trong tự luyện.
-- Mỗi câu tự luyện phải có đúng 1 dòng bắt đầu bằng “§”.
-- Nếu là trắc nghiệm: phải có “Đáp án: <A|B|C|D>”.
-
-Hãy xuất ra file .txt hoàn chỉnh ngay bây giờ.
+## H) CẤM
+- Chồng nội dung giữa các mục
+- Câu luyện tập không có đáp án
+- Dùng # làm ghi chú bài giảng (dùng //)
+- Tự luận trong Bài tập luyện tập
 
 --------------------------------------------------------------------------------
-[KẾT THÚC PROMPT]
+[HẾT PROMPT]
 --------------------------------------------------------------------------------

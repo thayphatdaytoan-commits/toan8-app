@@ -12,6 +12,15 @@ import {
   splitPassageBlankParts,
 } from './practiceQuestionTypes';
 
+function sortTfItemsByKey(raw) {
+  const order = { a: 0, b: 1, c: 2, d: 3 };
+  return [...(Array.isArray(raw) ? raw : [])].sort(
+    (x, y) =>
+      (order[String(x?.key || '').toLowerCase()] ?? 99) -
+      (order[String(y?.key || '').toLowerCase()] ?? 99)
+  );
+}
+
 export function PracticeTrueFalse({ q, value, disabled, onChange }) {
   const selected = value === true || value === false ? value : null;
 
@@ -59,6 +68,83 @@ export function PracticeTrueFalseResult({ q }) {
   const ok = normalizeTrueFalseAnswer(q.correctAnswer);
   return (
     <span className="font-black text-emerald-800">{ok ? 'Đúng' : 'Sai'}</span>
+  );
+}
+
+export function PracticeTrueFalseGroup({ q, value, disabled, onChange }) {
+  const items = useMemo(() => sortTfItemsByKey(q?.tfItems), [q?.tfItems]);
+  const obj = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+
+  const setTf = (key, v) => {
+    if (disabled) return;
+    onChange({ ...obj, [key]: v });
+  };
+
+  return (
+    <div className="mt-4 rounded-xl border border-slate-200 bg-white">
+      <table className="w-full text-sm border-collapse">
+        <thead>
+          <tr className="bg-slate-100 border-b border-slate-200">
+            <th className="text-left p-3 font-bold text-slate-700">Mệnh đề</th>
+            <th className="p-3 text-center font-bold text-emerald-700 w-24">ĐÚNG</th>
+            <th className="p-3 text-center font-bold text-red-600 w-24">SAI</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((it) => {
+            const sel = obj[it.key];
+            return (
+              <tr key={it.key} className="border-b border-slate-100">
+                <td className="p-3 align-top">
+                  <span className="font-bold text-sky-700 mr-1">{it.key})</span>
+                  <TextWithMathWithLoiGiai text={it.text || ''} />
+                </td>
+                <td className="p-3 text-center">
+                  <button
+                    type="button"
+                    disabled={disabled}
+                    aria-label={`${it.key} đúng`}
+                    onClick={() => setTf(it.key, true)}
+                    className={`h-9 w-9 rounded-full border-2 mx-auto transition-all ${
+                      sel === true
+                        ? 'border-emerald-600 bg-emerald-100 ring-2 ring-emerald-300'
+                        : 'border-slate-300 bg-white hover:border-emerald-400'
+                    } ${disabled && sel !== true ? 'opacity-50' : ''}`}
+                  />
+                </td>
+                <td className="p-3 text-center">
+                  <button
+                    type="button"
+                    disabled={disabled}
+                    aria-label={`${it.key} sai`}
+                    onClick={() => setTf(it.key, false)}
+                    className={`h-9 w-9 rounded-full border-2 mx-auto transition-all ${
+                      sel === false
+                        ? 'border-red-600 bg-red-50 ring-2 ring-red-200'
+                        : 'border-slate-300 bg-white hover:border-red-400'
+                    } ${disabled && sel !== false ? 'opacity-50' : ''}`}
+                  />
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+export function PracticeTrueFalseGroupResult({ q }) {
+  const items = useMemo(() => sortTfItemsByKey(q?.tfItems), [q?.tfItems]);
+  return (
+    <ul className="space-y-1 font-semibold text-emerald-800">
+      {items.map((it) => (
+        <li key={it.key}>
+          <span className="text-teal-700 font-bold mr-1">{it.key})</span>
+          {normalizeTrueFalseAnswer(it.correct) ? 'Đúng' : 'Sai'}
+        </li>
+      ))}
+    </ul>
   );
 }
 

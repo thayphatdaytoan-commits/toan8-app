@@ -5,6 +5,7 @@ import {
   BrainCircuit,
   ChevronRight,
 } from 'lucide-react';
+import { filterMindMapCategoriesByGrade } from './mindMapConstants';
 import MindMapImagePanZoom from './MindMapImagePanZoom';
 import MindMapMath from './MindMapMath';
 import MindMapTeacherPanel from './MindMapTeacherPanel';
@@ -30,8 +31,11 @@ export default function StudentMindMapFlow({
   const [problemExpanded, setProblemExpanded] = useState(false);
 
   const sortedCats = useMemo(
-    () => [...(mindMapCategories || [])].sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0)),
-    [mindMapCategories]
+    () =>
+      [...filterMindMapCategoriesByGrade(mindMapCategories, rosterGrade)].sort(
+        (a, b) => (a.sort_order || 0) - (b.sort_order || 0)
+      ),
+    [mindMapCategories, rosterGrade]
   );
 
   const activeCategory = sortedCats.find((c) => c.id === categoryId);
@@ -91,14 +95,6 @@ export default function StudentMindMapFlow({
     }
   };
 
-  if (String(rosterGrade || '').trim() !== '9') {
-    return (
-      <div className="bg-slate-50 border border-slate-200 rounded-2xl p-8 text-center text-slate-600">
-        Nội dung &quot;Sơ đồ tư duy Hình học&quot; chỉ dành cho học sinh <strong>Khối 9</strong>. Tài khoản của bạn đang ở khối khác.
-      </div>
-    );
-  }
-
   if (screen === 'categories') {
     return (
       <div className="space-y-6 animate-in fade-in duration-300">
@@ -112,13 +108,13 @@ export default function StudentMindMapFlow({
         <div>
           <h1 className="font-display text-2xl md:text-3xl font-black text-slate-900 flex items-center gap-3">
             <BrainCircuit className="w-8 h-8 text-violet-600" />
-            Danh mục — Hình học lớp 9
+            Danh mục — Sơ đồ tư duy ngược (Lớp {rosterGrade || '?'})
           </h1>
         </div>
 
         {sortedCats.length === 0 ? (
           <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-white p-12 text-center text-slate-500">
-            Giáo viên chưa đăng chuyên đề nào. Vui lòng quay lại sau.
+            Giáo viên chưa đăng chuyên đề nào cho lớp {rosterGrade || 'này'}. Vui lòng quay lại sau.
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

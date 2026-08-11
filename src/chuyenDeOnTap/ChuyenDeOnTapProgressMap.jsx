@@ -9,12 +9,29 @@ import {
 } from './chuyenDeOnTapLevels';
 
 const VB_W = 820;
-const ROAD_LEFT = 80;
-const ROAD_RIGHT = VB_W - 80;
 const ROAD_INSET = 0.08;
-const ROW_Y_START = 78;
-const ROW_STEP = 112;
 const TURN_OUTSET = 1.22;
+
+function getLayoutMetrics(isMobile) {
+  if (isMobile) {
+    return {
+      roadLeft: 64,
+      roadRight: VB_W - 64,
+      rowYStart: 96,
+      rowStep: 124,
+      treasureDrop: 92,
+      viewPadBottom: 168,
+    };
+  }
+  return {
+    roadLeft: 80,
+    roadRight: VB_W - 80,
+    rowYStart: 78,
+    rowStep: 112,
+    treasureDrop: 78,
+    viewPadBottom: 148,
+  };
+}
 
 /** Phân bố câu theo hàng. */
 function getRowPlan(count) {
@@ -45,76 +62,90 @@ function cpForGlobalIndex(i) {
   return i < 5 ? 1 : 2;
 }
 
-function nodeX(row, col, nodesInRow, ltr) {
-  const usableW = ROAD_RIGHT - ROAD_LEFT;
+function nodeX(row, col, nodesInRow, ltr, metrics) {
+  const { roadLeft, roadRight } = metrics;
+  const usableW = roadRight - roadLeft;
   const inset = usableW * ROAD_INSET;
   const innerW = usableW - inset * 2;
 
   if (nodesInRow <= 1) {
-    if (ltr) return ROAD_LEFT + inset + (row % 2 === 0 ? 0 : innerW);
-    return ROAD_RIGHT - inset - (row % 2 === 0 ? innerW : 0);
+    if (ltr) return roadLeft + inset + (row % 2 === 0 ? 0 : innerW);
+    return roadRight - inset - (row % 2 === 0 ? innerW : 0);
   }
 
   const t = col / (nodesInRow - 1);
-  return ltr ? ROAD_LEFT + inset + t * innerW : ROAD_RIGHT - inset - t * innerW;
+  return ltr ? roadLeft + inset + t * innerW : roadRight - inset - t * innerW;
 }
 
 /** Khúc cua 180° bán nguyệt hai bên — giống KooBits. */
-function uTurnSegment(fromRow, toRow) {
-  const y0 = ROW_Y_START + fromRow * ROW_STEP;
-  const y1 = ROW_Y_START + toRow * ROW_STEP;
+function uTurnSegment(fromRow, toRow, metrics) {
+  const { roadLeft, roadRight, rowYStart, rowStep } = metrics;
+  const y0 = rowYStart + fromRow * rowStep;
+  const y1 = rowYStart + toRow * rowStep;
   const r = (y1 - y0) / 2;
   const fromLtr = fromRow % 2 === 0;
 
   if (fromLtr) {
-    const ox = ROAD_RIGHT + r * TURN_OUTSET;
-    return `C ${ox} ${y0}, ${ox} ${y1}, ${ROAD_RIGHT} ${y1} L ${ROAD_LEFT} ${y1}`;
+    const ox = roadRight + r * TURN_OUTSET;
+    return `C ${ox} ${y0}, ${ox} ${y1}, ${roadRight} ${y1} L ${roadLeft} ${y1}`;
   }
-  const ox = ROAD_LEFT - r * TURN_OUTSET;
-  return `C ${ox} ${y0}, ${ox} ${y1}, ${ROAD_LEFT} ${y1} L ${ROAD_RIGHT} ${y1}`;
+  const ox = roadLeft - r * TURN_OUTSET;
+  return `C ${ox} ${y0}, ${ox} ${y1}, ${roadLeft} ${y1} L ${roadRight} ${y1}`;
 }
 
-function appendTreasurePath(d, roadRows, treasure) {
+function appendTreasurePath(d, roadRows, treasure, metrics) {
   if (!treasure || roadRows <= 0) return d;
 
-  const lastY = ROW_Y_START + (roadRows - 1) * ROW_STEP;
+  const { roadLeft, roadRight, rowYStart, rowStep } = metrics;
+  const lastY = rowYStart + (roadRows - 1) * rowStep;
   const lastLtr = (roadRows - 1) % 2 === 0;
   const drop = treasure.y - lastY;
 
   if (lastLtr) {
     if (drop > 6) {
-      d += ` C ${ROAD_RIGHT + 56} ${lastY}, ${ROAD_RIGHT + 56} ${treasure.y}, ${treasure.x} ${treasure.y}`;
+      d += ` C ${roadRight + 56} ${lastY}, ${roadRight + 56} ${treasure.y}, ${treasure.x} ${treasure.y}`;
     }
   } else if (drop > 6) {
-    d += ` C ${ROAD_LEFT - 56} ${lastY}, ${ROAD_LEFT - 56} ${treasure.y}, ${treasure.x} ${treasure.y}`;
+    d += ` C ${roadLeft - 56} ${lastY}, ${roadLeft - 56} ${treasure.y}, ${treasure.x} ${treasure.y}`;
   }
 
   return d;
 }
 
-function buildSShapedRoadPath(roadRows, treasure) {
+function buildSShapedRoadPath(roadRows, treasure, metrics) {
   if (roadRows <= 0) return '';
 
+  const { roadLeft, roadRight, rowYStart, rowStep } = metrics;
   let d = '';
   for (let row = 0; row < roadRows; row += 1) {
-    const y = ROW_Y_START + row * ROW_STEP;
+    const y = rowYStart + row * rowStep;
     const ltr = row % 2 === 0;
-    const xStart = ltr ? ROAD_LEFT : ROAD_RIGHT;
-    const xEnd = ltr ? ROAD_RIGHT : ROAD_LEFT;
+    const xStart = ltr ? roadLeft : roadRight;
+    const xEnd = ltr ? roadRight : roadLeft;
 
     if (row === 0) {
       d = `M ${xStart} ${y} L ${xEnd} ${y}`;
     } else {
-      d += uTurnSegment(row - 1, row);
+      d += uTurnSegment(row - 1, row, metrics);
     }
   }
 
-  return appendTreasurePath(d, roadRows, treasure);
+  return appendTreasurePath(d, roadRows, treasure, metrics);
 }
 
-function buildKooBitsLayout(count) {
+function buildKooBitsLayout(count, isMobile = false) {
+  const metrics = getLayoutMetrics(isMobile);
+  const { roadLeft, roadRight, rowYStart, rowStep, treasureDrop, viewPadBottom } = metrics;
+
   if (count <= 0) {
-    return { nodes: [], treasure: { x: ROAD_RIGHT - 40, y: 210 }, pathD: '', viewH: 320 };
+    return {
+      nodes: [],
+      treasure: { x: roadRight - 40, y: 210 },
+      start: { x: roadLeft, y: rowYStart },
+      pathD: '',
+      viewH: 320,
+      metrics,
+    };
   }
 
   const rowPlan = getRowPlan(count);
@@ -123,12 +154,12 @@ function buildKooBitsLayout(count) {
   let globalIdx = 0;
 
   rowPlan.forEach((nodesInRow, row) => {
-    const y = ROW_Y_START + row * ROW_STEP;
+    const y = rowYStart + row * rowStep;
     const ltr = row % 2 === 0;
 
     for (let col = 0; col < nodesInRow; col += 1) {
       nodes.push({
-        x: nodeX(row, col, nodesInRow, ltr),
+        x: nodeX(row, col, nodesInRow, ltr, metrics),
         y,
         shape: shapeForGlobalIndex(globalIdx, count),
         cp: cpForGlobalIndex(globalIdx),
@@ -138,17 +169,18 @@ function buildKooBitsLayout(count) {
     }
   });
 
-  const lastRoadY = ROW_Y_START + (roadRows - 1) * ROW_STEP;
+  const lastRoadY = rowYStart + (roadRows - 1) * rowStep;
   const lastRoadLtr = (roadRows - 1) % 2 === 0;
   const treasure = {
-    x: lastRoadLtr ? ROAD_RIGHT - 20 : ROAD_LEFT + 20,
-    y: lastRoadY + 78,
+    x: lastRoadLtr ? roadRight - 20 : roadLeft + 20,
+    y: lastRoadY + treasureDrop,
   };
+  const start = { x: roadLeft, y: rowYStart };
 
-  const pathD = buildSShapedRoadPath(roadRows, treasure);
-  const viewH = lastRoadY + 148;
+  const pathD = buildSShapedRoadPath(roadRows, treasure, metrics);
+  const viewH = lastRoadY + viewPadBottom;
 
-  return { nodes, treasure, pathD, viewH };
+  return { nodes, treasure, start, pathD, viewH, metrics };
 }
 
 function pctX(x) {
@@ -158,8 +190,8 @@ function pctX(x) {
 function NodeShell({ shape, children, className = '', glow = false }) {
   const base =
     shape === 'hex' || shape === 'star'
-      ? 'w-[58px] h-[58px] sm:w-[64px] sm:h-[64px]'
-      : 'w-[58px] h-[58px] sm:w-[64px] sm:h-[64px] rounded-full';
+      ? 'w-[48px] h-[48px] sm:w-[58px] sm:h-[58px] md:w-[64px] md:h-[64px]'
+      : 'w-[48px] h-[48px] sm:w-[58px] sm:h-[58px] md:w-[64px] md:h-[64px] rounded-full';
 
   const clip =
     shape === 'hex'
@@ -240,12 +272,12 @@ function PathNode({ node, layout, status, onClick, disabled, showPointer }) {
         )}
       </NodeShell>
 
-      <span className="mt-2 inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-white/90 border border-amber-200/80 shadow-sm text-ontap-xs font-black text-amber-900">
-        <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
+      <span className="mt-1.5 sm:mt-2 inline-flex items-center gap-0.5 px-1.5 sm:px-2 py-0.5 rounded-full bg-white/90 border border-amber-200/80 shadow-sm text-[10px] sm:text-ontap-xs font-black text-amber-900">
+        <Zap className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-500 fill-amber-400" />
         {cp} CP
       </span>
 
-      <span className="mt-0.5 text-ontap-xs font-bold text-amber-950/70 max-w-[96px] truncate text-center leading-tight px-1">
+      <span className="mt-0.5 text-[10px] sm:text-ontap-xs font-bold text-amber-950/70 max-w-[72px] sm:max-w-[96px] truncate text-center leading-tight px-0.5 sm:px-1">
         {node.label}
       </span>
     </button>
@@ -325,11 +357,11 @@ function RewardGoal({ done, totalQ, viewH, x, y }) {
 
   return (
     <div
-      className="absolute z-20 flex flex-col items-center justify-center -translate-x-1/2 -translate-y-[40%]"
-      style={{ left, top: topPct, width: '140px' }}
+      className="absolute z-20 flex flex-col items-center justify-center -translate-x-1/2 pointer-events-none"
+      style={{ left, top: topPct, width: 'min(148px, 40vw)', transform: 'translate(-50%, calc(-50% - 18px))' }}
     >
       <div
-        className={`relative mb-2 px-4 py-2.5 rounded-2xl text-ontap-sm font-bold text-center w-full shadow-xl ${
+        className={`relative mb-1 sm:mb-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl text-[11px] sm:text-ontap-sm font-bold text-center w-full shadow-xl ${
           done ? 'bg-emerald-800 text-white' : 'bg-[#2f2f2f] text-white'
         }`}
       >
@@ -348,7 +380,7 @@ function RewardGoal({ done, totalQ, viewH, x, y }) {
       </div>
 
       <div
-        className={`relative mx-auto w-[100px] h-[100px] sm:w-[110px] sm:h-[110px] ${
+        className={`relative mx-auto w-[76px] h-[76px] sm:w-[100px] sm:h-[100px] md:w-[110px] md:h-[110px] ${
           done ? 'animate-bounce' : 'animate-pulse'
         }`}
         style={{
@@ -391,8 +423,13 @@ function DesertBackdrop() {
   );
 }
 
-function WindingRoad({ pathD, viewH }) {
+function WindingRoad({ pathD, viewH, start, treasure }) {
   if (!pathD) return null;
+  const startX = start?.x ?? 80;
+  const startY = start?.y ?? 78;
+  const endX = treasure?.x ?? 740;
+  const endY = treasure?.y ?? 300;
+
   return (
     <svg
       className="absolute inset-0 w-full h-full pointer-events-none z-[5]"
@@ -407,7 +444,40 @@ function WindingRoad({ pathD, viewH }) {
           <stop offset="0%" stopColor="#a16207" />
           <stop offset="100%" stopColor="#78350f" />
         </linearGradient>
+        <radialGradient id="startGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#86efac" />
+          <stop offset="100%" stopColor="#16a34a" />
+        </radialGradient>
+        <radialGradient id="finishGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#fde68a" />
+          <stop offset="100%" stopColor="#f59e0b" />
+        </radialGradient>
       </defs>
+
+      {/* Vạch xuất phát */}
+      <g>
+        <circle cx={startX} cy={startY} r="30" fill="url(#startGlow)" opacity="0.35" />
+        <circle cx={startX} cy={startY} r="18" fill="#22c55e" stroke="#14532d" strokeWidth="3" />
+        <rect x={startX - 3} y={startY - 34} width="6" height="34" rx="2" fill="#78350f" />
+        <path
+          d={`M ${startX - 3} ${startY - 34} L ${startX + 18} ${startY - 22} L ${startX - 3} ${startY - 10} Z`}
+          fill="#16a34a"
+          stroke="#14532d"
+          strokeWidth="2"
+        />
+        <text
+          x={startX}
+          y={startY + 44}
+          textAnchor="middle"
+          fill="#14532d"
+          fontSize="15"
+          fontWeight="800"
+          fontFamily="system-ui, sans-serif"
+        >
+          BẮT ĐẦU
+        </text>
+      </g>
+
       {/* Viền ngoài đường */}
       <path
         d={pathD}
@@ -448,8 +518,46 @@ function WindingRoad({ pathD, viewH }) {
         strokeDasharray="16 18"
         opacity="0.95"
       />
+
+      {/* Điểm đích */}
+      <g>
+        <circle cx={endX} cy={endY} r="34" fill="url(#finishGlow)" opacity="0.4" />
+        <circle cx={endX} cy={endY} r="22" fill="#fbbf24" stroke="#b45309" strokeWidth="3" />
+        <path
+          d={`M ${endX - 14} ${endY - 6} L ${endX} ${endY - 18} L ${endX + 14} ${endY - 6} Z`}
+          fill="#f59e0b"
+          stroke="#b45309"
+          strokeWidth="2"
+        />
+        <text
+          x={endX}
+          y={endY + 40}
+          textAnchor="middle"
+          fill="#92400e"
+          fontSize="15"
+          fontWeight="800"
+          fontFamily="system-ui, sans-serif"
+        >
+          ĐÍCH
+        </text>
+      </g>
     </svg>
   );
+}
+
+function useIsNarrowMap() {
+  const [narrow, setNarrow] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia('(max-width: 639px)').matches : false
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 639px)');
+    const onChange = (e) => setNarrow(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  return narrow;
 }
 
 export default function ChuyenDeOnTapProgressMap({
@@ -497,7 +605,8 @@ export default function ChuyenDeOnTapProgressMap({
   const doneCount = nodes.filter((n) => completedStepIds.includes(n.stepId)).length;
   const totalQ = nodes.length;
 
-  const layout = useMemo(() => buildKooBitsLayout(nodes.length), [nodes.length]);
+  const isNarrow = useIsNarrowMap();
+  const layout = useMemo(() => buildKooBitsLayout(nodes.length, isNarrow), [nodes.length, isNarrow]);
 
   const nonQuestionSteps = useMemo(
     () => (steps || []).filter((s) => s.kind !== 'question'),
@@ -631,11 +740,19 @@ export default function ChuyenDeOnTapProgressMap({
         </p>
       </div>
 
-      <div className="relative overflow-hidden" style={{ minHeight: Math.max(420, layout.viewH * 0.68) }}>
-        <DesertBackdrop />
-        <WindingRoad pathD={layout.pathD} viewH={layout.viewH} />
+      <div className="relative overflow-hidden bg-[#fde047]">
+        <div
+          className="relative w-full mx-auto max-w-4xl"
+          style={{ aspectRatio: `${VB_W} / ${layout.viewH}` }}
+        >
+          <DesertBackdrop />
+          <WindingRoad
+            pathD={layout.pathD}
+            viewH={layout.viewH}
+            start={layout.start}
+            treasure={layout.treasure}
+          />
 
-        <div className="relative w-full mx-auto max-w-4xl" style={{ aspectRatio: `${VB_W} / ${layout.viewH}` }}>
           {!levelUnlocked ? (
             <div className="absolute inset-0 flex items-center justify-center z-30 bg-amber-100/50 backdrop-blur-[2px]">
               <div className="text-center px-6 py-6 rounded-2xl bg-white border-2 border-amber-200 shadow-xl max-w-sm mx-4">

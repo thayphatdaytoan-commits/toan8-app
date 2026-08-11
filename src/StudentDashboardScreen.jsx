@@ -1,8 +1,21 @@
 import React, { useState, useMemo, useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from 'react';
 import { computeLessonStudyProgress } from './lessonProgress';
+import { normalizeExamType, examTypeLabel as quizExamTypeLabel } from './quizExamTypes';
 import ChuyenDeOnTapStudentFlow from './chuyenDeOnTap/ChuyenDeOnTapStudentFlow';
 import BackButton from './BackButton';
 import StudentMindMapFlow from './mindMap/StudentMindMapFlow';
+import StudentAccountSettings from './StudentAccountSettings';
+import StudentNotificationBell from './StudentNotificationBell';
+import { subscribeHomeworkByGrade } from './admin/classroomHomeworkStore';
+import { normalizeStudentClassId, countsTowardAverageScore } from './classroomConstants';
+import { findSgkChapter } from './sgkToc';
+import {
+  getSectionDisplayLabel,
+  getSidebarLessonTitle,
+  isSgkRoadmapLesson,
+  mergeLessonsByLessonNo,
+  roadmapChapterKey,
+} from './lessonSections';
 import {
   BookOpen,
   LayoutDashboard,
@@ -18,6 +31,7 @@ import {
   Star,
   LogOut,
   ChevronRight,
+  ChevronDown,
   Sparkles,
   Medal,
   TrendingUp,
@@ -29,6 +43,7 @@ import {
   Menu,
   X,
   BrainCircuit,
+  Home,
 } from 'lucide-react';
 
 const CHAPTER_THEMES = {
@@ -55,14 +70,25 @@ const CHAPTER_THEMES = {
   },
 };
 
+function formatChapterTitleOnce(grade, chapterNo) {
+  const no = String(chapterNo ?? '').trim();
+  if (!no || no === '0') return 'Chương khác';
+  const sgk = findSgkChapter(grade, no);
+  if (sgk?.title) return `Chương ${no}: ${sgk.title}`;
+  return `Chương ${no}`;
+}
+
 function normName(s) {
   return (s || '').trim().toLowerCase();
 }
 
-/** EXP: điểm bài × 15; riêng ôn tập chuyên đề dùng trường exp_points (điểm EXP tuyệt đối). */
+/** EXP: điểm bài × 15; ôn tập / điều chỉnh admin dùng exp_points (có thể âm). */
 function expPointsFromRow(s) {
-  const ep = Number(s?.exp_points);
-  if (Number.isFinite(ep) && ep >= 0) return Math.round(ep);
+  if (s && s.award_eligible === false) return 0;
+  if (s && Object.prototype.hasOwnProperty.call(s, 'exp_points')) {
+    const ep = Number(s.exp_points);
+    if (Number.isFinite(ep)) return Math.round(ep);
+  }
   return scoreToExp(s?.score);
 }
 
@@ -141,16 +167,20 @@ const StudentDashboardScreen = forwardRef(function StudentDashboardScreen(
     reviewCoursesList = [],
     reviewProgressList = [],
     onLogout,
+    onGoHome,
     onSelectQuiz,
     onSelectLesson,
     onReviewOnTapExp,
     onSaveReviewProgress,
     initialTab = 'dashboard',
+    studentProfile = null,
+    onSaveStudentProfile,
   },
   ref
 ) {
   const [activeTab, setActiveTab] = useState(initialTab || 'dashboard');
   const [searchQuery, setSearchQuery] = useState('');
+  const [homeworkList, setHomeworkList] = useState([]);
   const [examTypeFilter, setExamTypeFilter] = useState('all');
   /** Trong mục Đề thi: khám phá đề hoặc lịch sử (gộp menu cũ "Lịch sử thi"). */
   const [examPanelView, setExamPanelView] = useState('browse');
@@ -162,11 +192,27 @@ const StudentDashboardScreen = forwardRef(function StudentDashboardScreen(
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   /** Học sinh đang trong chủ đề ôn tập (slide): ẩn sidebar + block phía dưới. */
   const [reviewOnTapImmersive, setReviewOnTapImmersive] = useState(false);
+  const [expandedLessons, setExpandedLessons] = useState([]);
   const navStackRef = useRef([]);
   const isNavRestoringRef = useRef(false);
   const topicsNavBridgeRef = useRef(null);
   const mindmapNavBridgeRef = useRef(null);
   const [navCanGoBack, setNavCanGoBack] = useState(() => (initialTab || 'dashboard') !== 'dashboard');
+
+  const studentClassId = useMemo(
+    () => normalizeStudentClassId(studentProfile || { class_label: studentClass }),
+    [studentProfile, studentClass]
+  );
+
+  const myHomework = useMemo(
+    () => homeworkList.filter((h) => h.class_id === studentClassId),
+    [homeworkList, studentClassId]
+  );
+
+  useEffect(() => {
+    const unsub = subscribeHomeworkByGrade(rosterGrade, setHomeworkList);
+    return () => unsub?.();
+  }, [rosterGrade]);
 
   const syncNavCanGoBack = useCallback((snap) => {
     const tab = snap?.tab ?? activeTab;
@@ -218,6 +264,47 @@ const StudentDashboardScreen = forwardRef(function StudentDashboardScreen(
       }
     },
     [activeTab, examPanelView, pushNavHistory]
+  );
+
+  const handleNotificationOpen = useCallback(
+    (n) => {
+      if (n.link_type === 'lesson' && n.link_id) {
+        const byId = lessonsList.find((l) => l.id === n.link_id);
+        const bySlug = lessonsList.find((l) => String(l.slug || '') === n.link_id);
+        const lesson = byId || bySlug;
+        if (lesson?.id) {
+          onSelectLesson?.(lesson.id);
+          return;
+        }
+      }
+      if (n.link_type === 'quiz' && n.link_id) {
+        onSelectQuiz?.(n.link_id);
+        setActiveTab('exams');
+        return;
+      }
+      if (n.link_url) window.open(n.link_url, '_blank');
+    },
+    [lessonsList, onSelectLesson, onSelectQuiz]
+  );
+
+  const openHomeworkItem = useCallback(
+    (item) => {
+      if (item.kind === 'lesson' && item.resource_id) {
+        const byId = lessonsList.find((l) => l.id === item.resource_id);
+        const bySlug = lessonsList.find((l) => String(l.slug || '') === item.resource_id);
+        const lesson = byId || bySlug;
+        if (lesson?.id) onSelectLesson?.(lesson.id);
+        else if (item.link_url) window.open(item.link_url, '_blank');
+        return;
+      }
+      if (item.kind === 'quiz' && item.resource_id) {
+        onSelectQuiz?.(item.resource_id);
+        setActiveTab('exams');
+        return;
+      }
+      if (item.link_url) window.open(item.link_url, '_blank');
+    },
+    [lessonsList, onSelectLesson, onSelectQuiz]
   );
 
   const goToExamPanelView = useCallback(
@@ -308,7 +395,7 @@ const StudentDashboardScreen = forwardRef(function StudentDashboardScreen(
   const avgScore = useMemo(() => {
     if (!myScores.length) return null;
     const nums = myScores
-      .filter((s) => String(s?.kind) !== 'review_on_tap')
+      .filter((s) => countsTowardAverageScore(s))
       .map((s) => Number(s.score))
       .filter((n) => Number.isFinite(n));
     if (!nums.length) return null;
@@ -345,14 +432,14 @@ const StudentDashboardScreen = forwardRef(function StudentDashboardScreen(
     if (!quizzesList.length) return [];
     return quizzesList.map((q) => {
       const rawType = (q?.exam_type || 'lesson').toString().trim();
-      const isCombined = rawType === 'combined';
+      const examType = normalizeExamType(rawType, q?.grade_level);
       const updatedAt = Number(q?.updated_at) || Number(q?.created_at) || 0;
       return {
         id: q.id,
         title: q.title || 'Bài thi',
-        exam_type: isCombined ? 'lesson' : rawType,
-        chapter: isCombined ? 'Tổng hợp' : (q?.chapter ?? '').toString().trim(),
-        lesson_no: isCombined ? '' : (q?.lesson_no ?? '').toString().trim(),
+        exam_type: examType,
+        chapter: (q?.chapter ?? '').toString().trim(),
+        lesson_no: (q?.lesson_no ?? '').toString().trim(),
         date: 'Chưa có',
         duration: q.duration ? `${q.duration} phút` : 'Không giới hạn',
         durationMins: q.duration != null ? Number(q.duration) : null,
@@ -422,20 +509,15 @@ const StudentDashboardScreen = forwardRef(function StudentDashboardScreen(
     return arr;
   }, [examsFiltered]);
 
-  const examTypeLabel = (t) =>
-    ({
-      lesson: 'Đề theo bài',
-      midterm: 'Giữa kỳ',
-      final: 'Cuối kỳ',
-      mock: 'Thi thử',
-      entrance: 'Tuyển sinh',
-    }[t] || 'Đề thi');
+  const examTypeLabel = (t, gradeLevel) => quizExamTypeLabel(t, gradeLevel);
 
   const examDifficultyPill = (examType) => {
     const t = examType || 'lesson';
-    if (t === 'final') return { text: 'Cuối kỳ · Tổng hợp', className: 'bg-rose-50 text-rose-700 border border-rose-100' };
+    if (t === 'final') return { text: 'Cuối kỳ', className: 'bg-rose-50 text-rose-700 border border-rose-100' };
     if (t === 'midterm') return { text: 'Giữa kỳ', className: 'bg-amber-50 text-amber-800 border border-amber-100' };
-    if (t === 'mock') return { text: 'Thi thử', className: 'bg-violet-50 text-violet-700 border border-violet-100' };
+    if (t === 'gifted') return { text: 'HSG', className: 'bg-fuchsia-50 text-fuchsia-700 border border-fuchsia-100' };
+    if (t === 'entrance_10') return { text: 'Tuyển sinh 10', className: 'bg-violet-50 text-violet-700 border border-violet-100' };
+    if (t === 'entrance_univ') return { text: 'Thi đại học', className: 'bg-violet-50 text-violet-700 border border-violet-100' };
     if (t === 'combined') return { text: 'Đề tổng hợp', className: 'bg-cyan-50 text-cyan-800 border border-cyan-100' };
     return { text: 'Theo bài · Luyện tập', className: 'bg-slate-50 text-slate-700 border border-slate-200' };
   };
@@ -547,45 +629,6 @@ const StudentDashboardScreen = forwardRef(function StudentDashboardScreen(
     };
   }, [lessonsEnriched, myScores, quizzesList, rosterGrade, onSelectLesson]);
 
-  const roadmapChapters = useMemo(() => {
-    const map = new Map();
-    for (const l of lessonsEnriched) {
-      const key = l.chapter || 'Khác';
-      if (!map.has(key)) map.set(key, { chapter: key, lessons: [] });
-      map.get(key).lessons.push(l);
-    }
-    const rows = Array.from(map.values()).map((row) => {
-      const avg =
-        row.lessons.length === 0
-          ? 0
-          : Math.round(row.lessons.reduce((acc, x) => acc + x.progress, 0) / row.lessons.length);
-      const done = row.lessons.filter((x) => x.progress >= 100).length;
-      return {
-        chapter: row.chapter,
-        progress: avg,
-        total: row.lessons.length,
-        done,
-      };
-    });
-    rows.sort((a, b) => {
-      const na = parseNum(a.chapter);
-      const nb = parseNum(b.chapter);
-      if (na !== null && nb !== null && na !== nb) return na - nb;
-      return (a.chapter || '').localeCompare(b.chapter || '');
-    });
-    return rows;
-  }, [lessonsEnriched]);
-
-  const currentLessons = useMemo(() => {
-    const incomplete = lessonsEnriched.filter((l) => l.progress < 100);
-    return incomplete.slice(0, 2);
-  }, [lessonsEnriched]);
-
-  const currentFiltered = useMemo(() => {
-    if (!qLower) return currentLessons;
-    return currentLessons.filter((l) => (l.title || '').toLowerCase().includes(qLower));
-  }, [currentLessons, qLower]);
-
   const statCardsRow = useMemo(
     () => [
       {
@@ -620,12 +663,20 @@ const StudentDashboardScreen = forwardRef(function StudentDashboardScreen(
     [totalExp, myScores.length, avgScore, myRank]
   );
 
-  const filterChips = [
-    { id: 'all', label: 'Tất cả' },
-    { id: 'lesson', label: 'Theo bài' },
-    { id: 'midterm', label: 'Giữa kỳ' },
-    { id: 'final', label: 'Cuối kỳ' },
-  ];
+  const filterChips = useMemo(() => {
+    const chips = [
+      { id: 'all', label: 'Tất cả' },
+      { id: 'lesson', label: 'Theo bài' },
+      { id: 'midterm', label: 'Giữa kỳ' },
+      { id: 'final', label: 'Cuối kỳ' },
+      { id: 'gifted', label: 'HSG' },
+      { id: 'combined', label: 'Tổng hợp' },
+    ];
+    const g = String(rosterGrade || '').trim();
+    if (g === '9') chips.push({ id: 'entrance_10', label: 'Tuyển sinh 10' });
+    if (g === '12') chips.push({ id: 'entrance_univ', label: 'Thi đại học' });
+    return chips;
+  }, [rosterGrade]);
 
   const topFive = useMemo(() => leaderboard.slice(0, 5), [leaderboard]);
 
@@ -633,170 +684,152 @@ const StudentDashboardScreen = forwardRef(function StudentDashboardScreen(
   const dynamicChapters = useMemo(() => {
     const grouped = new Map();
     (lessonsList || []).forEach((l) => {
-      const tid = (l?.topic_id || '').toString().trim();
-      const tname = (l?.topic_name || '').toString().trim();
-      const chRaw = (l?.chapter ?? '').toString().trim();
-      // Bài thuộc chuyên đề nhưng không thuộc chương nào → hiển thị như "một chương riêng" lấy tên chuyên đề.
-      const key = tid && !chRaw ? `topic:${tid}` : (chRaw || '0');
-      if (!grouped.has(key)) grouped.set(key, { key, title: tid && !chRaw ? (tname || 'Chuyên đề ôn thi') : '', lessons: [] });
+      if (!isSgkRoadmapLesson(l)) return;
+      const key = roadmapChapterKey(l);
+      if (!key) return;
+      if (!grouped.has(key)) grouped.set(key, { key, lessons: [] });
       grouped.get(key).lessons.push(l);
     });
     const chapterKeys = Array.from(grouped.keys()).sort((a, b) => {
-      const at = String(a).startsWith('topic:');
-      const bt = String(b).startsWith('topic:');
-      if (at !== bt) return at ? 1 : -1; // chương chuyên đề luôn xuống cuối
       const na = parseNum(a);
       const nb = parseNum(b);
       if (na !== null && nb !== null) return na - nb;
-      return a.localeCompare(b);
+      return String(a).localeCompare(String(b), 'vi');
     });
     return chapterKeys.map((ch, idx) => {
-      const row = grouped.get(ch) || { key: ch, title: '', lessons: [] };
-      const lessons = row.lessons || [];
-      lessons.sort((a, b) => {
-        const na = parseNum(a?.lesson_no);
-        const nb = parseNum(b?.lesson_no);
-        if (na !== null && nb !== null) return na - nb;
-        return (a?.title || '').localeCompare(b?.title || '');
-      });
+      const row = grouped.get(ch) || { key: ch, lessons: [] };
+      const lessons = mergeLessonsByLessonNo(row.lessons || [], parseNum);
       return {
         id: `c_${ch}`,
-        chapterNo: String(ch).startsWith('topic:') ? 'CĐ' : ch,
+        chapterNo: ch,
         theme: CHAPTER_THEME_KEYS[idx % CHAPTER_THEME_KEYS.length],
-        title: String(ch).startsWith('topic:') ? (row.title || 'Chuyên đề ôn thi') : `Chương ${ch}`,
+        title: formatChapterTitleOnce(rosterGrade, ch),
         lessons,
       };
     });
-  }, [lessonsList]);
+  }, [lessonsList, rosterGrade]);
+
+  const toggleLessonExpand = (lessonId) => {
+    setExpandedLessons((prev) =>
+      prev.includes(lessonId) ? prev.filter((id) => id !== lessonId) : [...prev, lessonId]
+    );
+  };
 
   const dynamicChaptersFiltered = useMemo(() => {
     if (!qLower) return dynamicChapters;
     return dynamicChapters
       .map((ch) => ({
         ...ch,
-        lessons: (ch.lessons || []).filter((l) => (l.title || '').toLowerCase().includes(qLower)),
+        lessons: (ch.lessons || []).filter((l) => {
+          const titleHit = (l.title || '').toLowerCase().includes(qLower);
+          const labelHit = getSidebarLessonTitle(l, l._displaySections || [])
+            .toLowerCase()
+            .includes(qLower);
+          const sectionHit = (l._displaySections || []).some((sec) =>
+            getSectionDisplayLabel(sec).toLowerCase().includes(qLower)
+          );
+          return titleHit || labelHit || sectionHit;
+        }),
       }))
       .filter((ch) => ch.lessons.length > 0);
   }, [dynamicChapters, qLower]);
 
-  const progressByLessonId = useMemo(() => {
-    const m = new Map();
-    lessonsEnriched.forEach((l) => m.set(l.id, l.progress));
-    return m;
-  }, [lessonsEnriched]);
-
-  const highlightLessonId = currentFiltered[0]?.id || currentLessons[0]?.id || null;
-
-  const roadmapChapterByKey = useMemo(() => {
-    const m = new Map();
-    roadmapChapters.forEach((r) => m.set(String(r.chapter), r));
-    return m;
-  }, [roadmapChapters]);
-
   const renderUnifiedChapters = () => (
     <div className="mt-2">
-      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
-        <div className="flex items-start gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-teal-600 to-teal-900 text-white flex items-center justify-center shadow-lg shadow-teal-900/20 shrink-0">
-            <Compass className="w-7 h-7" />
-          </div>
-          <div>
-            <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Lộ trình theo chương</h2>
-            <p className="text-slate-600 text-sm mt-1 max-w-2xl leading-relaxed">
-              Mỗi thẻ là một chương: tiến độ chương (trung bình các bài), số bài đã đạt 100%, rồi đến từng bài — bài đang được ưu tiên có viền teal.
-            </p>
-          </div>
+      <div className="flex items-center gap-3 mb-8">
+        <div className="w-11 h-11 rounded-full bg-orange-500 text-white flex items-center justify-center shadow-md shadow-orange-200 shrink-0">
+          <Compass className="w-5 h-5" />
         </div>
+        <h2 className="text-xl sm:text-2xl font-black text-slate-800 uppercase tracking-tight">
+          Lộ trình học tập — Toán {rosterGrade}
+        </h2>
       </div>
       {dynamicChaptersFiltered.length === 0 ? (
         <p className="text-slate-500 rounded-2xl border border-dashed border-slate-200 bg-slate-50/80 px-6 py-10 text-center">
           Chưa có bài học hoặc không khớp tìm kiếm.
         </p>
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {dynamicChaptersFiltered.map((chapter) => {
             const theme = CHAPTER_THEMES[chapter.theme] || CHAPTER_THEMES.blue;
-            const rm = roadmapChapterByKey.get(String(chapter.chapterNo)) || {
-              progress: 0,
-              total: chapter.lessons.length,
-              done: 0,
-            };
             return (
               <div
                 key={chapter.id}
-                className={`bg-white rounded-3xl shadow-xl shadow-slate-200/50 hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-300 overflow-hidden flex flex-col border border-slate-200/80 ${theme.shadow}`}
+                className={`bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 overflow-hidden flex flex-col border border-slate-100 ${theme.shadow}`}
               >
-                <div className={`relative p-7 md:p-8 bg-gradient-to-br ${theme.gradient} flex items-start justify-between gap-4 overflow-hidden`}>
-                  <div className="absolute top-0 right-0 w-40 h-40 bg-white/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
-                  <div className="absolute bottom-0 left-0 w-28 h-28 bg-black/10 rounded-full blur-2xl translate-y-1/3 -translate-x-1/4" />
+                <div
+                  className={`relative p-7 bg-gradient-to-br ${theme.gradient} flex items-start justify-between gap-4 overflow-hidden`}
+                >
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 rounded-full blur-2xl -translate-y-1/2 translate-x-1/3" />
+                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-black/10 rounded-full blur-xl translate-y-1/2 -translate-x-1/4" />
                   <div className="relative z-10 flex-1 min-w-0">
-                    <span className="text-xs font-black text-white/85 uppercase tracking-[0.2em] mb-2 block">
-                      Chương {chapter.chapterNo}
-                    </span>
-                    <h3 className="text-2xl md:text-[1.65rem] font-black text-white leading-tight drop-shadow-md">
+                    <h3 className="text-xl sm:text-2xl font-black text-white leading-snug drop-shadow-md">
                       {chapter.title}
                     </h3>
-                    <p className="text-white/85 text-sm mt-2 font-medium">
-                      {rm.done}/{rm.total} bài đạt 100% tiến độ
-                    </p>
                   </div>
-                  <div className="relative z-10 w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md border border-white/35 flex items-center justify-center text-white shrink-0 shadow-md">
-                    <BookMarked className="w-7 h-7" />
+                  <div className="relative z-10 w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white shrink-0 shadow-sm">
+                    <BookMarked className="w-6 h-6" />
                   </div>
                 </div>
 
-                <div className="px-5 py-4 bg-gradient-to-b from-slate-50 to-white border-b border-slate-100">
-                  <div className="flex items-center justify-between text-xs font-bold text-slate-600 mb-2">
-                    <span>Tiến độ chương (trung bình)</span>
-                    <span className="tabular-nums text-teal-700">{rm.progress}%</span>
-                  </div>
-                  <div className="w-full bg-slate-200/80 rounded-full h-2.5 overflow-hidden">
-                    <div
-                      className="h-2.5 rounded-full bg-gradient-to-r from-teal-500 via-cyan-500 to-emerald-400 transition-all"
-                      style={{ width: `${rm.progress}%` }}
-                    />
-                  </div>
-                </div>
-
-                <div className="p-4 flex-1 flex flex-col justify-start bg-white">
+                <div className="p-3 sm:p-4 flex-1 flex flex-col justify-start bg-white z-10 space-y-1">
                   {chapter.lessons.map((lesson) => {
-                    const prog = progressByLessonId.get(lesson.id) ?? 0;
-                    const isHi = lesson.id === highlightLessonId;
+                    const sections = Array.isArray(lesson._displaySections) ? lesson._displaySections : [];
+                    const lessonOpen = expandedLessons.includes(lesson.id);
+                    const lessonLabel = getSidebarLessonTitle(lesson, sections);
                     return (
-                      <button
-                        key={lesson.id}
-                        type="button"
-                        onClick={() => onSelectLesson && onSelectLesson(lesson.id)}
-                        className={`w-full text-left px-4 py-3.5 text-sm font-bold rounded-2xl transition-all flex flex-col gap-2 group/btn mb-2 last:mb-0 ${theme.hoverLesson} ${
-                          isHi
-                            ? 'ring-2 ring-teal-500 ring-offset-2 bg-teal-50/80 text-teal-900'
-                            : ''
-                        }`}
-                      >
-                        <div className="flex items-center gap-4 w-full">
-                          <div
-                            className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors shrink-0 shadow-sm ${theme.iconBg}`}
+                      <div key={lesson.id} className="rounded-2xl overflow-hidden">
+                        <div className={`flex items-stretch ${theme.hoverLesson} rounded-2xl`}>
+                          <button
+                            type="button"
+                            onClick={() => onSelectLesson && onSelectLesson(lesson.id)}
+                            className="flex-1 text-left px-3 sm:px-4 py-3 text-sm font-bold transition-all flex items-center gap-3 group/btn min-w-0"
                           >
-                            <PlaySquare className="w-4 h-4 ml-0.5" />
-                          </div>
-                          <span className="line-clamp-2 leading-relaxed flex-1">{lesson.title}</span>
-                          <ChevronRight
-                            className={`w-5 h-5 ml-auto opacity-0 -translate-x-4 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all duration-300 shrink-0 ${theme.arrow}`}
-                          />
-                        </div>
-                        <div className="pl-[52px] pr-2 w-full">
-                          <div className="flex justify-between text-[10px] font-bold uppercase text-slate-400 mb-0.5">
-                            <span>{isHi ? 'Bạn đang học' : 'Tiến độ'}</span>
-                            <span>{prog}%</span>
-                          </div>
-                          <div className="w-full bg-slate-100 rounded-full h-1 overflow-hidden">
                             <div
-                              className={`h-1 rounded-full ${prog >= 100 ? 'bg-emerald-500' : 'bg-teal-500'}`}
-                              style={{ width: `${prog}%` }}
-                            />
-                          </div>
+                              className={`w-9 h-9 rounded-xl flex items-center justify-center transition-colors shrink-0 shadow-sm ${theme.iconBg}`}
+                            >
+                              <PlaySquare className="w-4 h-4 ml-0.5" />
+                            </div>
+                            <span className="line-clamp-2 leading-relaxed flex-1 text-slate-700">
+                              {lessonLabel}
+                            </span>
+                          </button>
+                          {sections.length > 0 ? (
+                            <button
+                              type="button"
+                              onClick={() => toggleLessonExpand(lesson.id)}
+                              className={`px-3 shrink-0 flex items-center ${theme.arrow || 'text-slate-400'}`}
+                              aria-label={lessonOpen ? 'Thu gọn mục' : 'Mở rộng mục'}
+                            >
+                              {lessonOpen ? (
+                                <ChevronDown className="w-5 h-5" />
+                              ) : (
+                                <ChevronRight className="w-5 h-5" />
+                              )}
+                            </button>
+                          ) : (
+                            <div className={`px-3 flex items-center opacity-40 ${theme.arrow || 'text-slate-400'}`}>
+                              <ChevronRight className="w-5 h-5" />
+                            </div>
+                          )}
                         </div>
-                      </button>
+                        {lessonOpen && sections.length > 0 ? (
+                          <div className="ml-8 sm:ml-12 mr-2 mb-2 pl-3 border-l-2 border-slate-200 space-y-0.5">
+                            {sections.map((sec) => (
+                              <button
+                                key={sec.id || `${sec._sourceLessonId}-${sec._sourceSectionIndex}`}
+                                type="button"
+                                onClick={() =>
+                                  onSelectLesson && onSelectLesson(sec._sourceLessonId || lesson.id)
+                                }
+                                className="w-full text-left px-2.5 py-2 text-xs sm:text-sm font-semibold text-slate-600 hover:text-blue-700 hover:bg-slate-50 rounded-xl transition-colors"
+                              >
+                                {getSectionDisplayLabel(sec)}
+                              </button>
+                            ))}
+                          </div>
+                        ) : null}
+                      </div>
                     );
                   })}
                 </div>
@@ -1377,6 +1410,16 @@ const StudentDashboardScreen = forwardRef(function StudentDashboardScreen(
               </button>
             </div>
             <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+              {onGoHome && (
+                <NavItem
+                  icon={Home}
+                  label="Trang chủ MathEdu"
+                  onClick={() => {
+                    onGoHome();
+                    closeMobileNav();
+                  }}
+                />
+              )}
               <NavItem
                 icon={LayoutDashboard}
                 label="Tổng quan"
@@ -1404,17 +1447,15 @@ const StudentDashboardScreen = forwardRef(function StudentDashboardScreen(
                   closeMobileNav();
                 }}
               />
-              {String(rosterGrade || '').trim() === '9' && (
-                <NavItem
-                  icon={BrainCircuit}
-                  label="Sơ đồ Hình 9"
-                  active={activeTab === 'mindmap'}
-                  onClick={() => {
-                    goToTab('mindmap');
-                    closeMobileNav();
-                  }}
-                />
-              )}
+              <NavItem
+                icon={BrainCircuit}
+                label="Sơ đồ tư duy ngược"
+                active={activeTab === 'mindmap'}
+                onClick={() => {
+                  goToTab('mindmap');
+                  closeMobileNav();
+                }}
+              />
               <NavItem
                 icon={FileText}
                 label="Đề thi & Kiểm tra"
@@ -1437,7 +1478,7 @@ const StudentDashboardScreen = forwardRef(function StudentDashboardScreen(
             <div className="p-3 border-t border-slate-200 shrink-0 space-y-1">
               <NavItem
                 icon={Settings}
-                label="Cài đặt"
+                label="Thông tin TK"
                 active={activeTab === 'settings'}
                 onClick={() => {
                   goToTab('settings');
@@ -1467,17 +1508,18 @@ const StudentDashboardScreen = forwardRef(function StudentDashboardScreen(
         </div>
 
         <nav className="flex-1 px-4 space-y-2 pt-4">
+          {onGoHome && (
+            <NavItem icon={Home} label="Trang chủ MathEdu" onClick={onGoHome} />
+          )}
           <NavItem icon={LayoutDashboard} label="Tổng quan" active={activeTab === 'dashboard'} onClick={() => goToTab('dashboard')} />
           <NavItem icon={BookOpen} label="Bài học" active={activeTab === 'lessons'} onClick={() => goToTab('lessons')} />
           <NavItem icon={BookMarked} label="Chuyên đề ôn thi" active={activeTab === 'topics'} onClick={() => goToTab('topics')} />
-          {String(rosterGrade || '').trim() === '9' && (
-            <NavItem
-              icon={BrainCircuit}
-              label="Sơ đồ Hình 9"
-              active={activeTab === 'mindmap'}
-              onClick={() => goToTab('mindmap')}
-            />
-          )}
+          <NavItem
+            icon={BrainCircuit}
+            label="Sơ đồ tư duy ngược"
+            active={activeTab === 'mindmap'}
+            onClick={() => goToTab('mindmap')}
+          />
           <NavItem
             icon={FileText}
             label="Đề thi & Kiểm tra"
@@ -1488,7 +1530,7 @@ const StudentDashboardScreen = forwardRef(function StudentDashboardScreen(
         </nav>
 
         <div className="p-4 border-t border-slate-200">
-          <NavItem icon={Settings} label="Cài đặt" onClick={() => goToTab('settings')} active={activeTab === 'settings'} />
+          <NavItem icon={Settings} label="Thông tin TK" onClick={() => goToTab('settings')} active={activeTab === 'settings'} />
           <NavItem icon={LogOut} label="Đăng xuất" className="text-red-600 hover:bg-red-50 hover:text-red-700" onClick={onLogout} />
         </div>
       </aside>
@@ -1529,14 +1571,19 @@ const StudentDashboardScreen = forwardRef(function StudentDashboardScreen(
             </div>
 
             <div className="flex items-center gap-3 sm:gap-6 shrink-0">
-              <button type="button" className="relative p-2 text-slate-500 hover:text-slate-700 transition-colors" aria-label="Thông báo">
-                <Bell className="w-6 h-6" />
-              </button>
+              <StudentNotificationBell
+                studentId={studentProfile?.id}
+                studentName={studentName}
+                onOpenLink={handleNotificationOpen}
+              />
               <div className="flex items-center gap-2 sm:gap-3 border-l border-slate-200 pl-3 sm:pl-6">
                 <div className="text-right hidden sm:block">
                   <p className="text-sm font-semibold text-slate-900">{studentName || 'Học sinh'}</p>
                   <p className="text-xs text-slate-500">
-                    Lớp {studentClass || '—'} · Khối học {rosterGrade}
+                    Lớp {studentClass || studentProfile?.class_label || '—'} · Khối học {rosterGrade}
+                    {studentProfile?.is_vip || ['vip', 'premium'].includes(String(studentProfile?.account_type || '').toLowerCase())
+                      ? ' · VIP'
+                      : ''}
                   </p>
                 </div>
                 <img
@@ -1558,22 +1605,18 @@ const StudentDashboardScreen = forwardRef(function StudentDashboardScreen(
           <div
             className={`w-full min-w-0 box-border ${
               topicsImmersive
-                ? 'max-w-none mx-0 h-full min-h-0 flex flex-col px-3 sm:px-4 md:px-6'
+                ? 'max-w-none mx-0 h-full min-h-0 flex flex-col px-0 md:px-6'
                 : 'max-w-7xl mx-auto px-4 sm:px-6 md:px-8'
             }`}
           >
           {activeTab === 'settings' && (
-            <div className="w-full bg-white rounded-3xl border border-slate-100 shadow-sm p-8">
-              <h2 className="text-xl font-bold text-slate-900 mb-2">Cài đặt</h2>
-              <p className="text-slate-600 text-sm mb-6">Phiên bản đơn giản: tài khoản lấy từ danh sách lớp. Liên hệ giáo viên nếu cần đổi tên hoặc khối.</p>
-              <button
-                type="button"
-                onClick={() => goToTab('dashboard')}
-                className="px-4 py-2 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700"
-              >
-                Về tổng quan
-              </button>
-            </div>
+            <StudentAccountSettings
+              studentName={studentName}
+              studentClass={studentClass}
+              rosterGrade={rosterGrade}
+              profile={studentProfile}
+              onSaveProfile={onSaveStudentProfile}
+            />
           )}
 
           {activeTab === 'dashboard' && (
@@ -1603,35 +1646,70 @@ const StudentDashboardScreen = forwardRef(function StudentDashboardScreen(
                 ))}
               </div>
 
-              {String(rosterGrade || '').trim() === '9' && (
-                <button
-                  type="button"
-                  onClick={() => goToTab('mindmap')}
-                  className="group mb-8 w-full text-left rounded-3xl overflow-hidden shadow-2xl shadow-cyan-500/20 border border-cyan-400/40 bg-gradient-to-r from-slate-900 via-cyan-900 to-emerald-900 p-1 transition-transform hover:scale-[1.01] active:scale-[0.99] focus:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/60"
-                >
-                  <div className="rounded-[1.35rem] bg-gradient-to-br from-cyan-500/90 via-teal-600/95 to-emerald-700/95 px-6 py-7 sm:px-8 sm:py-9 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5 relative">
-                    <div className="absolute inset-0 opacity-25 pointer-events-none bg-[radial-gradient(circle_at_20%_20%,white,transparent_45%),radial-gradient(circle_at_80%_60%,#a7f3d0,transparent_40%)]" />
-                    <div className="relative z-10 min-w-0 flex-1">
-                      <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-100/90 mb-2">Toán 9 · Hình học</p>
-                      <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white leading-tight drop-shadow-md">
-                        Luyện trí thông minh hình học với sơ đồ tư duy ngược
-                      </h2>
-                      <p className="mt-3 text-sm text-cyan-50/95 max-w-2xl leading-relaxed">
-                        Ẩn/hiện từng nhánh — kéo thả và thu phóng sơ đồ — ôn chủ động như Active Recall.
-                      </p>
-                    </div>
-                    <div className="relative z-10 shrink-0 flex items-center gap-3">
-                      <span className="hidden sm:flex h-14 w-14 rounded-2xl bg-white/15 border border-white/30 items-center justify-center backdrop-blur-sm">
-                        <BrainCircuit className="w-8 h-8 text-white" aria-hidden />
-                      </span>
-                      <span className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-white text-teal-900 font-black text-sm shadow-lg group-hover:bg-cyan-50 transition-colors">
-                        Vào luyện tập
-                        <ChevronRight className="w-5 h-5" />
-                      </span>
-                    </div>
+              {myHomework.length > 0 ? (
+                <div className="mb-8 rounded-2xl border border-indigo-200 bg-indigo-50/60 p-5 shadow-sm">
+                  <div className="flex items-center gap-2 mb-3">
+                    <BookOpen className="w-5 h-5 text-indigo-600" />
+                    <h2 className="font-black text-indigo-900">Bài tập về nhà</h2>
                   </div>
-                </button>
-              )}
+                  <div className="space-y-3">
+                    {myHomework.slice(0, 5).map((hw) => (
+                      <div key={hw.id} className="bg-white rounded-xl border border-indigo-100 p-4">
+                        <p className="font-bold text-slate-900">{hw.title}</p>
+                        {hw.description ? (
+                          <p className="text-sm text-slate-600 mt-1">{hw.description}</p>
+                        ) : null}
+                        {hw.due_date ? (
+                          <p className="text-xs font-semibold text-amber-700 mt-1">Hạn: {hw.due_date}</p>
+                        ) : null}
+                        {(hw.items || []).length > 0 ? (
+                          <ul className="mt-2 space-y-1">
+                            {hw.items.map((it, i) => (
+                              <li key={`${hw.id}-${i}`}>
+                                <button
+                                  type="button"
+                                  onClick={() => openHomeworkItem(it)}
+                                  className="text-sm font-semibold text-indigo-700 hover:underline text-left"
+                                >
+                                  → {it.label || it.link_url}
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
+              <button
+                type="button"
+                onClick={() => goToTab('mindmap')}
+                className="group mb-8 w-full text-left rounded-3xl overflow-hidden shadow-2xl shadow-cyan-500/20 border border-cyan-400/40 bg-gradient-to-r from-slate-900 via-cyan-900 to-emerald-900 p-1 transition-transform hover:scale-[1.01] active:scale-[0.99] focus:outline-none focus-visible:ring-4 focus-visible:ring-cyan-300/60"
+              >
+                <div className="rounded-[1.35rem] bg-gradient-to-br from-cyan-500/90 via-teal-600/95 to-emerald-700/95 px-6 py-7 sm:px-8 sm:py-9 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5 relative">
+                  <div className="absolute inset-0 opacity-25 pointer-events-none bg-[radial-gradient(circle_at_20%_20%,white,transparent_45%),radial-gradient(circle_at_80%_60%,#a7f3d0,transparent_40%)]" />
+                  <div className="relative z-10 min-w-0 flex-1">
+                    <p className="text-xs font-black uppercase tracking-[0.2em] text-cyan-100/90 mb-2">Toán {rosterGrade} · Sơ đồ tư duy ngược</p>
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white leading-tight drop-shadow-md">
+                      Luyện tư duy ngược với sơ đồ chứng minh
+                    </h2>
+                    <p className="mt-3 text-sm text-cyan-50/95 max-w-2xl leading-relaxed">
+                      Ẩn/hiện từng nhánh — kéo thả và thu phóng sơ đồ — ôn chủ động như Active Recall.
+                    </p>
+                  </div>
+                  <div className="relative z-10 shrink-0 flex items-center gap-3">
+                    <span className="hidden sm:flex h-14 w-14 rounded-2xl bg-white/15 border border-white/30 items-center justify-center backdrop-blur-sm">
+                      <BrainCircuit className="w-8 h-8 text-white" aria-hidden />
+                    </span>
+                    <span className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-white text-teal-900 font-black text-sm shadow-lg group-hover:bg-cyan-50 transition-colors">
+                      Vào luyện tập
+                      <ChevronRight className="w-5 h-5" />
+                    </span>
+                  </div>
+                </div>
+              </button>
 
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
                 <div className="lg:col-span-8 xl:col-span-9 space-y-6 lg:space-y-8 min-w-0">
@@ -1748,10 +1826,7 @@ const StudentDashboardScreen = forwardRef(function StudentDashboardScreen(
                     <span className="inline-block px-4 py-1.5 bg-white/10 rounded-full text-xs font-black mb-4 backdrop-blur-md border border-white/20 uppercase tracking-widest text-teal-100">
                       Khóa học · Khối {rosterGrade}
                     </span>
-                    <h1 className="font-display text-3xl md:text-4xl font-black mb-3 tracking-tight">Bài học theo chương</h1>
-                    <p className="text-teal-50/95 text-base max-w-2xl leading-relaxed">
-                      Tiến độ chương và từng bài nằm trong cùng một thẻ — bài đang học có viền teal.
-                    </p>
+                    <h1 className="font-display text-3xl md:text-4xl font-black tracking-tight">Bài học theo chương</h1>
                   </div>
                 </div>
 

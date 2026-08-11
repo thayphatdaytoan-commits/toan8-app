@@ -10,6 +10,8 @@ html {
   height: 100%;
   font-size: 16px;
   scrollbar-gutter: stable;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 @media (min-width: 768px) {
@@ -22,6 +24,7 @@ body {
   height: 100%;
   margin: 0;
   overflow-x: hidden;
+  max-width: 100%;
   font-family: 'Be Vietnam Pro', 'Nunito', system-ui, sans-serif;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
@@ -30,5 +33,31 @@ body {
 #root {
   min-height: 100%;
   width: 100%;
+  max-width: 100%;
   overflow-x: hidden;
+}
+
+/* Nút Đăng nhập trên header bài giảng — nhấp nháy thu hút */
+@keyframes login-cta-blink {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.55);
+  }
+  50% {
+    opacity: 0.78;
+    transform: scale(1.04);
+    box-shadow: 0 0 0 10px rgba(37, 99, 235, 0);
+  }
+}
+
+.login-cta-blink {
+  animation: login-cta-blink 1.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-cta-blink {
+    animation: none;
+  }
 }

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0ea5e9"/>
+      <stop offset="55%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="360" fill="url(#bg)"/>
+  <circle cx="980" cy="80" r="120" fill="#ffffff" opacity="0.08"/>
+  <circle cx="1100" cy="280" r="90" fill="#fbbf24" opacity="0.2"/>
+  <text x="64" y="120" fill="#fff" font-family="Arial,sans-serif" font-size="28" font-weight="700" opacity="0.9">MathEdu — Thầy Phát dạy toán</text>
+  <text x="64" y="190" fill="#fde047" font-family="Arial,sans-serif" font-size="52" font-weight="900">LUYỆN ĐỀ THI VÀO 10</text>
+  <text x="64" y="250" fill="#fff" font-family="Arial,sans-serif" font-size="36" font-weight="800">Bứt phá điểm số cùng lộ trình cá nhân hóa</text>
+  <rect x="64" y="280" width="200" height="48" rx="24" fill="#f97316"/>
+  <text x="164" y="312" text-anchor="middle" fill="#fff" font-family="Arial,sans-serif" font-size="18" font-weight="800">ĐĂNG KÝ NGAY</text>
+</svg>

@@ -15,6 +15,8 @@ export function parseLessonContentObject(contentStr) {
         sections: [],
         practice_display_mode: 'list',
         seo: { focus_keyword: '', keywords: [] },
+        mindMap: { enabled: false, mode: 'image', imageUrl: '', summaryTitle: '', summaryRoot: null, logicTrees: [] },
+        simulation: { enabled: false, mode: 'geogebra', title: '', geogebraUrl: '', htmlCode: '', guideText: '', height: 560 },
       },
       error: null,
     };
@@ -30,6 +32,8 @@ export function parseLessonContentObject(contentStr) {
           practice: [],
           materials: [],
           seo: { focus_keyword: '', keywords: [] },
+          mindMap: { enabled: false, mode: 'image', imageUrl: '', summaryTitle: '', summaryRoot: null, logicTrees: [] },
+          simulation: { enabled: false, mode: 'geogebra', title: '', geogebraUrl: '', htmlCode: '', guideText: '', height: 560 },
         },
         error: null,
       };
@@ -100,10 +104,20 @@ export function emptyPracticeTemplate(index, type = 'mcq') {
           { id: '1', placeholder: 'x = …', correctAnswer: '' },
         ],
       };
-    case 'text':
-      return { ...base, type: 'text' };
     case 'true_false':
       return { ...base, type: 'true_false', correctAnswer: true };
+    case 'true_false_group':
+      return {
+        ...base,
+        type: 'true_false_group',
+        question: 'Xét các khẳng định sau:',
+        tfItems: [
+          { key: 'a', text: 'Mệnh đề a', correct: true },
+          { key: 'b', text: 'Mệnh đề b', correct: false },
+          { key: 'c', text: 'Mệnh đề c', correct: true },
+          { key: 'd', text: 'Mệnh đề d', correct: true },
+        ],
+      };
     case 'ordering':
       return { ...base, type: 'ordering', items: ['Bước 1', 'Bước 2', 'Bước 3'], correctOrder: [0, 1, 2] };
     case 'drag_drop':
@@ -127,6 +141,7 @@ export function emptyPracticeTemplate(index, type = 'mcq') {
           { id: '1', correctAnswer: '(0; 0)' },
           { id: '2', correctAnswer: 'x = 0' },
         ],
+        blanksText: '1=(0; 0)\n2=x = 0',
       };
     case 'mcq':
     default:

@@ -6,15 +6,19 @@ import { sanitizeSvgString, SVG_FENCE_REGEX } from './svgEmbed';
  * Chuyển nội dung lý thuyết trọng tâm (plain text / nhẹ markdown) → HTML an toàn + KaTeX.
  *
  * Hỗ trợ:
- * - # / ## / ### / #### — tiêu đề (H2–H5 trong khung lý thuyết, tốt cho SEO)
+ * - # / ## — tiêu đề mục (nếu dạng "1. Tiêu đề" thì hiện badge tròn số như mục khái niệm)
  * - **in đậm** · *in nghiêng* · __gạch chân__
  * - [nhãn](https://url) — liên kết (http/https hoặc đường dẫn /...)
  * - {{#mãhex}}đoạn màu{{/}} — màu chữ (ví dụ {{#b91c1c}}...{{/}})
+ * - {{@xs|sm|base|lg|xl|2xl}}đoạn{{/}} hoặc {{@18px}} — cỡ chữ hiển thị
  * - Bảng markdown: | c1 | c2 | + dòng |---|
  * - Gạch đầu dòng: - hoặc • hoặc *
- * - Dòng số mục: "1. Tiêu đề phần" (không chứa dấu =) → tiêu đề nổi bật
+ * - Dòng số mục: "1. Tiêu đề phần" (không chứa dấu =) → tiêu đề badge tròn
  * - Dòng IN HOA NGẮN (nhãn kiểu HÀM LƯỢNG GIÁC) → tiêu đề nhỏ
  * - Tự bọc $...$ cho dòng có dạng công thức (= và ^_{} hoặc \frac...) nếu chưa có $
+ * - Khối display: $$...$$ hoặc \[...\] (kể cả nhiều dòng); inline: $...$ hoặc \(...\)
+ * - Khối Chú ý: ... --- → đóng khung đỏ (chỉ lý thuyết trọng tâm)
+ * - Trong lý thuyết trọng tâm: "Ví dụ:" là chữ thường (không đóng khung như mục Các dạng toán)
  * - Khối \\{ Lời giải: ... \\} — khung đóng/mở (details) (ưu tiên)
  * - (tương thích) Dòng \\Lời giải: hoặc Lời giải: — khung đóng/mở theo heuristics cũ
  */
@@ -31,13 +35,80 @@ function escapeHtmlAttr(s) {
   return escapeHtml(s).replace(/'/g, '&#39;');
 }
 
-/** Icon + màu khối lý thuyết (Định nghĩa / Ghi nhớ / Phương pháp / Ví dụ) — khớp UI mẫu. */
+/** Icon + màu khối lý thuyết (Định nghĩa / Định lí / Ghi nhớ / Phương pháp / Ví dụ) — khớp UI mẫu. */
 const THEORY_ICON_QUOTE = `<span class="lesson-theory-icon lesson-theory-icon--quote" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5H3v14z"/><path d="M14 21c3 0 7-1 7-8V5h-7v14z"/></svg></span>`;
 const THEORY_ICON_PIN = `<span class="lesson-theory-icon lesson-theory-icon--pin" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v4.76z"/></svg></span>`;
 const THEORY_ICON_LAYERS = `<span class="lesson-theory-icon lesson-theory-icon--layers" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span>`;
 const THEORY_ICON_EXAMPLE = `<span class="lesson-theory-icon lesson-theory-icon--example" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span>`;
+const THEORY_ICON_THEOREM = `<span class="lesson-theory-icon lesson-theory-icon--theorem" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M8 7h6"/><path d="M8 11h8"/></svg></span>`;
+const THEORY_ICON_NOTE = `<span class="lesson-theory-icon lesson-theory-icon--note" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-3.6-3.6"/><path d="M11 8v1.5"/><circle cx="11" cy="13.2" r="1.1" fill="currentColor" stroke="none"/></svg></span>`;
+
+/**
+ * Import hay ghi \\le, \\frac như JSON — trong $...$ KaTeX hiểu \\ là xuống dòng → hiện "le0".
+ * Chuẩn hoá \\lệnh → \lệnh trong các khối $ / $$ / \[ \] / \( \).
+ * Đồng thời align → aligned (KaTeX).
+ * Tách tạm thẻ <img> để không đụng URL ảnh khi xử lý công thức.
+ */
+export function normalizeDoubleBackslashInMath(text) {
+  const s0 = String(text ?? '');
+  if (!s0.includes('\\') && !s0.includes('<img')) return s0;
+
+  const imgHold = [];
+  let s = s0.replace(/<img\b[^>]*>/gi, (full) => {
+    const i = imgHold.length;
+    imgHold.push(full);
+    return `\x00IMGHOLD${i}\x00`;
+  });
+
+  if (s.includes('\\')) {
+    // Đưa \[ \] \( \) về $ / $$ trước để cùng một vòng xử lý
+    s = s
+      .replace(/(^|[^#\\])\\{1,2}\[([\s\S]*?)\\{1,2}\](?!#)/g, (_, pre, inner) => `${pre}$$${inner}$$`)
+      .replace(/(^|[^\\])\\{1,2}\(([\s\S]*?)\\{1,2}\)/g, (_, pre, inner) => `${pre}$${inner}$`);
+
+    // Word/MathType: \begin{align} trong $...$ → aligned (KaTeX hỗ trợ)
+    s = s.replace(/\\begin\{align\*?\}/gi, '\\begin{aligned}');
+    s = s.replace(/\\end\{align\*?\}/gi, '\\end{aligned}');
+    s = s.replace(/\\begin\{eqnarray\*?\}/gi, '\\begin{aligned}');
+    s = s.replace(/\\end\{eqnarray\*?\}/gi, '\\end{aligned}');
+    s = s.replace(/\\right(?=\s*\$)/g, '\\right.');
+    s = s.replace(/\\right(\s*)(?=\$\$)/g, '\\right.$1');
+
+    const re = /(\$\$[\s\S]*?\$\$|\$[^$]*\$)/g;
+    let out = '';
+    let last = 0;
+    let m;
+    while ((m = re.exec(s)) !== null) {
+      out += s.slice(last, m.index);
+      const token = m[0];
+      if (token.startsWith('$$')) {
+        const inner = token.slice(2, -2).replace(/\\\\([a-zA-Z]+)/g, '\\$1');
+        out += `$$${inner}$$`;
+      } else {
+        const inner = token.slice(1, -1).replace(/\\\\([a-zA-Z]+)/g, '\\$1');
+        out += `$${inner}$`;
+      }
+      last = m.index + token.length;
+    }
+    out += s.slice(last);
+    s = out;
+  }
+
+  for (let i = imgHold.length - 1; i >= 0; i -= 1) {
+    s = s.split(`\x00IMGHOLD${i}\x00`).join(imgHold[i]);
+  }
+  return s;
+}
 
 function getTheoryBlockStyle(label) {
+  if (/chú\s*ý/i.test(label)) {
+    return {
+      blockClass: 'lesson-theory-block--note',
+      shell: 'lesson-theory-note-shell',
+      title: 'text-white',
+      badgeHtml: THEORY_ICON_NOTE,
+    };
+  }
   if (/ví\s*dụ/i.test(label)) {
     return {
       blockClass: 'lesson-theory-block--example',
@@ -52,6 +123,14 @@ function getTheoryBlockStyle(label) {
       shell: 'bg-blue-50 border border-blue-200/90',
       title: 'text-blue-700',
       badgeHtml: THEORY_ICON_QUOTE,
+    };
+  }
+  if (/định\s*lí|định\s*lý/i.test(label)) {
+    return {
+      blockClass: 'lesson-theory-block--theorem',
+      shell: 'bg-amber-50 border-[3px] border-amber-500 shadow-sm shadow-amber-100/80',
+      title: 'text-amber-900',
+      badgeHtml: THEORY_ICON_THEOREM,
     };
   }
   if (/ghi\s*nhớ/i.test(label)) {
@@ -70,6 +149,154 @@ function getTheoryBlockStyle(label) {
   };
 }
 
+/**
+ * Format mới (không cần #[...]#):
+ *   Định nghĩa: / Định lí: / Ghi nhớ: / Chú ý: / Phương pháp: / Ví dụ … / Lời giải …
+ *   ---
+ * Chuyển thành #[Label: body]# để dùng chung pipeline render.
+ *
+ * @param {string} source
+ * @param {{ includeVidu?: boolean, includeChuY?: boolean, includeLoiGiai?: boolean }} [opts]
+ *   - includeVidu: mặc định true (Các dạng toán). Lý thuyết trọng tâm → false.
+ *   - includeChuY: mặc định true.
+ *   - includeLoiGiai: mặc định true. Tắt khi tách cấu trúc dạng để giữ plain cho nhận diện tương tác.
+ */
+function buildPlainBlockLabelRe({ includeChuY = true } = {}) {
+  // Nhãn “cứng” — bắt buộc có dấu : (tránh bắt nhầm câu thường)
+  const parts = [
+    'Định\\s*nghĩa',
+    'Định\\s*lí',
+    'Định\\s*lý',
+    'Ghi\\s*nhớ',
+    'Phương\\s*pháp',
+  ];
+  if (includeChuY) parts.push('Chú\\s*ý');
+  return new RegExp(`^(${parts.join('|')})\\s*:\\s*(.*)$`, 'i');
+}
+
+/** Ví dụ 3.5. … / Ví dụ 1: … / Ví dụ … — chỉ cần có từ “Ví dụ” đầu dòng */
+const VIDU_LINE_RE =
+  /^(Ví\s*dụ(?:\s*\d+(?:\.\d+)*)?|Bài(?:\s*\d+(?:\.\d+)*)?)\s*[:.\-—]?\s*(.*)$/i;
+
+/** Lời giải / Lời giải: / Lời giải. — không bắt buộc dấu : (tránh “Lời giải thích”) */
+const LOI_GIAI_FLEX_LINE_RE = /^(Lời\s*giải)(?:\s*[:.\-—]\s*(.*))?$/i;
+
+function matchFlexibleBlockLabel(trimmed, { includeVidu = true, includeLoiGiai = true } = {}) {
+  if (includeVidu) {
+    const mv = String(trimmed || '').match(VIDU_LINE_RE);
+    if (mv) return { label: mv[1], rest: mv[2] ?? '' };
+  }
+  if (includeLoiGiai) {
+    const ml = String(trimmed || '').match(LOI_GIAI_FLEX_LINE_RE);
+    if (ml) return { label: ml[1], rest: ml[2] ?? '' };
+  }
+  return null;
+}
+
+function canonicalizePlainBlockLabel(rawLabel) {
+  const label = String(rawLabel || '').trim();
+  if (/chú\s*ý/i.test(label)) return 'Chú ý';
+  if (/định\s*lý/i.test(label)) return 'Định lí';
+  if (/định\s*lí/i.test(label)) return 'Định lí';
+  if (/định\s*nghĩa/i.test(label)) return 'Định nghĩa';
+  if (/ghi\s*nhớ/i.test(label)) return 'Ghi nhớ';
+  if (/phương\s*pháp/i.test(label)) return 'Phương pháp';
+  if (/lời\s*giải/i.test(label)) return 'Lời giải';
+  const bai = label.match(/^Bài\s*(\d+(?:\.\d+)*)?$/i);
+  if (bai) return bai[1] ? `Ví dụ ${bai[1]}` : 'Ví dụ';
+  const vidu = label.match(/^Ví\s*dụ(?:\s*(\d+(?:\.\d+)*))?$/i);
+  if (vidu) return vidu[1] ? `Ví dụ ${vidu[1]}` : 'Ví dụ';
+  return label;
+}
+
+export function expandPlainLabeledBlocks(source, opts = {}) {
+  const includeVidu = opts.includeVidu !== false;
+  const includeChuY = opts.includeChuY !== false;
+  const includeLoiGiai = opts.includeLoiGiai !== false;
+  const plainLabelRe = buildPlainBlockLabelRe({ includeChuY });
+  const isBlockStart = (t) =>
+    Boolean(t.match(plainLabelRe) || matchFlexibleBlockLabel(t, { includeVidu, includeLoiGiai }));
+
+  const raw = String(source ?? '')
+    .replace(/\r\n/g, '\n')
+    .replace(/\r/g, '\n');
+  if (!raw.trim()) return raw;
+
+  const lines = raw.split('\n');
+  const out = [];
+  let i = 0;
+
+  while (i < lines.length) {
+    const line = lines[i];
+    const trimmed = line.trim();
+
+    // Giữ nguyên khối #[...]# / \{...\} cũ — copy đến hết dòng đóng
+    if (
+      /^#\[/.test(trimmed) ||
+      /^\\?\{\s*(Phương\s*pháp|Ví\s*dụ|Lời\s*giải|Định\s*nghĩa|Định\s*lí|Định\s*lý|Ghi\s*nhớ|Chú\s*ý)\s*:/i.test(
+        trimmed
+      )
+    ) {
+      const chunk = [line];
+      i += 1;
+      const isHash = /^#\[/.test(trimmed);
+      while (i < lines.length) {
+        chunk.push(lines[i]);
+        const t = lines[i].trim();
+        if (isHash && (/\]#$/.test(t) || /#\]$/.test(t))) {
+          i += 1;
+          break;
+        }
+        if (!isHash && /\\?\}$/.test(t)) {
+          i += 1;
+          break;
+        }
+        i += 1;
+      }
+      out.push(...chunk);
+      continue;
+    }
+
+    if (/^-{3,}$/.test(trimmed)) {
+      out.push('');
+      i += 1;
+      continue;
+    }
+
+    const flex = matchFlexibleBlockLabel(trimmed, { includeVidu, includeLoiGiai });
+    const m = flex ? null : trimmed.match(plainLabelRe);
+    if (flex || m) {
+      const canon = canonicalizePlainBlockLabel(flex ? flex.label : m[1]);
+      const bodyLines = [];
+      const rest = String(flex ? flex.rest : m[2] ?? '').trim();
+      if (rest) bodyLines.push(rest);
+      i += 1;
+      while (i < lines.length) {
+        const t = lines[i].trim();
+        if (/^-{3,}$/.test(t)) {
+          i += 1;
+          break;
+        }
+        if (isBlockStart(t)) break;
+        if (/^#\[/.test(t)) break;
+        bodyLines.push(lines[i]);
+        i += 1;
+      }
+      const body = bodyLines.join('\n').replace(/\n+$/g, '').trim();
+      out.push(`#[${canon}:`);
+      out.push(body);
+      out.push(']#');
+      out.push('');
+      continue;
+    }
+
+    out.push(line);
+    i += 1;
+  }
+
+  return out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+
 function isAllowedLinkUrl(url) {
   const u = String(url || '').trim();
   if (!u || /^\s*javascript:/i.test(u)) return false;
@@ -79,8 +306,62 @@ function isAllowedLinkUrl(url) {
   return false;
 }
 
+function isAllowedTheoryImageUrl(url) {
+  const u = decodeBasicHtmlEntities(String(url || '').trim());
+  if (!u) return false;
+  if (/^\s*javascript:/i.test(u)) return false;
+  if (/^\s*data:(?!image\/)/i.test(u)) return false;
+  if (/^https?:\/\//i.test(u)) return true;
+  if (u.startsWith('/') && !u.startsWith('//')) return true;
+  if (u.startsWith('./') || u.startsWith('../')) return true;
+  if (/^data:image\/(png|jpe?g|gif|webp|svg\+xml);/i.test(u)) return true;
+  return false;
+}
+
+function decodeBasicHtmlEntities(s) {
+  return String(s || '')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>');
+}
+
+function theoryImageTagHtml(alt, url) {
+  const src = decodeBasicHtmlEntities(String(url || '').trim());
+  const a = String(alt || 'Hình minh họa').trim() || 'Hình minh họa';
+  if (!isAllowedTheoryImageUrl(src)) return '';
+  return (
+    `<img src="${escapeHtmlAttr(src)}" alt="${escapeHtmlAttr(a)}" ` +
+    `class="max-w-full h-auto rounded-lg my-3 border border-slate-200 shadow-sm block mx-auto" ` +
+    `loading="lazy" decoding="async" data-lesson-img="1" />`
+  );
+}
+
+const FONT_SIZE_CLASS = {
+  xs: 'text-xs',
+  sm: 'text-sm',
+  base: 'text-base',
+  lg: 'text-lg',
+  xl: 'text-xl',
+  '2xl': 'text-2xl',
+};
+
+function fontSizeSpanHtml(sizeKey, innerHtml) {
+  const key = String(sizeKey || '').trim().toLowerCase();
+  const preset = FONT_SIZE_CLASS[key];
+  if (preset) return `<span class="${preset}">${innerHtml}</span>`;
+  if (/^\d+(?:\.\d+)?(?:px|rem|em|%)$/.test(key)) {
+    return `<span style="font-size:${key}">${innerHtml}</span>`;
+  }
+  if (/^\d+(?:\.\d+)?$/.test(key)) {
+    return `<span style="font-size:${key}px">${innerHtml}</span>`;
+  }
+  return innerHtml;
+}
+
 /**
- * Đoạn văn bản (không chứa khối $...$) → HTML inline: **đậm**, *nghiêng*, __gạch chân__, [nhãn](url), {{#mã}}màu{{/}}
+ * Đoạn văn bản (không chứa khối $...$) → HTML inline: **đậm**, *nghiêng*, __gạch chân__, [nhãn](url), {{#mã}}màu{{/}}, {{@cỡ}}chữ{{/}}
  */
 export function inlineRichTextToHtml(s) {
   return richTextToHtml(s);
@@ -88,15 +369,31 @@ export function inlineRichTextToHtml(s) {
 
 function richTextToHtml(s) {
   const colors = [];
+  const fonts = [];
+  const images = [];
   let t = String(s);
+  // Ảnh markdown TRƯỚC link [text](url) — tránh ![ảnh](url) bị biến thành liên kết «ảnh»
+  t = t.replace(/!\[([^\]]*)\]\(\s*<?([^)\s>]+)>?\s*\)/g, (full, alt, url) => {
+    const u = decodeBasicHtmlEntities(String(url || '').trim());
+    if (!isAllowedTheoryImageUrl(u)) return full;
+    const i = images.length;
+    images.push({ alt: String(alt || '').trim(), url: u });
+    return `\x00IMG${i}\x00`;
+  });
   t = t.replace(/\{\{#([#a-fA-F0-9]{3,8})\}\}([\s\S]*?)\{\{\/\}\}/g, (full, col, inner) => {
     const i = colors.length;
     colors.push({ col, inner });
     return `\x00COL${i}\x00`;
   });
+  t = t.replace(/\{\{@([a-zA-Z0-9.%]+)\}\}([\s\S]*?)\{\{\/\}\}/g, (full, size, inner) => {
+    const i = fonts.length;
+    fonts.push({ size, inner });
+    return `\x00FNT${i}\x00`;
+  });
   const links = [];
-  t = t.replace(/\[([^\]]*)\]\(\s*([^)\s]+)\s*\)/g, (full, label, url) => {
-    const u = String(url).trim();
+  // (?<!\!) — không khớp phần [alt](url) của ảnh markdown
+  t = t.replace(/(?<!!)\[([^\]]*)\]\(\s*<?([^)\s>]+)>?\s*\)/g, (full, label, url) => {
+    const u = decodeBasicHtmlEntities(String(url || '').trim());
     if (!isAllowedLinkUrl(u)) return full;
     const i = links.length;
     links.push({ label, url: u });
@@ -112,6 +409,15 @@ function richTextToHtml(s) {
     const innerHtml = escapeHtml(inner);
     t = t.split(`\x00COL${i}\x00`).join(`<span style="color:${safe}">${innerHtml}</span>`);
   }
+  for (let i = fonts.length - 1; i >= 0; i--) {
+    const { size, inner } = fonts[i];
+    const innerHtml = escapeHtml(inner);
+    t = t.split(`\x00FNT${i}\x00`).join(fontSizeSpanHtml(size, innerHtml));
+  }
+  for (let i = images.length - 1; i >= 0; i--) {
+    const { alt, url } = images[i];
+    t = t.split(`\x00IMG${i}\x00`).join(theoryImageTagHtml(alt, url));
+  }
   for (let i = links.length - 1; i >= 0; i--) {
     const { label, url } = links[i];
     const href = escapeHtmlAttr(url);
@@ -125,7 +431,8 @@ function richTextToHtml(s) {
 
 function splitMathSegments(s) {
   const out = [];
-  const re = /(\$\$[\s\S]*?\$\$|\$[^$\n]*\$)/g;
+  // $$...$$ (display, có thể nhiều dòng) | \[...\] | \(...\) | $...$ (inline một dòng)
+  const re = /(\$\$[\s\S]*?\$\$|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)|\$[^$\n]*\$)/g;
   let last = 0;
   let m;
   while ((m = re.exec(s)) !== null) {
@@ -140,11 +447,37 @@ function splitMathSegments(s) {
 
 function autoDelimitMathLine(line) {
   const t = line.trim();
-  if (!t || /\$/.test(t)) return line;
+  if (!t || /\$|\\\[|\\\(/.test(t)) return line;
   if (/=/.test(t) && (/[\^_{}]/.test(t) || /\\[a-zA-Z]+/.test(t) || /\)\s*'/.test(t) || /'\s*=/.test(t))) {
     return `$${t}$`;
   }
   return line;
+}
+
+/** Chuẩn hoá \[ \] → $$ và tách khối display thành sentinel (tránh vỡ khi join &lt;br/&gt;). */
+function extractDisplayMathPlaceholders(text) {
+  let raw = normalizeDoubleBackslashInMath(String(text ?? ''));
+  const blocks = [];
+  raw = raw.replace(/\$\$([\s\S]*?)\$\$/g, (_full, inner) => {
+    const idx = blocks.length;
+    blocks.push(String(inner ?? '').trim());
+    return `\n__MATH_DISPLAY_${idx}__\n`;
+  });
+  return { text: raw, blocks };
+}
+
+function mathDisplayPlaceholderHtml(trimmed, blocks) {
+  const m = String(trimmed || '').match(/^__MATH_DISPLAY_(\d+)__$/);
+  if (!m) return null;
+  const tex = blocks[Number(m[1])] || '';
+  return `<div class="my-4 overflow-x-auto text-center">$$${tex}$$</div>`;
+}
+
+function prepareLinesWithDisplayMath(bodyLines) {
+  const { text, blocks } = extractDisplayMathPlaceholders(
+    (Array.isArray(bodyLines) ? bodyLines : [bodyLines]).map((l) => String(l ?? '')).join('\n')
+  );
+  return { lines: text.split('\n'), displayMathBlocks: blocks };
 }
 
 function inlineFormatLine(line) {
@@ -202,7 +535,7 @@ function extractViduHeading(bodyLines) {
   const lines = [...bodyLines];
   if (!lines.length) return { badge: 'Ví dụ', lines };
   const first = String(lines[0] || '').trim();
-  const m = first.match(/^Ví dụ\s*(\d+)\s*(?:[:\.\-—]\s*)?(.*)$/i);
+  const m = first.match(/^Ví dụ\s*(\d+(?:\.\d+)*)\s*(?:[:\.\-—]\s*)?(.*)$/i);
   if (m) {
     const badge = `Ví dụ ${m[1]}`;
     if (m[2]) lines[0] = m[2];
@@ -210,6 +543,48 @@ function extractViduHeading(bodyLines) {
     return { badge, lines };
   }
   return { badge: 'Ví dụ', lines };
+}
+
+/**
+ * Badge khung Ví dụ theo dạng: Dạng 1 → Ví dụ 1.1, 1.2…; Dạng 2 → 2.1, 2.2…
+ * @param {string} rawBadge
+ * @param {{ n: number, dang?: number } | null | undefined} viduCounter
+ */
+function resolveViduDisplayBadge(rawBadge, viduCounter) {
+  const raw = String(rawBadge || '').trim() || 'Ví dụ';
+  if (!viduCounter) return raw;
+
+  const dang = Number(viduCounter.dang);
+  const hasDang = Number.isFinite(dang) && dang > 0;
+
+  // Trong một dạng: luôn đánh số dạng.thứ_tự (1.1, 1.2, …)
+  if (hasDang) {
+    viduCounter.n += 1;
+    return `Ví dụ ${dang}.${viduCounter.n}`;
+  }
+
+  // Không thuộc dạng nào (preface): Ví dụ 1, 2, 3…
+  const m = raw.match(/^Ví\s*dụ\s*(\d+(?:\.\d+)*)\s*$/i);
+  if (m) {
+    const n = Number(m[1]);
+    if (Number.isFinite(n)) viduCounter.n = Math.max(viduCounter.n, Math.floor(n));
+    return `Ví dụ ${m[1]}`;
+  }
+  if (/^Ví\s*dụ\s*:?\s*$/i.test(raw) || /^Bài\s*:?\s*$/i.test(raw)) {
+    viduCounter.n += 1;
+    return `Ví dụ ${viduCounter.n}`;
+  }
+  return raw;
+}
+
+/** Lấy số dạng từ nhãn «Dạng 2» / «Dang 1»; fallback = chỉ số thứ tự nhóm (1-based). */
+export function extractDangNumber(dangLabel, groupIndex = 0) {
+  const m = String(dangLabel || '').match(/(?:Dạng|Dang)\s*(\d+)/i);
+  if (m) {
+    const n = Number(m[1]);
+    if (Number.isFinite(n) && n > 0) return n;
+  }
+  return Math.max(1, (Number(groupIndex) || 0) + 1);
 }
 
 const LOI_GIAI_DETAILS_OPEN =
@@ -240,10 +615,13 @@ function stripLoiGiaiLeadLines(bodyLines) {
 
 function formatBodyLinesToHtml(bodyLines, svgBlocks) {
   const svgTokenRe = /^(?:__)?SVG_EMBED_(\d+)(?:__)?$/;
-  return bodyLines
+  const { lines, displayMathBlocks } = prepareLinesWithDisplayMath(bodyLines);
+  return lines
     .map((ln) => {
       const t = String(ln || '').trim();
       if (!t) return '';
+      const mathHtml = mathDisplayPlaceholderHtml(t, displayMathBlocks);
+      if (mathHtml) return mathHtml;
       const sm = t.match(svgTokenRe);
       if (sm) {
         const rawSvg = svgBlocks[Number(sm[1])] || '';
@@ -265,7 +643,9 @@ function buildLoiGiaiDetailsFromLines(bodyLines, svgBlocks) {
 }
 
 function renderBlockBodyHtml(bodyLines, boxBlocks, svgBlocks) {
-  const lines = [...bodyLines];
+  const prepared = prepareLinesWithDisplayMath(bodyLines);
+  const lines = prepared.lines;
+  const displayMathBlocks = prepared.displayMathBlocks;
   let out = '';
   let i = 0;
   let para = [];
@@ -281,6 +661,14 @@ function renderBlockBodyHtml(bodyLines, boxBlocks, svgBlocks) {
     const trimmed = String(line || '').trim();
     if (!trimmed) {
       flushPara();
+      i += 1;
+      continue;
+    }
+
+    const mathHtml = mathDisplayPlaceholderHtml(trimmed, displayMathBlocks);
+    if (mathHtml) {
+      flushPara();
+      out += mathHtml;
       i += 1;
       continue;
     }
@@ -378,12 +766,39 @@ function isAllCapsHeading(line) {
   return true;
 }
 
+/** Tiêu đề mục kiểu "1. Khái niệm..." — badge tròn số (H1/H2 / dòng đánh số). */
+function sectionHeadingHtml(rawTitle, tag = 'h2') {
+  const t = String(rawTitle || '').trim();
+  const m = t.match(/^(\d{1,2})\.\s+(.+)$/);
+  if (m) {
+    return `<${tag} class="lesson-theory-section-heading mt-6 first:mt-0 mb-3 flex flex-wrap items-center gap-2.5 text-base md:text-lg font-black text-slate-900 leading-snug"><span class="lesson-theory-section-num">${escapeHtml(m[1])}</span><span class="min-w-0 leading-snug">${inlineFormatLine(m[2])}</span></${tag}>`;
+  }
+  return `<${tag} class="lesson-theory-section-heading mt-6 first:mt-0 mb-3 text-base md:text-lg font-black text-slate-900 leading-snug">${inlineFormatLine(t)}</${tag}>`;
+}
+
 /**
  * @param {string} source
+ * @param {{ viduAsFrame?: boolean, viduCounter?: { n: number, dang?: number }, forcedViduBadge?: string }} [opts]
+ *   - viduAsFrame: true → khung Ví dụ (dùng cho Các dạng toán / examples_core).
+ *     Mặc định false: Lý thuyết trọng tâm giữ “Ví dụ” như chữ thường.
+ *   - viduCounter: { dang, n } — dang = số dạng → badge «Ví dụ 1.1»; không dang → «Ví dụ 1»
+ *   - forcedViduBadge: ép badge (vd. «Ví dụ 1.2») khi render từng ví dụ riêng
  * @returns {string} HTML (chỉ thẻ hạn chế; nội dung đã escape trừ thẻ strong và công thức $)
  */
-export function theoryCorePlainToHtml(source) {
-  const raw0 = (source || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+export function theoryCorePlainToHtml(source, opts = {}) {
+  const viduAsFrame = opts.viduAsFrame === true;
+  const forcedViduBadge = String(opts.forcedViduBadge || '').trim();
+  const viduCounter = viduAsFrame
+    ? opts.viduCounter && typeof opts.viduCounter === 'object'
+      ? opts.viduCounter
+      : { n: 0 }
+    : null;
+  const raw0 = normalizeDoubleBackslashInMath(
+    expandPlainLabeledBlocks((source || '').replace(/\r\n/g, '\n').replace(/\r/g, '\n'), {
+      includeVidu: viduAsFrame,
+      includeChuY: true,
+    })
+  );
 
   const svgBlocks = [];
   let rawWithSvg = raw0.replace(SVG_FENCE_REGEX, (full, inner) => {
@@ -396,18 +811,18 @@ export function theoryCorePlainToHtml(source) {
   });
 
   // Syntax thẻ khối:
-  // - #[Phương pháp: ...]# (mới)
-  // - #[Ví dụ: ...]#
+  // Format mới: Định nghĩa: / Định lí: / Ghi nhớ: / Chú ý: / Phương pháp: + ---
+  // (Không nhận Ví dụ: thành khung trong lý thuyết — giữ chữ thường)
+  // - #[Phương pháp: ...]# (cũ, vẫn hỗ trợ)
   // - #[Lời giải: ...]#  (render dạng đóng/mở)
-  // - #[Định nghĩa: ...]#
-  // - #[Ghi nhớ: ...]#
+  // - #[Định nghĩa: ...]# / #[Định lí: ...]# / #[Ghi nhớ: ...]# / #[Chú ý: ...]#
   // - \{ Lời giải: ... \} (cũ) hoặc {Lời giải: ...} (mới)
-  // - {Phương pháp: ...} / {Ví dụ: ...} (có thể có dấu \ trước { } để dễ gõ)
   //
   // → sentinel line để parser chèn khung tương ứng.
   const boxBlocks = []; // { label, body }
-  const BOX_LABEL_GROUP = '(Phương\\s*pháp|Ví\\s*dụ|Lời\\s*giải|Định\\s*nghĩa|Ghi\\s*nhớ)';
-  // Format mới: #[Label: ...]# (cho phép xuống dòng). Ngoài ra bắt thêm biến thể lỗi gõ: #[Label: ...#]
+  const BOX_LABEL_GROUP =
+    '(Phương\\s*pháp|Lời\\s*giải|Định\\s*nghĩa|Định\\s*lí|Định\\s*lý|Ghi\\s*nhớ|Chú\\s*ý|Ví\\s*dụ(?:\\s*\\d+(?:\\.\\d+)*)?|Bài(?:\\s*\\d+(?:\\.\\d+)*)?)';
+  // Format hash: #[Label: ...]# (cho phép xuống dòng). Ngoài ra bắt thêm biến thể lỗi gõ: #[Label: ...#]
   const BOX_BLOCK_HASH_REGEX = new RegExp(`#\\[\\s*${BOX_LABEL_GROUP}\\s*:\\s*([\\s\\S]*?)\\]#`, 'gi');
   const BOX_BLOCK_HASH_TYPO_REGEX = new RegExp(`#\\[\\s*${BOX_LABEL_GROUP}\\s*:\\s*([\\s\\S]*?)#\\]`, 'gi');
   // Format cũ: {Label: ...} hoặc \{...\}
@@ -415,26 +830,40 @@ export function theoryCorePlainToHtml(source) {
 
   let withBoxes = rawWithSvg.replace(BOX_BLOCK_HASH_REGEX, (_full, label, inner) => {
     const idx = boxBlocks.length;
-    boxBlocks.push({ label: String(label || '').trim(), body: String(inner ?? '').trim() });
+    boxBlocks.push({
+      label: canonicalizePlainBlockLabel(String(label || '').trim()),
+      body: String(inner ?? '').trim(),
+    });
     return `\n__BOX_BLOCK_${idx}__\n`;
   });
   withBoxes = withBoxes.replace(BOX_BLOCK_HASH_TYPO_REGEX, (_full, label, inner) => {
     const idx = boxBlocks.length;
-    boxBlocks.push({ label: String(label || '').trim(), body: String(inner ?? '').trim() });
+    boxBlocks.push({
+      label: canonicalizePlainBlockLabel(String(label || '').trim()),
+      body: String(inner ?? '').trim(),
+    });
     return `\n__BOX_BLOCK_${idx}__\n`;
   });
   withBoxes = withBoxes.replace(BOX_BLOCK_BRACE_REGEX, (_full, label, inner) => {
     const idx = boxBlocks.length;
-    boxBlocks.push({ label: String(label || '').trim(), body: String(inner ?? '').trim() });
+    boxBlocks.push({
+      label: canonicalizePlainBlockLabel(String(label || '').trim()),
+      body: String(inner ?? '').trim(),
+    });
     return `\n__BOX_BLOCK_${idx}__\n`;
   });
 
   // Giữ tương thích khối lời giải cũ: \{ Lời giải: ... \}
-  const raw = withBoxes.replace(LOI_GIAI_BLOCK_REGEX, (_full, inner) => {
+  let raw = withBoxes.replace(LOI_GIAI_BLOCK_REGEX, (_full, inner) => {
     const idx = boxBlocks.length;
     boxBlocks.push({ label: 'Lời giải', body: String(inner ?? '').trim() });
     return `\n__BOX_BLOCK_${idx}__\n`;
   });
+
+  const preparedMain = extractDisplayMathPlaceholders(raw);
+  raw = preparedMain.text;
+  const displayMathBlocks = preparedMain.blocks;
+
   const lines = raw.split('\n');
   let html = '';
   let para = [];
@@ -461,6 +890,14 @@ export function theoryCorePlainToHtml(source) {
     if (trimmed === '') {
       flushTable();
       flushPara();
+      continue;
+    }
+
+    const mathHtml = mathDisplayPlaceholderHtml(trimmed, displayMathBlocks);
+    if (mathHtml) {
+      flushTable();
+      flushPara();
+      html += mathHtml;
       continue;
     }
 
@@ -492,9 +929,25 @@ export function theoryCorePlainToHtml(source) {
       let bodyLines = String(b.body || '').split('\n');
       let viduBadge = null;
       if (/ví\s*dụ/i.test(label)) {
-        const extracted = extractViduHeading(bodyLines);
-        viduBadge = extracted.badge;
-        bodyLines = extracted.lines;
+        // Ưu tiên badge ép từ ngoài (Ví dụ 1.2…); sau đó label có số; rồi mới đọc dòng đầu body.
+        if (forcedViduBadge) {
+          viduBadge = forcedViduBadge;
+        } else {
+          const extracted = extractViduHeading(bodyLines);
+          const fromBody = extracted.badge;
+          const bodyHasNumber = /^Ví\s*dụ\s+\d/i.test(String(fromBody || ''));
+          const labelHasNumber = /^Ví\s*dụ\s+\d/i.test(labelRaw);
+          if (bodyHasNumber) {
+            viduBadge = fromBody;
+            bodyLines = extracted.lines;
+          } else if (labelHasNumber) {
+            viduBadge = labelRaw;
+            // Body không chứa dòng tiêu đề Ví dụ — giữ nguyên bodyLines
+          } else {
+            viduBadge = fromBody || labelRaw || 'Ví dụ';
+            bodyLines = extracted.lines;
+          }
+        }
       }
 
       if (/lời\s*giải/i.test(label)) {
@@ -502,10 +955,18 @@ export function theoryCorePlainToHtml(source) {
         continue;
       }
 
-      const style = getTheoryBlockStyle(label);
-      const isVidu = /ví\s*dụ/i.test(label);
-      const inner = renderBlockBodyHtml(bodyLines, boxBlocks, svgBlocks);
-      if (isVidu) {
+      // Lý thuyết trọng tâm: Ví dụ không đóng khung — hiện như chữ thường.
+      // Các dạng toán (viduAsFrame): đóng khung Ví dụ + kéo theo Lời giải phía sau.
+      if (/ví\s*dụ/i.test(label)) {
+        const badge = escapeHtml(
+          forcedViduBadge ||
+            resolveViduDisplayBadge(viduBadge || labelRaw || 'Ví dụ', viduCounter)
+        );
+        const inner = renderBlockBodyHtml(bodyLines, boxBlocks, svgBlocks);
+        if (!viduAsFrame) {
+          html += `<p class="mb-2 mt-4 font-semibold text-slate-800">${badge}</p><div class="text-slate-800 text-base md:text-lg leading-loose lesson-math-content">${inner}</div>`;
+          continue;
+        }
         const { tailHtml, nextIdx } = collectTrailingLoiGiaiHtml(
           lines,
           i + 1,
@@ -514,11 +975,29 @@ export function theoryCorePlainToHtml(source) {
           consumedBoxIndices
         );
         i = nextIdx - 1;
-        const badge = escapeHtml(viduBadge || 'Ví dụ');
+        const style = getTheoryBlockStyle(label);
         html += `<div class="lesson-theory-block ${style.blockClass} my-6 md:my-8 rounded-xl ${style.shell} px-5 py-5 md:px-7 md:py-6"><span class="lesson-vidu-badge inline-block rounded-md border-2 border-slate-800 bg-transparent px-3 py-1 text-sm font-black text-slate-900 mb-4">${badge}</span><div class="text-slate-800 text-base md:text-lg leading-loose lesson-math-content">${inner}${tailHtml}</div></div>`;
-      } else {
-        html += `<div class="lesson-theory-block ${style.blockClass} my-6 md:my-8 rounded-xl ${style.shell} px-6 py-6 md:px-8 md:py-7"><div class="flex items-center gap-3 mb-4 md:mb-5">${style.badgeHtml}<div class="font-bold ${style.title} uppercase tracking-wide text-sm md:text-base">${escapeHtml(/ví\s*dụ/i.test(label) ? 'Ví dụ' : /phương\s*pháp/i.test(label) ? 'Phương pháp' : /định\s*nghĩa/i.test(label) ? 'Định nghĩa' : /ghi\s*nhớ/i.test(label) ? 'Ghi nhớ' : labelRaw)}</div></div><div class="text-slate-800 text-base md:text-lg leading-loose lesson-math-content">${inner}</div></div>`;
+        continue;
       }
+
+      const style = getTheoryBlockStyle(label);
+      const inner = renderBlockBodyHtml(bodyLines, boxBlocks, svgBlocks);
+
+      if (/chú\s*ý/i.test(label)) {
+        html += `<div class="lesson-theory-block ${style.blockClass} ${style.shell}"><div class="lesson-theory-note-header">${style.badgeHtml}<span class="lesson-theory-note-badge">Chú ý</span></div><div class="text-slate-800 text-base md:text-lg leading-loose lesson-math-content">${inner}</div></div>`;
+        continue;
+      }
+
+      const titleLabel = /phương\s*pháp/i.test(label)
+        ? 'Phương pháp'
+        : /định\s*nghĩa/i.test(label)
+          ? 'Định nghĩa'
+          : /định\s*lí|định\s*lý/i.test(label)
+            ? 'Định lí'
+            : /ghi\s*nhớ/i.test(label)
+              ? 'Ghi nhớ'
+              : labelRaw;
+      html += `<div class="lesson-theory-block ${style.blockClass} my-6 md:my-8 rounded-xl ${style.shell} px-6 py-6 md:px-8 md:py-7"><div class="flex items-center gap-3 mb-4 md:mb-5">${style.badgeHtml}<div class="font-bold ${style.title} uppercase tracking-wide text-sm md:text-base">${escapeHtml(titleLabel)}</div></div><div class="text-slate-800 text-base md:text-lg leading-loose lesson-math-content">${inner}</div></div>`;
       continue;
     }
 
@@ -540,29 +1019,23 @@ export function theoryCorePlainToHtml(source) {
     }
     if (/^###\s+/.test(trimmed)) {
       flushPara();
-      const inner = trimmed.replace(/^###\s+/, '');
-      html += `<h4 class="mt-4 mb-2 text-sm md:text-base font-bold text-cyan-900 border-l-4 border-cyan-500 pl-3">${inlineFormatLine(inner)}</h4>`;
+      html += sectionHeadingHtml(trimmed.replace(/^###\s+/, ''), 'h4');
       continue;
     }
     if (/^##\s+/.test(trimmed)) {
       flushPara();
-      const inner = trimmed.replace(/^##\s+/, '');
-      html += `<h3 class="mt-6 first:mt-0 mb-3 pb-2 border-b-2 border-teal-500/70 text-base md:text-lg font-black text-teal-900 tracking-tight">${inlineFormatLine(inner)}</h3>`;
+      html += sectionHeadingHtml(trimmed.replace(/^##\s+/, ''), 'h3');
       continue;
     }
     if (/^#\s+/.test(trimmed)) {
       flushPara();
-      const inner = trimmed.replace(/^#\s+/, '');
-      html += `<h2 class="mt-7 first:mt-0 mb-3 text-lg md:text-2xl font-black text-slate-900 leading-tight border-b border-teal-400/60 pb-2">${inlineFormatLine(inner)}</h2>`;
+      html += sectionHeadingHtml(trimmed.replace(/^#\s+/, ''), 'h2');
       continue;
     }
 
     if (/^\d{1,2}\.\s+/.test(trimmed) && !trimmed.includes('=')) {
       flushPara();
-      const m = trimmed.match(/^(\d{1,2})\.\s+(.+)$/);
-      const num = m ? m[1] : '';
-      const title = m ? m[2] : trimmed.replace(/^\d{1,2}\.\s+/, '');
-      html += `<h4 class="mt-5 mb-2 flex flex-wrap items-baseline gap-2 text-base md:text-lg font-black text-slate-900"><span class="inline-flex h-8 min-w-[2rem] shrink-0 items-center justify-center rounded-lg bg-teal-600 px-2 text-sm font-black text-white shadow-sm">${escapeHtml(num)}</span><span class="min-w-0 leading-snug">${inlineFormatLine(title)}</span></h4>`;
+      html += sectionHeadingHtml(trimmed, 'h2');
       continue;
     }
 
@@ -661,9 +1134,11 @@ const PHUONG_PHAP_BOX_REGEXES = [
  * @returns {{ text: string, phuongPhapBodies: string[] }}
  */
 export function splitPhuongPhapBlocks(source) {
-  const raw = String(source ?? '')
-    .replace(/\r\n/g, '\n')
-    .replace(/\r/g, '\n');
+  const raw = expandPlainLabeledBlocks(
+    String(source ?? '')
+      .replace(/\r\n/g, '\n')
+      .replace(/\r/g, '\n')
+  );
   const phuongPhapBodies = [];
   let text = raw;
   for (const re of PHUONG_PHAP_BOX_REGEXES) {
@@ -685,36 +1160,90 @@ export function wrapPhuongPhapBlock(body) {
 }
 
 /**
- * Tách dòng "Dạng:" / "Dạng 1:" và các khối Phương pháp còn lại trong examples_core.
+ * Tách examples_core thành từng Dạng (mỗi dạng giữ Phương pháp + Ví dụ riêng).
  * @param {string} raw
+ * @returns {{
+ *   groups: Array<{ dangLabel: string|null, dangBody: string|null, dangTitle: string|null, phuongPhapBodies: string[], content: string }>,
+ *   preface: string,
+ *   dangBody: string|null,
+ *   remainder: string,
+ *   phuongPhapFromExamples: string[],
+ * }}
  */
 export function parseExamplesCoreStructure(raw) {
-  const text = String(raw ?? '')
-    .replace(/\r\n/g, '\n')
-    .replace(/\r/g, '\n')
-    .trim();
+  // Giữ Ví dụ / Lời giải dạng plain để nhận diện tương tác; chỉ bọc các khối khác (Phương pháp…).
+  const text = expandPlainLabeledBlocks(
+    String(raw ?? '')
+      .replace(/\r\n/g, '\n')
+      .replace(/\r/g, '\n')
+      .trim(),
+    { includeVidu: false, includeLoiGiai: false }
+  );
   if (!text) {
-    return { dangBody: null, remainder: '', phuongPhapFromExamples: [] };
+    return {
+      groups: [],
+      preface: '',
+      dangBody: null,
+      remainder: '',
+      phuongPhapFromExamples: [],
+    };
   }
 
   const lines = text.split('\n');
-  const dangRe = /^(#{1,6}\s*)?(Dạng\s*\d*)\s*[:\-—]\s*(.*)$/i;
-  let cutIdx = -1;
-  let dangBody = null;
+  const dangRe = /^(#{1,6}\s*)?((?:Dạng|Dang)\s*\d*)\s*[:.\-—]?\s*(.*)$/i;
+  const dangHits = [];
   for (let i = 0; i < lines.length; i++) {
     const m = lines[i].trim().match(dangRe);
-    if (m) {
-      cutIdx = i;
-      dangBody = (m[3] || '').trim();
-      break;
-    }
+    if (!m) continue;
+    dangHits.push({
+      index: i,
+      label: String(m[2] || 'Dạng').trim(),
+      body: String(m[3] || '').trim(),
+      title: lines[i].trim().replace(/^#{1,6}\s*/, ''),
+    });
   }
 
-  let remainder = cutIdx >= 0 ? lines.slice(cutIdx + 1).join('\n').trim() : text;
-  const { text: withoutPp, phuongPhapBodies } = splitPhuongPhapBlocks(remainder);
+  if (dangHits.length === 0) {
+    const { text: withoutPp, phuongPhapBodies } = splitPhuongPhapBlocks(text);
+    return {
+      groups: [
+        {
+          dangLabel: null,
+          dangBody: null,
+          dangTitle: null,
+          phuongPhapBodies,
+          content: withoutPp,
+        },
+      ],
+      preface: '',
+      dangBody: null,
+      remainder: withoutPp,
+      phuongPhapFromExamples: phuongPhapBodies,
+    };
+  }
+
+  const preface = lines.slice(0, dangHits[0].index).join('\n').trim();
+  const groups = dangHits.map((hit, gi) => {
+    const start = hit.index + 1;
+    const end = gi + 1 < dangHits.length ? dangHits[gi + 1].index : lines.length;
+    const chunk = lines.slice(start, end).join('\n').trim();
+    const { text: content, phuongPhapBodies } = splitPhuongPhapBlocks(chunk);
+    return {
+      dangLabel: hit.label,
+      dangBody: hit.body,
+      dangTitle: hit.title,
+      phuongPhapBodies,
+      content,
+    };
+  });
+
+  const allPp = groups.flatMap((g) => g.phuongPhapBodies);
   return {
-    dangBody,
-    remainder: withoutPp,
-    phuongPhapFromExamples: phuongPhapBodies,
+    groups,
+    preface,
+    // Tương thích UI cũ (chỉ lấy dạng đầu)
+    dangBody: groups[0]?.dangBody || null,
+    remainder: groups.map((g) => g.content).filter(Boolean).join('\n\n'),
+    phuongPhapFromExamples: allPp,
   };
 }

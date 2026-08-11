@@ -10,6 +10,7 @@
     "build": "vite build",
     "postbuild": "node scripts/prerender.mjs",
     "generate:sample-docx": "node scripts/generate-sample-docx.mjs",
+    "generate:sgk-toc": "node scripts/build-sgk-toc.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -29,6 +30,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
     "autoprefixer": "^10.4.27",
+    "docx": "^9.7.1",
     "eslint": "^9.39.4",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",

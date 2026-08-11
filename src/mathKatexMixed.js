@@ -1,5 +1,5 @@
 import katex from 'katex';
-import { inlineRichTextToHtml } from './theoryCoreRichText';
+import { inlineRichTextToHtml, normalizeDoubleBackslashInMath } from './theoryCoreRichText';
 
 /**
  * Chuỗi có ký tự tiếng Việt đặc thù — không nên đưa vào KaTeX (cảnh báo / thiếu metrics font).
@@ -66,12 +66,45 @@ export function escapeHtml(s) {
     .replace(/'/g, '&#39;');
 }
 
-/** Chuẩn hoá \\( \\) và \\[ \\] sang $ / $$ để một pipeline KaTeX duy nhất. */
+/** Chuẩn hoá \\( \\) và \\[ \\] (kể cả viết \\[ ... \\]) sang $ / $$ để một pipeline KaTeX duy nhất.
+ * Không đụng khối thẻ lý thuyết #[Nhãn: ...]#.
+ */
 export function normalizeLegacyTexDelimiters(raw) {
   let s = String(raw ?? '');
-  s = s.replace(/\\\[([\s\S]*?)\\\]/g, (_, inner) => `$$${inner}$$`);
-  s = s.replace(/\\\(([\s\S]*?)\\\)/g, (_, inner) => `$${inner}$`);
+
+  // Display: \[ ... \]  hoặc  \\[ ... \\]  (tránh #[...]# )
+  s = s.replace(/(^|[^#\\])\\{1,2}\[([\s\S]*?)\\{1,2}\](?!#)/g, (_, pre, inner) => `${pre}$$${inner}$$`);
+  // Inline: \( ... \)  hoặc  \\( ... \\)
+  s = s.replace(/(^|[^\\])\\{1,2}\(([\s\S]*?)\\{1,2}\)/g, (_, pre, inner) => `${pre}$${inner}$`);
+
   return s;
+}
+
+/**
+ * Word/MathType hay xuất \begin{align} trong $...$ — KaTeX chỉ hỗ trợ aligned trong math mode.
+ * Đồng thời vá \right thiếu delimiter (thường là \right. trước dấu $).
+ */
+export function normalizeKatexEnvironments(raw) {
+  let s = String(raw ?? '');
+  if (!s.includes('\\')) return s;
+
+  s = s.replace(/\\begin\{align\*?\}/gi, '\\begin{aligned}');
+  s = s.replace(/\\end\{align\*?\}/gi, '\\end{aligned}');
+  s = s.replace(/\\begin\{eqnarray\*?\}/gi, '\\begin{aligned}');
+  s = s.replace(/\\end\{eqnarray\*?\}/gi, '\\end{aligned}');
+
+  // \left[ ... \right   (thiếu . hoặc ]) trước $ / hết công thức
+  s = s.replace(/\\right(?=\s*\$)/g, '\\right.');
+  s = s.replace(/\\right(\s*)(?=\$\$)/g, '\\right.$1');
+  s = s.replace(/\\right(?=\s*$)/gm, '\\right.');
+
+  return s;
+}
+
+function prepareTexSource(text) {
+  return normalizeKatexEnvironments(
+    normalizeDoubleBackslashInMath(normalizeLegacyTexDelimiters(text == null ? '' : String(text)))
+  );
 }
 
 /**
@@ -79,21 +112,23 @@ export function normalizeLegacyTexDelimiters(raw) {
  * @returns {string} HTML an toàn (text đã escape)
  */
 export function mixedInlineMathToHtml(text, katexOpts = {}) {
-  const raw = text == null ? '' : String(text);
+  const raw = prepareTexSource(text);
   const parts = raw.split(/(\$[^$]+\$)/g);
   const chunks = [];
   for (let i = 0; i < parts.length; i++) {
     const part = parts[i];
     if (part.startsWith('$') && part.endsWith('$')) {
-      const inner = part.slice(1, -1);
+      const inner = normalizeKatexEnvironments(part.slice(1, -1));
       if (mathSegmentPreferPlainText(inner)) {
         chunks.push(`<span class="katex-vi-plain">${escapeHtml(inner)}</span>`);
       } else {
         try {
+          // Hệ phương trình / aligned → ưu tiên display cho dễ đọc
+          const useDisplay = /\\begin\{aligned\}|\\left\s*[\\[(]/.test(inner) && /\\\\/.test(inner);
           chunks.push(
             katex.renderToString(inner, {
               throwOnError: false,
-              displayMode: false,
+              displayMode: useDisplay,
               strict: false,
               ...katexOpts,
             })
@@ -109,14 +144,14 @@ export function mixedInlineMathToHtml(text, katexOpts = {}) {
   return chunks.join('');
 }
 
-/** Inline + khối $$...$$ (display). */
+/** Inline + khối $$...$$ (display). Hỗ trợ cả \[...\] / \(...\) qua normalizeLegacyTexDelimiters. */
 export function mixedMathContentToHtml(text, katexOpts = {}) {
-  const raw = wrapBareLatexOutsideDollars(normalizeLegacyTexDelimiters(text == null ? '' : String(text)));
+  const raw = wrapBareLatexOutsideDollars(prepareTexSource(text));
   const segments = raw.split(/(\$\$[\s\S]*?\$\$)/g);
   let out = '';
   for (const seg of segments) {
     if (seg.startsWith('$$') && seg.endsWith('$$')) {
-      const inner = seg.slice(2, -2).trim();
+      const inner = normalizeKatexEnvironments(seg.slice(2, -2).trim());
       if (mathSegmentPreferPlainText(inner)) {
         out += `<span class="katex-display d-block my-2 katex-vi-plain whitespace-pre-wrap">${escapeHtml(inner)}</span>`;
       } else {

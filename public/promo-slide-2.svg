@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#ea580c"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#dc2626"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="360" fill="url(#bg2)"/>
+  <circle cx="200" cy="300" r="140" fill="#ffffff" opacity="0.1"/>
+  <text x="64" y="110" fill="#fff" font-family="Arial,sans-serif" font-size="24" font-weight="700">KHAI GIẢNG LỚP LIVE</text>
+  <text x="64" y="180" fill="#fff" font-family="Arial,sans-serif" font-size="48" font-weight="900">ÔN THI THPT QUỐC GIA</text>
+  <text x="64" y="240" fill="#fef3c7" font-family="Arial,sans-serif" font-size="28" font-weight="700">Giảm đến 30% học phí — Chỉ còn suất giới hạn</text>
+  <rect x="64" y="280" width="220" height="48" rx="24" fill="#1e3a8a"/>
+  <text x="174" y="312" text-anchor="middle" fill="#fff" font-family="Arial,sans-serif" font-size="18" font-weight="800">NHẬN TƯ VẤN</text>
+</svg>

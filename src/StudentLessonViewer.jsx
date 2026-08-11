@@ -27,28 +27,46 @@ import {
   PanelLeftClose,
   PanelLeftOpen,
   Presentation,
+  BookMarked,
+  Atom,
+  Lock,
+  GraduationCap,
 } from 'lucide-react';
 
 const DEFAULT_EXTERNAL_HOME =
   'https://sites.google.com/view/hoctoanthayphat/trang-ch%E1%BB%A7';
 import { TextWithMath, TextWithMathWithLoiGiai } from './Math11Template';
 import { stripLoiGiaiPrefix } from './loiGiaiSegments';
-import { isAllowedImageUrl } from './RichMathContent';
+import { isAllowedImageUrl, stripDollarWrappersAroundImages } from './RichMathContent';
 import { embedSanitizedSvgIntoHtmlString } from './svgEmbed';
 import { extractYouTubeID } from './youtubeUtils';
 import LessonYouTubePlayer from './LessonYouTubePlayer';
 import LessonSlidesEmbed from './LessonSlidesEmbed';
+import LessonMindMapPanel from './LessonMindMapPanel';
+import { parseLessonMindMapFromContent, lessonMindMapIsVisible } from './lessonMindMap';
+import LessonSimulationPanel from './LessonSimulationPanel';
+import { parseLessonSimulationFromContent, lessonSimulationIsVisible } from './lessonSimulation';
 import {
   theoryCorePlainToHtml,
   splitPhuongPhapBlocks,
   wrapPhuongPhapBlock,
   parseExamplesCoreStructure,
   normalizeDoubleBackslashInMath,
+  extractDangNumber,
 } from './theoryCoreRichText';
 import { buildShuffledPracticeOrder, computeLessonStudyProgress } from './lessonProgress';
+import LessonDangExamplesPanel from './LessonDangExamplesPanel';
+import {
+  resolveExamplesDisplayMode,
+  findLessonDangProgress,
+  hasLessonPracticeAttempt,
+  hasLessonDangCompleteOnce,
+  getLessonPathGates,
+} from './lessonDangExamples';
 import BackButton from './BackButton';
 import LessonPracticeSection from './LessonPracticeSection';
-import StudentNotificationBell from './StudentNotificationBell';
+import StudentNotificationBell, { useStudentUnreadCount } from './StudentNotificationBell';
+import StudentProfileDropdown from './StudentProfileDropdown';
 import { isInteractivePracticeType, normalizePracticeList, resolvePracticeDisplayMode, scorePracticeQuestion } from './practiceQuestionTypes';
 import {
   getLessonDisplayLabel,
@@ -64,8 +82,8 @@ import {
 } from './lessonSections';
 import { formatSgkChapterHeading, formatSgkLessonHeading } from './sgkToc';
 
-/** Thứ tự tab nội dung bài: lý thuyết → luyện tập → đề luyện → PDF */
-const LESSON_TAB_SEQUENCE = ['theory', 'practice', 'papers', 'pdf'];
+/** Thứ tự tab nội dung bài: lý thuyết → các dạng toán → sơ đồ → mô phỏng → luyện tập → đề luyện → PDF */
+const LESSON_TAB_SEQUENCE = ['theory', 'dang', 'mindmap', 'simulation', 'practice', 'papers', 'pdf'];
 
 function lessonNoSortKey(raw) {
   const m = String(raw ?? '').match(/(\d+(?:[.,]\d+)?)/);
@@ -90,7 +108,13 @@ function titleLessonSortKey(lesson) {
 function lessonTabLabel(tabId) {
   switch (tabId) {
     case 'theory':
-      return 'Lý thuyết & ví dụ';
+      return 'Lý thuyết';
+    case 'dang':
+      return 'Các dạng toán';
+    case 'mindmap':
+      return 'Tóm tắt bài học';
+    case 'simulation':
+      return 'Mô phỏng';
     case 'practice':
       return 'Bài tập luyện tập';
     case 'papers':
@@ -109,12 +133,85 @@ function escapeHtmlAttr(v) {
     .replace(/</g, '&lt;');
 }
 
+function decodeBasicHtmlEntities(s) {
+  return String(s || '')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>');
+}
+
+function brokenLessonImagePlaceholder(alt, srcHint = '') {
+  const raw = String(alt || '').trim();
+  const showLabel = raw && !/^(ảnh|anh|hình minh họa|hinh minh hoa)$/i.test(raw);
+  const safeLabel = showLabel
+    ? raw.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    : '';
+  const src = String(srcHint || '').trim();
+  const looksFirebase = /firebasestorage\.googleapis\.com|googleapis\.com.*\/o\//i.test(src);
+  const looksEmpty = !src || src === '#' || /^javascript:/i.test(src);
+  let tip =
+    'Link ảnh trong bài đang không mở được (file có thể đã mất trên Storage, URL sai, hoặc bị cắt khi lưu).';
+  if (looksEmpty) {
+    tip = 'Ô ảnh không có URL — thường do lúc import/upload ảnh thất bại. Admin hãy Upload lại PNG/JPG.';
+  } else if (looksFirebase) {
+    tip =
+      'Ảnh từng lưu trên Firebase nhưng link hiện không tải được (file bị xóa/đổi hoặc URL hỏng). Admin mở bài giảng → Upload lại PNG/JPG.';
+  } else if (/^data:image\//i.test(src)) {
+    tip = 'Ảnh nhúng data:URL có thể bị cắt vì quá dài. Nên Upload PNG/JPG lên Storage thay vì dán base64.';
+  }
+  return (
+    `<div class="lesson-img-broken my-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950" role="img" aria-label="Ảnh không tải được">` +
+    `<p class="font-bold mb-0.5">Không tải được ảnh${safeLabel ? `: ${safeLabel}` : ''}</p>` +
+    `<p class="text-xs text-amber-800/90 mb-0">${tip}</p>` +
+    `</div>`
+  );
+}
+
 /** Trong HTML lý thuyết: chuyển ![alt](url) → <img> (cùng quy tắc URL với RichMathContent). */
 function markdownImagesToHtmlInString(s) {
-  return (s || '').replace(/!\[([^\]]*)\]\(\s*([^)]+?)\s*\)/g, (full, alt, src) => {
-    const u = String(src).trim();
-    if (!isAllowedImageUrl(u)) return full;
-    return `<img src="${escapeHtmlAttr(u)}" alt="${escapeHtmlAttr(alt)}" class="max-w-full h-auto rounded-lg my-3 border border-slate-200 shadow-sm block mx-auto" loading="lazy" decoding="async" />`;
+  let t = stripDollarWrappersAroundImages(s || '');
+  t = t.replace(/!\[([^\]]*)\]\(\s*<?([^)\s>]+)>?\s*\)/g, (full, alt, src) => {
+    const u = decodeBasicHtmlEntities(String(src).trim());
+    if (!u || !isAllowedImageUrl(u)) return full;
+    return `<img src="${escapeHtmlAttr(u)}" alt="${escapeHtmlAttr(alt)}" class="max-w-full h-auto rounded-lg my-3 border border-slate-200 shadow-sm block mx-auto" loading="lazy" decoding="async" data-lesson-img="1" />`;
+  });
+  // Sửa src đã bị double-encode &amp;amp;
+  t = t.replace(/(<img\b[^>]*\bsrc=")([^"]+)(")/gi, (full, pre, src, post) => {
+    let u = src;
+    for (let i = 0; i < 3; i += 1) {
+      const next = decodeBasicHtmlEntities(u);
+      if (next === u) break;
+      u = next;
+    }
+    return `${pre}${escapeHtmlAttr(u)}${post}`;
+  });
+  return stripDollarWrappersAroundImages(t);
+}
+
+function attachLessonImageFallbacks(root) {
+  if (!root || typeof root.querySelectorAll !== 'function') return;
+  root.querySelectorAll('img').forEach((img) => {
+    if (img.dataset.fallbackBound === '1') return;
+    img.dataset.fallbackBound = '1';
+    let src = String(img.getAttribute('src') || '').trim();
+    if (!src) {
+      img.outerHTML = brokenLessonImagePlaceholder(img.getAttribute('alt'), '');
+      return;
+    }
+    // Decode &amp; còn sót trong attribute (getAttribute đôi khi vẫn giữ entity)
+    if (/&amp;/i.test(src) || /%26amp%3B/i.test(src)) {
+      src = decodeBasicHtmlEntities(src);
+      img.setAttribute('src', src);
+    }
+    // Ảnh đã cache/load xong thì thôi
+    if (img.complete && img.naturalWidth > 0) return;
+    img.addEventListener('error', () => {
+      if (!img.isConnected) return;
+      const failedSrc = String(img.currentSrc || img.getAttribute('src') || src);
+      img.outerHTML = brokenLessonImagePlaceholder(img.getAttribute('alt'), failedSrc);
+    });
   });
 }
 
@@ -126,6 +223,7 @@ function HtmlWithMath({ html, className }) {
     const withImg = markdownImagesToHtmlInString(withSvg);
     const safe = withImg.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     ref.current.innerHTML = normalizeDoubleBackslashInMath(safe);
+    attachLessonImageFallbacks(ref.current);
     try {
       renderMathInElement(ref.current, {
         delimiters: [
@@ -140,6 +238,7 @@ function HtmlWithMath({ html, className }) {
     } catch {
       // ignore
     }
+    attachLessonImageFallbacks(ref.current);
   }, [html]);
   return <div ref={ref} className={className} />;
 }
@@ -230,7 +329,7 @@ function isPlaceholderItemQ(q) {
 }
 
 function isDangExampleTitle(title) {
-  return /^dạng\s*\d+/i.test((title || '').toString().trim());
+  return /^(?:dạng|dang)\s*\d+/i.test((title || '').toString().trim());
 }
 
 /** Gom "Ví dụ 1,2..." ngay sau mỗi "Dạng n" cho đến Dạng kế tiếp. */
@@ -349,22 +448,35 @@ function ExamplesCorePanel({ examplesCoreText, phuongPhapFromTheory = [] }) {
     return parseExamplesCoreStructure(examplesCoreText);
   }, [examplesCoreText, hasExamples]);
 
-  if (!hasExamples && !hasTheoryPp) return null;
-
   const groups = Array.isArray(parsed.groups) ? parsed.groups : [];
   const hasDangGroups = groups.some((g) => g.dangTitle || g.dangBody);
+
+  const numberedHtml = useMemo(() => {
+    const gs = Array.isArray(parsed.groups) ? parsed.groups : [];
+    const prefaceHtml = parsed.preface
+      ? theoryCorePlainToHtml(parsed.preface, { viduAsFrame: true, viduCounter: { n: 0 } })
+      : '';
+    const groupHtmls = gs.map((g, gi) => {
+      if (!g.content) return '';
+      const dangNo = extractDangNumber(g.dangLabel || g.dangTitle, gi);
+      return theoryCorePlainToHtml(g.content, {
+        viduAsFrame: true,
+        viduCounter: { dang: dangNo, n: 0 },
+      });
+    });
+    return { prefaceHtml, groupHtmls };
+  }, [parsed]);
+
+  if (!hasExamples && !hasTheoryPp) return null;
 
   return (
     <section className="mb-12 md:mb-16">
       <div className="max-w-4xl mx-auto px-2 md:px-4">
         <LessonSectionHeading num={2} title="Các dạng toán và ví dụ" />
 
-        {parsed.preface ? (
+        {numberedHtml.prefaceHtml ? (
           <div className="w-full max-w-full text-left text-slate-800 text-base md:text-lg leading-loose lesson-math-content mb-8 [&_p]:text-left [&_ul]:text-left">
-            <HtmlWithMath
-              html={theoryCorePlainToHtml(parsed.preface)}
-              className="theory-core-rich block max-w-full"
-            />
+            <HtmlWithMath html={numberedHtml.prefaceHtml} className="theory-core-rich block max-w-full" />
           </div>
         ) : null}
 
@@ -376,6 +488,7 @@ function ExamplesCorePanel({ examplesCoreText, phuongPhapFromTheory = [] }) {
                   : g.phuongPhapBodies || [];
               const dangText = (g.dangBody || g.dangTitle || '').toString().trim();
               const showFrame = Boolean(dangText) || pps.length > 0;
+              const contentHtml = numberedHtml.groupHtmls[gi] || '';
               return (
                 <div key={`dang-group-${gi}`} className="mb-10 md:mb-12 last:mb-0">
                   {showFrame ? (
@@ -393,12 +506,9 @@ function ExamplesCorePanel({ examplesCoreText, phuongPhapFromTheory = [] }) {
                       <PhuongPhapBlocks bodies={pps} />
                     </div>
                   ) : null}
-                  {g.content ? (
+                  {contentHtml ? (
                     <div className="w-full max-w-full text-left text-slate-800 text-base md:text-lg leading-loose lesson-math-content [&_.katex-display]:block [&_.katex-display]:mx-auto [&_.katex-display]:my-5 [&_p]:text-left [&_ul]:text-left [&_table]:text-left">
-                      <HtmlWithMath
-                        html={theoryCorePlainToHtml(g.content)}
-                        className="theory-core-rich block max-w-full"
-                      />
+                      <HtmlWithMath html={contentHtml} className="theory-core-rich block max-w-full" />
                     </div>
                   ) : null}
                 </div>
@@ -446,23 +556,31 @@ function ExampleSolutionDetails({ steps }) {
   );
 }
 
-function parseViduTitle(titleText) {
+function parseViduTitle(titleText, index = 0, dangNumber = null) {
   const raw = (titleText || '').toString().trim();
-  const m = raw.match(/^(Ví dụ\s*\d+)\s*(?:[:\.\-—]\s*)?(.*)$/i);
+  const dang = Number(dangNumber);
+  const hasDang = Number.isFinite(dang) && dang > 0;
+  if (hasDang) {
+    return { badge: `Ví dụ ${dang}.${index + 1}`, body: '' };
+  }
+  const m = raw.match(/^(Ví dụ\s*\d+(?:\.\d+)*)\s*(?:[:\.\-—]\s*)?(.*)$/i);
   if (m) {
     return { badge: m[1], body: (m[2] || '').trim() };
   }
-  return { badge: raw || 'Ví dụ', body: '' };
+  if (!raw || /^Ví\s*dụ\s*:?\s*$/i.test(raw)) {
+    return { badge: `Ví dụ ${index + 1}`, body: '' };
+  }
+  return { badge: raw, body: '' };
 }
 
-function Math11ViduCard({ ex, index }) {
+function Math11ViduCard({ ex, index, dangNumber = null }) {
   const items = Array.isArray(ex?.items) ? ex.items : [];
   const realItems = items.filter((it) => !isPlaceholderItemQ(it?.q));
   const stepsOnly = items.length > 0 && realItems.length === 0;
   const allSteps = stepsOnly ? items.flatMap((it) => it.steps || []) : [];
 
   const titleText = (ex?.title || `Ví dụ ${index + 1}`).toString();
-  const { badge, body: titleBody } = parseViduTitle(titleText);
+  const { badge, body: titleBody } = parseViduTitle(titleText, index, dangNumber);
 
   return (
     <div className="lesson-vidu-card rounded-xl border border-slate-200 bg-white px-5 py-5 md:px-7 md:py-6">
@@ -601,9 +719,17 @@ export default function StudentLessonViewer({
   studentClass = '',
   studentProfile = null,
   rosterGrade = '11',
+  /** Khối tài khoản học sinh (có thể khác khối bài đang xem). */
+  studentRosterGrade = '',
   onBack,
   onBackToOverview,
   onOpenExamsRoom,
+  onEnterLearningMode,
+  onOpenAccount,
+  onEnterStudentPortal,
+  onLogout,
+  onRequestLogin,
+  onRequestRegister,
   onSelectLesson,
   onStartQuiz,
   onSelectQuiz,
@@ -611,6 +737,9 @@ export default function StudentLessonViewer({
   resumePapersTabRef: resumePapersTabRefProp,
   externalHomeUrl = DEFAULT_EXTERNAL_HOME,
   onRecordLessonPracticeScore,
+  onRecordLessonPracticeStepExp,
+  onSaveLessonDangProgress,
+  onCompleteLessonDangExp,
   /** Chỉ hiển thị cột nội dung (ẩn header/sidebar) — dùng xem nháp trong Admin. */
   previewEmbed = false,
   /** Khi preview: đồng bộ tab với panel sửa ('theory' | 'practice' | 'pdf' | 'papers'). */
@@ -624,6 +753,10 @@ export default function StudentLessonViewer({
   const goBack = onBack || onBackToOverview;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [focusMode, setFocusMode] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const profileMenuRef = useRef(null);
+  const unreadNotif = useStudentUnreadCount(studentProfile?.id, studentName);
   const [expandedChapters, setExpandedChapters] = useState([]);
   const [expandedLessonRows, setExpandedLessonRows] = useState([]);
   const [activeTab, setActiveTab] = useState('theory');
@@ -633,6 +766,35 @@ export default function StudentLessonViewer({
   const [practiceHintsOpen, setPracticeHintsOpen] = useState({});
   const [activeSectionIndex, setActiveSectionIndex] = useState(0);
   const [lessonMediaTab, setLessonMediaTab] = useState('video');
+  const [pathLockHint, setPathLockHint] = useState('');
+  const [dangActiveIndex, setDangActiveIndex] = useState(0);
+  const [dangNav, setDangNav] = useState(null);
+
+  const handleDangNavStateChange = useCallback((nav) => {
+    setDangNav(nav);
+  }, []);
+
+  /** Nhấn lần đầu vẫn chạy khi iframe video đang chiếm focus. */
+  const activateHeaderAction = useCallback((fn) => (e) => {
+    e?.preventDefault?.();
+    e?.stopPropagation?.();
+    fn?.();
+  }, []);
+
+  useEffect(() => {
+    if (!profileMenuOpen) return undefined;
+    const onDoc = (e) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(e.target)) {
+        setProfileMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', onDoc);
+    document.addEventListener('touchstart', onDoc);
+    return () => {
+      document.removeEventListener('mousedown', onDoc);
+      document.removeEventListener('touchstart', onDoc);
+    };
+  }, [profileMenuOpen]);
 
   const lessonsEnriched = useMemo(() => {
     const me = normName(studentName);
@@ -743,7 +905,7 @@ export default function StudentLessonViewer({
   useEffect(() => {
     if (!previewEmbed) return;
     if (!previewSyncedTab) return;
-    const allowed = ['theory', 'practice', 'papers', 'pdf'];
+    const allowed = ['theory', 'dang', 'mindmap', 'simulation', 'practice', 'papers', 'pdf'];
     if (!allowed.includes(previewSyncedTab)) return;
     setActiveTab(previewSyncedTab);
   }, [previewEmbed, previewSyncedTab, lesson?.content]);
@@ -810,6 +972,29 @@ export default function StudentLessonViewer({
     () => resolvePracticeDisplayMode(contentJson?.practice_display_mode ?? contentJson?.practiceDisplayMode),
     [contentJson]
   );
+  const examplesDisplayMode = useMemo(() => {
+    const fromSection =
+      Array.isArray(contentJson?.sections) && contentJson.sections[activeSectionIndex]
+        ? contentJson.sections[activeSectionIndex].examples_display_mode ??
+          contentJson.sections[activeSectionIndex].examplesDisplayMode
+        : null;
+    return resolveExamplesDisplayMode(
+      fromSection ?? contentJson?.examples_display_mode ?? contentJson?.examplesDisplayMode
+    );
+  }, [contentJson, activeSectionIndex]);
+  const dangSectionKey = useMemo(() => {
+    const secs = Array.isArray(contentJson?.sections) ? contentJson.sections : [];
+    if (secs.length > 0) {
+      const sec = secs[activeSectionIndex];
+      return String(sec?.id || sec?.section_no || activeSectionIndex);
+    }
+    return '0';
+  }, [contentJson, activeSectionIndex]);
+
+  useEffect(() => {
+    setDangActiveIndex(0);
+    setDangNav(null);
+  }, [lesson?.id, dangSectionKey]);
   const shuffledPractice = useMemo(
     () => buildShuffledPracticeOrder(lessonData.practice || []),
     [lessonData.practice]
@@ -824,7 +1009,8 @@ export default function StudentLessonViewer({
     setQuizAnswers((prev) => ({ ...prev, [qId]: value }));
   };
 
-  const submitQuiz = () => {
+  const submitQuiz = (opts) => {
+    const skipExp = Boolean(opts && typeof opts === 'object' && opts.skipExp);
     let score = 0;
     interactivePractice.forEach((q) => {
       if (scorePracticeQuestion(q, quizAnswers[q.id])) score++;
@@ -838,9 +1024,25 @@ export default function StudentLessonViewer({
         score,
         total: interactivePractice.length,
         gradeLevel: (rosterGrade || '8').toString(),
+        skipExp,
       });
     }
   };
+
+  const handlePracticeStepExp = useCallback(
+    ({ questionId, expPoints }) => {
+      if (typeof onRecordLessonPracticeStepExp !== 'function') return;
+      if (!(studentName || '').trim() || !lesson?.id || !questionId) return;
+      onRecordLessonPracticeStepExp({
+        lessonId: lesson.id,
+        lessonTitle: (lesson.title || '').toString(),
+        questionId,
+        expPoints,
+        gradeLevel: (rosterGrade || '8').toString(),
+      });
+    },
+    [onRecordLessonPracticeStepExp, studentName, lesson?.id, lesson?.title, rosterGrade]
+  );
 
   const resetQuiz = () => {
     setQuizAnswers({});
@@ -879,6 +1081,8 @@ export default function StudentLessonViewer({
   const chapterNo = (lesson?.chapter ?? '').toString().trim() || '—';
   const lessonNo = (lesson?.lesson_no ?? '').toString().trim() || '—';
   const displayGrade = String(lesson?.grade_level ?? rosterGrade ?? '').trim();
+  const accountGrade = String(studentRosterGrade || rosterGrade || '').trim();
+  const sameGradeAsAccount = Boolean(displayGrade) && displayGrade === accountGrade;
   const chapterHeading = useMemo(
     () => formatSgkChapterHeading(displayGrade, chapterNo),
     [displayGrade, chapterNo]
@@ -889,7 +1093,110 @@ export default function StudentLessonViewer({
   );
   const pdfUrl = (lesson?.pdfUrl || lesson?.pdf_url || '').toString().trim();
 
+  const lessonMindMap = useMemo(
+    () => parseLessonMindMapFromContent(contentJson),
+    [contentJson]
+  );
+  const showMindMapTab = lessonMindMapIsVisible(lessonMindMap);
+
+  const lessonSimulation = useMemo(
+    () => parseLessonSimulationFromContent(contentJson),
+    [contentJson]
+  );
+  const showSimulationTab = lessonSimulationIsVisible(lessonSimulation);
+
+  useEffect(() => {
+    if (activeTab === 'mindmap' && !showMindMapTab) setActiveTab('theory');
+  }, [activeTab, showMindMapTab]);
+
+  useEffect(() => {
+    if (activeTab === 'simulation' && !showSimulationTab) setActiveTab('theory');
+  }, [activeTab, showSimulationTab]);
+
   const practiceCount = lessonData.practice?.length || 0;
+
+  const dangProgress = useMemo(
+    () => findLessonDangProgress(scoresList, studentName, lesson?.id || '', dangSectionKey),
+    [scoresList, studentName, lesson?.id, dangSectionKey]
+  );
+  const practiceDone = useMemo(
+    () => hasLessonPracticeAttempt(scoresList, studentName, lesson?.id || ''),
+    [scoresList, studentName, lesson?.id]
+  );
+  const lessonDangCompleteOnce = useMemo(
+    () => hasLessonDangCompleteOnce(scoresList, studentName, lesson?.id || ''),
+    [scoresList, studentName, lesson?.id]
+  );
+  const pathGates = useMemo(
+    () =>
+      getLessonPathGates({
+        studentName,
+        previewEmbed,
+        hasDangContent: hasNewExamplesCore,
+        dangAllComplete: Boolean(dangProgress?.allComplete),
+        lessonDangCompleteOnce,
+        practiceCount,
+        practiceDone,
+      }),
+    [
+      studentName,
+      previewEmbed,
+      hasNewExamplesCore,
+      dangProgress?.allComplete,
+      lessonDangCompleteOnce,
+      practiceCount,
+      practiceDone,
+    ]
+  );
+
+  const isLessonTabLocked = useCallback(
+    (tabId) => {
+      if (tabId === 'practice') return Boolean(pathGates.practiceLocked);
+      if (tabId === 'papers') return Boolean(pathGates.papersLocked);
+      return false;
+    },
+    [pathGates.practiceLocked, pathGates.papersLocked]
+  );
+
+  const requestLessonTab = useCallback(
+    (tabId) => {
+      if (tabId === 'practice' && pathGates.practiceLocked) {
+        setPathLockHint(pathGates.practiceLockReason || 'Hoàn thành các dạng toán trước.');
+        return;
+      }
+      if (tabId === 'papers' && pathGates.papersLocked) {
+        setPathLockHint(pathGates.papersLockReason || 'Hoàn thành lộ trình học trước.');
+        return;
+      }
+      setPathLockHint('');
+      setActiveTab(tabId);
+    },
+    [pathGates.practiceLocked, pathGates.papersLocked, pathGates.practiceLockReason, pathGates.papersLockReason]
+  );
+
+  useEffect(() => {
+    if (!pathLockHint) return undefined;
+    const t = window.setTimeout(() => setPathLockHint(''), 5200);
+    return () => window.clearTimeout(t);
+  }, [pathLockHint]);
+
+  useEffect(() => {
+    if (previewEmbed) return;
+    if (activeTab === 'practice' && pathGates.practiceLocked) {
+      setActiveTab(hasNewExamplesCore ? 'dang' : 'theory');
+      return;
+    }
+    if (activeTab === 'papers' && pathGates.papersLocked) {
+      setActiveTab(practiceCount > 0 && !pathGates.practiceLocked ? 'practice' : hasNewExamplesCore ? 'dang' : 'theory');
+    }
+  }, [
+    previewEmbed,
+    activeTab,
+    pathGates.practiceLocked,
+    pathGates.papersLocked,
+    hasNewExamplesCore,
+    practiceCount,
+  ]);
 
   const lessonPapersQuizzes = useMemo(() => {
     return (quizzesList || [])
@@ -940,55 +1247,199 @@ export default function StudentLessonViewer({
     };
   }, [lessonsList, lesson?.id, lesson?.grade_level, lesson?.chapter]);
 
+  const visibleLessonTabs = useMemo(() => {
+    return LESSON_TAB_SEQUENCE.filter((t) => {
+      if (t === 'mindmap') return showMindMapTab;
+      if (t === 'simulation') return showSimulationTab;
+      return true;
+    });
+  }, [showMindMapTab, showSimulationTab]);
+
   const goNextTabOrLesson = useCallback(() => {
-    const i = LESSON_TAB_SEQUENCE.indexOf(activeTab);
+    // Trong tab dạng toán: nhảy Dạng 1 → 2 → … trước khi sang tab sau
+    if (activeTab === 'dang' && dangNav && dangNav.count >= 1) {
+      if (dangNav.count > 1 && dangNav.active < dangNav.count - 1) {
+        if (dangNav.nextDangLocked) {
+          setPathLockHint('Hoàn thành dạng hiện tại (đánh dấu đã học ví dụ) để mở dạng tiếp theo.');
+          return;
+        }
+        setDangActiveIndex(dangNav.active + 1);
+        setPathLockHint('');
+        try {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } catch {
+          /* ignore */
+        }
+        return;
+      }
+      // Dạng cuối (hoặc chỉ 1 dạng) → ưu tiên Bài tập luyện tập → Đề luyện tập
+      const preferredAfterDang = ['practice', 'papers'];
+      let blockedAfterDang = '';
+      for (const nextId of preferredAfterDang) {
+        if (!visibleLessonTabs.includes(nextId)) continue;
+        if (isLessonTabLocked(nextId)) {
+          if (!blockedAfterDang) {
+            blockedAfterDang =
+              nextId === 'practice'
+                ? pathGates.practiceLockReason || 'Hoàn thành các dạng toán trước.'
+                : pathGates.papersLockReason || 'Hoàn thành lộ trình học trước.';
+          }
+          continue;
+        }
+        setActiveTab(nextId);
+        setPathLockHint('');
+        return;
+      }
+      if (blockedAfterDang) {
+        setPathLockHint(blockedAfterDang);
+        return;
+      }
+    }
+
+    const i = visibleLessonTabs.indexOf(activeTab);
     const pos = i === -1 ? 0 : i;
-    if (pos < LESSON_TAB_SEQUENCE.length - 1) {
-      setActiveTab(LESSON_TAB_SEQUENCE[pos + 1]);
+    let blockedReason = '';
+    for (let j = pos + 1; j < visibleLessonTabs.length; j += 1) {
+      const nextId = visibleLessonTabs[j];
+      if (isLessonTabLocked(nextId)) {
+        if (!blockedReason) {
+          if (nextId === 'practice') {
+            blockedReason = pathGates.practiceLockReason || 'Hoàn thành các dạng toán trước.';
+          } else if (nextId === 'papers') {
+            blockedReason = pathGates.papersLockReason || 'Hoàn thành lộ trình học trước.';
+          }
+        }
+        continue;
+      }
+      setActiveTab(nextId);
+      setPathLockHint('');
+      if (nextId === 'dang') setDangActiveIndex(0);
+      return;
+    }
+    if (blockedReason) {
+      setPathLockHint(blockedReason);
       return;
     }
     const sectionCount = activeSlice.sections.length;
     if (sectionCount > 0 && activeSectionIndex < sectionCount - 1) {
       setActiveSectionIndex((idx) => idx + 1);
       setActiveTab('theory');
+      setDangActiveIndex(0);
       return;
     }
     if (lessonChainNav.nextLesson && typeof onSelectLesson === 'function') {
       onSelectLesson(lessonChainNav.nextLesson.id);
       setActiveTab('theory');
+      setDangActiveIndex(0);
     }
-  }, [activeTab, activeSectionIndex, activeSlice.sections.length, lessonChainNav.nextLesson, onSelectLesson]);
+  }, [
+    activeTab,
+    dangNav,
+    activeSectionIndex,
+    activeSlice.sections.length,
+    lessonChainNav.nextLesson,
+    onSelectLesson,
+    visibleLessonTabs,
+    isLessonTabLocked,
+    pathGates.practiceLockReason,
+    pathGates.papersLockReason,
+  ]);
 
   const goPrevTabOrLesson = useCallback(() => {
-    const i = LESSON_TAB_SEQUENCE.indexOf(activeTab);
-    const pos = i === -1 ? 0 : i;
-    if (pos > 0) {
-      setActiveTab(LESSON_TAB_SEQUENCE[pos - 1]);
+    if (activeTab === 'dang' && dangNav && dangNav.count > 1 && dangNav.active > 0) {
+      setDangActiveIndex(dangNav.active - 1);
+      setPathLockHint('');
+      try {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch {
+        /* ignore */
+      }
       return;
     }
+
+    const i = visibleLessonTabs.indexOf(activeTab);
+    const pos = i === -1 ? 0 : i;
+    for (let j = pos - 1; j >= 0; j -= 1) {
+      const prevId = visibleLessonTabs[j];
+      if (isLessonTabLocked(prevId)) continue;
+      setActiveTab(prevId);
+      setPathLockHint('');
+      if (prevId === 'dang' && dangNav?.count > 0) {
+        setDangActiveIndex(Math.max(0, (dangNav.count || 1) - 1));
+      }
+      return;
+    }
+    const lastUnlocked =
+      [...visibleLessonTabs].reverse().find((t) => !isLessonTabLocked(t)) || 'pdf';
     if (activeSlice.sections.length > 0 && activeSectionIndex > 0) {
       setActiveSectionIndex((idx) => idx - 1);
-      setActiveTab('pdf');
+      setActiveTab(lastUnlocked);
       return;
     }
     if (lessonChainNav.prevLesson && typeof onSelectLesson === 'function') {
       onSelectLesson(lessonChainNav.prevLesson.id);
-      setActiveTab('pdf');
+      setActiveTab(lastUnlocked);
     }
-  }, [activeTab, activeSectionIndex, activeSlice.sections.length, lessonChainNav.prevLesson, onSelectLesson]);
+  }, [
+    activeTab,
+    dangNav,
+    activeSectionIndex,
+    activeSlice.sections.length,
+    lessonChainNav.prevLesson,
+    onSelectLesson,
+    visibleLessonTabs,
+    isLessonTabLocked,
+  ]);
 
-  const navPos = LESSON_TAB_SEQUENCE.indexOf(activeTab);
+  const navPos = visibleLessonTabs.indexOf(activeTab);
   const navIndex = navPos === -1 ? 0 : navPos;
-  const nextTabId = navIndex < LESSON_TAB_SEQUENCE.length - 1 ? LESSON_TAB_SEQUENCE[navIndex + 1] : null;
-  const prevTabId = navIndex > 0 ? LESSON_TAB_SEQUENCE[navIndex - 1] : null;
+  const nextTabId = navIndex < visibleLessonTabs.length - 1 ? visibleLessonTabs[navIndex + 1] : null;
+  const prevTabId = navIndex > 0 ? visibleLessonTabs[navIndex - 1] : null;
+  const dangStepNext =
+    activeTab === 'dang' && dangNav && dangNav.count > 1 && dangNav.active < dangNav.count - 1;
+  const dangStepPrev = activeTab === 'dang' && dangNav && dangNav.count > 1 && dangNav.active > 0;
   const canNext =
+    dangStepNext ||
     nextTabId != null ||
     (activeSlice.sections.length > 0 && activeSectionIndex < activeSlice.sections.length - 1) ||
     (lessonChainNav.nextLesson != null && typeof onSelectLesson === 'function');
   const canPrev =
+    dangStepPrev ||
     prevTabId != null ||
     (activeSlice.sections.length > 0 && activeSectionIndex > 0) ||
     (lessonChainNav.prevLesson != null && typeof onSelectLesson === 'function');
+
+  const nextButtonHint = dangStepNext
+    ? `${dangNav.nextLabel || `Dạng ${dangNav.active + 2}`} →`
+    : activeTab === 'dang' && dangNav && (dangNav.count <= 1 || dangNav.active >= dangNav.count - 1)
+      ? visibleLessonTabs.includes('practice') && !isLessonTabLocked('practice')
+        ? `${lessonTabLabel('practice')} →`
+        : visibleLessonTabs.includes('papers') && !isLessonTabLocked('papers')
+          ? `${lessonTabLabel('papers')} →`
+          : nextTabId
+            ? `${lessonTabLabel(nextTabId)} →`
+            : lessonChainNav.nextLesson
+              ? `Bài sau: ${lessonChainNav.nextLesson.lesson_no ? `Bài ${lessonChainNav.nextLesson.lesson_no} · ` : ''}${(lessonChainNav.nextLesson.title || '').slice(0, 42)}${(lessonChainNav.nextLesson.title || '').length > 42 ? '…' : ''} →`
+              : canNext
+                ? '—'
+                : 'Đã cuối chương'
+      : nextTabId
+        ? `${lessonTabLabel(nextTabId)} →`
+        : lessonChainNav.nextLesson
+          ? `Bài sau: ${lessonChainNav.nextLesson.lesson_no ? `Bài ${lessonChainNav.nextLesson.lesson_no} · ` : ''}${(lessonChainNav.nextLesson.title || '').slice(0, 42)}${(lessonChainNav.nextLesson.title || '').length > 42 ? '…' : ''} →`
+          : canNext
+            ? '—'
+            : 'Đã cuối chương';
+
+  const prevButtonHint = dangStepPrev
+    ? `← ${dangNav.prevLabel || `Dạng ${dangNav.active}`}`
+    : prevTabId
+      ? `← ${lessonTabLabel(prevTabId)}`
+      : lessonChainNav.prevLesson
+        ? `← Bài trước: ${lessonChainNav.prevLesson.lesson_no ? `Bài ${lessonChainNav.prevLesson.lesson_no} · ` : ''}${(lessonChainNav.prevLesson.title || '').slice(0, 42)}${(lessonChainNav.prevLesson.title || '').length > 42 ? '…' : ''}`
+        : canPrev
+          ? '—'
+          : 'Đã đầu chương / lộ trình';
 
   const papersAttemptedIds = useMemo(() => {
     const me = normName(studentName);
@@ -1149,17 +1600,32 @@ export default function StudentLessonViewer({
 
   const tabBtn = (id, label, Icon, extra) => {
     const active = activeTab === id;
+    const locked = isLessonTabLocked(id);
+    const lockTitle =
+      id === 'practice'
+        ? pathGates.practiceLockReason
+        : id === 'papers'
+          ? pathGates.papersLockReason
+          : '';
     return (
       <button
         type="button"
-        onClick={() => setActiveTab(id)}
+        onClick={() => requestLessonTab(id)}
+        title={locked ? lockTitle : undefined}
+        aria-disabled={locked}
         className={`relative inline-flex items-center gap-2 px-4 md:px-5 py-2 md:py-2.5 text-xs md:text-sm font-bold whitespace-nowrap rounded-full transition flex-shrink-0 ${
           active
             ? 'bg-indigo-600 text-white shadow-sm'
-            : 'bg-transparent text-slate-500 hover:text-indigo-600 hover:bg-white'
+            : locked
+              ? 'bg-transparent text-slate-400 cursor-not-allowed opacity-80'
+              : 'bg-transparent text-slate-500 hover:text-indigo-600 hover:bg-white'
         }`}
       >
-        <Icon className={`w-4 h-4 md:w-5 md:h-5 flex-shrink-0 ${active ? 'text-white' : 'text-slate-400'}`} />
+        {locked ? (
+          <Lock className={`w-4 h-4 md:w-5 md:h-5 flex-shrink-0 ${active ? 'text-white' : 'text-slate-400'}`} />
+        ) : (
+          <Icon className={`w-4 h-4 md:w-5 md:h-5 flex-shrink-0 ${active ? 'text-white' : 'text-slate-400'}`} />
+        )}
         {label}
         {extra}
       </button>
@@ -1169,7 +1635,7 @@ export default function StudentLessonViewer({
   return (
     <div className="lesson-viewer lesson-sky-canvas flex flex-col flex-1 min-h-0 overflow-hidden font-sans leading-relaxed">
       {!previewEmbed ? (
-      <header className="bg-white text-slate-800 shrink-0 border-b border-slate-200 z-20">
+      <header className="bg-white text-slate-800 shrink-0 border-b border-slate-200 relative z-40">
         <div className="flex h-14 items-center justify-between px-4 md:px-6 gap-2">
           <div className="flex items-center gap-3 min-w-0">
             <button
@@ -1205,53 +1671,114 @@ export default function StudentLessonViewer({
             </a>
             <button
               type="button"
-              onClick={() => goOverview?.()}
+              onPointerDown={activateHeaderAction(() => goOverview?.())}
               className="text-indigo-600 transition-colors border-b-2 border-indigo-500 pb-0.5 whitespace-nowrap"
             >
               Trang cá nhân
             </button>
             <button
               type="button"
-              onClick={() => onOpenExamsRoom?.()}
+              onPointerDown={activateHeaderAction(() => onOpenExamsRoom?.())}
               className="hover:text-indigo-600 transition-colors tracking-wide text-xs lg:text-sm whitespace-nowrap"
             >
               PHÒNG THI ONLINE
             </button>
           </nav>
-          <div className="flex items-center gap-2 shrink-0">
-            {onOpenExamsRoom ? (
-              <button
-                type="button"
-                onClick={onOpenExamsRoom}
-                title="Vào phòng thi"
-                aria-label="Vào phòng thi"
-                className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:border-indigo-300 transition-colors shrink-0"
-              >
-                <ClipboardList className="w-4 h-4" />
-              </button>
-            ) : null}
-            <StudentNotificationBell
-              size="sm"
-              studentId={studentProfile?.id}
-              studentName={studentName}
-              onOpenLink={(n) => {
-                if (n.link_type === 'lesson' && n.link_id) {
-                  onSelectLesson?.(n.link_id);
-                  return;
-                }
-                if (n.link_type === 'quiz' && n.link_id) {
-                  (onSelectQuiz || onStartQuiz)?.(n.link_id);
-                  return;
-                }
-                if (n.link_url) window.open(n.link_url, '_blank');
-              }}
-            />
-            <div
-              className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-black text-xs cursor-default border border-indigo-200"
-              title={studentName}
-            >
-              {(studentName || 'H').charAt(0).toUpperCase()}
-            </div>
+          <div className="flex items-center gap-2 shrink-0 relative z-50">
+            {studentName ? (
+              <>
+                <button
+                  type="button"
+                  onPointerDown={activateHeaderAction(() => {
+                    setProfileMenuOpen(false);
+                    setNotifOpen(false);
+                    (onEnterLearningMode || goOverview)?.();
+                  })}
+                  title="Vào chế độ học tập"
+                  aria-label="Vào chế độ học tập"
+                  className="inline-flex items-center justify-center w-10 h-10 rounded-full border border-violet-200 bg-gradient-to-br from-violet-500 to-indigo-600 text-white shadow-md shadow-indigo-200/60 hover:from-violet-600 hover:to-indigo-700 active:scale-95 transition shrink-0"
+                >
+                  <GraduationCap className="w-5 h-5" strokeWidth={2.25} />
+                </button>
+                <StudentNotificationBell
+                  size="sm"
+                  studentId={studentProfile?.id}
+                  studentName={studentName}
+                  open={notifOpen}
+                  onOpenChange={(v) => {
+                    setNotifOpen(v);
+                    if (v) setProfileMenuOpen(false);
+                  }}
+                  onOpenLink={(n) => {
+                    if (n.link_type === 'lesson' && n.link_id) {
+                      onSelectLesson?.(n.link_id);
+                      return;
+                    }
+                    if (n.link_type === 'quiz' && n.link_id) {
+                      (onSelectQuiz || onStartQuiz)?.(n.link_id);
+                      return;
+                    }
+                    if (n.link_url) window.open(n.link_url, '_blank');
+                  }}
+                />
+                <div className="relative" ref={profileMenuRef}>
+                  <button
+                    type="button"
+                    onPointerDown={activateHeaderAction(() => {
+                      setNotifOpen(false);
+                      setProfileMenuOpen((v) => !v);
+                    })}
+                    className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-black text-sm border-2 border-indigo-200 hover:bg-indigo-200 active:scale-95 transition shadow-sm"
+                    title="Tài khoản"
+                    aria-label="Mở menu tài khoản"
+                    aria-expanded={profileMenuOpen}
+                  >
+                    {(studentName || 'H').charAt(0).toUpperCase()}
+                  </button>
+                  {profileMenuOpen ? (
+                    <StudentProfileDropdown
+                      studentName={studentName}
+                      studentClass={studentClass}
+                      rosterGrade={studentRosterGrade || rosterGrade}
+                      studentProfile={studentProfile}
+                      onEnterStudentPortal={(tab) => {
+                        setProfileMenuOpen(false);
+                        if (onEnterStudentPortal) onEnterStudentPortal(tab);
+                        else if (tab === 'settings' && onOpenAccount) onOpenAccount();
+                        else goOverview?.();
+                      }}
+                      onLogout={() => {
+                        setProfileMenuOpen(false);
+                        onLogout?.();
+                      }}
+                      onClose={() => setProfileMenuOpen(false)}
+                      unreadCount={unreadNotif}
+                      onOpenNotifications={() => {
+                        setProfileMenuOpen(false);
+                        setNotifOpen(true);
+                      }}
+                    />
+                  ) : null}
+                </div>
+              </>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onPointerDown={activateHeaderAction(() => onRequestRegister?.())}
+                  className="px-3 py-1.5 rounded-full border-2 border-orange-500 bg-orange-50 text-orange-600 hover:bg-orange-500 hover:text-white text-xs font-black shadow-sm transition-colors"
+                >
+                  Đăng ký
+                </button>
+                <button
+                  type="button"
+                  onPointerDown={activateHeaderAction(() => onRequestLogin?.())}
+                  className="login-cta-blink px-3 py-1.5 rounded-full border-2 border-blue-600 bg-blue-600 text-white hover:bg-blue-700 text-xs font-black shadow-md shadow-blue-200/60"
+                >
+                  Đăng nhập
+                </button>
+              </>
+            )}
           </div>
         </div>
         <nav className="md:hidden flex flex-wrap items-center justify-center gap-x-4 gap-y-2 px-3 py-2.5 border-t border-slate-200 text-xs font-black tracking-wide text-slate-600">
@@ -1294,7 +1821,9 @@ export default function StudentLessonViewer({
                   Lộ trình học
                 </h2>
                 <p className="text-xs text-slate-500 font-bold uppercase tracking-wide truncate">
-                  {`Toán ${rosterGrade}${studentClass ? ` · ${studentClass}` : ''}`}
+                  {`Toán ${displayGrade || rosterGrade}${
+                    sameGradeAsAccount && studentClass ? ` · ${studentClass}` : ''
+                  }`}
                 </p>
               </div>
             </div>
@@ -1388,7 +1917,7 @@ export default function StudentLessonViewer({
               ) : null}
               <nav className="text-[11px] md:text-xs font-bold text-slate-500 flex flex-wrap items-center gap-x-2 gap-y-1 min-w-0 leading-snug">
               <button type="button" onClick={goOverview} className="hover:text-indigo-600 transition shrink-0">
-                Toán {rosterGrade}
+                Toán {displayGrade || rosterGrade}
               </button>
               <span className="text-slate-300 shrink-0">›</span>
               <span className="hover:text-indigo-600 text-slate-600 min-w-0">{chapterHeading}</span>
@@ -1519,12 +2048,15 @@ export default function StudentLessonViewer({
 
             <div className="lesson-tabs-shell bg-white rounded-none md:rounded-3xl shadow-sm border-y border-slate-200 md:border border-slate-200 overflow-hidden mb-10 md:mb-12 -mx-4 md:mx-0">
               <div className="flex items-center gap-2 p-2 md:p-2.5 bg-slate-50/90 border-b border-slate-200 overflow-x-auto">
-                {tabBtn('theory', 'LÝ THUYẾT & VÍ DỤ', BookOpen)}
+                {tabBtn('theory', 'LÝ THUYẾT', BookOpen)}
+                {tabBtn('dang', 'CÁC DẠNG TOÁN', Sparkles)}
+                {showMindMapTab ? tabBtn('mindmap', 'TÓM TẮT BÀI HỌC', BookMarked) : null}
+                {showSimulationTab ? tabBtn('simulation', 'MÔ PHỎNG', Atom) : null}
                 {tabBtn(
                   'practice',
                   'BÀI TẬP LUYỆN TẬP',
                   Pencil,
-                  practiceCount > 0 ? (
+                  practiceCount > 0 && !pathGates.practiceLocked ? (
                     <span className="ml-0.5 w-2 h-2 bg-red-500 rounded-full" />
                   ) : null
                 )}
@@ -1532,148 +2064,203 @@ export default function StudentLessonViewer({
                   'papers',
                   'ĐỀ LUYỆN TẬP',
                   ClipboardList,
-                  papersQuizCount > 0 ? (
+                  papersQuizCount > 0 && !pathGates.papersLocked ? (
                     <span className="ml-0.5 w-2 h-2 bg-amber-500 rounded-full" />
                   ) : null
                 )}
                 {tabBtn('pdf', 'TÀI LIỆU PDF', FileText)}
               </div>
+              {pathLockHint ? (
+                <div className="px-4 md:px-6 py-3 bg-amber-50 border-b border-amber-200 text-sm text-amber-900 font-semibold flex items-start gap-2">
+                  <Lock className="w-4 h-4 mt-0.5 shrink-0 text-amber-600" />
+                  <span>{pathLockHint}</span>
+                </div>
+              ) : null}
+              {pathGates.enforce && !pathGates.freeRoam ? (
+                <div className="px-4 md:px-6 py-2.5 bg-indigo-50/80 border-b border-indigo-100 text-xs md:text-sm text-indigo-900 font-medium">
+                  Lần học đầu: hoàn thành từng dạng toán (đánh dấu đã học ví dụ) → bài tập luyện tập → đề luyện tập. Sau khi xong một lượt, các phần sẽ mở tự do.
+                </div>
+              ) : null}
 
               {activeTab === 'theory' && (
                 <div className="lesson-tab-panel lesson-tab-panel--theory p-4 md:p-10 lg:p-12 animate-in fade-in duration-200">
-                  {!hasMath11Examples && (
-                    <>
-                      <TheoryCorePanel source={theoryForPanel} />
-                      <ExamplesCorePanel
-                        examplesCoreText={examplesCoreText}
-                        phuongPhapFromTheory={phuongPhapFromTheory}
-                      />
-                      {!hasNewExamplesCore &&
-                        lessonData.theory.rules.map((rule, idx) => (
-                        <div
-                          key={idx}
-                          className="mb-10 rounded-2xl border border-slate-200 bg-slate-50/50 p-6 md:p-8 shadow-sm"
-                        >
-                          <h3 className="text-lg md:text-xl font-black text-teal-900 mb-4 flex items-center gap-2">
-                            <span className="w-8 h-8 rounded-lg bg-teal-200 text-teal-900 flex items-center justify-center text-sm font-black">
-                              {idx + 1}
-                            </span>
-                            {rule.title}
-                          </h3>
-                          <HtmlWithMath html={rule.content} className="text-slate-800 text-base leading-relaxed" />
-                          {Array.isArray(rule.note) && rule.note.length > 0 && (
-                            <div className="mt-5 bg-white/70 border border-teal-100 rounded-xl p-4">
-                              <h4 className="font-bold text-teal-700 mb-2 flex items-center gap-2 text-xs uppercase">
-                                <AlertCircle className="w-4 h-4" /> Ghi nhớ
-                              </h4>
-                              <ul className="list-disc list-inside space-y-1 text-slate-700 text-sm">
-                                {rule.note.map((n, i) => (
-                                  <li key={i}>{n}</li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-                        </div>
-                        ))}
-                    </>
-                  )}
+                  <TheoryCorePanel source={theoryForPanel} />
+                  {!hasNewExamplesCore &&
+                    !hasMath11Examples &&
+                    lessonData.theory.rules.map((rule, idx) => (
+                      <div
+                        key={idx}
+                        className="mb-10 rounded-2xl border border-slate-200 bg-slate-50/50 p-6 md:p-8 shadow-sm"
+                      >
+                        <h3 className="text-lg md:text-xl font-black text-teal-900 mb-4 flex items-center gap-2">
+                          <span className="w-8 h-8 rounded-lg bg-teal-200 text-teal-900 flex items-center justify-center text-sm font-black">
+                            {idx + 1}
+                          </span>
+                          {rule.title}
+                        </h3>
+                        <HtmlWithMath html={rule.content} className="text-slate-800 text-base leading-relaxed" />
+                        {Array.isArray(rule.note) && rule.note.length > 0 && (
+                          <div className="mt-5 bg-white/70 border border-teal-100 rounded-xl p-4">
+                            <h4 className="font-bold text-teal-700 mb-2 flex items-center gap-2 text-xs uppercase">
+                              <AlertCircle className="w-4 h-4" /> Ghi nhớ
+                            </h4>
+                            <ul className="list-disc list-inside space-y-1 text-slate-700 text-sm">
+                              {rule.note.map((n, i) => (
+                                <li key={i}>{n}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  {!String(theoryForPanel || '').trim() &&
+                  !(lessonData.theory.rules || []).length &&
+                  !hasMath11Examples ? (
+                    <p className="text-slate-500 text-center py-8">Chưa có nội dung lý thuyết trong bài này.</p>
+                  ) : null}
+                </div>
+              )}
 
-                  {hasMath11Examples && (
-                    <>
-                      <TheoryCorePanel source={theoryForPanel} />
-                      <section className="mb-12 md:mb-16">
-                        <div className="max-w-4xl mx-auto px-2 md:px-4">
-                          <LessonSectionHeading num={2} title="Các dạng toán và ví dụ" />
-                          <div className="space-y-10 md:space-y-12">
-                        {exampleGroups.map((g, gi) => {
-                          if (g.kind === 'loose') {
-                            const ex = g.ex;
-                            const t = (ex?.title || '').toString().trim();
-                            const hasItems = Array.isArray(ex?.items) && ex.items.length > 0;
-                            const looksVidu = /^ví\s*dụ/i.test(t) || hasItems;
-                            if (!looksVidu) {
+              {activeTab === 'dang' && (
+                <div className="lesson-tab-panel lesson-tab-panel--dang p-4 md:p-10 lg:p-12 animate-in fade-in duration-200">
+                  {hasNewExamplesCore ? (
+                    <LessonDangExamplesPanel
+                      examplesCoreText={examplesCoreText}
+                      phuongPhapFromTheory={phuongPhapFromTheory}
+                      displayMode={examplesDisplayMode}
+                      studentName={studentName}
+                      lessonId={lesson?.id || ''}
+                      sectionKey={dangSectionKey}
+                      scoresList={scoresList || []}
+                      onSaveDangProgress={onSaveLessonDangProgress}
+                      onCompleteDangExp={onCompleteLessonDangExp}
+                      previewEmbed={previewEmbed}
+                      unlockAllDang={pathGates.unlockAllDang}
+                      activeDangIndex={dangActiveIndex}
+                      onActiveDangChange={setDangActiveIndex}
+                      onNavStateChange={handleDangNavStateChange}
+                    />
+                  ) : hasMath11Examples ? (
+                    <section className="mb-12 md:mb-16">
+                      <div className="max-w-4xl mx-auto px-2 md:px-4">
+                        <LessonSectionHeading num={2} title="Các dạng toán và ví dụ" />
+                        <div className="space-y-10 md:space-y-12">
+                          {exampleGroups.map((g, gi) => {
+                            if (g.kind === 'loose') {
+                              const ex = g.ex;
+                              const t = (ex?.title || '').toString().trim();
+                              const hasItems = Array.isArray(ex?.items) && ex.items.length > 0;
+                              const looksVidu = /^ví\s*dụ/i.test(t) || hasItems;
+                              if (!looksVidu) {
+                                return (
+                                  <div
+                                    key={'loose-' + (ex?.id ?? gi)}
+                                    className="rounded-2xl border border-slate-200 bg-white p-5 md:p-6 shadow-sm mb-6"
+                                  >
+                                    <h4 className="font-black text-slate-800 mb-3 text-base md:text-lg">
+                                      <TextWithMathWithLoiGiai text={t || 'Nội dung'} />
+                                    </h4>
+                                    {(ex?.desc || '').toString().trim() ? (
+                                      <div className="text-slate-700 text-sm md:text-base leading-relaxed">
+                                        <TextWithMathWithLoiGiai text={ex.desc.trim()} />
+                                      </div>
+                                    ) : null}
+                                  </div>
+                                );
+                              }
                               return (
-                                <div
-                                  key={`loose-${ex?.id ?? gi}`}
-                                  className="rounded-2xl border border-slate-200 bg-white p-5 md:p-6 shadow-sm mb-6"
-                                >
-                                  <h4 className="font-black text-slate-800 mb-3 text-base md:text-lg">
-                                    <TextWithMathWithLoiGiai text={t || 'Nội dung'} />
-                                  </h4>
-                                  {(ex?.desc || '').toString().trim() ? (
-                                    <div className="text-slate-700 text-sm md:text-base leading-relaxed">
-                                      <TextWithMathWithLoiGiai text={ex.desc.trim()} />
-                                    </div>
-                                  ) : null}
+                                <div key={'loose-v-' + (ex?.id ?? gi)} className="mb-2">
+                                  <Math11ViduCard ex={ex} index={gi} />
                                 </div>
                               );
                             }
+                            const { dang, vidus } = g;
+                            const isFirstDang =
+                              exampleGroups.findIndex((item) => item.kind === 'dangGroup') === gi;
+                            const theoryPpForDang = isFirstDang ? phuongPhapFromTheory : [];
                             return (
-                              <div key={`loose-${ex?.id ?? gi}`} className="mb-2">
-                                <Math11ViduCard ex={ex} index={gi} />
+                              <div key={'dang-' + (dang?.id ?? gi)} className="space-y-6">
+                                <div className="lesson-dang-method-frame rounded-2xl border border-indigo-200/70 bg-white px-5 py-6 md:px-8 md:py-7">
+                                  <div className="lesson-dang-highlight mb-5 md:mb-6 pb-5 md:pb-6 border-b border-indigo-200/60">
+                                    <span className="inline-flex items-center rounded-lg bg-indigo-600 px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-white mb-3">
+                                      Dạng
+                                    </span>
+                                    <p className="text-lg md:text-xl font-black text-slate-900 leading-snug">
+                                      <TextWithMathWithLoiGiai text={(dang?.title || '').toString()} />
+                                    </p>
+                                  </div>
+                                  <PhuongPhapBlocks bodies={theoryPpForDang} />
+                                  {(dang?.desc || '').toString().trim() ? (
+                                    <div className="rounded-xl border border-violet-200/80 bg-white/70 px-5 py-5 md:px-7 md:py-6">
+                                      <p className="text-xs font-bold uppercase tracking-[0.15em] text-violet-800 mb-3">
+                                        Phương pháp / Tóm tắt
+                                      </p>
+                                      <div className="text-slate-800 text-sm md:text-base leading-relaxed">
+                                        <TextWithMathWithLoiGiai text={dang.desc.trim()} />
+                                      </div>
+                                    </div>
+                                  ) : null}
+                                </div>
+                                <div className="space-y-5">
+                                  {(vidus || []).map((v, vi) => {
+                                    const dangNo = extractDangNumber(dang?.title, gi);
+                                    return (
+                                      <Math11ViduCard
+                                        key={v?.id ?? gi + '-v-' + vi}
+                                        ex={v}
+                                        index={vi}
+                                        dangNumber={dangNo}
+                                      />
+                                    );
+                                  })}
+                                </div>
                               </div>
                             );
-                          }
-                          const { dang, vidus } = g;
-                          const isFirstDang =
-                            exampleGroups.findIndex((item) => item.kind === 'dangGroup') === gi;
-                          const theoryPpForDang = isFirstDang ? phuongPhapFromTheory : [];
-                          return (
-                            <div key={`dang-${dang?.id ?? gi}`} className="space-y-6">
-                              <div className="lesson-dang-method-frame rounded-2xl border border-indigo-200/70 bg-white px-5 py-6 md:px-8 md:py-7">
-                                <div className="lesson-dang-highlight mb-5 md:mb-6 pb-5 md:pb-6 border-b border-indigo-200/60">
-                                  <span className="inline-flex items-center rounded-lg bg-indigo-600 px-2.5 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-white mb-3">
-                                    Dạng
-                                  </span>
-                                  <p className="text-lg md:text-xl font-black text-slate-900 leading-snug">
-                                    <TextWithMathWithLoiGiai text={(dang?.title || '').toString()} />
-                                  </p>
-                                </div>
-                                <PhuongPhapBlocks bodies={theoryPpForDang} />
-                                {(dang?.desc || '').toString().trim() ? (
-                                  <div className="rounded-xl border border-violet-200/80 bg-white/70 px-5 py-5 md:px-7 md:py-6">
-                                    <p className="text-xs font-bold uppercase tracking-[0.15em] text-violet-800 mb-3">
-                                      Phương pháp / Tóm tắt
-                                    </p>
-                                    <div className="text-slate-800 text-sm md:text-base leading-relaxed">
-                                      <TextWithMathWithLoiGiai text={dang.desc.trim()} />
-                                    </div>
-                                  </div>
-                                ) : null}
-                              </div>
-                              <div className="space-y-5">
-                                {vidus.length === 0 ? (
-                                  <p className="text-sm text-slate-500 italic py-2">
-                                    (Chưa gắn ví dụ minh họa sau dạng này — có thể thêm dòng Ví dụ 1: ... trong file import.)
-                                  </p>
-                                ) : (
-                                  vidus.map((v, vi) => (
-                                    <Math11ViduCard key={v?.id ?? `${gi}-v-${vi}`} ex={v} index={vi} />
-                                  ))
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })}
-                          </div>
+                          })}
                         </div>
-                      </section>
-                    </>
-                  )}
-
-                  {!hasMath11Examples &&
-                    !theoryForPanel.trim() &&
-                    !examplesCoreText &&
-                    !phuongPhapFromTheory.length &&
-                    (hasNewExamplesCore || lessonData.theory.rules.length === 0) && (
-                    <p className="text-slate-500 text-center py-8">Nội dung đang được cập nhật.</p>
+                      </div>
+                    </section>
+                  ) : (
+                    <p className="text-slate-500 text-center py-8">Chưa có nội dung các dạng toán trong bài này.</p>
                   )}
                 </div>
               )}
 
+              {activeTab === 'mindmap' && showMindMapTab ? (
+                <LessonMindMapPanel
+                  mindMap={lessonMindMap}
+                  title={`Tóm tắt · ${lesson?.title || 'Bài học'}`}
+                />
+              ) : null}
+
+              {activeTab === 'simulation' && showSimulationTab ? (
+                <LessonSimulationPanel
+                  simulation={lessonSimulation}
+                  title={lessonSimulation.title || `Mô phỏng · ${lesson?.title || 'Bài học'}`}
+                />
+              ) : null}
+
               {activeTab === 'practice' && (
                 <div className="lesson-practice-tab animate-in fade-in duration-200">
-                  {lessonData.practice.length === 0 ? (
+                  {pathGates.practiceLocked ? (
+                    <div className="text-center py-12 px-6 md:px-10 text-slate-600">
+                      <Lock className="w-12 h-12 mx-auto mb-3 text-slate-400" />
+                      <p className="font-semibold text-slate-800">Bài tập luyện tập đang khóa</p>
+                      <p className="text-sm mt-2 max-w-md mx-auto">
+                        {pathGates.practiceLockReason ||
+                          'Hãy hoàn thành tất cả các dạng toán trước khi làm bài tập luyện tập.'}
+                      </p>
+                      {hasNewExamplesCore ? (
+                        <button
+                          type="button"
+                          onClick={() => requestLessonTab('dang')}
+                          className="mt-5 inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2.5 rounded-xl"
+                        >
+                          Vào các dạng toán
+                        </button>
+                      ) : null}
+                    </div>
+                  ) : lessonData.practice.length === 0 ? (
                     <div className="text-center py-12 px-6 md:px-10 text-slate-600">
                       <p className="font-semibold">Chưa có bài tập luyện tập trong nội dung bài này.</p>
                       <p className="text-sm mt-2">Có thể import từ file (mục BÀI TẬP LUYỆN TẬP) hoặc làm đề trong Phòng thi.</p>
@@ -1693,6 +2280,7 @@ export default function StudentLessonViewer({
                       onToggleHint={togglePracticeHint}
                       studentName={studentName}
                       resetKey={`${lesson?.id || ''}-${activeSectionIndex}`}
+                      onRecordStepExp={handlePracticeStepExp}
                     />
                   )}
                 </div>
@@ -1700,7 +2288,31 @@ export default function StudentLessonViewer({
 
               {activeTab === 'papers' && (
                 <div className="p-5 md:p-10 animate-in fade-in duration-200">
-                  {!isLessonStudentLoggedIn ? (
+                  {pathGates.papersLocked ? (
+                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-8 md:p-10 text-center max-w-lg mx-auto">
+                      <Lock className="w-12 h-12 mx-auto mb-3 text-slate-400" />
+                      <p className="font-black text-slate-900 text-lg mb-2">Đề luyện tập đang khóa</p>
+                      <p className="text-slate-600 text-sm md:text-base leading-relaxed">
+                        {pathGates.papersLockReason ||
+                          'Hoàn thành các dạng toán và nộp bài tập luyện tập để mở đề luyện tập.'}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          requestLessonTab(
+                            pathGates.practiceLocked && hasNewExamplesCore
+                              ? 'dang'
+                              : practiceCount > 0
+                                ? 'practice'
+                                : 'dang'
+                          )
+                        }
+                        className="mt-5 inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-5 py-2.5 rounded-xl"
+                      >
+                        {pathGates.practiceLocked ? 'Học các dạng toán' : 'Làm bài tập luyện tập'}
+                      </button>
+                    </div>
+                  ) : !isLessonStudentLoggedIn ? (
                     <div className="rounded-2xl border-2 border-teal-200 bg-gradient-to-b from-teal-50/80 to-white p-8 md:p-10 text-center max-w-lg mx-auto shadow-sm">
                       <ClipboardList className="w-14 h-14 mx-auto mb-4 text-teal-600" />
                       <p className="font-black text-slate-900 text-lg mb-2">Đề luyện tập theo bài</p>
@@ -1861,13 +2473,7 @@ export default function StudentLessonViewer({
                       <span className="flex flex-col items-start min-w-0 text-left leading-tight">
                         <span>Quay lại</span>
                         <span className="text-xs md:text-sm font-bold opacity-90 truncate max-w-[14rem] md:max-w-[18rem]">
-                          {prevTabId
-                            ? `← ${lessonTabLabel(prevTabId)}`
-                            : lessonChainNav.prevLesson
-                              ? `← Bài trước: ${lessonChainNav.prevLesson.lesson_no ? `Bài ${lessonChainNav.prevLesson.lesson_no} · ` : ''}${(lessonChainNav.prevLesson.title || '').slice(0, 42)}${(lessonChainNav.prevLesson.title || '').length > 42 ? '…' : ''}`
-                              : canPrev
-                                ? '—'
-                                : 'Đã đầu chương / lộ trình'}
+                          {prevButtonHint}
                         </span>
                       </span>
                     </button>
@@ -1875,7 +2481,13 @@ export default function StudentLessonViewer({
                       type="button"
                       onClick={goNextTabOrLesson}
                       disabled={!canNext}
-                      title={!canNext ? 'Đã ở cuối chương (không có bài sau)' : undefined}
+                      title={
+                        dangNav?.nextDangLocked
+                          ? 'Hoàn thành dạng hiện tại để mở dạng tiếp theo'
+                          : !canNext
+                            ? 'Đã ở cuối chương (không có bài sau)'
+                            : undefined
+                      }
                       className={`group flex-1 min-h-[3.75rem] md:min-h-[4.25rem] rounded-2xl px-4 md:px-6 py-3 md:py-4 font-black text-base md:text-lg text-white flex items-center justify-center gap-3 transition-all border-2 ${
                         canNext
                           ? 'bg-gradient-to-r from-teal-500 via-emerald-500 to-cyan-500 border-teal-200/80 shadow-lg hover:brightness-110 hover:scale-[1.01] active:scale-[0.99]'
@@ -1885,13 +2497,7 @@ export default function StudentLessonViewer({
                       <span className="flex flex-col items-end min-w-0 text-right leading-tight">
                         <span>Tiếp theo</span>
                         <span className="text-xs md:text-sm font-bold opacity-90 truncate max-w-[14rem] md:max-w-[18rem]">
-                          {nextTabId
-                            ? `${lessonTabLabel(nextTabId)} →`
-                            : lessonChainNav.nextLesson
-                              ? `Bài sau: ${lessonChainNav.nextLesson.lesson_no ? `Bài ${lessonChainNav.nextLesson.lesson_no} · ` : ''}${(lessonChainNav.nextLesson.title || '').slice(0, 42)}${(lessonChainNav.nextLesson.title || '').length > 42 ? '…' : ''} →`
-                              : canNext
-                                ? '—'
-                                : 'Đã cuối chương'}
+                          {nextButtonHint}
                         </span>
                       </span>
                       <ChevronRight className="w-7 h-7 md:w-8 md:h-8 shrink-0 opacity-90 group-hover:translate-x-0.5 transition-transform" />

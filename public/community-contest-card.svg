@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" fill="none">
+  <defs>
+    <linearGradient id="ctBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d8fff3"/>
+      <stop offset="50%" stop-color="#c8f7e8"/>
+      <stop offset="100%" stop-color="#b8eefc"/>
+    </linearGradient>
+    <linearGradient id="coin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffe566"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="360" rx="28" fill="url(#ctBg)"/>
+  <ellipse cx="120" cy="80" rx="70" ry="28" fill="#fff" opacity=".55"/>
+  <ellipse cx="520" cy="60" rx="90" ry="32" fill="#fff" opacity=".45"/>
+  <ellipse cx="560" cy="300" rx="80" ry="26" fill="#fff" opacity=".4"/>
+  <!-- boy -->
+  <g transform="translate(230,40)">
+    <ellipse cx="80" cy="270" rx="95" ry="16" fill="#7bc9b0" opacity=".35"/>
+    <circle cx="80" cy="78" r="44" fill="#f6c29a"/>
+    <path d="M40 68c10-30 70-34 82-6 3 8-4 18-14 20-18 4-34-4-48 0-12 4-22-2-20-14z" fill="#1f2937"/>
+    <ellipse cx="64" cy="82" rx="4.5" ry="5.5" fill="#1f2937"/>
+    <ellipse cx="98" cy="82" rx="4.5" ry="5.5" fill="#1f2937"/>
+    <path d="M70 100c8 8 20 8 28 0" stroke="#c47a5a" stroke-width="3" stroke-linecap="round"/>
+    <path d="M48 128c10 55 64 55 72 4l10 100H38l10-104z" fill="#38bdf8"/>
+    <path d="M55 150h70v18H55z" fill="#0ea5e9"/>
+    <!-- pointing arm -->
+    <path d="M120 150c28-8 48-40 52-58" stroke="#f6c29a" stroke-width="16" stroke-linecap="round"/>
+    <circle cx="174" cy="84" r="12" fill="#f6c29a"/>
+    <!-- book -->
+    <g transform="translate(18,168) rotate(-12)">
+      <rect x="0" y="0" width="70" height="88" rx="6" fill="#ef4444"/>
+      <rect x="8" y="10" width="54" height="68" rx="3" fill="#fecaca"/>
+      <path d="M18 28h34M18 42h28M18 56h30" stroke="#ef4444" stroke-width="3" stroke-linecap="round"/>
+    </g>
+  </g>
+  <!-- medal -->
+  <g transform="translate(78,110)">
+    <path d="M40 8l18 42H22L40 8z" fill="#2563eb"/>
+    <path d="M40 8l-18 42h12l6-42z" fill="#1d4ed8"/>
+    <circle cx="40" cy="78" r="36" fill="#fbbf24" stroke="#f59e0b" stroke-width="6"/>
+    <circle cx="40" cy="78" r="22" fill="#fde68a"/>
+    <text x="40" y="86" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-weight="800" fill="#b45309">1</text>
+  </g>
+  <!-- coins -->
+  <g transform="translate(470,150)">
+    <ellipse cx="36" cy="78" rx="40" ry="14" fill="#d97706" opacity=".35"/>
+    <ellipse cx="36" cy="58" rx="34" ry="34" fill="url(#coin)" stroke="#d97706" stroke-width="4"/>
+    <ellipse cx="36" cy="42" rx="34" ry="34" fill="url(#coin)" stroke="#d97706" stroke-width="4"/>
+    <ellipse cx="36" cy="26" rx="34" ry="34" fill="url(#coin)" stroke="#d97706" stroke-width="4"/>
+    <text x="36" y="32" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="800" fill="#92400e">$</text>
+    <rect x="78" y="18" width="88" height="36" rx="18" fill="#fff" stroke="#f59e0b" stroke-width="3"/>
+    <text x="122" y="42" text-anchor="middle" font-family="Arial,sans-serif" font-size="16" font-weight="800" fill="#d97706">+1000 xu</text>
+  </g>
+  <!-- sparkles -->
+  <path d="M160 70l4 10 10 4-10 4-4 10-4-10-10-4 10-4z" fill="#fde047"/>
+  <path d="M420 100l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#facc15"/>
+  <path d="M540 240l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#fde047"/>
+</svg>

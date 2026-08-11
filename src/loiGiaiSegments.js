@@ -3,13 +3,13 @@
 /** Khối lời giải có dạng: \{ Lời giải: ... \} (có thể nhiều dòng). */
 export const LOI_GIAI_BLOCK_REGEX = /\\\{\s*Lời\s*giải\s*:\s*([\s\S]*?)\\\}/gi;
 
-/** (Giữ tương thích) Dòng bắt đầu lời giải kiểu cũ: \Lời giải: ... */
-export const LOI_GIAI_LINE_REGEX = /^\s*\\?Lời\s*giải\s*:\s*(.*)$/i;
+/** (Giữ tương thích) Dòng bắt đầu lời giải: Lời giải / Lời giải: / \Lời giải: */
+export const LOI_GIAI_LINE_REGEX = /^\s*\\?Lời\s*giải(?:\s*[:.\-—]\s*(.*))?$/i;
 
 /** Bỏ dòng nhãn "Lời giải:" thừa (tránh khung lồng nhau). */
 export function stripLoiGiaiPrefix(text) {
   return String(text ?? '')
-    .replace(/^\s*\\?Lời\s*giải\s*:\s*/i, '')
+    .replace(/^\s*\\?Lời\s*giải\s*[:.\-—]?\s*/i, '')
     .trim();
 }
 

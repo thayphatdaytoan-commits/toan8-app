@@ -3,6 +3,8 @@
  * Đúng–sai (mỗi câu nhóm): 1 ý đúng 0,1 · 2 ý 0,25 · 3 ý 0,5 · 4 ý 1 · sai hoặc không chọn 0 (theo thang chuẩn 4 mệnh đề).
  */
 
+import { fillBlanksAnswerOk, normalizeFillBlanksQuestion, normalizeMcqCorrectIndex } from './practiceQuestionTypes';
+
 export const DEFAULT_PART_POINTS = {
   points_mc: 4,
   points_tf: 2,
@@ -10,15 +12,20 @@ export const DEFAULT_PART_POINTS = {
   points_essay: 2,
 };
 
-function normalizeShortAnswerText(s) {
+/** Chuẩn hoá TL ngắn: bỏ khoảng trắng, không phân biệt hoa thường. */
+export function normalizeShortAnswerText(s) {
   return String(s || '')
     .trim()
     .toLowerCase()
-    .replace(/\s+/g, ' ')
+    .replace(/\u2212/g, '-')
+    .replace(/[\u200B\u200C\u200D\uFEFF\u00a0]/g, '')
+    .replace(/[，]/g, ',')
+    .replace(/[；]/g, ';')
+    .replace(/\s+/g, '')
     .replace(/,/g, '.');
 }
 
-function shortAnswerIsCorrect(userInput, shortCorrect) {
+export function shortAnswerIsCorrect(userInput, shortCorrect) {
   const u = normalizeShortAnswerText(userInput);
   if (!u) return false;
   const variants = String(shortCorrect || '')
@@ -70,10 +77,21 @@ function legacyEqualWeightScore(quiz, answers) {
     const t = q.type || 'multiple_choice';
     if (t === 'multiple_choice') {
       weight += 1;
-      if (answers[q.id] === q.correctAnswer) earned += 1;
+      const optsLen = Array.isArray(q.options) ? q.options.length : 4;
+      if (
+        normalizeMcqCorrectIndex(answers[q.id], optsLen) ===
+        normalizeMcqCorrectIndex(q.correctAnswer, optsLen)
+      ) {
+        earned += 1;
+      }
     } else if (t === 'short_answer') {
       weight += 1;
       if (shortAnswerIsCorrect(answers[q.id], q.shortCorrect)) earned += 1;
+    } else if (t === 'fill_blanks') {
+      weight += 1;
+      const obj = answers[q.id];
+      const { blanks } = normalizeFillBlanksQuestion(q);
+      if (obj && typeof obj === 'object' && fillBlanksAnswerOk(blanks, obj)) earned += 1;
     } else if (t === 'true_false_group') {
       const items = q.tfItems || [];
       const sel = answers[q.id];
@@ -102,7 +120,7 @@ export function computeAutoGradedScore(quiz, answers) {
 
   const mcQs = qs.filter((q) => (q.type || 'multiple_choice') === 'multiple_choice');
   const tfQs = qs.filter((q) => q.type === 'true_false_group');
-  const shortQs = qs.filter((q) => q.type === 'short_answer');
+  const shortQs = qs.filter((q) => q.type === 'short_answer' || q.type === 'fill_blanks');
 
   const useMc = mcQs.length > 0;
   const useTf = tfQs.length > 0;
@@ -119,7 +137,13 @@ export function computeAutoGradedScore(quiz, answers) {
   if (useMc) {
     let mcCorrect = 0;
     for (const q of mcQs) {
-      if (answers[q.id] === q.correctAnswer) mcCorrect += 1;
+      const optsLen = Array.isArray(q.options) ? q.options.length : 4;
+      if (
+        normalizeMcqCorrectIndex(answers[q.id], optsLen) ===
+        normalizeMcqCorrectIndex(q.correctAnswer, optsLen)
+      ) {
+        mcCorrect += 1;
+      }
     }
     mcRaw = (mcCorrect / mcQs.length) * parts.points_mc;
   }
@@ -144,7 +168,13 @@ export function computeAutoGradedScore(quiz, answers) {
   if (useShort) {
     let shortCorrect = 0;
     for (const q of shortQs) {
-      if (shortAnswerIsCorrect(answers[q.id], q.shortCorrect)) shortCorrect += 1;
+      if (q.type === 'fill_blanks') {
+        const obj = answers[q.id];
+        const { blanks } = normalizeFillBlanksQuestion(q);
+        if (obj && typeof obj === 'object' && fillBlanksAnswerOk(blanks, obj)) shortCorrect += 1;
+      } else if (shortAnswerIsCorrect(answers[q.id], q.shortCorrect)) {
+        shortCorrect += 1;
+      }
     }
     shortRaw = (shortCorrect / shortQs.length) * parts.points_short;
   }

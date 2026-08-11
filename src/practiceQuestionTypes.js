@@ -255,38 +255,153 @@ export function fillBlanksAnswerOk(blanks, userAnswer) {
   });
 }
 
+/**
+ * Lấy đáp án ngắn từ lời giải khi import để "Đáp án:" sau dòng "Lời giải"
+ * (correctAnswer bị trống nhưng explanation vẫn có "Đáp án: -1" / "Trả lời: …").
+ */
+export function extractPracticeKeyAnswerFromText(raw) {
+  const text = String(raw || '').replace(/\r\n/g, '\n');
+  if (!text.trim()) return '';
+  const re =
+    /(?:^|\n)\s*(?:✓\s*)?(?:đáp\s*án|dap\s*an|đáp\s*số|dap\s*so|kết\s*quả|ket\s*qua|trả\s*lời|tra\s*loi)\s*[:：]\s*(.+?)(?:\n|$)/gi;
+  let m;
+  let last = '';
+  while ((m = re.exec(text)) != null) {
+    const v = String(m[1] || '')
+      .replace(/^[*_~\s]+|[*_~\s]+$/g, '')
+      .trim();
+    if (!v) continue;
+    // Bỏ qua dòng kiểu "Đáp án: B" khi chỉ là chữ A–D đơn (MCQ) — caller tự lọc
+    last = v;
+    // Ưu tiên dòng đầu tiên có nội dung
+    break;
+  }
+  return last;
+}
+
+function inputAnswerPartsHaveCorrect(parts) {
+  return (Array.isArray(parts) ? parts : []).some((p) => String(p?.correctAnswer || '').trim());
+}
+
+/** Chuẩn hóa đáp án nhập (plain / LaTeX) để so khớp với đáp án đề. */
+export function normalizeMathAnswerForCompare(raw) {
+  let t = String(raw ?? '')
+    .trim()
+    .replace(/[\u200B\u200C\u200D\uFEFF]/g, '');
+  if (!t) return '';
+
+  // Bỏ bao $$...$$ / $...$ / \(...\) / \[...\] (lặp vài vòng nếu dính nhiều khối)
+  for (let i = 0; i < 4; i += 1) {
+    const next = t
+      .replace(/^\$\$([\s\S]*)\$\$$/u, '$1')
+      .replace(/^\$([\s\S]*)\$$/u, '$1')
+      .replace(/^\\\(([\s\S]*)\\\)$/u, '$1')
+      .replace(/^\\\[([\s\S]*)\\\]$/u, '$1')
+      .trim();
+    if (next === t) break;
+    t = next;
+  }
+
+  // Gộp các khối $...$ liền kề (học sinh bấm nhiều phím công thức)
+  t = t.replace(/\$\s*\$/g, '');
+
+  t = t
+    .replace(/²/g, '^2')
+    .replace(/³/g, '^3')
+    .replace(/√/g, 'sqrt')
+    .replace(/π/gi, 'pi')
+    .replace(/·/g, '*')
+    .replace(/×/g, '*')
+    .replace(/÷/g, '/');
+
+  // Bỏ toàn bộ $ còn sót (nhiều khối công thức ghép)
+  t = t.replace(/\$/g, '');
+
+  t = t
+    .replace(/\\dfrac\s*/gi, '\\frac')
+    .replace(/\\frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}/g, '$1/$2')
+    .replace(/\\sqrt\s*\[([^\]]*)\]\s*\{([^{}]*)\}/g, 'root($1,$2)')
+    .replace(/\\sqrt\s*\{([^{}]*)\}/g, 'sqrt($1)')
+    .replace(/\\left/g, '')
+    .replace(/\\right/g, '')
+    .replace(/\\cdot/gi, '*')
+    .replace(/\\times/gi, '*')
+    .replace(/\\div/gi, '/')
+    .replace(/\\pm/gi, '±')
+    .replace(/\\mp/gi, '∓')
+    .replace(/\\leq?|\\le\b/gi, '<=')
+    .replace(/\\geq?|\\ge\b/gi, '>=')
+    .replace(/\\neq?|\\ne\b/gi, '!=')
+    .replace(/\\approx/gi, '≈')
+    .replace(/\\infty/gi, 'inf')
+    .replace(/\\pi\b/gi, 'pi')
+    .replace(/\\alpha\b/gi, 'alpha')
+    .replace(/\\beta\b/gi, 'beta')
+    .replace(/\\gamma\b/gi, 'gamma')
+    .replace(/\\theta\b/gi, 'theta')
+    .replace(/\\Delta\b/g, 'delta')
+    .replace(/\\delta\b/gi, 'delta')
+    .replace(/\^{([^{}]+)}/g, '^$1')
+    .replace(/_{([^{}]+)}/g, '_$1')
+    .replace(/[{}]/g, '')
+    .replace(/\\\\/g, '')
+    .replace(/\\/g, '');
+
+  t = t
+    .toLowerCase()
+    .replace(/[，]/g, ',')
+    .replace(/[；]/g, ';')
+    .replace(/\s+/g, '')
+    .replace(/,+/g, ',')
+    .replace(/;+/g, ';');
+
+  // Chỉ bỏ một cặp ngoặc bao ngoài nếu khớp cân bằng (vd "(2;-3)" ↔ "2;-3")
+  if (t.length >= 2) {
+    const open = t[0];
+    const close = t[t.length - 1];
+    const pair = { '(': ')', '[': ']', '{': '}' };
+    if (pair[open] === close) {
+      let depth = 0;
+      let balanced = true;
+      for (let i = 0; i < t.length; i += 1) {
+        if (t[i] === open) depth += 1;
+        else if (t[i] === close) depth -= 1;
+        if (depth === 0 && i < t.length - 1) {
+          balanced = false;
+          break;
+        }
+        if (depth < 0) {
+          balanced = false;
+          break;
+        }
+      }
+      if (balanced && depth === 0) t = t.slice(1, -1);
+    }
+  }
+
+  return t;
+}
+
 export function inputAnswerLooseOk(rawCorrect, rawUser) {
   const u0 = (rawUser ?? '').toString().trim();
   if (!u0) return false;
 
-  const normalizeLoose = (s) =>
-    (s ?? '')
-      .toString()
-      .trim()
-      .toLowerCase()
-      .replace(/[\u200B\u200C\u200D\uFEFF]/g, '')
-      .replace(/[，]/g, ',')
-      .replace(/[；]/g, ';')
-      .replace(/\s+/g, '')
-      .replace(/^[\(\[\{]+/, '')
-      .replace(/[\)\]\}]+$/, '')
-      .replace(/,+/g, ',')
-      .replace(/;+?/g, ';');
-
-  const u = normalizeLoose(u0);
+  const u = normalizeMathAnswerForCompare(u0);
   const parts = (rawCorrect ?? '')
     .toString()
     .split(/[|;]/g)
     .map((x) => x.trim())
     .filter(Boolean);
   if (!parts.length) return false;
-  const uNum = Number(u0.replace(',', '.'));
-  const uIsNum = Number.isFinite(uNum);
+
+  const uNum = Number(u0.replace(/\$/g, '').replace(',', '.'));
+  const uIsNum = Number.isFinite(uNum) && /^-?\d+([.,]\d+)?$/.test(u0.replace(/\$/g, '').trim());
+
   for (const p of parts) {
     const p0 = p.toString().trim();
     if (!p0) continue;
-    if (normalizeLoose(p0) === u) return true;
-    const pNum = Number(p0.replace(',', '.'));
+    if (normalizeMathAnswerForCompare(p0) === u) return true;
+    const pNum = Number(p0.replace(/\$/g, '').replace(',', '.'));
     if (uIsNum && Number.isFinite(pNum) && Math.abs(uNum - pNum) <= 1e-9) return true;
   }
   return false;
@@ -403,10 +518,20 @@ export function scorePracticeQuestion(q, userAnswer) {
     return expected >= 0 && got >= 0 && expected === got;
   }
   if (t === 'input' || t === 'short_answer') {
-    const parts = normalizeInputAnswerParts({
+    let correctAnswer = q?.correctAnswer ?? q?.shortCorrect;
+    let parts = normalizeInputAnswerParts({
       ...q,
-      correctAnswer: q?.correctAnswer ?? q?.shortCorrect,
+      correctAnswer,
     });
+    if (!inputAnswerPartsHaveCorrect(parts)) {
+      const recovered =
+        extractPracticeKeyAnswerFromText(q?.explanation) ||
+        extractPracticeKeyAnswerFromText(q?.question);
+      if (recovered) {
+        correctAnswer = recovered;
+        parts = normalizeInputAnswerParts({ correctAnswer: recovered });
+      }
+    }
     return inputPartsAnswerOk(parts, userAnswer);
   }
   if (t === 'true_false') {
@@ -536,10 +661,27 @@ export function normalizePracticeQuestion(p, index = 0) {
     };
   }
   if (type === 'input') {
-    const answerParts = normalizeInputAnswerParts(p);
+    let correctAnswer = p?.correctAnswer ?? p?.shortCorrect;
+    let answerParts = normalizeInputAnswerParts({
+      ...p,
+      correctAnswer,
+    });
+    if (!inputAnswerPartsHaveCorrect(answerParts)) {
+      const recovered =
+        extractPracticeKeyAnswerFromText(p?.explanation) ||
+        extractPracticeKeyAnswerFromText(p?.question) ||
+        extractPracticeKeyAnswerFromText(p?.content);
+      if (recovered) {
+        correctAnswer = recovered;
+        answerParts = normalizeInputAnswerParts({
+          correctAnswer: recovered,
+          answerPlaceholder: p?.answerPlaceholder,
+        });
+      }
+    }
     return {
       ...base,
-      correctAnswer: p?.correctAnswer,
+      correctAnswer,
       answerPlaceholder: (p?.answerPlaceholder ?? '').toString(),
       answerParts,
     };

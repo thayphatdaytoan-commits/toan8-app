@@ -1,6 +1,7 @@
 /* eslint-disable */
 
-import { parseFillBlanksCorrectRaw } from './practiceQuestionTypes';
+import { parseFillBlanksCorrectRaw, extractPracticeKeyAnswerFromText } from './practiceQuestionTypes';
+import { parseLessonSummaryImportText } from './lessonMindMap';
 
 /**
  * Chuẩn import TXT / Word (text trích xuất) bài giảng — thân thiện SEO & AI.
@@ -26,11 +27,13 @@ import { parseFillBlanksCorrectRaw } from './practiceQuestionTypes';
  *       trong khối đó) → parser gom vào theory_core, không đẩy xuống “Các dạng toán”.
  * - Các dạng toán + ví dụ: Dạng 1:, … rồi Ví dụ 1:, Câu a … Câu z (hoặc Câu 1, Câu 2, …), Lời giải: …
  * - Tiêu đề dòng đơn: BÀI TẬP TỰ LUYỆN / Bài tập tự luyện → toàn bộ phía sau (đến mục Tài liệu) → tab Bài tập.
+ * - Tiêu đề: TÓM TẮT BÀI HỌC / TÓM TẮT BÀI GIẢNG → sơ đồ tóm tắt (TITLE:/ROOT:/danh sách thụt đầu dòng) → content.mindMap.
  * - Tiêu đề: TÀI LIỆU PDF / LINK PDF → dòng URL kế tiếp (hoặc cùng dòng sau :) → @pdf_url nếu chưa có.
  *
- * Bài tập (MCQ): Câu 1: ... / A. ... / B. ... / Đáp án: A / (tuỳ chọn) Gợi ý hướng dẫn: ... / Lời giải: ...
+ * Bài tập (MCQ): Câu 1: ... / A–D (mỗi dòng hoặc cả 4 cùng một hàng) / Đáp án: B  hoặc  Lời giải → "Chọn B"  hoặc phương án đúng gạch chân (__A.__ / Word underline).
  * Bài tập (nhập đáp án): có Đáp án: nhưng không có A/B/C/D → type input.
- * Còn lại → type text (hiển thị + công thức $...$).
+ * Bài tập đúng/sai nhóm: a) … b) … + Lời giải dạng "a) Đúng: …" / "b) Sai: …" → true_false_group.
+ * Không còn dạng tự luận (text) — mọi câu cần Đáp án / Chọn A–D / gạch chân / [đúng sai] / [sắp xếp] / [kéo thả] / [điền chỗ trống].
  *
  * JSON sau import có thể thêm thủ công khóa "theory_core" (chuỗi, có $...$) → mục “Lý thuyết trọng tâm”
  * trên tab học sinh; nếu không có thì dùng ô Tóm tắt / @seo_description trên Admin.
@@ -47,6 +50,9 @@ const THEORY_HEADER =
 
 const PDF_SECTION_HEADER =
   /^(TÀI\s*LIỆU\s*PDF|LINK\s*PDF|TÀI\s*LIỆU\s*THAM\s*KHẢO|TÀI\s*LIỆU)(\s*[:：]?\s*.*)?$/i;
+
+const SUMMARY_HEADER =
+  /^(TÓM\s*TẮT\s*BÀI\s*HỌC|TÓM\s*TẮT\s*BÀI\s*GIẢNG|SƠ\s*ĐỒ\s*TÓM\s*TẮT|SƠ\s*ĐỒ\s*TƯ\s*DUY)(\s*[:：]?\s*.*)?$/i;
 
 const VI_META_PATTERNS = [
   [/^(chương|chapter)\s*[:：]\s*(.+)$/i, 'chapter'],
@@ -69,7 +75,7 @@ function consumeVietnameseMetaLines(lines, meta) {
   let changed = true;
   while (changed && lines.length > 0) {
     changed = false;
-    const L = lines[0];
+    const L = String(lines[0] || '').trim();
     for (const [re, key] of VI_META_PATTERNS) {
       const m = L.match(re);
       if (m) {
@@ -85,10 +91,10 @@ function consumeVietnameseMetaLines(lines, meta) {
 
 function scoopLeadingStandalonePdfUrl(lines, meta) {
   while (lines.length > 0) {
-    const L = lines[0];
+    const L = String(lines[0] || '').trim();
     if (meta.pdf_url && String(meta.pdf_url).trim()) break;
     if (/^https?:\/\/\S+$/i.test(L)) {
-      const u = L.trim();
+      const u = L;
       if (/\.pdf(\?|$)/i.test(u) || /drive\.google\.com|docs\.google\.com|dropbox\.com/i.test(u)) {
         meta.pdf_url = u;
         lines.shift();
@@ -115,6 +121,7 @@ function splitLessonBodySections(lines) {
   let hasExamplesHeader = false;
   let hasPracticeHeader = false;
   let hasPdfHeader = false;
+  let hasSummaryHeader = false;
   for (let i = 0; i < lines.length; i++) {
     const L = normalizeHeaderLine(lines[i]);
     if (THEORY_HEADER.test(L)) {
@@ -129,6 +136,10 @@ function splitLessonBodySections(lines) {
       hits.push({ k: 'p', i });
       hasPracticeHeader = true;
     }
+    if (SUMMARY_HEADER.test(L)) {
+      hits.push({ k: 's', i });
+      hasSummaryHeader = true;
+    }
     if (PDF_SECTION_HEADER.test(L)) {
       hits.push({ k: 'd', i });
       hasPdfHeader = true;
@@ -139,6 +150,7 @@ function splitLessonBodySections(lines) {
   const theory = [];
   const examples = [];
   const practice = [];
+  const summary = [];
   const pdfSection = [];
   let mode = 'theory';
   let hi = 0;
@@ -150,12 +162,14 @@ function splitLessonBodySections(lines) {
       if (kind === 't') mode = 'theory';
       else if (kind === 'e') mode = 'examples';
       else if (kind === 'p') mode = 'practice';
+      else if (kind === 's') mode = 'summary';
       else if (kind === 'd') mode = 'pdf';
       continue;
     }
     if (mode === 'theory') theory.push(lines[idx]);
     else if (mode === 'examples') examples.push(lines[idx]);
     else if (mode === 'practice') practice.push(lines[idx]);
+    else if (mode === 'summary') summary.push(lines[idx]);
     else pdfSection.push(lines[idx]);
   }
 
@@ -163,10 +177,12 @@ function splitLessonBodySections(lines) {
     theory,
     examples,
     practice,
+    summary,
     pdfSection,
     hasTheoryHeader,
     hasExamplesHeader,
     hasPracticeHeader,
+    hasSummaryHeader,
     hasPdfHeader,
   };
 }
@@ -197,7 +213,7 @@ function parseTheoryExamples(theoryLines) {
   let curItem = null;
 
   for (const line of theoryLines) {
-    if (line.match(/^(Dạng\s*\d+|Ví\s*dụ\s*\d+|Bài\s*mới)[:\-]?\s*(.*)$/i)) {
+    if (line.match(/^((?:Dạng|Dang)\s*\d*|Ví\s*dụ(?:\s*\d+(?:\.\d+)*)?|Bài\s*mới)\s*[:.\-—]?\s*(.*)$/i)) {
       if (curItem && curEx) curEx.items.push(curItem);
       if (curEx) examples.push(curEx);
       curEx = {
@@ -212,7 +228,7 @@ function parseTheoryExamples(theoryLines) {
     } else if (line.match(/^(Câu\s*\d+|Câu\s*[a-z]|Bài\s*\d+|Hỏi)[:\-]?\s*(.*)$/i)) {
       if (curItem && curEx) curEx.items.push(curItem);
       curItem = { q: line, steps: [] };
-    } else if (line.match(/^(Hướng dẫn|Lời giải|Giải)[:\-]?\s*(.*)$/i)) {
+    } else if (line.match(/^(Hướng dẫn|Lời giải|Giải)\s*[:.\-—]?\s*(.*)$/i)) {
       if (!curItem && curEx) curItem = { q: '', steps: [] };
       if (curItem) curItem.steps.push(line);
     } else {
@@ -262,21 +278,18 @@ function examplesArrayToCoreText(arr) {
   return s ? s + '\n' : '';
 }
 
+const PRACTICE_QUESTION_START = /^Câu\s*\d+\s*[:：\.]/i;
+
 function splitPracticeBlocks(lines) {
   const blocks = [];
   let cur = [];
   for (const line of lines) {
-    // Quy tắc mới: không bắt buộc "Câu 1,2,3". Chỉ cần 1 dòng bắt đầu câu:
-    // - Marker ký tự đặc biệt "§" ở đầu dòng (không hiển thị ra nội dung)
-    // - hoặc marker "===" / "---" để ngăn câu
     const t = String(line || '').trim();
     const isSeparator = /^(-{3,}|={3,}|\*{3,})$/.test(t);
-    const isNewQ = /^§/.test(t);
+    const isNewQ = /^§/.test(t) || PRACTICE_QUESTION_START.test(t);
     const isMetaOnlyCur =
       cur.length > 0 && cur.every((x) => /^(?:ID|Id|id)\s*[:：]/.test(String(x || '').trim()));
 
-    // Nếu block hiện tại chỉ có "ID: ..." và dòng hiện tại là bắt đầu câu → KHÔNG tách block,
-    // mà gắn ID vào cùng câu để tránh tạo "câu rỗng" chỉ có ID.
     if (isNewQ && isMetaOnlyCur) {
       cur.push(line);
       continue;
@@ -302,8 +315,12 @@ function extractPracticeExplanation(remainder) {
 
 const PRACTICE_HINT_LINE_RE =
   /^(gợi\s*ý(?:\s*hướng\s*dẫn)?|hướng\s*dẫn(?:\s*gợi\s*ý)?|huong\s*dan(?:\s*goi\s*y)?|goi\s*y(?:\s*huong\s*dan)?)\s*[:\-]\s*(.*)$/i;
+/** "Lời giải" / "Lời giải:" / "Lời giải Chọn B" — Word thường bỏ dấu : */
 const PRACTICE_EXPL_LINE_RE =
-  /^(lời\s*giải|loi\s*giai|giải\s*thích|giai\s*thich|giải|giai)\s*[:\-]\s*(.*)$/i;
+  /^(lời\s*giải|loi\s*giai|giải\s*thích|giai\s*thich|hướng\s*dẫn\s*giải|huong\s*dan\s*giai)(?:\s*[:：\-–—\.]\s*|\s+)(.*)$/i;
+const PRACTICE_EXPL_BARE_RE =
+  /^(lời\s*giải|loi\s*giai|giải\s*thích|giai\s*thich)$/i;
+const PRACTICE_CHOOSE_ANS_RE = /(?:^|\n)\s*chọn\s*([A-D])\b/i;
 
 /** Tách placeholder / gợi ý (trước nộp) / lời giải (sau nộp) phía sau dòng Đáp án. */
 function parsePracticeMetaAfterAnswer(afterLines) {
@@ -333,6 +350,10 @@ function parsePracticeMetaAfterAnswer(afterLines) {
     if (hm) {
       mode = 'hint';
       if ((hm[2] || '').trim()) hintLines.push(hm[2]);
+      continue;
+    }
+    if (PRACTICE_EXPL_BARE_RE.test(t)) {
+      mode = 'explanation';
       continue;
     }
     const em = t.match(PRACTICE_EXPL_LINE_RE);
@@ -369,12 +390,261 @@ function extractPracticePlaceholder(raw) {
 
 function detectPracticeBlockType(text) {
   const s = String(text || '').toLowerCase();
+  if (
+    /\[đúng\s*sai\s*(nhóm|a[\-–—]?d|a\s*[-–—]\s*d)\]|loại\s*[:：]\s*đúng\s*sai\s*(nhóm|a[\-–—]?d)/.test(s) ||
+    /true\s*false\s*group/.test(s)
+  ) {
+    return 'true_false_group';
+  }
   if (/\[đúng\s*sai\]|loại\s*[:：]\s*đúng\s*sai|true\s*false/.test(s)) return 'true_false';
   if (/\[sắp\s*xếp\]|loại\s*[:：]\s*sắp\s*xếp|ordering/.test(s)) return 'ordering';
   if (/\[kéo\s*thả\]|loại\s*[:：]\s*kéo\s*thả|drag\s*drop/.test(s)) return 'drag_drop';
   if (/\[điền\s*chỗ\s*trống\]|\[điền\]|\[cloze\]|loại\s*[:：]\s*điền\s*chỗ\s*trống|fill\s*blank/.test(s))
     return 'fill_blanks';
   return null;
+}
+
+function optionIndexByLetter(letter) {
+  return { A: 0, B: 1, C: 2, D: 3 }[String(letter || '').toUpperCase()] ?? null;
+}
+
+function parseBoolishPractice(s) {
+  const t = String(s || '')
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+  if (/^(dung|true|t|yes|1|co|d)$/.test(t)) return true;
+  if (/^(sai|false|f|no|0|khong|ko|s)$/.test(t)) return false;
+  return null;
+}
+
+/**
+ * Vị trí nhãn A–D trên một dòng (mỗi phương án 1 dòng hoặc cả 4 cùng hàng).
+ * Nhận gạch chân Word: __C.__ / __C__. / __C.__
+ */
+function findMcqOptionStarts(line) {
+  const s = String(line ?? '');
+  const starts = [];
+  // Sau đầu dòng / khoảng trắng / kết thúc công thức $ ) ] }
+  const re =
+    /(?:^|(?<=[\s\t])|(?<=[\$\)\]\}]))(?:__\s*([A-D])\s*[\.\)]\s*__|__\s*([A-D])\s*__\s*[\.\)]|__\s*([A-D])\s*[\.\)]|([A-D])\s*[\.\)])/gi;
+  let m;
+  while ((m = re.exec(s)) !== null) {
+    const letter = String(m[1] || m[2] || m[3] || m[4] || '').toUpperCase();
+    if (!letter) continue;
+    const underlined = Boolean(m[1] || m[2] || m[3]);
+    starts.push({
+      index: m.index,
+      endLabel: m.index + m[0].length,
+      letter,
+      underlined,
+    });
+  }
+  return starts;
+}
+
+/** Tách mọi phương án A–D trên một dòng (hỗ trợ 4 đáp án cùng hàng). */
+function extractMcqOptionsFromLine(line) {
+  const s = String(line ?? '');
+  const starts = findMcqOptionStarts(s);
+  if (!starts.length) return [];
+
+  const out = [];
+  for (let i = 0; i < starts.length; i += 1) {
+    const cur = starts[i];
+    const nextStart = i + 1 < starts.length ? starts[i + 1].index : s.length;
+    let text = s.slice(cur.endLabel, nextStart).trim();
+    text = text.replace(/^__\s*/, '').replace(/\s*__$/, '').trim();
+    out.push({
+      letter: cur.letter,
+      text,
+      underlined: cur.underlined,
+      index: optionIndexByLetter(cur.letter),
+    });
+  }
+  return out;
+}
+
+/** Dòng chỉ gồm phương án A–D (1 dòng hoặc cả hàng A–D). */
+function isMcqOptionsLine(line) {
+  const t = String(line ?? '').trim();
+  if (!t) return false;
+  const starts = findMcqOptionStarts(t);
+  if (!starts.length) return false;
+  return starts[0].index === 0;
+}
+
+/** Dòng phương án A–D đơn (tương thích cũ); nhận gạch chân (__A.__ / __A. nội dung__). */
+function parseMcqOptionLine(line) {
+  const opts = extractMcqOptionsFromLine(line);
+  if (opts.length === 1 && isMcqOptionsLine(line)) return opts[0];
+  // Nhiều phương án trên 1 dòng → không coi là “một” option line (dùng extractMcqOptionsFromLine)
+  if (opts.length > 1 && isMcqOptionsLine(line)) return opts[0];
+  return null;
+}
+
+function detectChooseLetter(text) {
+  const m = String(text || '').match(PRACTICE_CHOOSE_ANS_RE);
+  if (!m) return null;
+  return optionIndexByLetter(m[1]);
+}
+
+function isLikelyTfAnswerOnlyRest(rest) {
+  const r = String(rest || '').trim();
+  if (!r) return true;
+  const first = r.split(/[\s,:：\-–—]+/)[0] || '';
+  return parseBoolishPractice(first) !== null;
+}
+
+/** Tách mệnh đề a–d từ đề + đáp án a) Đúng: / Sai: trong lời giải. */
+function parsePracticeTfGroup(cleanedStemLines, explanationText, correctRaw) {
+  const items = [];
+  const byKey = {};
+  const stemKeep = [];
+
+  for (const l of cleanedStemLines) {
+    const t = String(l ?? '').trim();
+    if (/^\[(đúng\s*sai|đúng\s*sai\s*(nhóm|a[\-–—]?d))\]/i.test(t) || /^loại\s*[:：]/i.test(t)) continue;
+    const m = t.match(/^([a-d])\s*[\).:\-]\s*(.*)$/i);
+    if (m) {
+      const key = m[1].toLowerCase();
+      const rest = (m[2] || '').trim();
+      if (isLikelyTfAnswerOnlyRest(rest) && !byKey[key]) {
+        const first = rest.split(/[\s,:：\-–—]+/)[0] || '';
+        const b = parseBoolishPractice(first);
+        if (b !== null) byKey[key] = { key, text: '', correct: b };
+        continue;
+      }
+      if (!byKey[key] || !(byKey[key].text || '').trim()) {
+        byKey[key] = { key, text: rest, correct: byKey[key]?.correct ?? null };
+        items.push(byKey[key]);
+      }
+      continue;
+    }
+    stemKeep.push(l);
+  }
+
+  const expl = String(explanationText || '');
+  const explLines = expl.split('\n');
+  const explKeep = [];
+  for (const ln of explLines) {
+    const t = String(ln ?? '').trim();
+    const m = t.match(/^([a-d])\s*[\).:\-]\s*(.*)$/i);
+    if (m) {
+      const key = m[1].toLowerCase();
+      const rest = (m[2] || '').trim();
+      const firstTok = rest.split(/[\s,:：\-–—]+/)[0] || '';
+      const b = parseBoolishPractice(firstTok);
+      if (b !== null) {
+        if (!byKey[key]) {
+          byKey[key] = { key, text: '', correct: b };
+          items.push(byKey[key]);
+        } else {
+          byKey[key].correct = b;
+        }
+        explKeep.push(ln);
+        continue;
+      }
+    }
+    explKeep.push(ln);
+  }
+
+  // Đáp án: a Đ; b S; c Đ; d S
+  if (correctRaw) {
+    const pairs = String(correctRaw)
+      .replace(/[，]/g, ',')
+      .replace(/\b([a-d])\s*[\).]/gi, '$1:')
+      .split(/[;|]/g)
+      .map((x) => x.trim())
+      .filter(Boolean);
+    for (const part of pairs) {
+      const m = part.match(/^([a-d])\s*[:\-]\s*(.+)$/i) || part.match(/^([a-d])\s+(.+)$/i);
+      if (!m) continue;
+      const key = m[1].toLowerCase();
+      const b = parseBoolishPractice((m[2] || '').trim().split(/\s+/)[0]);
+      if (b === null) continue;
+      if (!byKey[key]) {
+        byKey[key] = { key, text: '', correct: b };
+        items.push(byKey[key]);
+      } else byKey[key].correct = b;
+    }
+  }
+
+  const tfItems = items
+    .filter((it) => it && ((it.text || '').trim() || typeof it.correct === 'boolean'))
+    .map((it) => ({
+      key: it.key,
+      text: (it.text || '').trim(),
+      correct: typeof it.correct === 'boolean' ? it.correct : true,
+    }))
+    .sort((a, b) => String(a.key).localeCompare(String(b.key), 'en'));
+
+  return {
+    question: stemKeep.join('\n').trim(),
+    tfItems,
+    explanation: explKeep.join('\n').replace(/\n{3,}/g, '\n\n').trim() || expl.trim(),
+  };
+}
+
+function splitPracticeBlockParts(full) {
+  const lines = String(full || '').split('\n');
+  const stemLines = [];
+  const afterLines = [];
+  let mode = 'stem';
+  let correctRaw = null;
+
+  for (const ln of lines) {
+    const t = String(ln ?? '').trim();
+    if (mode === 'stem') {
+      const da = t.match(
+        /^(?:đáp\s*án|dap\s*an|đáp\s*số|dap\s*so|kết\s*quả|ket\s*qua|trả\s*lời|tra\s*loi)\s*[:：]\s*(.+)$/i
+      );
+      if (da) {
+        correctRaw = (da[1] || '').trim();
+        mode = 'after';
+        continue;
+      }
+      if (PRACTICE_HINT_LINE_RE.test(t) || PRACTICE_EXPL_BARE_RE.test(t) || PRACTICE_EXPL_LINE_RE.test(t)) {
+        mode = 'after';
+        afterLines.push(ln);
+        continue;
+      }
+      // "Chọn B" đứng riêng (thường dưới Lời giải) — coi như phần sau đề
+      if (
+        /^chọn\s*[A-D]\b/i.test(t) &&
+        stemLines.some((x) => extractMcqOptionsFromLine(x).length >= 2 || parseMcqOptionLine(x))
+      ) {
+        mode = 'after';
+        afterLines.push(ln);
+        continue;
+      }
+      stemLines.push(ln);
+    } else {
+      afterLines.push(ln);
+    }
+  }
+
+  const meta = parsePracticeMetaAfterAnswer(afterLines);
+  // Nếu "Chọn B" nằm trong explanation / afterLines mà chưa có Đáp án
+  if (!correctRaw) {
+    const chooseIdx = detectChooseLetter(afterLines.join('\n')) ?? detectChooseLetter(meta.explanation);
+    if (chooseIdx != null) correctRaw = String.fromCharCode(65 + chooseIdx);
+  }
+  // "Lời giải" đứng trước "Đáp án: -1" → đáp án nằm trong afterLines/explanation
+  if (!correctRaw) {
+    const fromAfter =
+      extractPracticeKeyAnswerFromText(afterLines.join('\n')) ||
+      extractPracticeKeyAnswerFromText(meta.explanation);
+    if (fromAfter) correctRaw = fromAfter;
+  }
+  return {
+    stem: stemLines.join('\n').trim(),
+    correctRaw,
+    answerPlaceholder: meta.answerPlaceholder,
+    hint: meta.hint,
+    explanation: meta.explanation,
+  };
 }
 
 function parseOrderingItemsFromStem(lines) {
@@ -427,70 +697,121 @@ function parsePracticeBlock(blockLines, blockIndex) {
   const full = blockLines.join('\n').trim();
   if (!full) return null;
 
-  // ID ổn định (không phụ thuộc thứ tự) để xáo câu không ảnh hưởng "key"
-  const idMatch = full.match(/^(?:ID|Id|id)\s*[:：]\s*([^\n]+)\s*$/m);
-  const idRaw = idMatch ? idMatch[1].trim() : '';
-  const id = idRaw ? `pr_${idRaw}` : `p_${Date.now()}_${blockIndex}_${Math.random().toString(36).slice(2, 6)}`;
+  // ID từ số thứ tự "Câu N" — giữ thứ tự import, không cần dòng ID: riêng
+  const qNumMatch = full.match(/^Câu\s*(\d+)\s*[:：\.]/im);
+  const id = qNumMatch ? `q_${qNumMatch[1]}` : `q_${blockIndex + 1}`;
 
-  const daMatch = full.match(
-    /^(?:đáp\s*án|dap\s*an|đáp\s*số|dap\s*so|kết\s*quả|ket\s*qua|trả\s*lời|tra\s*loi)\s*[:：]\s*([^\n]+)/im
-  );
-  let stem = full;
-  let correctRaw = null;
-  let explanation = '';
-  let hint = '';
-  let answerPlaceholder = '';
-  if (daMatch) {
-    correctRaw = daMatch[1].trim();
-    stem = full.slice(0, daMatch.index).trim();
-    const afterDa = full.slice(daMatch.index + daMatch[0].length).trim();
-    const afterLines = afterDa.split('\n');
-    const meta = parsePracticeMetaAfterAnswer(afterLines);
-    answerPlaceholder = meta.answerPlaceholder;
-    hint = meta.hint;
-    explanation = meta.explanation;
+  const parts = splitPracticeBlockParts(full);
+  let correctRaw = parts.correctRaw;
+  let explanation = parts.explanation;
+  let hint = parts.hint;
+  let answerPlaceholder = parts.answerPlaceholder;
+  let stem = parts.stem || full;
+
+  // Fallback: Chọn A–D ở bất kỳ đâu trong khối (kể cả trước khi tách)
+  if (!correctRaw) {
+    const chooseIdx = detectChooseLetter(full);
+    if (chooseIdx != null) correctRaw = String.fromCharCode(65 + chooseIdx);
   }
 
   const stemLines = stem.split('\n');
+  let strippedQuestionPrefix = false;
   const cleanedStemLines = stemLines
     .map((l) => {
-      const t = String(l ?? '');
-      if (/^\s*§/.test(t)) return t.replace(/^\s*§+\s*/, '');
+      let t = String(l ?? '');
+      if (/^\s*§/.test(t)) t = t.replace(/^\s*§+\s*/, '');
+      if (!strippedQuestionPrefix && /^Câu\s*\d+[a-z]?\s*[:：\.]/i.test(t.trim())) {
+        strippedQuestionPrefix = true;
+        t = t.replace(/^(\s*)Câu\s*\d+[a-z]?\s*[:：\.]\s*/i, '$1');
+      }
       return t;
     })
-    .filter((l) => String(l ?? '').trim().length > 0);
-  const options = [];
+    .filter((l) => {
+      const t = String(l ?? '').trim();
+      return t.length > 0 && !/^(?:ID|Id|id)\s*[:：]/.test(t);
+    });
+
+  const parsedOpts = [];
+  let underlinedAns = -1;
   for (const l of cleanedStemLines) {
-    const m = l.match(/^([A-D])[\.\)]\s*(.+)$/i);
-    if (m) options.push(m[2].trim());
+    const opts = extractMcqOptionsFromLine(l);
+    // Chỉ lấy khi dòng là hàng phương án (bắt đầu bằng A–D), tránh dính chữ trong đề
+    if (!opts.length || !isMcqOptionsLine(l)) continue;
+    for (const opt of opts) {
+      if (!opt || opt.index == null) continue;
+      while (parsedOpts.length <= opt.index) parsedOpts.push('');
+      parsedOpts[opt.index] = opt.text;
+      if (opt.underlined) underlinedAns = opt.index;
+    }
+  }
+  // Thu thập phương án A→D theo thứ tự chữ cái đã xuất hiện
+  const mcqOptions = [];
+  for (let i = 0; i < 4; i += 1) {
+    if (typeof parsedOpts[i] === 'string') mcqOptions.push(parsedOpts[i]);
   }
 
-  const questionLines = cleanedStemLines.filter(
-    (l) => {
-      const t = l.trim();
-      return (
-        !/^[A-D][\.\)]\s*\S/i.test(t) &&
-        !/^(?:ID|Id|id)\s*[:：]/.test(t) &&
-        !/^\[(đúng\s*sai|sắp\s*xếp|kéo\s*thả|điền\s*chỗ\s*trống|điền)\]/i.test(t) &&
-        !/^loại\s*[:：]/i.test(t) &&
-        !/^(?:đoạn|doan)\s*[:：]/i.test(t) &&
-        !/^(?:Ô|O|Slot)\s*\d+\s*[:：\-]/i.test(t) &&
-        !/^(?:Lựa\s*chọn|Lua\s*chon|Choices?)\s*[:：\-]/i.test(t) &&
-        !/^(?:\d+[\.\)]|[-•*])\s+/.test(t)
-      );
-    }
-  );
+  const questionLines = cleanedStemLines.filter((l) => {
+    const t = l.trim();
+    return (
+      !isMcqOptionsLine(t) &&
+      !/^(?:ID|Id|id)\s*[:：]/.test(t) &&
+      !/^\[(đúng\s*sai|đúng\s*sai\s*(nhóm|a[\-–—]?d)|sắp\s*xếp|kéo\s*thả|điền\s*chỗ\s*trống|điền)\]/i.test(t) &&
+      !/^loại\s*[:：]/i.test(t) &&
+      !/^(?:đoạn|doan)\s*[:：]/i.test(t) &&
+      !/^(?:Ô|O|Slot)\s*\d+\s*[:：\-]/i.test(t) &&
+      !/^(?:Lựa\s*chọn|Lua\s*chon|Choices?)\s*[:：\-]/i.test(t) &&
+      !/^(?:\d+[\.\)]|[-•*])\s+/.test(t) &&
+      !/^([a-d])\s*[\).:\-]\s*/i.test(t)
+    );
+  });
   const question = questionLines.join('\n').trim() || cleanedStemLines.join('\n').trim() || stem;
 
   const explicitType = detectPracticeBlockType(full);
 
-  if (explicitType === 'true_false' && correctRaw) {
-    const tf = /^(sai|false|0|s)$/i.test(correctRaw.trim())
+  // Đúng/sai nhóm a–d (ảnh 3: a) Đúng: … / b) Sai: …)
+  const tfProbe = parsePracticeTfGroup(cleanedStemLines, explanation, correctRaw);
+  const looksLikeTfGroup =
+    explicitType === 'true_false_group' ||
+    (mcqOptions.length < 2 &&
+      tfProbe.tfItems.length >= 2 &&
+      (explicitType === 'true_false' ||
+        /(?:^|\n)\s*[a-d]\s*[\).:\-]\s*(đúng|sai)\b/i.test(`${explanation}\n${correctRaw || ''}`) ||
+        (tfProbe.tfItems.filter((it) => (it.text || '').trim()).length >= 2 &&
+          tfProbe.tfItems.some((it) => typeof it.correct === 'boolean'))));
+
+  if (looksLikeTfGroup && tfProbe.tfItems.length >= 2) {
+    const qTf = (tfProbe.question || questionLines.join('\n').trim() || question)
+      .replace(/^\[(đúng\s*sai(?:\s*(?:nhóm|a[\-–—]?d))?)\]\s*/i, '')
+      .trim();
+    return {
+      id,
+      type: 'true_false_group',
+      question: qTf,
+      tfItems: tfProbe.tfItems,
+      hint,
+      explanation: tfProbe.explanation || explanation,
+    };
+  }
+
+  if (explicitType === 'true_false' && (correctRaw || explanation)) {
+    let tfRaw = correctRaw;
+    if (!tfRaw) {
+      const m = String(explanation || '').match(/\b(đúng|sai|true|false)\b/i);
+      if (m) tfRaw = m[1];
+    }
+    const tf = /^(sai|false|0|s)$/i.test(String(tfRaw || '').trim())
       ? false
-      : /^(đúng|dung|true|1|d)$/i.test(correctRaw.trim())
+      : /^(đúng|dung|true|1|d)$/i.test(String(tfRaw || '').trim())
         ? true
         : true;
-    return { id, type: 'true_false', question, correctAnswer: tf, hint, explanation };
+    return {
+      id,
+      type: 'true_false',
+      question: questionLines.join('\n').trim() || question,
+      correctAnswer: tf,
+      hint,
+      explanation,
+    };
   }
 
   if (explicitType === 'ordering') {
@@ -540,19 +861,66 @@ function parsePracticeBlock(blockLines, blockIndex) {
     };
   }
 
-  if (options.length >= 2 && correctRaw) {
-    const letter = correctRaw.match(/^([A-D])/i);
-    const idxAns = letter ? letter[1].toUpperCase().charCodeAt(0) - 65 : -1;
-    if (idxAns >= 0 && idxAns < options.length) {
-      return { id, type: 'mcq', question, options, correctAnswer: idxAns, hint, explanation };
+  if (mcqOptions.length >= 2) {
+    let idxAns = -1;
+    if (correctRaw) {
+      const letter = String(correctRaw).match(/^([A-D])/i);
+      idxAns = letter ? letter[1].toUpperCase().charCodeAt(0) - 65 : -1;
+    }
+    if (idxAns < 0 && underlinedAns >= 0) idxAns = underlinedAns;
+    if (idxAns < 0) {
+      const chooseIdx = detectChooseLetter(explanation) ?? detectChooseLetter(full);
+      if (chooseIdx != null) idxAns = chooseIdx;
+    }
+    if (idxAns >= 0 && idxAns < mcqOptions.length) {
+      // Strip underline markers leftover in option texts
+      const cleanOpts = mcqOptions.map((o) =>
+        String(o || '')
+          .replace(/^__|__$/g, '')
+          .trim()
+      );
+      return {
+        id,
+        type: 'mcq',
+        question: questionLines.join('\n').trim() || question,
+        options: cleanOpts,
+        correctAnswer: idxAns,
+        hint,
+        explanation,
+      };
     }
   }
 
-  if (correctRaw && options.length === 0) {
+  if (correctRaw && mcqOptions.length === 0) {
     return { id, type: 'input', question, correctAnswer: correctRaw, answerPlaceholder, hint, explanation };
   }
 
-  return { id, type: 'text', question: full, explanation: '' };
+  // Không còn type "text" (tự luận): fallback → nhập đáp án (admin/AI nên bổ sung dòng Đáp án:)
+  let qOnly = (question || stem || full).trim();
+  let expl = explanation;
+  if (!expl) {
+    const lg = full.match(/(?:^|\n)(?:lời\s*giải|loi\s*giai)\s*[:：]?\s*([\s\S]*)$/i);
+    if (lg) {
+      expl = String(lg[1] || '').trim();
+      qOnly = full
+        .slice(0, lg.index)
+        .replace(/^Câu\s*\d+\s*[:：.]?\s*/i, '')
+        .trim() || qOnly;
+    }
+  }
+  const recovered =
+    extractPracticeKeyAnswerFromText(expl) ||
+    extractPracticeKeyAnswerFromText(full) ||
+    '';
+  return {
+    id,
+    type: 'input',
+    question: qOnly,
+    correctAnswer: recovered,
+    answerPlaceholder,
+    hint,
+    explanation: expl,
+  };
 }
 
 export function parsePracticeLines(practiceLines) {
@@ -567,6 +935,57 @@ export function parsePracticeLines(practiceLines) {
   return out;
 }
 
+/**
+ * Import riêng phần bài tập luyện tập (TXT/Word đã trích text).
+ * - Có tiêu đề «Bài tập tự luyện» → lấy khối đó
+ * - Không có tiêu đề → lấy từ dòng «Câu N» đầu tiên đến hết (sau meta)
+ */
+export function parsePracticeImportText(rawText) {
+  const parsed = parseLessonsFromText(rawText);
+  if (Array.isArray(parsed.practice) && parsed.practice.length > 0) {
+    return parsed.practice;
+  }
+
+  let lines = String(rawText || '')
+    .replace(/\r\n/g, '\n')
+    .replace(/\r/g, '\n')
+    .split('\n')
+    .map((l) => String(l || '').replace(/\s+$/u, ''))
+    .filter((l) => {
+      const t = l.trim();
+      return t.length > 0 && !/^\/\//.test(t);
+    });
+
+  const meta = {};
+  while (lines.length > 0) {
+    const m = String(lines[0] || '')
+      .trim()
+      .match(/^@(\w+)\s*:\s*(.*)$/i);
+    if (!m) break;
+    meta[m[1].toLowerCase()] = (m[2] ?? '').trim();
+    lines.shift();
+  }
+  consumeVietnameseMetaLines(lines, meta);
+  scoopLeadingStandalonePdfUrl(lines, meta);
+
+  const { theory, examples, practice } = splitLessonBodySections(lines);
+  let practiceLines = practice;
+  if (!practiceLines.length) {
+    const all = [...theory, ...examples];
+    const startIdx = all.findIndex((l) => {
+      const t = String(l || '').trim();
+      return (
+        /^Câu\s*\d+/i.test(t) ||
+        /^\s*§/.test(t) ||
+        /^(?:ID|Id|id)\s*[:：]/.test(t) ||
+        /^\[(đúng\s*sai|sắp\s*xếp|kéo\s*thả|điền)/i.test(t)
+      );
+    });
+    practiceLines = startIdx >= 0 ? all.slice(startIdx) : all;
+  }
+  return parsePracticeLines(practiceLines);
+}
+
 function splitKeywordsCsv(s) {
   return String(s || '')
     .split(/[,;|]/)
@@ -575,17 +994,23 @@ function splitKeywordsCsv(s) {
 }
 
 export function parseLessonsFromText(rawText) {
+  // Giữ thụt đầu dòng (cần cho mục Tóm tắt bài học); chỉ bỏ khoảng trắng cuối dòng.
   let lines = rawText
     .replace(/\r\n/g, '\n')
     .replace(/\r/g, '\n')
     .split('\n')
-    .map((l) => l.trim())
-    .filter((l) => l.length > 0 && !/^\s*\/\//.test(l));
+    .map((l) => String(l || '').replace(/\s+$/u, ''))
+    .filter((l) => {
+      const t = l.trim();
+      return t.length > 0 && !/^\/\//.test(t);
+    });
 
   const meta = {};
 
   while (lines.length > 0) {
-    const m = lines[0].match(/^@(\w+)\s*:\s*(.*)$/i);
+    const m = String(lines[0] || '')
+      .trim()
+      .match(/^@(\w+)\s*:\s*(.*)$/i);
     if (!m) break;
     const key = m[1].toLowerCase();
     const value = (m[2] ?? '').trim();
@@ -597,7 +1022,15 @@ export function parseLessonsFromText(rawText) {
   scoopLeadingStandalonePdfUrl(lines, meta);
   normalizeLessonImportMeta(meta);
 
-  const { theory, examples: examplesLines, practice, pdfSection, hasTheoryHeader, hasExamplesHeader } = splitLessonBodySections(lines);
+  const {
+    theory,
+    examples: examplesLines,
+    practice,
+    summary: summaryLines,
+    pdfSection,
+    hasTheoryHeader,
+    hasExamplesHeader,
+  } = splitLessonBodySections(lines);
   extractPdfUrlFromSection(pdfSection, meta);
   normalizeLessonImportMeta(meta);
 
@@ -645,8 +1078,27 @@ export function parseLessonsFromText(rawText) {
     keywords: splitKeywordsCsv(meta.keywords),
   };
 
+  let mindMap = undefined;
+  const summaryRaw = (summaryLines || []).join('\n').trim();
+  if (summaryRaw) {
+    const parsedSummary = parseLessonSummaryImportText(summaryRaw);
+    if (parsedSummary?.summaryRoot?.text) {
+      mindMap = {
+        enabled: true,
+        mode: 'tree',
+        imageUrl: '',
+        summaryTitle: parsedSummary.summaryTitle || '',
+        summaryRoot: parsedSummary.summaryRoot,
+        sharedMindMapImageUrl: null,
+        logicTrees: [],
+      };
+    }
+  }
+
   const examples_core_fallback = examples_core ? examples_core : examplesArrayToCoreText(examples);
-  return { meta, title, examples_core: examples_core_fallback, examples, practice: practiceItems, theory_core, seo };
+  const out = { meta, title, examples_core: examples_core_fallback, examples, practice: practiceItems, theory_core, seo };
+  if (mindMap) out.mindMap = mindMap;
+  return out;
 }
 
 /** Chuẩn hóa meta sau khi đọc @ (alias → tên nội bộ). */

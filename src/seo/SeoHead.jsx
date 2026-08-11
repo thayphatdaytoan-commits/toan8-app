@@ -39,12 +39,20 @@ export default function SeoHead({
 
   const isPublicLanding = appState === 'dashboard' && !studentName;
   const isLogin = appState === 'login';
+  const isRegister = appState === 'register';
   const isAdmin = appState === 'admin';
   const pathname = typeof window !== 'undefined' ? String(window.location.pathname || '/') : '/';
   const pathnameNorm = pathname.replace(/\/+$/, '') || '/';
   const isAdminLoginUrl = pathnameNorm === '/admin' || pathnameNorm === '/admin/login';
   const catalogMatch = pathname.match(/^\/lop\/(\d{1,2})(?:\/chuong\/([^\/?#]+)(?:\/bai\/([^\/?#]+))?)?\/?$/i);
   const isCatalog = !!catalogMatch && !studentName && !isLogin && !isAdmin;
+  const isCommunityQa = pathnameNorm === '/hoi-dap' || pathnameNorm === '/cong-dong';
+  const contestDetailMatch = pathnameNorm.match(/^\/cuoc-thi\/([^/?#]+)$/i);
+  const isCommunityContest = pathnameNorm === '/cuoc-thi' || !!contestDetailMatch;
+  const isBlog = pathnameNorm === '/blog' || /^\/blog\//i.test(pathnameNorm);
+  const isDocs = pathnameNorm === '/tai-lieu' || /^\/tai-lieu\//i.test(pathnameNorm);
+  const isMarketingLanding =
+    isPublicLanding && !isCatalog && !isCommunityQa && !isCommunityContest && !isBlog && !isDocs;
 
   let title = `${SITE_NAME_FULL}`;
   let description = DEFAULT_DESCRIPTION;
@@ -81,9 +89,26 @@ export default function SeoHead({
       );
       keywords = [`Toán ${g}`, `lớp ${g}`, 'bài giảng', 'đề thi', 'luyện đề', 'GDPT 2018'].join(', ');
     }
-  } else if (isPublicLanding) {
+  } else if (isCommunityQa) {
+    title = `Hỏi & Đáp cộng đồng | ${SITE_NAME_FULL}`;
+    description = 'Đặt câu hỏi Toán và nhận lời giải từ thầy cô cùng bạn học trên MathEdu.';
+  } else if (isCommunityContest) {
+    title = contestDetailMatch
+      ? `Cuộc thi vui mỗi tuần | ${SITE_NAME_FULL}`
+      : `Cuộc thi vui mỗi tuần | ${SITE_NAME_FULL}`;
+    description = 'Thử thách Toán vui hàng tuần — giải đề, nhận xu và xếp hạng cùng bạn bè.';
+  } else if (isBlog) {
+    title = `Blog Toán học | ${SITE_NAME_FULL}`;
+    description = 'Bài viết Toán học, thi cử và hướng dẫn học tập trên MathEdu.';
+  } else if (isDocs) {
+    title = `Tài liệu Toán | ${SITE_NAME_FULL}`;
+    description = 'Kho tài liệu Toán theo lớp, tuyển sinh 10, THPT và học sinh giỏi — xem nhúng, tải nhanh.';
+  } else if (isMarketingLanding) {
     title = `Toán ${publicGrade} — Học tư duy & luyện đề | ${SITE_NAME_FULL}`;
     description = `Bài giảng và đề thi Toán lớp ${publicGrade}. ${DEFAULT_DESCRIPTION}`;
+  } else if (isRegister) {
+    title = `Đăng ký tài khoản học sinh | ${SITE_NAME_FULL}`;
+    description = 'Đăng ký miễn phí cho học sinh và phụ huynh: tạo tài khoản bằng email hoặc Google để làm bài thi và lưu kết quả.';
   } else if (isLogin) {
     title = isAdminLoginUrl ? `Đăng nhập giáo viên | ${SITE_NAME_FULL}` : `Đăng nhập học sinh | ${SITE_NAME_FULL}`;
     description = isAdminLoginUrl
@@ -120,9 +145,9 @@ export default function SeoHead({
   const gradeForCanonical = String(publicGrade || '11').trim() || '11';
   const canonicalUrl =
     typeof window !== 'undefined'
-      ? isPublicLanding
+      ? isMarketingLanding
         ? `${window.location.origin}/lop/${encodeURIComponent(gradeForCanonical)}`
-        : isCatalog
+        : isCatalog || isCommunityQa || isCommunityContest || isBlog || isDocs
           ? `${window.location.origin}${window.location.pathname || '/'}`
           : `${window.location.origin}${window.location.pathname}${window.location.search || ''}`
       : `${origin}/lop/${encodeURIComponent(gradeForCanonical)}`;

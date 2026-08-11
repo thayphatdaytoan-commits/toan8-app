@@ -1,0 +1,13 @@
+---
+description: Sau khi chỉnh xong tính năng/UI, luôn build + deploy Firebase Hosting
+alwaysApply: true
+---
+
+# Deploy sau khi chỉnh xong
+
+Khi hoàn thành chỉnh sửa code (tính năng, UI, bugfix) cho thayphatdaytoan / toan8-app:
+
+1. **Luôn deploy** ngay, không chờ user nhắc — trừ khi user nói rõ “chưa deploy” / “chỉ code thôi”.
+2. Quy trình: `npm run build` rồi `firebase deploy --only hosting` (hoặc lệnh deploy đang dùng trong repo).
+3. Sau deploy, báo lại URL hosting (thường `https://thayphatdaytoan-7832c.web.app`) và tóm tắt ngắn những gì đã lên.
+4. Không cần hỏi xác nhận deploy nếu task đã làm xong và build thành công.

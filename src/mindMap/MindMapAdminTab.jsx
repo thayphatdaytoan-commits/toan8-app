@@ -3,7 +3,7 @@ import { addDoc, collection, deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { AlertCircle, CheckCircle2, ChevronDown, ChevronUp, GripVertical, Plus, Save, Trash2 } from 'lucide-react';
 import MindMapTeacherPanel from './MindMapTeacherPanel';
 import { sanitizeMindMapExercisesForFirestore } from './mindMapFirestoreSanitize';
-import { COLLECTION_MINDMAP_G9, newCategoryDraft, newExerciseDraft } from './mindMapConstants';
+import { COLLECTION_MINDMAP_G9, filterMindMapCategoriesByGrade, mindMapGradeForAdmin, newCategoryDraft, newExerciseDraft } from './mindMapConstants';
 
 /**
  * Firestore không cho mảng lồng mảng, không cho undefined, không cho số NaN/Infinity,
@@ -167,10 +167,14 @@ export default function MindMapAdminTab({ db, user, activeGrade, mindMapCategori
     return () => clearTimeout(t);
   }, [saveFeedback]);
 
-  const sortedCats = [...(mindMapCategories || [])].sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+  const sortedCats = [...filterMindMapCategoriesByGrade(mindMapCategories, activeGrade)].sort(
+    (a, b) => (a.sort_order || 0) - (b.sort_order || 0)
+  );
 
   useEffect(() => {
-    if (!selectedId && sortedCats.length > 0) {
+    if (selectedId && !sortedCats.some((c) => c.id === selectedId)) {
+      setSelectedId(sortedCats[0]?.id ?? null);
+    } else if (!selectedId && sortedCats.length > 0) {
       setSelectedId(sortedCats[0].id);
     }
   }, [selectedId, sortedCats]);
@@ -185,7 +189,7 @@ export default function MindMapAdminTab({ db, user, activeGrade, mindMapCategori
     setExerciseIndex(0);
   }, [selectedId, mindMapCategories]);
 
-  const gradeOk = activeGrade === '9' || activeGrade === 'ALL';
+  const targetGrade = mindMapGradeForAdmin(activeGrade, draft?.grade_level);
 
   const persistDraft = useCallback(async () => {
     if (!db || !user || !draft?.id) return;
@@ -209,7 +213,7 @@ export default function MindMapAdminTab({ db, user, activeGrade, mindMapCategori
         return;
       }
       const payload = {
-        grade_level: '9',
+        grade_level: targetGrade,
         title,
         sort_order: Number(draft.sort_order) || 0,
         exercises,
@@ -235,7 +239,7 @@ export default function MindMapAdminTab({ db, user, activeGrade, mindMapCategori
           const scanDraft = findFirstFirestoreInvalidValue(draft?.exercises, 'draft.exercises');
           const exSan = sanitizeMindMapExercisesForFirestore(draft?.exercises);
           const scanPayload = findFirstFirestoreInvalidValue(
-            { grade_level: '9', title: String(draft?.title || ''), sort_order: Number(draft?.sort_order) || 0, exercises: exSan, updated_at: Date.now() },
+            { grade_level: targetGrade, title: String(draft?.title || ''), sort_order: Number(draft?.sort_order) || 0, exercises: exSan, updated_at: Date.now() },
             'payload'
           );
 
@@ -267,7 +271,7 @@ export default function MindMapAdminTab({ db, user, activeGrade, mindMapCategori
     } finally {
       setSaving(false);
     }
-  }, [db, draft, user]);
+  }, [db, draft, user, targetGrade]);
 
   const addCategory = async () => {
     if (!db || !user) {
@@ -275,9 +279,10 @@ export default function MindMapAdminTab({ db, user, activeGrade, mindMapCategori
       return;
     }
     const template = newCategoryDraft(sortedCats.length);
+    const gradeLevel = mindMapGradeForAdmin(activeGrade, null);
     try {
       const ref = await addDoc(collection(db, COLLECTION_MINDMAP_G9), {
-        grade_level: '9',
+        grade_level: gradeLevel,
         title: template.title,
         sort_order: Date.now(),
         exercises: sanitizeMindMapExercisesForFirestore(template.exercises),
@@ -402,14 +407,6 @@ export default function MindMapAdminTab({ db, user, activeGrade, mindMapCategori
     });
     setExerciseIndex((sel) => selectedIndexAfterReorder(sel, fromIndex, toIndex));
   };
-
-  if (!gradeOk) {
-    return (
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-6 text-amber-900 text-sm font-semibold">
-        Tab Sơ đồ Hình học lớp 9: vui lòng chọn <strong>Khối Lớp: Toán 9</strong> hoặc <strong>Toàn Trường</strong> ở thanh trên.
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-4 min-w-0">
@@ -614,7 +611,7 @@ export default function MindMapAdminTab({ db, user, activeGrade, mindMapCategori
                 storage={storage}
                 mindMapUploadContext={
                   draft?.id && currentExercise?.id
-                    ? { categoryId: draft.id, exerciseId: currentExercise.id }
+                    ? { categoryId: draft.id, exerciseId: currentExercise.id, gradeLevel: targetGrade }
                     : null
                 }
               />
@@ -627,7 +624,15 @@ export default function MindMapAdminTab({ db, user, activeGrade, mindMapCategori
 
       {!draft && sortedCats.length === 0 && (
         <p className="text-center text-slate-500 py-8">
-          Chưa có chuyên đề nào. Bấm <strong>Thêm danh mục</strong> để bắt đầu (dữ liệu lưu trên Firestore, học sinh khối 9 sẽ thấy sau khi lưu).
+          {activeGrade === 'ALL' ? (
+            <>
+              Chưa có chuyên đề nào. Bấm <strong>Thêm danh mục</strong> để bắt đầu (mặc định lưu khối 9 khi chọn Toàn Trường).
+            </>
+          ) : (
+            <>
+              Chưa có chuyên đề sơ đồ tư duy ngược cho <strong>Lớp {activeGrade}</strong>. Bấm <strong>Thêm danh mục</strong> để tạo mới.
+            </>
+          )}
         </p>
       )}
     </div>

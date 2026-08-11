@@ -28,33 +28,17 @@ function stepSubLabel(step) {
   return 'Nội dung';
 }
 
-/** Số thứ tự ví dụ trong chủ đề (1, 2, 3…), không tính mở đầu/lý thuyết. */
-function getExampleNumber(step) {
-  if (typeof step?.exampleIndex === 'number') return step.exampleIndex + 1;
-  return 1;
-}
-
-/** Số thứ tự câu hỏi trong chủ đề (1, 2, 3…), không tính các bước trước. */
-function getQuestionNumber(step) {
-  if (typeof step?.questionIndex === 'number') return step.questionIndex + 1;
-  return 1;
-}
-
-/** Badge tròn sidebar: ví dụ/câu có số riêng; bước khác giữ thứ tự tổng. */
-function getStepBadgeNumber(step, stepIndexInList) {
-  if (step?.kind === 'example_item') return getExampleNumber(step);
-  if (step?.kind === 'question') return getQuestionNumber(step);
-  return stepIndexInList + 1;
+/** Số thứ tự liên tục trong chủ đề: mở đầu = 0, các bước sau = 1, 2, 3… */
+function getStepBadgeNumber(_step, stepIndexInList) {
+  return stepIndexInList;
 }
 
 function getKindLabel(step, stepIndexInList) {
-  if (!step) return `Bước ${stepIndexInList + 1}`;
-  if (step.kind === 'question') return `Câu ${getQuestionNumber(step)}`;
-  if (step.kind === 'example_item') return `Ví dụ ${getExampleNumber(step)}`;
+  if (!step) return String(stepIndexInList);
+  if (step.kind === 'intro') return 'Mở đầu';
   if (step.kind === 'theory') return 'Lý thuyết';
   if (step.kind === 'video') return 'Video';
-  if (step.kind === 'intro') return 'Mở đầu';
-  return step.title || `Bước ${stepIndexInList + 1}`;
+  return String(stepIndexInList);
 }
 
 const SPIRAL_RING_COUNT = 24;
@@ -62,7 +46,7 @@ const SPIRAL_RING_COUNT = 24;
 /** Gáy lò xo vở — lỗ đục + dây lò xo ngang (kiểu KooBits). */
 function NotebookSpiralSpine() {
   return (
-    <div className="kb-spine" aria-hidden>
+    <div className="kb-spine hidden md:flex" aria-hidden>
       {Array.from({ length: SPIRAL_RING_COUNT }, (_, i) => (
         <div key={i} className="kb-spine-ring">
           <span className="kb-spine-wire" />
@@ -191,21 +175,21 @@ export default function ChuyenDeOnTapKooBitsShell({
 
         {/* Nền teal + trang sổ */}
         <main
-          className="flex-1 min-w-0 overflow-y-auto px-2 py-3 sm:px-4 sm:py-5 lg:px-6 lg:py-6 relative"
+          className="kb-main-stage flex-1 min-w-0 overflow-y-auto px-0 py-0 md:px-4 md:py-5 lg:px-6 lg:py-6 relative"
           style={{
             backgroundColor: '#2a6d7a',
             backgroundImage:
               'radial-gradient(circle at 10% 20%, rgba(255,255,255,0.06) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(255,255,255,0.05) 0%, transparent 35%), url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'80\' height=\'80\' viewBox=\'0 0 80 80\'%3E%3Ctext x=\'8\' y=\'28\' fill=\'rgba(255,255,255,0.06)\' font-size=\'18\' font-family=\'Arial\'%3E%2B%3C/text%3E%3Ctext x=\'40\' y=\'60\' fill=\'rgba(255,255,255,0.05)\' font-size=\'14\' font-family=\'Arial\'%3E%3D%3C/text%3E%3C/svg%3E")',
           }}
         >
-          <div className="kb-notebook mx-auto relative">
+          <div className="kb-notebook mx-auto relative w-full">
             <div className="kb-notebook-shell">
               <NotebookSpiralSpine />
 
               <div className="kb-notebook-page">
                 <div className="kb-notebook-sheet">
                   {/* Badge câu + chủ đề */}
-                  <div className="px-5 sm:px-8 lg:px-10 pt-5 sm:pt-6 pb-2 flex flex-wrap items-start gap-3">
+                  <div className="px-4 sm:px-8 lg:px-10 pt-4 sm:pt-6 pb-2 flex flex-wrap items-start gap-3">
                     <span className="font-display inline-flex items-center px-4 py-1.5 rounded-full bg-[#22c55e] text-white text-ontap-base font-black shadow-md">
                       {kindLabel}
                     </span>
@@ -219,7 +203,7 @@ export default function ChuyenDeOnTapKooBitsShell({
                   {feedbackBanner}
 
                   {/* Nội dung trang sổ */}
-                  <div className="flex-1 px-5 sm:px-8 lg:px-10 py-4 space-y-4 overflow-y-auto">{children}</div>
+                  <div className="flex-1 px-4 sm:px-8 lg:px-10 py-4 space-y-4 overflow-y-auto">{children}</div>
 
                   {/* Video gợi ý (nếu có) */}
                   {videoHintUrl && (
@@ -248,7 +232,7 @@ export default function ChuyenDeOnTapKooBitsShell({
           </div>
 
           {/* Thanh bước mobile */}
-          <div className="md:hidden mt-4 flex items-center justify-center gap-2 flex-wrap px-2">
+          <div className="md:hidden mt-2 flex items-center justify-center gap-2 flex-wrap px-3 py-3 border-t border-slate-100 bg-white">
             {steps.map((s, i) => {
               const isCurrent = i === stepIndex;
               const isDone = completedSet.has(s.id);
@@ -261,10 +245,10 @@ export default function ChuyenDeOnTapKooBitsShell({
                   onClick={() => !isLocked && onGoToStep?.(i)}
                   className={`w-10 h-10 rounded-full text-ontap-sm font-black border-2 transition-all ${
                     isCurrent
-                      ? 'bg-[#3b9ec9] border-white text-white scale-110'
+                      ? 'bg-[#3b9ec9] border-[#2a8ab5] text-white scale-110'
                       : isDone
                         ? 'bg-[#22c55e] border-[#86efac] text-white'
-                        : 'bg-white/20 border-white/40 text-white/70'
+                        : 'bg-slate-100 border-slate-200 text-slate-600'
                   } ${isLocked ? 'opacity-30' : ''}`}
                 >
                   {isDone && !isCurrent ? <Check className="w-4 h-4 mx-auto" /> : getStepBadgeNumber(s, i)}

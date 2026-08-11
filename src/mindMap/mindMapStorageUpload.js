@@ -54,26 +54,31 @@ export async function uploadMindMapJpegToStorage(file, storage, storagePath, com
   return getDownloadURLWithRetry(r);
 }
 
-export function buildTreeImageStoragePath(categoryId, exerciseId, treeId) {
+function mindMapStorageRoot(gradeLevel) {
+  const g = String(gradeLevel || '9').trim();
+  return g === '9' ? 'mindmap_geometry9' : `mindmap_g${g}`;
+}
+
+export function buildTreeImageStoragePath(categoryId, exerciseId, treeId, gradeLevel = '9') {
   const c = sanitizeMindMapPathSegment(categoryId);
   const e = sanitizeMindMapPathSegment(exerciseId);
   const t = sanitizeMindMapPathSegment(treeId);
   const ts = Date.now();
   const rnd = Math.random().toString(36).slice(2, 8);
-  return `mindmap_geometry9/${c}/${e}/tree_${t}_${ts}_${rnd}.jpg`;
+  return `${mindMapStorageRoot(gradeLevel)}/${c}/${e}/tree_${t}_${ts}_${rnd}.jpg`;
 }
 
-export function buildProblemImageStoragePath(categoryId, exerciseId) {
+export function buildProblemImageStoragePath(categoryId, exerciseId, gradeLevel = '9') {
   const c = sanitizeMindMapPathSegment(categoryId);
   const e = sanitizeMindMapPathSegment(exerciseId);
   const ts = Date.now();
   const rnd = Math.random().toString(36).slice(2, 8);
-  return `mindmap_geometry9/${c}/${e}/problem_${ts}_${rnd}.jpg`;
+  return `${mindMapStorageRoot(gradeLevel)}/${c}/${e}/problem_${ts}_${rnd}.jpg`;
 }
 
 /** Một file cố định / bài — ghi đè khi tải lại, dùng chung cho nhiều ý (tiết kiệm Storage). */
-export function buildSharedMindMapImageStoragePath(categoryId, exerciseId) {
+export function buildSharedMindMapImageStoragePath(categoryId, exerciseId, gradeLevel = '9') {
   const c = sanitizeMindMapPathSegment(categoryId);
   const e = sanitizeMindMapPathSegment(exerciseId);
-  return `mindmap_geometry9/${c}/${e}/shared_mindmap.jpg`;
+  return `${mindMapStorageRoot(gradeLevel)}/${c}/${e}/shared_mindmap.jpg`;
 }

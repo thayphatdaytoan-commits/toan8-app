@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { splitTextBySvgEmbeds, sanitizeSvgString } from './svgEmbed';
 import { mixedMathContentToHtml } from './mathKatexMixed';
 
@@ -14,7 +14,9 @@ import { mixedMathContentToHtml } from './mathKatexMixed';
  */
 
 export function isAllowedImageUrl(url) {
-  const u = String(url || '').trim();
+  const u = String(url || '')
+    .trim()
+    .replace(/&amp;/gi, '&');
   if (!u) return false;
   if (/^\s*javascript:/i.test(u)) return false;
   if (/^\s*data:(?!image\/)/i.test(u)) return false;
@@ -23,6 +25,31 @@ export function isAllowedImageUrl(url) {
   if (u.startsWith('./') || u.startsWith('../')) return true;
   if (/^data:image\/(png|jpe?g|gif|webp|svg\+xml);/i.test(u)) return true;
   return false;
+}
+
+/**
+ * Word/import đôi khi bọc ảnh trong $...$ (mỗi $ một dòng) → hiện 2 dấu $ thừa.
+ * Gỡ $ bao quanh markdown ảnh / thẻ <img>.
+ */
+export function stripDollarWrappersAroundImages(raw) {
+  let s = String(raw ?? '');
+  const md = '!\\[[^\\]]*\\]\\(\\s*[^)]+?\\s*\\)';
+  const img = '<img\\b[^>]*>';
+  for (let n = 0; n < 12; n += 1) {
+    const prev = s;
+    // $![](url)$ hoặc $ ![](url) $
+    s = s.replace(new RegExp(`\\$\\s*(${md})\\s*\\$`, 'g'), '$1');
+    // $ trên dòng riêng + ảnh + $ trên dòng riêng
+    s = s.replace(new RegExp(`(^|\\n)[ \\t]*\\$[ \\t]*\\n([ \\t]*${md}[ \\t]*)\\n[ \\t]*\\$[ \\t]*(?=\\n|$)`, 'g'), '$1$2');
+    // Tương tự cho <img>
+    s = s.replace(new RegExp(`\\$\\s*(${img})\\s*\\$`, 'gi'), '$1');
+    s = s.replace(new RegExp(`(^|\\n)[ \\t]*\\$[ \\t]*\\n([ \\t]*${img}[ \\t]*)\\n[ \\t]*\\$[ \\t]*(?=\\n|$)`, 'gi'), '$1$2');
+    // Dòng chỉ còn "$" ngay trước/sau khối ảnh (còn sót)
+    s = s.replace(new RegExp(`(^|\\n)[ \\t]*\\$[ \\t]*\\n(?=[ \\t]*(?:${md}|${img}))`, 'g'), '$1');
+    s = s.replace(new RegExp(`(?:${md}|${img})\\n[ \\t]*\\$[ \\t]*(?=\\n|$)`, 'g'), (m) => m.replace(/\n[ \t]*\$[ \t]*$/, ''));
+    if (s === prev) break;
+  }
+  return s;
 }
 
 function extractImgFromTag(tag) {
@@ -35,7 +62,7 @@ function extractImgFromTag(tag) {
 
 /** @returns {{ type: 'text', value: string } | { type: 'image', src: string, alt: string }}[] */
 export function splitTextAndImages(raw) {
-  const s = raw == null ? '' : String(raw);
+  const s = stripDollarWrappersAroundImages(raw == null ? '' : String(raw));
   const segments = [];
   let i = 0;
 
@@ -60,11 +87,13 @@ export function splitTextAndImages(raw) {
 
     if (kind === 'md') {
       const rest = s.slice(next);
-      const m = rest.match(/^!\[([^\]]*)\]\(\s*([^)\s]+)\s*\)/);
+      const m = rest.match(/^!\[([^\]]*)\]\(\s*<?([^)\s>]+)>?\s*\)/);
       if (m) {
-        const src = m[2].trim();
+        const src = String(m[2] || '')
+          .trim()
+          .replace(/&amp;/gi, '&');
         const alt = (m[1] || '').trim();
-        if (isAllowedImageUrl(src)) segments.push({ type: 'image', src, alt });
+        if (src && isAllowedImageUrl(src)) segments.push({ type: 'image', src, alt });
         else segments.push({ type: 'text', value: m[0] });
         i = next + m[0].length;
       } else {
@@ -148,6 +177,7 @@ function SvgFigure({ markup, inline }) {
 export function RichMathContent({ text, className, imageClassName, inlineImage = false }) {
   const parts = useMemo(() => splitTextImagesAndColors(text), [text]);
   const imgCls = imageClassName || (inlineImage ? 'max-h-24 max-w-[min(100%,280px)] rounded border border-slate-200 align-middle mx-1' : defaultImgClass);
+  const [broken, setBroken] = React.useState(() => new Set());
 
   return (
     <span className={className}>
@@ -160,8 +190,23 @@ export function RichMathContent({ text, className, imageClassName, inlineImage =
           </span>
         ) : p.type === 'svg' ? (
           <SvgFigure key={idx} markup={p.value} inline={inlineImage} />
+        ) : broken.has(idx) ? (
+          <span
+            key={idx}
+            className="lesson-img-broken my-2 inline-block max-w-full rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900"
+          >
+            Không tải được ảnh — hãy upload lại PNG/JPG.
+          </span>
         ) : (
-          <img key={idx} src={p.src} alt={p.alt || 'Hình minh họa'} className={imgCls} loading="lazy" decoding="async" />
+          <img
+            key={idx}
+            src={String(p.src || '').replace(/&amp;/gi, '&')}
+            alt={p.alt || 'Hình minh họa'}
+            className={imgCls}
+            loading="lazy"
+            decoding="async"
+            onError={() => setBroken((prev) => new Set(prev).add(idx))}
+          />
         )
       )}
     </span>

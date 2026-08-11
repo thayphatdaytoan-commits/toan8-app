@@ -2,6 +2,23 @@
 
 export const COLLECTION_MINDMAP_G9 = 'math_mindmap_geometry9_v1';
 
+export function resolveMindMapGradeLevel(raw) {
+  return String(raw?.grade_level || '9').trim();
+}
+
+/** Lọc chuyên đề theo khối; grade = ALL hoặc rỗng → trả về toàn bộ. */
+export function filterMindMapCategoriesByGrade(categories, grade) {
+  const g = String(grade || '').trim();
+  if (!g || g === 'ALL') return [...(categories || [])];
+  return (categories || []).filter((c) => resolveMindMapGradeLevel(c) === g);
+}
+
+export function mindMapGradeForAdmin(activeGrade, draftGradeLevel) {
+  const active = String(activeGrade || '').trim();
+  if (active && active !== 'ALL') return active;
+  return resolveMindMapGradeLevel({ grade_level: draftGradeLevel });
+}
+
 export const DEFAULT_IMPORT_TEXT_FULL = `PROBLEM_TITLE: Câu 7: (Cụm 11- Đề 1)
 PROBLEM_CONTENT: 
 Cho tam giác $ABC$ nhọn ($AB>AC$). Vẽ đường tròn tâm $O$ đường kính $AB$ cắt các cạnh $BC$, $AC$ lần lượt tại $D$, $E$. Gọi $H$ là giao điểm của $AD$ và $BE$.
