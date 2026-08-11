@@ -1,0 +1,38 @@
+BÁO CÁO ĐĂNG BÀI GIẢNG
+Thời gian chạy: 2026-08-01 11:04 UTC
+Chế độ: CHẠY LẠI Bài 9 + Bài 10 (theo quy trình bai-viet-ai BẮT BUỘC)
+Agent: https://cursor.com/agents/bc-0e9e273c-40f7-4861-87c9-10a641a6fad2
+
+================================================================================
+QUY TRÌNH ĐÃ ÁP DỤNG (theo ảnh hướng dẫn)
+================================================================================
+- Chọn đúng Lớp 9 / CHƯƠNG III / đúng bài
+- Cấu hình: Có lý thuyết; Ví dụ/dạng = 2; Bài tập tự luyện = 10
+- Dán «Yêu cầu thêm» (dạng/bài tập từ tài liệu + LaTeX `$[{...}]$`)
+- File nguồn: CHỈ PDF (không .doc/.docx)
+- Model: gemini-2.5-flash
+- Sau khi tạo: đã nhấn «Lưu vào thư mục»
+
+================================================================================
+BÀI ĐÃ ĐĂNG THÀNH CÔNG
+================================================================================
+1) Toán 9 / Chương III / Bài 9. Biến đổi đơn giản và rút gọn biểu thức chứa căn thức bậc hai
+   - PDF nguồn: .../Bài 9.../Bài 9. ....pdf
+   - Word + TXT: .../output/Bai-9-import.docx , Bai-9-import.txt
+   - Đã Lưu vào thư mục trên bai-viet-ai
+   - Đã Import/Lưu Admin (@chapter: 3)
+   - Chủ đề xác minh: khử mẫu / trục căn / rút gọn căn thức bậc hai
+
+2) Toán 9 / Chương III / Bài 10. Căn bậc ba và căn thức bậc ba
+   - PDF nguồn: .../Bài 10.../Bài 10. ....pdf
+   - Word + TXT: .../output/Bai-10-import.docx , Bai-10-import.txt
+   - Đã Lưu vào thư mục trên bai-viet-ai
+   - Đã Import/Lưu Admin (@chapter: 3)
+   - Chủ đề xác minh: định nghĩa / tính chất căn bậc ba + bài tập (~10 câu)
+
+================================================================================
+GHI CHÚ
+================================================================================
+- Hướng dẫn bắt buộc: docs/HUONG_DAN_BAI_VIET_AI_BAT_BUOC.txt
+- UI alert có thể hiện "0 mục lý thuyết/ví dụ" (đếm mảng cũ); nội dung theory_core vẫn vào web.
+- Video/PDF URL vẫn trống (chưa có link nguồn trên web).
