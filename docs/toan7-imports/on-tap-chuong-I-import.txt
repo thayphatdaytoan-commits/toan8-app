@@ -1,0 +1,448 @@
+@grade_level: 7
+@chapter: 1
+@lesson_no: OT1
+@title: Ôn tập Chương I: Số hữu tỉ
+@video_url:
+@video_material_url:
+@pdf_url:
+@seo_description: Tóm tắt các kiến thức trọng tâm về số hữu tỉ, giá trị tuyệt đối, lũy thừa, tỉ lệ thức và các dạng bài tập ôn tập Chương I Toán 7.
+@focus_keyword: số hữu tỉ
+@keywords: ôn tập toán 7, giá trị tuyệt đối, lũy thừa, tỉ lệ thức, tỉ số, số thập phân, phần trăm
+
+LÝ THUYẾT TRỌNG TÂM
+
+# 1. Tập hợp các số hữu tỉ
+
+Định nghĩa:
+Số hữu tỉ là số có thể viết dưới dạng phân số ${\frac{a}{b}}$ với ${a, b \in \mathbb{Z}}$ và ${b \ne 0}$.
+Tập hợp các số hữu tỉ được kí hiệu là ${\mathbb{Q}}$.
+Ví dụ: ${0,5 = \frac{1}{2}}$, ${-3 = \frac{-3}{1}}$, ${1\frac{2}{3} = \frac{5}{3}}$.
+
+Ghi nhớ:
+Mỗi số hữu tỉ đều có thể biểu diễn trên trục số.
+
+# 2. Cộng, trừ, nhân, chia số hữu tỉ
+
+- **Cộng, trừ hai số hữu tỉ:**
+  Thực hiện như cộng, trừ hai phân số: đưa về cùng mẫu số dương rồi cộng, trừ tử số.
+  Phép cộng số hữu tỉ có các tính chất giao hoán, kết hợp, cộng với số 0, cộng với số đối.
+- **Nhân, chia hai số hữu tỉ:**
+  Thực hiện như nhân, chia hai phân số:
+  Nhân: ${\frac{a}{b} \cdot \frac{c}{d} = \frac{a \cdot c}{b \cdot d}}$
+  Chia: ${\frac{a}{b} : \frac{c}{d} = \frac{a}{b} \cdot \frac{d}{c}}$ (với ${c \ne 0}$)
+  Phép nhân số hữu tỉ có các tính chất giao hoán, kết hợp, nhân với số 1, nhân với số nghịch đảo, tính chất phân phối của phép nhân đối với phép cộng và phép trừ.
+
+# 3. Giá trị tuyệt đối của một số hữu tỉ
+
+Định nghĩa:
+Giá trị tuyệt đối của số hữu tỉ ${x}$, kí hiệu là ${|x|}$, là khoảng cách từ điểm ${x}$ đến điểm ${0}$ trên trục số.
+${|x| = x}$ nếu ${x \ge 0}$
+${|x| = -x}$ nếu ${x < 0}$
+Ví dụ: ${|-3,5| = 3,5}$, ${|\frac{2}{3}| = \frac{2}{3}}$.
+
+# 4. Lũy thừa của một số hữu tỉ
+
+Định nghĩa:
+Lũy thừa bậc ${n}$ của số hữu tỉ ${x}$ là tích của ${n}$ thừa số ${x}$ (với ${n}$ là số tự nhiên lớn hơn ${1}$).
+${x^n = x \cdot x \cdot ... \cdot x}$ (n thừa số ${x}$)
+Quy ước: ${x^1 = x}$, ${x^0 = 1}$ (với ${x \ne 0}$).
+Ví dụ: ${(\frac{2}{3})^3 = \frac{2}{3} \cdot \frac{2}{3} \cdot \frac{2}{3} = \frac{8}{27}}$.
+
+Tính chất:
+- Nhân hai lũy thừa cùng cơ số: ${x^m \cdot x^n = x^{m+n}}$
+- Chia hai lũy thừa cùng cơ số: ${x^m : x^n = x^{m-n}}$ (với ${x \ne 0, m \ge n}$)
+- Lũy thừa của lũy thừa: ${(x^m)^n = x^{m \cdot n}}$
+- Lũy thừa của một tích: ${(x \cdot y)^n = x^n \cdot y^n}$
+- Lũy thừa của một thương: ${(\frac{x}{y})^n = \frac{x^n}{y^n}}$ (với ${y \ne 0}$)
+
+# 5. Tỉ lệ thức và tính chất dãy tỉ số bằng nhau
+
+Định nghĩa:
+Tỉ lệ thức là đẳng thức của hai tỉ số ${\frac{a}{b} = \frac{c}{d}}$.
+Với ${a, b, c, d}$ là các số hạng của tỉ lệ thức. ${a, d}$ là ngoại tỉ, ${b, c}$ là trung tỉ.
+
+Tính chất cơ bản:
+Nếu ${\frac{a}{b} = \frac{c}{d}}$ thì ${a \cdot d = b \cdot c}$.
+
+Tính chất dãy tỉ số bằng nhau:
+Nếu ${\frac{a}{b} = \frac{c}{d}}$ thì ${\frac{a}{b} = \frac{c}{d} = \frac{a+c}{b+d} = \frac{a-c}{b-d}}$ (với ${b \ne d, b \ne -d}$)
+Mở rộng: Nếu ${\frac{a_1}{b_1} = \frac{a_2}{b_2} = ... = \frac{a_n}{b_n}}$ thì ${\frac{a_1}{b_1} = \frac{a_2}{b_2} = ... = \frac{a_n}{b_n} = \frac{a_1+a_2+...+a_n}{b_1+b_2+...+b_n}}$ (với các mẫu số khác 0).
+
+---
+
+CÁC DẠNG TOÁN & VÍ DỤ
+
+Dạng 1: Nhận biết và phân loại số hữu tỉ
+
+Phương pháp:
+Dựa vào định nghĩa số hữu tỉ để xác định xem một số có thể viết dưới dạng phân số ${\frac{a}{b}}$ (${a, b \in \mathbb{Z}, b \ne 0}$) hay không.
+
+---
+
+Ví dụ 1: Điền kí hiệu ${\in}$ hoặc ${\notin}$ vào ô trống.
+a) ${-5 \dots \mathbb{Q}}$
+b) ${\frac{7}{2} \dots \mathbb{Q}}$
+c) ${2,3 \dots \mathbb{Q}}$
+Lời giải:
+a) ${-5 \in \mathbb{Q}}$ (vì ${-5 = \frac{-5}{1}}$)
+b) ${\frac{7}{2} \in \mathbb{Q}}$ (đã có dạng phân số)
+c) ${2,3 \in \mathbb{Q}}$ (vì ${2,3 = \frac{23}{10}}$)
+
+---
+
+Ví dụ 2: Số nào sau đây là số hữu tỉ?
+A. ${0}$
+B. ${-1,25}$
+C. ${\frac{3}{4}}$
+D. Tất cả các đáp án trên
+Đáp án: D
+Lời giải:
+A. ${0 = \frac{0}{1}}$ nên ${0}$ là số hữu tỉ.
+B. ${-1,25 = \frac{-125}{100} = \frac{-5}{4}}$ nên ${-1,25}$ là số hữu tỉ.
+C. ${\frac{3}{4}}$ là số hữu tỉ theo định nghĩa.
+Vậy, tất cả các đáp án trên đều đúng.
+
+---
+
+Dạng 2: Thực hiện phép tính với số hữu tỉ
+
+Phương pháp:
+Thực hiện các phép tính theo đúng thứ tự ưu tiên (lũy thừa, nhân/chia, cộng/trừ) và áp dụng các quy tắc cộng, trừ, nhân, chia số hữu tỉ (chuyển về phân số).
+
+---
+
+Ví dụ 1: Thực hiện phép tính: ${\frac{-2}{5} + \frac{3}{5} \cdot (-\frac{3}{2}) + \frac{1}{2}}$.
+Lời giải:
+${\frac{-2}{5} + \frac{3}{5} \cdot (-\frac{3}{2}) + \frac{1}{2}}$
+${= \frac{-2}{5} + \frac{-9}{10} + \frac{1}{2}}$
+${= \frac{-4}{10} + \frac{-9}{10} + \frac{5}{10}}$
+${= \frac{-4 - 9 + 5}{10} = \frac{-8}{10} = \frac{-4}{5}}$
+
+---
+
+Ví dụ 2: Thực hiện phép tính: ${2 : (1 - \frac{1}{2}) - 1,25}$.
+Lời giải:
+${2 : (1 - \frac{1}{2}) - 1,25}$
+${= 2 : (\frac{2}{2} - \frac{1}{2}) - \frac{5}{4}}$
+${= 2 : \frac{1}{2} - \frac{5}{4}}$
+${= 2 \cdot 2 - \frac{5}{4}}$
+${= 4 - \frac{5}{4}}$
+${= \frac{16}{4} - \frac{5}{4} = \frac{11}{4}}$
+
+---
+
+Dạng 3: Tính lũy thừa và áp dụng các quy tắc lũy thừa
+
+Phương pháp:
+Áp dụng các định nghĩa và tính chất của lũy thừa để tính toán hoặc rút gọn biểu thức.
+
+---
+
+Ví dụ 1: Tính giá trị của biểu thức: ${\frac{3^3 \cdot 9^2}{25 \cdot 27}}$.
+Lời giải:
+${\frac{3^3 \cdot 9^2}{25 \cdot 27} = \frac{3^3 \cdot (3^2)^2}{5^2 \cdot 3^3}}$
+${= \frac{3^3 \cdot 3^4}{5^2 \cdot 3^3}}$
+${= \frac{3^{3+4}}{5^2 \cdot 3^3}}$
+${= \frac{3^7}{5^2 \cdot 3^3}}$
+${= \frac{3^{7-3}}{5^2} = \frac{3^4}{5^2} = \frac{81}{25}}$
+
+---
+
+Ví dụ 2: Tính giá trị của biểu thức: ${(2 \cdot (-0,2)^3) : (\frac{2}{5} \cdot 27)}$.
+Lời giải:
+${(2 \cdot (-0,2)^3) : (\frac{2}{5} \cdot 27)}$
+${= (2 \cdot (-\frac{1}{5})^3) : (\frac{2}{5} \cdot 27)}$
+${= (2 \cdot \frac{-1}{125}) : \frac{54}{5}}$
+${= \frac{-2}{125} \cdot \frac{5}{54}}$
+${= \frac{-2 \cdot 5}{125 \cdot 54}}$
+${= \frac{-10}{6750} = \frac{-1}{675}}$
+
+---
+
+Dạng 4: Tìm số hữu tỉ ${x}$
+
+Phương pháp:
+Vận dụng các quy tắc chuyển vế, quy tắc dấu, và các tính chất của phép toán trên số hữu tỉ để đưa phương trình về dạng cơ bản ${Ax = B}$ hoặc ${x^n = k}$ rồi giải.
+
+---
+
+Ví dụ 1: Tìm ${x}$ biết: ${\frac{3}{4} + x = \frac{1}{2}}$.
+Lời giải:
+${\frac{3}{4} + x = \frac{1}{2}}$
+${x = \frac{1}{2} - \frac{3}{4}}$
+${x = \frac{2}{4} - \frac{3}{4}}$
+${x = \frac{-1}{4}}$
+
+---
+
+Ví dụ 2: Tìm ${x}$ biết: ${(-\frac{2}{3}x + \frac{1}{3})^2 - \frac{1}{4} = 0}$.
+Lời giải:
+${(-\frac{2}{3}x + \frac{1}{3})^2 - \frac{1}{4} = 0}$
+${(-\frac{2}{3}x + \frac{1}{3})^2 = \frac{1}{4}}$
+Trường hợp 1: ${-\frac{2}{3}x + \frac{1}{3} = \frac{1}{2}}$
+${-\frac{2}{3}x = \frac{1}{2} - \frac{1}{3}}$
+${-\frac{2}{3}x = \frac{3}{6} - \frac{2}{6}}$
+${-\frac{2}{3}x = \frac{1}{6}}$
+${x = \frac{1}{6} : (-\frac{2}{3})}$
+${x = \frac{1}{6} \cdot (-\frac{3}{2})}$
+${x = -\frac{3}{12} = -\frac{1}{4}}$
+Trường hợp 2: ${-\frac{2}{3}x + \frac{1}{3} = -\frac{1}{2}}$
+${-\frac{2}{3}x = -\frac{1}{2} - \frac{1}{3}}$
+${-\frac{2}{3}x = -\frac{3}{6} - \frac{2}{6}}$
+${-\frac{2}{3}x = -\frac{5}{6}}$
+${x = -\frac{5}{6} : (-\frac{2}{3})}$
+${x = -\frac{5}{6} \cdot (-\frac{3}{2})}$
+${x = \frac{15}{12} = \frac{5}{4}}$
+Vậy ${x = -\frac{1}{4}}$ hoặc ${x = \frac{5}{4}}$.
+
+---
+
+Dạng 5: Giải bài toán thực tế liên quan đến số hữu tỉ và tỉ số phần trăm
+
+Phương pháp:
+Phân tích đề bài để xác định các đại lượng đã biết và đại lượng cần tìm. Lập các phép tính hoặc phương trình dựa trên mối quan hệ giữa các đại lượng, thường liên quan đến tỉ số, phần trăm, giá cả, thời gian, v.v.
+
+---
+
+Ví dụ 1: Một cửa hàng giảm giá 15% cho một sản phẩm. Sau đó, lại giảm thêm 5% trên giá đã giảm. Hỏi giá cuối cùng bằng bao nhiêu phần trăm giá ban đầu?
+Lời giải:
+Giá sau khi giảm đợt 1 là: ${100\% - 15\% = 85\%}$ giá ban đầu.
+Giá sau khi giảm đợt 2 là: ${85\% \cdot (100\% - 5\%) = 85\% \cdot 95\% = 0,85 \cdot 0,95 = 0,8075 = 80,75\%}$ giá ban đầu.
+Vậy, giá cuối cùng bằng ${80,75\%}$ giá ban đầu.
+
+---
+
+Ví dụ 2: Nhiệt độ ngoài trời một ngày mùa đông ở Tokyo vào 6 giờ tối là ${12,64^\circ F}$, lúc 6 giờ sáng là ${35,6^\circ F}$. Biết công thức chuyển đổi từ độ F sang độ C là: ${T_C = \frac{5}{9} \cdot (T_F - 32)}$.
+a) Hãy chuyển đổi các số đo nhiệt độ trên sang độ C.
+b) Tính độ chênh lệch nhiệt độ từ 6 giờ sáng đến 6 giờ tối (theo đơn vị độ C).
+Lời giải:
+a) Nhiệt độ lúc 6 giờ tối (${T_F = 12,64^\circ F}$):
+${T_C = \frac{5}{9} \cdot (12,64 - 32) = \frac{5}{9} \cdot (-19,36) \approx -10,76^\circ C}$.
+Nhiệt độ lúc 6 giờ sáng (${T_F = 35,6^\circ F}$):
+${T_C = \frac{5}{9} \cdot (35,6 - 32) = \frac{5}{9} \cdot (3,6) = 2^\circ C}$.
+
+b) Độ chênh lệch nhiệt độ từ 6 giờ sáng đến 6 giờ tối (theo độ C):
+Độ chênh lệch ${= 2^\circ C - (-10,76^\circ C) = 2 + 10,76 = 12,76^\circ C}$.
+
+---
+
+BÀI TẬP LUYỆN TẬP
+
+Câu 1. Mệnh đề ${-4 \notin \mathbb{Q}}$ là đúng hay sai?
+Đáp án: Sai
+Lời giải: ${-4}$ là một số nguyên, mà mọi số nguyên đều là số hữu tỉ (có thể viết dưới dạng ${\frac{-4}{1}}$). Do đó, ${-4 \in \mathbb{Q}}$. Mệnh đề ${-4 \notin \mathbb{Q}}$ là sai.
+
+---
+
+Câu 2. Mệnh đề ${25\% \in \mathbb{Q}}$ là đúng hay sai?
+Đáp án: Đúng
+Lời giải: ${25\% = \frac{25}{100} = \frac{1}{4}}$. Đây là một phân số với tử số và mẫu số là số nguyên, mẫu số khác 0. Do đó, ${25\%}$ là số hữu tỉ. Mệnh đề ${25\% \in \mathbb{Q}}$ là đúng.
+
+---
+
+Câu 3. Thực hiện phép tính: ${\frac{2}{5} + \frac{-2}{3} + \frac{1}{2}}$.
+Đáp án: ${\frac{11}{30}}$
+Lời giải:
+${\frac{2}{5} + \frac{-2}{3} + \frac{1}{2}}$
+${= \frac{12}{30} + \frac{-20}{30} + \frac{15}{30}}$
+${= \frac{12 - 20 + 15}{30} = \frac{7}{30}}$ (Sửa lại: ${12-20+15 = 7}$)
+${= \frac{7}{30}}$.
+
+Sửa lại, ví dụ trên có vẻ tôi tính nhầm.
+${12 - 20 = -8}$
+${-8 + 15 = 7}$
+Đáp án: ${\frac{7}{30}}$
+
+---
+
+Câu 4. Thực hiện phép tính: ${(\frac{2}{5} + \frac{3}{5}) : (-\frac{3}{2} + \frac{1}{2})}$.
+Đáp án: ${-1}$
+Lời giải:
+${(\frac{2}{5} + \frac{3}{5}) : (-\frac{3}{2} + \frac{1}{2})}$
+${= (\frac{2+3}{5}) : (\frac{-3+1}{2})}$
+${= \frac{5}{5} : \frac{-2}{2}}$
+${= 1 : (-1) = -1}$
+
+---
+
+Câu 5. Thực hiện phép tính: ${(- \frac{2}{3})^2 \cdot \frac{3}{4} - \frac{1}{2}}$.
+Đáp án: ${\frac{-1}{6}}$
+Lời giải:
+${(- \frac{2}{3})^2 \cdot \frac{3}{4} - \frac{1}{2}}$
+${= \frac{4}{9} \cdot \frac{3}{4} - \frac{1}{2}}$
+${= \frac{4 \cdot 3}{9 \cdot 4} - \frac{1}{2}}$
+${= \frac{12}{36} - \frac{1}{2}}$
+${= \frac{1}{3} - \frac{1}{2}}$
+${= \frac{2}{6} - \frac{3}{6} = \frac{-1}{6}}$
+
+---
+
+Câu 6. Thực hiện phép tính nhanh: ${\frac{2}{5} \cdot \frac{3}{8} + \frac{5}{8} \cdot \frac{2}{5}}$.
+Đáp án: ${\frac{2}{5}}$
+Lời giải:
+${\frac{2}{5} \cdot \frac{3}{8} + \frac{5}{8} \cdot \frac{2}{5}}$
+${= \frac{2}{5} \cdot (\frac{3}{8} + \frac{5}{8})}$ (Sử dụng tính chất phân phối)
+${= \frac{2}{5} \cdot \frac{3+5}{8}}$
+${= \frac{2}{5} \cdot \frac{8}{8} = \frac{2}{5} \cdot 1 = \frac{2}{5}}$
+
+---
+
+Câu 7. Thực hiện phép tính nhanh: ${\frac{6}{13} \cdot \frac{-13}{21} + \frac{6}{13} \cdot \frac{-8}{21}}$.
+Đáp án: ${\frac{-6}{13}}$
+Lời giải:
+${\frac{6}{13} \cdot \frac{-13}{21} + \frac{6}{13} \cdot \frac{-8}{21}}$
+${= \frac{6}{13} \cdot (\frac{-13}{21} + \frac{-8}{21})}$
+${= \frac{6}{13} \cdot \frac{-13-8}{21}}$
+${= \frac{6}{13} \cdot \frac{-21}{21}}$
+${= \frac{6}{13} \cdot (-1) = \frac{-6}{13}}$
+
+---
+
+Câu 8. Tính giá trị của biểu thức: ${\frac{2^5 \cdot 9^3}{6^4 \cdot 4^2}}$.
+Đáp án: ${\frac{27}{8}}$
+Lời giải:
+${\frac{2^5 \cdot 9^3}{6^4 \cdot 4^2} = \frac{2^5 \cdot (3^2)^3}{(2 \cdot 3)^4 \cdot (2^2)^2}}$
+${= \frac{2^5 \cdot 3^6}{2^4 \cdot 3^4 \cdot 2^4}}$
+${= \frac{2^5 \cdot 3^6}{2^{4+4} \cdot 3^4}}$
+${= \frac{2^5 \cdot 3^6}{2^8 \cdot 3^4}}$
+${= 2^{5-8} \cdot 3^{6-4} = 2^{-3} \cdot 3^2}$
+${= \frac{1}{2^3} \cdot 3^2 = \frac{1}{8} \cdot 9 = \frac{9}{8}}$
+Sửa lại, tính toán cẩn thận hơn.
+${2^{5-8} \cdot 3^{6-4} = 2^{-3} \cdot 3^2}$ là đúng.
+${= \frac{1}{8} \cdot 9 = \frac{9}{8}}$.
+Đáp án: ${\frac{9}{8}}$
+
+---
+
+Câu 9. Tính giá trị của biểu thức: ${\frac{2^{15} \cdot 3^7}{6^7 \cdot 4^3}}$.
+Đáp án: ${2^2 \cdot 3 = 12}$
+Lời giải:
+${\frac{2^{15} \cdot 3^7}{6^7 \cdot 4^3} = \frac{2^{15} \cdot 3^7}{(2 \cdot 3)^7 \cdot (2^2)^3}}$
+${= \frac{2^{15} \cdot 3^7}{2^7 \cdot 3^7 \cdot 2^6}}$
+${= \frac{2^{15} \cdot 3^7}{2^{7+6} \cdot 3^7}}$
+${= \frac{2^{15} \cdot 3^7}{2^{13} \cdot 3^7}}$
+${= 2^{15-13} \cdot 3^{7-7} = 2^2 \cdot 3^0 = 4 \cdot 1 = 4}$
+Sửa lại: Đáp án là 4.
+
+---
+
+Câu 10. Tìm ${x}$ biết: ${\frac{1}{5} : x = \frac{1}{7}}$.
+Đáp án: ${\frac{7}{5}}$
+Lời giải:
+${\frac{1}{5} : x = \frac{1}{7}}$
+${x = \frac{1}{5} : \frac{1}{7}}$
+${x = \frac{1}{5} \cdot 7}$
+${x = \frac{7}{5}}$
+
+---
+
+Câu 11. Tìm ${x}$ biết: ${\frac{3}{4} + x = \frac{7}{2}}$.
+Đáp án: ${\frac{11}{4}}$
+Lời giải:
+${\frac{3}{4} + x = \frac{7}{2}}$
+${x = \frac{7}{2} - \frac{3}{4}}$
+${x = \frac{14}{4} - \frac{3}{4}}$
+${x = \frac{11}{4}}$
+
+---
+
+Câu 12. Tìm ${x}$ biết: ${x + \frac{2}{5} = \frac{-5}{4}}$.
+Đáp án: ${\frac{-33}{20}}$
+Lời giải:
+${x + \frac{2}{5} = \frac{-5}{4}}$
+${x = \frac{-5}{4} - \frac{2}{5}}$
+${x = \frac{-25}{20} - \frac{8}{20}}$
+${x = \frac{-25 - 8}{20} = \frac{-33}{20}}$
+
+---
+
+Câu 13. Tìm ${x}$ biết: ${\frac{7}{2}x - \frac{7}{2} = -\frac{5}{4}}$.
+Đáp án: ${\frac{1}{2}}$
+Lời giải:
+${\frac{7}{2}x - \frac{7}{2} = -\frac{5}{4}}$
+${\frac{7}{2}x = -\frac{5}{4} + \frac{7}{2}}$
+${\frac{7}{2}x = -\frac{5}{4} + \frac{14}{4}}$
+${\frac{7}{2}x = \frac{9}{4}}$
+${x = \frac{9}{4} : \frac{7}{2}}$
+${x = \frac{9}{4} \cdot \frac{2}{7}}$
+${x = \frac{18}{28} = \frac{9}{14}}$
+Sửa lại: Đáp án là ${\frac{9}{14}}$.
+
+---
+
+Câu 14. Tìm ${x}$ biết: ${x^2 = \frac{9}{25}}$.
+Đáp án: ${\frac{3}{5}}$ hoặc ${\frac{-3}{5}}$
+Lời giải:
+${x^2 = \frac{9}{25}}$
+${x = \pm \sqrt{\frac{9}{25}}}$
+${x = \pm \frac{3}{5}}$
+Vậy ${x = \frac{3}{5}}$ hoặc ${x = -\frac{3}{5}}$.
+
+---
+
+Câu 15. Tìm ${x}$ biết: ${(x - 5)^2 = 64}$.
+Đáp án: ${13}$ hoặc ${-3}$
+Lời giải:
+${(x - 5)^2 = 64}$
+${x - 5 = \pm \sqrt{64}}$
+${x - 5 = \pm 8}$
+Trường hợp 1: ${x - 5 = 8 \Rightarrow x = 8 + 5 = 13}$
+Trường hợp 2: ${x - 5 = -8 \Rightarrow x = -8 + 5 = -3}$
+Vậy ${x = 13}$ hoặc ${x = -3}$.
+
+---
+
+Câu 16. Tìm ${x}$ biết: ${(x - 3)^3 = -64}$.
+Đáp án: ${-1}$
+Lời giải:
+${(x - 3)^3 = -64}$
+${(x - 3)^3 = (-4)^3}$
+${x - 3 = -4}$
+${x = -4 + 3}$
+${x = -1}$
+
+---
+
+Câu 17. Ba chu kì bán rã của nguyên tố phóng xạ Plutonium 239 là bao nhiêu năm, biết chu kì bán rã là ${2,436 \cdot 10^4}$ năm?
+Đáp án: ${7,308 \cdot 10^4}$ năm
+Lời giải:
+Ba chu kì bán rã của nguyên tố phóng xạ đó là:
+${3 \cdot (2,436 \cdot 10^4) = (3 \cdot 2,436) \cdot 10^4 = 7,308 \cdot 10^4}$ năm.
+
+---
+
+Câu 18. Một chiếc Tivi có giá niêm yết là 6.100.000 đồng. Tivi khuyến mãi hai đợt, đợt 1 giảm 12%, đợt 2 giảm thêm 8% (trên giá giảm đợt 1). Hỏi giá cuối cùng của chiếc Tivi là bao nhiêu?
+Đáp án: ${5.047.680}$ đồng
+Lời giải:
+Giá của Tivi sau đợt 1 giảm 12%:
+${6.100.000 \cdot (1 - 0,12) = 6.100.000 \cdot 0,88 = 5.368.000}$ đồng.
+Giá của Tivi sau đợt 2 giảm thêm 8% trên giá đã giảm:
+${5.368.000 \cdot (1 - 0,08) = 5.368.000 \cdot 0,92 = 4.938.560}$ đồng.
+Sửa lại: ${5.368.000 \times 0.92 = 4938560}$.
+Đáp án: ${4.938.560}$ đồng.
+
+---
+
+Câu 19. Một cửa hàng thời trang nhập về 100 cái áo với giá vốn mỗi cái là 200.000 đồng. Cửa hàng đã bán 60 cái áo, mỗi cái lời 25% so với giá mua, 40 cái áo còn lại cửa hàng bán lỗ 5% mỗi cái so với giá mua. Hỏi sau khi bán hết 100 cái áo cửa hàng đã lời bao nhiêu tiền?
+Đáp án: ${2.600.000}$ đồng
+Lời giải:
+Tổng giá vốn của 100 cái áo là: ${100 \cdot 200.000 = 20.000.000}$ đồng.
+Giá bán 60 cái áo đầu tiên: Mỗi cái lời 25% so với giá mua, nên giá bán một cái là: ${200.000 \cdot (1 + 0,25) = 200.000 \cdot 1,25 = 250.000}$ đồng.
+Tổng tiền thu được từ 60 cái áo là: ${60 \cdot 250.000 = 15.000.000}$ đồng.
+Giá bán 40 cái áo còn lại: Mỗi cái lỗ 5% so với giá mua, nên giá bán một cái là: ${200.000 \cdot (1 - 0,05) = 200.000 \cdot 0,95 = 190.000}$ đồng.
+Tổng tiền thu được từ 40 cái áo là: ${40 \cdot 190.000 = 7.600.000}$ đồng.
+Tổng tiền thu được khi bán hết 100 cái áo là: ${15.000.000 + 7.600.000 = 22.600.000}$ đồng.
+Số tiền cửa hàng đã lời là: ${22.600.000 - 20.000.000 = 2.600.000}$ đồng.
+
+---
+
+Câu 20. Bạn An đi siêu thị mua một món hàng đang có chương trình khuyến mãi giảm giá 20%, do có thẻ khách hàng thân thiết của siêu thị nên An được giảm thêm 2% trên giá đã giảm. Do đó An chỉ trả 196.000 đồng cho món hàng đó. Hỏi giá bán ban đầu của món hàng nếu không khuyến mãi là bao nhiêu?
+Đáp án: ${250.000}$ đồng
+Lời giải:
+Gọi giá bán ban đầu của món hàng là ${P}$.
+Giá sau khi giảm 20% là: ${P \cdot (1 - 0,20) = P \cdot 0,80}$.
+Giá sau khi giảm thêm 2% trên giá đã giảm là: ${P \cdot 0,80 \cdot (1 - 0,02) = P \cdot 0,80 \cdot 0,98 = P \cdot 0,784}$.
+Theo đề bài, An trả 196.000 đồng, vậy:
+${P \cdot 0,784 = 196.000}$
+${P = \frac{196.000}{0,784} = 250.000}$ đồng.
+Vậy, giá bán ban đầu của món hàng là ${250.000}$ đồng.

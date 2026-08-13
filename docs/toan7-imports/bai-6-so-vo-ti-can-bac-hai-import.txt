@@ -1,0 +1,508 @@
+@grade_level: 7
+@chapter: 2
+@lesson_no: 6
+@title: Số vô tỉ. Căn bậc hai số học.
+@video_url:
+@video_material_url:
+@pdf_url:
+@seo_description: Bài giảng về số vô tỉ và căn bậc hai số học, bao gồm định nghĩa, cách tính toán và các dạng bài tập thực hành.
+@focus_keyword: số vô tỉ, căn bậc hai số học
+@keywords: số thực, căn bậc hai, tính toán, phương trình, bài toán thực tế
+
+LÝ THUYẾT TRỌNG TÂM
+
+# 1. Số vô tỉ
+
+Định nghĩa:
+
+Số vô tỉ là số viết dưới dạng số thập phân vô hạn không tuần hoàn. Số vô tỉ không viết được dưới dạng phân số.
+
+Ví dụ:
+
+${\pi = 3,14159...}$; ${\sqrt{2} = 1,41421356...}$ là các số vô tỉ.
+
+Tập hợp các số vô tỉ được kí hiệu là ${I}$.
+
+# 2. Khái niệm căn bậc hai số học
+
+Định nghĩa:
+
+Căn bậc hai số học của một số ${a}$ không âm là một số ${x}$ không âm sao cho ${x^2 = a}$.
+
+Căn bậc hai số học của ${a}$ được kí hiệu là ${\sqrt{a}}$.
+
+Ví dụ:
+
+${\sqrt{9} = 3}$; ${\sqrt{0} = 0}$; ${\sqrt{256} = 16}$.
+
+Ghi nhớ:
+
+- Kí hiệu ${\sqrt{a}}$ chỉ căn bậc hai số học của ${a}$ (là một số không âm).
+- Để ${\sqrt{a}}$ có nghĩa, điều kiện là ${a \ge 0}$.
+- Với ${a \ge 0}$, ta có ${\sqrt{a} \ge 0}$ và ${(\sqrt{a})^2 = a}$.
+- Với mọi số thực ${a}$, ta có ${\sqrt{a^2} = |a|}$.
+
+CÁC DẠNG TOÁN & VÍ DỤ
+
+Dạng 1: Nhận biết số vô tỉ
+
+Phương pháp:
+
+Để nhận biết số vô tỉ, ta cần kiểm tra xem số đó có thể viết dưới dạng phân số hay không, hoặc có phải là số thập phân vô hạn không tuần hoàn hay không. Các số như ${\pi}$, ${\sqrt{2}}$, ${\sqrt{3}}$, ... là các số vô tỉ.
+
+---
+
+Ví dụ 1. Trong các số sau, số nào là số vô tỉ?
+${A. 0,5}$
+${B. -3}$
+${C. \sqrt{7}}$
+${D. \frac{1}{3}}$
+
+Đáp án: C
+
+Lời giải:
+- ${0,5}$ là số hữu tỉ (viết được dưới dạng ${\frac{1}{2}}$).
+- ${-3}$ là số hữu tỉ (viết được dưới dạng ${\frac{-3}{1}}$).
+- ${\sqrt{7}}$ là số vô tỉ (là số thập phân vô hạn không tuần hoàn).
+- ${\frac{1}{3}}$ là số hữu tỉ (là số thập phân vô hạn tuần hoàn ${0,333...}$).
+Vậy, đáp án đúng là ${C}$.
+
+---
+
+Ví dụ 2. [đúng sai nhóm]
+Xét các khẳng định sau:
+a) Mọi số vô tỉ đều là số thực.
+b) Số ${-\sqrt{25}}$ là số vô tỉ.
+c) Tổng của một số hữu tỉ và một số vô tỉ luôn là số vô tỉ.
+d) Tích của một số hữu tỉ khác 0 và một số vô tỉ luôn là số vô tỉ.
+
+Lời giải:
+a) Đúng: Tập hợp số thực bao gồm cả số hữu tỉ và số vô tỉ.
+b) Sai: ${\sqrt{25} = 5}$, nên ${-\sqrt{25} = -5}$ là một số nguyên, đồng thời là số hữu tỉ.
+c) Đúng: Ví dụ: ${1 + \sqrt{2}}$ là số vô tỉ.
+d) Đúng: Ví dụ: ${2 \cdot \sqrt{3}}$ là số vô tỉ.
+
+---
+
+Dạng 2: Tính căn bậc hai số học
+
+Phương pháp:
+
+Áp dụng định nghĩa căn bậc hai số học: nếu ${x^2 = a}$ và ${x \ge 0}$ thì ${x = \sqrt{a}}$.
+Lưu ý ${\sqrt{a^2} = |a|}$.
+
+---
+
+Ví dụ 1. Tính giá trị của ${\sqrt{81}}$.
+A. ${-9}$
+B. ${9}$
+C. ${\pm 9}$
+D. Không xác định
+
+Đáp án: B
+
+Lời giải:
+Theo định nghĩa, căn bậc hai số học của ${81}$ là số không âm mà bình phương bằng ${81}$.
+Ta có ${9^2 = 81}$ và ${9 \ge 0}$.
+Vậy ${\sqrt{81} = 9}$.
+
+---
+
+Ví dụ 2. Tính giá trị của ${\sqrt{\frac{1}{9}}}$.
+
+Đáp án: $\frac{1}{3}$
+
+Placeholder: $\sqrt{\frac{1}{9}} = ...$
+
+Lời giải:
+Ta có ${(\frac{1}{3})^2 = \frac{1^2}{3^2} = \frac{1}{9}}$ và ${\frac{1}{3} \ge 0}$.
+Vậy ${\sqrt{\frac{1}{9}} = \frac{1}{3}}$.
+
+---
+
+Dạng 3: Thực hiện phép tính chứa căn bậc hai
+
+Phương pháp:
+
+Thực hiện các phép tính theo đúng thứ tự ưu tiên: lũy thừa, căn bậc hai, nhân chia, cộng trừ.
+Áp dụng các quy tắc về giá trị tuyệt đối ${\sqrt{a^2} = |a|}$.
+
+---
+
+Ví dụ 1. Tính giá trị của biểu thức: ${\sqrt{81} - \sqrt{64} + \sqrt{49}}$.
+
+Lời giải:
+Ta có:
+${\sqrt{81} = 9}$
+${\sqrt{64} = 8}$
+${\sqrt{49} = 7}$
+Do đó, ${\sqrt{81} - \sqrt{64} + \sqrt{49} = 9 - 8 + 7 = 1 + 7 = 8}$.
+
+---
+
+Ví dụ 2. Tính giá trị của biểu thức: ${2^0 + 5 \cdot \sqrt{\frac{1}{9}} - \sqrt{11^2} - 4}$.
+
+Lời giải:
+Thực hiện từng bước:
+${2^0 = 1}$
+${\sqrt{\frac{1}{9}} = \frac{1}{3}}$
+${\sqrt{11^2} = |11| = 11}$
+Thay vào biểu thức:
+${1 + 5 \cdot \frac{1}{3} - 11 - 4}$
+${= 1 + \frac{5}{3} - 11 - 4}$
+${= \frac{3}{3} + \frac{5}{3} - \frac{33}{3} - \frac{12}{3}}$
+${= \frac{3+5-33-12}{3}}$
+${= \frac{8-45}{3}}$
+${= \frac{-37}{3}}$.
+
+---
+
+Dạng 4: Giải phương trình dạng ${x = \sqrt{a}}$ hoặc ${x^2 = a}$
+
+Phương pháp:
+
+- Đối với phương trình dạng ${\sqrt{x} = k}$ (với ${k \ge 0}$), ta bình phương hai vế để tìm ${x}$: ${(\sqrt{x})^2 = k^2 \Rightarrow x = k^2}$. Điều kiện để ${\sqrt{x}}$ có nghĩa là ${x \ge 0}$.
+- Đối với phương trình dạng ${x^2 = a}$:
+    - Nếu ${a > 0}$, phương trình có hai nghiệm ${x = \sqrt{a}}$ hoặc ${x = -\sqrt{a}}$.
+    - Nếu ${a = 0}$, phương trình có nghiệm duy nhất ${x = 0}$.
+    - Nếu ${a < 0}$, phương trình vô nghiệm.
+
+---
+
+Ví dụ 1. Tìm ${x}$ biết ${\sqrt{x} = 2}$.
+
+Đáp án: ${x = 4}$
+
+Placeholder: ${x = ...}$
+
+Lời giải:
+Điều kiện để ${\sqrt{x}}$ có nghĩa là ${x \ge 0}$.
+Bình phương hai vế của phương trình ${\sqrt{x} = 2}$:
+${(\sqrt{x})^2 = 2^2}$
+${x = 4}$
+Giá trị ${x=4}$ thỏa mãn điều kiện ${x \ge 0}$.
+Vậy ${x = 4}$.
+
+---
+
+Ví dụ 2. Tìm ${x}$ biết ${x^2 = 9}$.
+
+Lời giải:
+Phương trình ${x^2 = 9}$ có hai nghiệm:
+${x = \sqrt{9}}$ hoặc ${x = -\sqrt{9}}$
+${x = 3}$ hoặc ${x = -3}$
+Vậy ${x = 3}$ hoặc ${x = -3}$.
+
+---
+
+Dạng 5: Bài toán thực tế liên quan đến căn bậc hai
+
+Phương pháp:
+
+Đọc kỹ đề bài, xác định các đại lượng đã biết và đại lượng cần tìm. Lập phương trình hoặc biểu thức toán học liên quan đến căn bậc hai để giải quyết bài toán.
+
+---
+
+Ví dụ 1. Bác An muốn lát gạch một cái sân hình vuông có diện tích là ${225 \text{ m}^2}$. Hỏi cạnh của cái sân dài bao nhiêu mét?
+
+Lời giải:
+Gọi chiều dài cạnh của cái sân hình vuông là ${a}$ (đơn vị: mét, ${a > 0}$).
+Diện tích của sân hình vuông là ${S = a^2}$.
+Theo đề bài, ${S = 225 \text{ m}^2}$.
+Vậy ta có phương trình: ${a^2 = 225}$.
+Vì ${a > 0}$, ta chọn nghiệm dương: ${a = \sqrt{225}}$.
+Ta biết ${15^2 = 225}$, vậy ${\sqrt{225} = 15}$.
+Vậy chiều dài cạnh của cái sân là ${15}$ mét.
+
+---
+
+Ví dụ 2. Một cái sân hình vuông có diện tích là ${64 \text{ m}^2}$. Người ta muốn rào xung quanh sân bằng 4 hàng dây thép gai. Hỏi cần bao nhiêu mét dây thép gai?
+
+Lời giải:
+Gọi chiều dài cạnh của cái sân hình vuông là ${a}$ (đơn vị: mét, ${a > 0}$).
+Diện tích của sân hình vuông là ${S = a^2}$.
+Theo đề bài, ${S = 64 \text{ m}^2}$.
+Vậy ta có phương trình: ${a^2 = 64}$.
+Vì ${a > 0}$, ta chọn nghiệm dương: ${a = \sqrt{64} = 8}$ mét.
+Chu vi của sân hình vuông là ${P = 4a = 4 \cdot 8 = 32}$ mét.
+Vì cần rào 4 hàng dây thép gai xung quanh sân, tổng chiều dài dây thép gai cần dùng là ${32 \cdot 4 = 128}$ mét.
+Vậy cần ${128}$ mét dây thép gai.
+
+BÀI TẬP LUYỆN TẬP
+
+Câu 1. Tính giá trị của biểu thức ${\sqrt{13^2}}$.
+A. ${-13}$
+B. ${13}$
+C. ${\pm 13}$
+D. ${169}$
+
+Đáp án: B
+
+Lời giải:
+Áp dụng công thức ${\sqrt{a^2} = |a|}$.
+${\sqrt{13^2} = |13| = 13}$.
+
+---
+
+Câu 2. Tính giá trị của biểu thức ${\sqrt{(-7)^2}}$.
+A. ${-7}$
+B. ${7}$
+C. ${\pm 7}$
+D. ${49}$
+
+Đáp án: B
+
+Lời giải:
+Áp dụng công thức ${\sqrt{a^2} = |a|}$.
+${\sqrt{(-7)^2} = |-7| = 7}$.
+
+---
+
+Câu 3. Tính giá trị của biểu thức ${\sqrt{81}}$.
+
+Đáp án: ${9}$
+
+Placeholder: ${\sqrt{81} = ...}$
+
+Lời giải:
+Vì ${9^2 = 81}$ và ${9 \ge 0}$, nên ${\sqrt{81} = 9}$.
+
+---
+
+Câu 4. Tính giá trị của biểu thức ${\sqrt{\frac{64}{25}}}$.
+
+Đáp án: ${\frac{8}{5}}$
+
+Placeholder: ${\sqrt{\frac{64}{25}} = ...}$
+
+Lời giải:
+Ta có ${\sqrt{\frac{64}{25}} = \frac{\sqrt{64}}{\sqrt{25}} = \frac{8}{5}}$.
+
+---
+
+Câu 5. Tính giá trị của biểu thức ${\sqrt{81} - \sqrt{64} + \sqrt{49}}$.
+
+Đáp án: ${8}$
+
+Placeholder: ${\sqrt{81} - \sqrt{64} + \sqrt{49} = ...}$
+
+Lời giải:
+${\sqrt{81} = 9}$
+${\sqrt{64} = 8}$
+${\sqrt{49} = 7}$
+Vậy ${\sqrt{81} - \sqrt{64} + \sqrt{49} = 9 - 8 + 7 = 1 + 7 = 8}$.
+
+---
+
+Câu 6. Thực hiện phép tính: ${\frac{3}{\sqrt{49}} : (-\frac{2}{3}) - \sqrt{64}}$.
+
+Đáp án: ${-\frac{9}{14} - 8}$
+
+Placeholder: Kết quả là ...
+
+Lời giải:
+${\frac{3}{\sqrt{49}} : (-\frac{2}{3}) - \sqrt{64}}$
+${= \frac{3}{7} : (-\frac{2}{3}) - 8}$
+${= \frac{3}{7} \cdot (-\frac{3}{2}) - 8}$
+${= -\frac{9}{14} - 8}$
+${= -\frac{9}{14} - \frac{112}{14}}$
+${= -\frac{121}{14}}$.
+
+---
+
+Câu 7. Thực hiện phép tính: ${20\% \cdot \sqrt{\frac{1}{25}} - \frac{1}{3} + \frac{9}{25} : 2^0}$.
+
+Đáp án: ${\frac{1}{15} - \frac{1}{3} + \frac{9}{25}}$
+
+Placeholder: Kết quả là ...
+
+Lời giải:
+${20\% = \frac{20}{100} = \frac{1}{5}}$
+${\sqrt{\frac{1}{25}} = \frac{1}{5}}$
+${2^0 = 1}$
+Biểu thức trở thành: ${\frac{1}{5} \cdot \frac{1}{5} - \frac{1}{3} + \frac{9}{25} : 1}$
+${= \frac{1}{25} - \frac{1}{3} + \frac{9}{25}}$
+${= (\frac{1}{25} + \frac{9}{25}) - \frac{1}{3}}$
+${= \frac{10}{25} - \frac{1}{3}}$
+${= \frac{2}{5} - \frac{1}{3}}$
+Mẫu số chung là ${15}$.
+${= \frac{2 \cdot 3}{5 \cdot 3} - \frac{1 \cdot 5}{3 \cdot 5}}$
+${= \frac{6}{15} - \frac{5}{15}}$
+${= \frac{1}{15}}$.
+
+---
+
+Câu 8. Tìm ${x}$ biết ${\sqrt{x} = 2}$.
+
+Đáp án: ${x = 4}$
+
+Placeholder: ${x = ...}$
+
+Lời giải:
+Điều kiện: ${x \ge 0}$.
+Bình phương hai vế: ${(\sqrt{x})^2 = 2^2 \Rightarrow x = 4}$.
+Giá trị ${x=4}$ thỏa mãn điều kiện.
+Vậy ${x = 4}$.
+
+---
+
+Câu 9. Tìm ${x}$ biết ${\sqrt{x} + 1 = 4}$.
+
+Đáp án: ${x = 9}$
+
+Placeholder: ${x = ...}$
+
+Lời giải:
+Điều kiện: ${x \ge 0}$.
+${\sqrt{x} = 4 - 1}$
+${\sqrt{x} = 3}$
+Bình phương hai vế: ${(\sqrt{x})^2 = 3^2 \Rightarrow x = 9}$.
+Giá trị ${x=9}$ thỏa mãn điều kiện.
+Vậy ${x = 9}$.
+
+---
+
+Câu 10. Tìm ${x}$ biết ${2\sqrt{x} - 5 = 0}$.
+
+Đáp án: ${x = \frac{25}{4}}$
+
+Placeholder: ${x = ...}$
+
+Lời giải:
+Điều kiện: ${x \ge 0}$.
+${2\sqrt{x} = 5}$
+${\sqrt{x} = \frac{5}{2}}$
+Bình phương hai vế: ${(\sqrt{x})^2 = (\frac{5}{2})^2 \Rightarrow x = \frac{25}{4}}$.
+Giá trị ${x = \frac{25}{4}}$ thỏa mãn điều kiện.
+Vậy ${x = \frac{25}{4}}$.
+
+---
+
+Câu 11. Tìm ${x}$ biết ${2\sqrt{x} + 1 = 7}$.
+
+Đáp án: ${x = 9}$
+
+Placeholder: ${x = ...}$
+
+Lời giải:
+Điều kiện: ${x \ge 0}$.
+${2\sqrt{x} = 7 - 1}$
+${2\sqrt{x} = 6}$
+${\sqrt{x} = 3}$
+Bình phương hai vế: ${(\sqrt{x})^2 = 3^2 \Rightarrow x = 9}$.
+Giá trị ${x=9}$ thỏa mãn điều kiện.
+Vậy ${x = 9}$.
+
+---
+
+Câu 12. Tìm ${x}$ biết ${x^2 = 9}$.
+A. ${x = 3}$
+B. ${x = -3}$
+C. ${x = \pm 3}$
+D. ${x = \sqrt{3}}$
+
+Đáp án: C
+
+Lời giải:
+Phương trình ${x^2 = 9}$ có hai nghiệm:
+${x = \sqrt{9}}$ hoặc ${x = -\sqrt{9}}$
+${x = 3}$ hoặc ${x = -3}$.
+Vậy ${x = \pm 3}$.
+
+---
+
+Câu 13. Tìm ${x}$ biết ${x^2 = \frac{4}{9}}$.
+A. ${x = \frac{2}{3}}$
+B. ${x = -\frac{2}{3}}$
+C. ${x = \frac{4}{9}}$
+D. ${x = \pm \frac{2}{3}}$
+
+Đáp án: D
+
+Lời giải:
+Phương trình ${x^2 = \frac{4}{9}}$ có hai nghiệm:
+${x = \sqrt{\frac{4}{9}}}$ hoặc ${x = -\sqrt{\frac{4}{9}}}$
+${x = \frac{2}{3}}$ hoặc ${x = -\frac{2}{3}}$.
+Vậy ${x = \pm \frac{2}{3}}$.
+
+---
+
+Câu 14. Tìm ${x}$ biết ${ (x+1)^2 = \frac{4}{9}}$.
+A. ${x = \frac{2}{3}}$
+B. ${x = -\frac{2}{3}}$
+C. ${x = -\frac{1}{3}}$ hoặc ${x = -\frac{5}{3}}$
+D. ${x = \frac{1}{3}}$ hoặc ${x = -\frac{1}{3}}$
+
+Đáp án: C
+
+Lời giải:
+${(x+1)^2 = \frac{4}{9}}$
+Trường hợp 1: ${x+1 = \sqrt{\frac{4}{9}}}$
+${x+1 = \frac{2}{3}}$
+${x = \frac{2}{3} - 1}$
+${x = \frac{2}{3} - \frac{3}{3}}$
+${x = -\frac{1}{3}}$
+Trường hợp 2: ${x+1 = -\sqrt{\frac{4}{9}}}$
+${x+1 = -\frac{2}{3}}$
+${x = -\frac{2}{3} - 1}$
+${x = -\frac{2}{3} - \frac{3}{3}}$
+${x = -\frac{5}{3}}$
+Vậy ${x = -\frac{1}{3}}$ hoặc ${x = -\frac{5}{3}}$.
+
+---
+
+Câu 15. Bác Thu thuê thợ lát gạch một cái sân hình vuông hết tất cả là ${10\,125\,000}$ đồng. Cho biết chi phí cho ${1 \text{ m}^2}$ (kể cả công thợ và vật liệu) là ${125\,000}$ đồng. Hãy tính chiều dài cạnh của cái sân.
+
+Đáp án: ${9}$ mét
+
+Placeholder: Chiều dài cạnh là ... mét.
+
+Lời giải:
+Diện tích của cái sân là:
+${S = \frac{\text{Tổng chi phí}}{\text{Chi phí cho 1 m}^2} = \frac{10\,125\,000}{125\,000} = 81 \text{ m}^2}$.
+Gọi chiều dài cạnh của cái sân hình vuông là ${a}$ (đơn vị: mét, ${a > 0}$).
+Ta có ${a^2 = S}$.
+${a^2 = 81}$.
+Vì ${a > 0}$, ta có ${a = \sqrt{81} = 9}$ mét.
+Vậy chiều dài cạnh của cái sân là ${9}$ mét.
+
+---
+
+Câu 16. Mẹ bạn Nam gửi tiết kiệm ${200\,000\,000}$ đồng vào một ngân hàng theo thể thức kì hạn 1 năm. Hết thời hạn 1 năm, mẹ bạn Nam nhận được cả vốn lẫn lãi là ${214\,000\,000}$ đồng. Tính lãi suất ngân hàng theo thể thức gửi tiết kiệm này (viết dưới dạng phần trăm).
+
+Đáp án: ${7\%}$
+
+Placeholder: Lãi suất là ... %
+
+Lời giải:
+Số tiền lãi mà mẹ bạn Nam nhận được sau 1 năm là:
+${Lãi = \text{Cả vốn lẫn lãi} - \text{Vốn ban đầu}}$
+${Lãi = 214\,000\,000 - 200\,000\,000 = 14\,000\,000}$ đồng.
+Lãi suất ngân hàng ${r}$ được tính bằng công thức:
+${r = \frac{\text{Lãi}}{\text{Vốn ban đầu}} \cdot 100\%}$
+${r = \frac{14\,000\,000}{200\,000\,000} \cdot 100\%}$
+${r = \frac{14}{200} \cdot 100\%}$
+${r = \frac{7}{100} \cdot 100\%}$
+${r = 7\%}$.
+Vậy lãi suất ngân hàng là ${7\%}$.
+
+TÓM TẮT BÀI HỌC
+
+TITLE: Số vô tỉ. Căn bậc hai số học — Tóm tắt
+
+ROOT: Số vô tỉ & Căn bậc hai số học
+
+- Số vô tỉ
+  - Định nghĩa: Số thập phân vô hạn không tuần hoàn
+  - Kí hiệu: ${I}$
+  - Không viết được dưới dạng phân số
+
+- Căn bậc hai số học
+  - Định nghĩa: Số ${x \ge 0}$ sao cho ${x^2 = a}$
+  - Kí hiệu: ${\sqrt{a}}$ (với ${a \ge 0}$)
+  - Tính chất: ${\sqrt{a^2} = |a|}$
+  - Ứng dụng: Giải phương trình ${x^2 = a}$, bài toán thực tế
+
+TÀI LIỆU PDF
+
+https://drive.google.com/file/d/xxxxxxxx/view?usp=sharing

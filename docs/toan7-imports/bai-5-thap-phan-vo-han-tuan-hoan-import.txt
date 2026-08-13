@@ -1,0 +1,379 @@
+@grade_level: 7
+@chapter: 2
+@lesson_no: 5
+@title: Làm quen với số thập phân vô hạn tuần hoàn
+@video_url:
+@video_material_url:
+@pdf_url:
+@seo_description: Bài giảng giới thiệu về số thập phân hữu hạn, vô hạn tuần hoàn và cách làm tròn số trong chương trình Toán 7.
+@focus_keyword: số thập phân vô hạn tuần hoàn
+@keywords: số thập phân hữu hạn, số hữu tỉ, làm tròn số, chu kì, độ chính xác
+
+LÝ THUYẾT TRỌNG TÂM
+
+# 1. Số thập phân hữu hạn và số thập phân vô hạn tuần hoàn
+
+Định nghĩa:
+Mỗi số hữu tỉ được biểu diễn bởi một số thập phân hữu hạn hoặc vô hạn tuần hoàn.
+Ngược lại, mỗi số thập phân hữu hạn hoặc vô hạn tuần hoàn biểu diễn một số hữu tỉ.
+
+Ví dụ:
+- Số thập phân hữu hạn: ${\frac{2}{5} = 0,4}$; ${\frac{21}{4} = 5,25}$.
+- Số thập phân vô hạn tuần hoàn: ${\frac{13}{3} = 4,333... = 4,(3)}$; ${\frac{1}{6} = 0,1666... = 0,1(6)}$.
+
+Ghi nhớ:
+- Chu kì của một số thập phân vô hạn tuần hoàn là dãy chữ số lặp lại vô hạn lần trong phần thập phân. Chu kì được đặt trong dấu ngoặc đơn.
+
+---
+
+# 2. Làm tròn số
+
+Phương pháp:
+Muốn làm tròn số thực ${x}$ đến một hàng quy tròn nào đó, ta thực hiện các bước sau:
+- Gạch dưới chữ số của hàng quy tròn.
+- Nhìn sang chữ số ngay bên phải:
+  - Nếu chữ số đó lớn hơn hoặc bằng ${5}$ thì tăng chữ số gạch dưới lên một đơn vị rồi thay tất cả các chữ số bên phải bằng số ${0}$ hoặc bỏ đi nếu chúng ở phần thập phân.
+  - Nếu chữ số đó nhỏ hơn ${5}$ thì giữ nguyên chữ số gạch dưới và thay tất cả các chữ số bên phải bằng số ${0}$ hoặc bỏ đi nếu chúng ở phần thập phân.
+
+Ví dụ:
+- Làm tròn số ${45,123}$ đến hàng phần trăm: ${\underline{45,12}3 \approx 45,12}$ (vì chữ số ${3 < 5}$).
+- Làm tròn số ${6,(6) = 6,66666...}$ đến hàng phần trăm: ${\underline{6,66}666... \approx 6,67}$ (vì chữ số ${6 \ge 5}$).
+- Làm tròn số ${99,9879...}$ đến hàng phần trăm: ${\underline{99,98}79... \approx 99,99}$.
+- Làm tròn số ${99,9879...}$ đến hàng đơn vị: ${\underline{99},9879... \approx 100}$.
+
+---
+
+# 3. Làm tròn số căn cứ vào độ chính xác cho trước
+
+Định nghĩa:
+Cho số thực ${d}$, nếu khi làm tròn số ${a}$ ta thu được số ${x}$ thỏa mãn ${|a - x| \le d}$ thì ta nói ${x}$ là số làm tròn của số ${a}$ với độ chính xác ${d}$ cho trước.
+
+Ghi nhớ:
+Để làm tròn số ${a}$ với độ chính xác ${d}$, ta thường làm tròn số ${a}$ đến hàng cao hơn hàng thập phân cao nhất của ${d}$ một bậc.
+Ví dụ:
+- Làm tròn số với độ chính xác ${d = 0,06}$: Ta làm tròn đến hàng phần mười (hàng cao hơn hàng phần trăm của ${d}$ một bậc).
+- Làm tròn số với độ chính xác ${d = 0,001}$: Ta làm tròn đến hàng phần trăm (hàng cao hơn hàng phần nghìn của ${d}$ một bậc).
+
+CÁC DẠNG TOÁN & VÍ DỤ
+
+Dạng 1: Biểu diễn số hữu tỉ dưới dạng số thập phân
+
+Phương pháp:
+Thực hiện phép chia tử số cho mẫu số để chuyển phân số thành số thập phân. Nếu phần thập phân lặp lại, xác định chu kì và viết gọn.
+
+---
+
+Ví dụ 1:
+Hãy biểu diễn số hữu tỉ ${\frac{7}{4}}$ dưới dạng số thập phân.
+Lời giải:
+Ta có: ${\frac{7}{4} = 7 : 4 = 1,75}$.
+
+---
+
+Ví dụ 2:
+Hãy biểu diễn số hữu tỉ ${\frac{12}{5}}$ dưới dạng số thập phân.
+Lời giải:
+Ta có: ${\frac{12}{5} = 12 : 5 = 2,4}$.
+
+---
+
+Dạng 2: Viết gọn số thập phân vô hạn tuần hoàn
+
+Phương pháp:
+Xác định chu kì (dãy chữ số lặp lại) của phần thập phân và đặt chu kì đó trong dấu ngoặc đơn.
+
+---
+
+Ví dụ 1:
+Sử dụng chu kì, hãy viết gọn số thập phân ${2,212121...}$.
+Lời giải:
+Ta thấy dãy số ${21}$ lặp lại vô hạn lần. Vậy, ${2,212121... = 2,(21)}$.
+
+---
+
+Ví dụ 2:
+Sử dụng chu kì, hãy viết gọn số thập phân ${0,62313131...}$.
+Lời giải:
+Ta thấy dãy số ${31}$ lặp lại vô hạn lần sau chữ số ${2}$. Vậy, ${0,62313131... = 0,62(31)}$.
+
+---
+
+Dạng 3: Biểu diễn số thập phân vô hạn tuần hoàn dưới dạng số hữu tỉ
+
+Phương pháp:
+Đối với số thập phân vô hạn tuần hoàn đơn giản, ta có thể dùng phương pháp đặt ẩn phụ hoặc áp dụng công thức chuyển đổi.
+- Với số có dạng ${0,(a)}$, ta có ${0,(a) = \frac{a}{9}}$.
+- Với số có dạng ${0,(ab)}$, ta có ${0,(ab) = \frac{ab}{99}}$.
+- Với số có dạng ${x, y(z)}$ hoặc ${x,(y)}$, ta cần biến đổi phù hợp.
+
+---
+
+Ví dụ 1:
+Hãy biểu diễn số thập phân ${0,(2)}$ dưới dạng số hữu tỉ.
+Lời giải:
+Ta có ${0,(2) = \frac{2}{9}}$.
+
+---
+
+Ví dụ 2:
+Hãy biểu diễn số thập phân ${2,(35)}$ dưới dạng số hữu tỉ.
+Lời giải:
+Ta có ${2,(35) = 2 + 0,(35) = 2 + \frac{35}{99} = \frac{198}{99} + \frac{35}{99} = \frac{233}{99}}$.
+
+---
+
+Dạng 4: So sánh các số thập phân
+
+Phương pháp:
+So sánh hai số thập phân bằng cách so sánh từng chữ số kể từ trái sang phải, bắt đầu từ hàng cao nhất.
+- Đối với số dương: Số nào có chữ số ở hàng tương ứng lớn hơn thì số đó lớn hơn.
+- Đối với số âm: Giá trị tuyệt đối của số nào lớn hơn thì số âm đó nhỏ hơn.
+- Chú ý chuyển các số thập phân vô hạn tuần hoàn sang dạng khai triển để dễ so sánh.
+
+---
+
+Ví dụ 1:
+So sánh ${4,(15)}$ và ${4,1(15)}$.
+Lời giải:
+Ta có:
+${4,(15) = 4,151515...}$
+${4,1(15) = 4,115151...}$
+So sánh từ trái sang phải, chữ số ở hàng phần mười của ${4,(15)}$ là ${1}$ và của ${4,1(15)}$ cũng là ${1}$.
+Chữ số ở hàng phần trăm của ${4,(15)}$ là ${5}$ và của ${4,1(15)}$ là ${1}$.
+Vì ${5 > 1}$, nên ${4,(15) > 4,1(15)}$.
+
+---
+
+Ví dụ 2:
+So sánh ${-3,(23)}$ và ${-3,2(23)}$.
+Lời giải:
+Ta có:
+${-3,(23) = -3,232323...}$
+${-3,2(23) = -3,223232...}$
+So sánh các giá trị tuyệt đối:
+${|-3,(23)| = 3,232323...}$
+${|-3,2(23)| = 3,223232...}$
+So sánh ${3,232323...}$ và ${3,223232...}$: Chữ số ở hàng phần trăm của ${3,232323...}$ là ${3}$, của ${3,223232...}$ là ${2}$.
+Vì ${3 > 2}$, nên ${3,232323... > 3,223232...}$.
+Do đó, ${|-3,(23)| > |-3,2(23)|}$.
+Với các số âm, số nào có giá trị tuyệt đối lớn hơn thì số đó nhỏ hơn.
+Vậy, ${-3,(23) < -3,2(23)}$.
+
+---
+
+Dạng 5: Làm tròn số
+
+Phương pháp:
+Áp dụng các bước làm tròn số đến hàng quy tròn hoặc theo độ chính xác cho trước.
+
+---
+
+Ví dụ 1:
+Làm tròn số ${21441}$ đến hàng chục.
+Lời giải:
+Chữ số gạch dưới là ${4}$ (hàng chục). Chữ số ngay bên phải là ${1}$ (nhỏ hơn ${5}$).
+Vậy giữ nguyên chữ số gạch dưới và thay chữ số bên phải bằng ${0}$.
+${21\underline{4}1 \approx 21440}$.
+
+---
+
+Ví dụ 2:
+Làm tròn số ${3,819}$ đến hàng phần trăm.
+Lời giải:
+Chữ số gạch dưới là ${1}$ (hàng phần trăm). Chữ số ngay bên phải là ${9}$ (lớn hơn hoặc bằng ${5}$).
+Vậy tăng chữ số gạch dưới lên một đơn vị (${1}$ thành ${2}$) và bỏ đi các chữ số bên phải.
+${3,8\underline{1}9 \approx 3,82}$.
+
+BÀI TẬP LUYỆN TẬP
+
+Câu 1. Hãy biểu diễn các số hữu tỉ sau đây dưới dạng số thập phân: ${\frac{7}{4}}$.
+A. ${1,7}$
+B. ${1,75}$
+C. ${1,705}$
+D. ${1,075}$
+Đáp án: B
+Lời giải:
+Thực hiện phép chia ${7 : 4 = 1,75}$.
+
+---
+
+Câu 2. Hãy biểu diễn các số hữu tỉ sau đây dưới dạng số thập phân: ${\frac{33}{10}}$.
+A. ${3,03}$
+B. ${3,3}$
+C. ${0,33}$
+D. ${33,0}$
+Đáp án: B
+Lời giải:
+Thực hiện phép chia ${33 : 10 = 3,3}$.
+
+---
+
+Câu 3. Hãy biểu diễn các số hữu tỉ sau đây dưới dạng số thập phân: ${-\frac{12}{5}}$.
+A. ${-2,4}$
+B. ${2,4}$
+C. ${-1,2}$
+D. ${-0,24}$
+Đáp án: A
+Lời giải:
+Thực hiện phép chia ${12 : 5 = 2,4}$. Vậy ${-\frac{12}{5} = -2,4}$.
+
+---
+
+Câu 4. Hãy biểu diễn các số hữu tỉ sau đây dưới dạng số thập phân: ${-\frac{124}{25}}$.
+A. ${-4,96}$
+B. ${4,96}$
+C. ${-49,6}$
+D. ${-4,096}$
+Đáp án: A
+Lời giải:
+Thực hiện phép chia ${124 : 25 = 4,96}$. Vậy ${-\frac{124}{25} = -4,96}$.
+
+---
+
+Câu 5. Sử dụng chu kì, hãy viết gọn số thập phân ${3,999...}$.
+A. ${3,9}$
+B. ${3,(9)}$
+C. ${3,99}$
+D. ${3,999}$
+Đáp án: B
+Lời giải:
+Dãy chữ số ${9}$ lặp lại vô hạn. Vậy ${3,999... = 3,(9)}$.
+
+---
+
+Câu 6. Sử dụng chu kì, hãy viết gọn số thập phân ${2,212121...}$.
+A. ${2,(21)}$
+B. ${2,2(12)}$
+C. ${2,21}$
+D. ${2,(212)}$
+Đáp án: A
+Lời giải:
+Dãy chữ số ${21}$ lặp lại vô hạn. Vậy ${2,212121... = 2,(21)}$.
+
+---
+
+Câu 7. Sử dụng chu kì, hãy viết gọn số thập phân ${0,580580...}$.
+A. ${0,580}$
+B. ${0,(58)}$
+C. ${0,5(80)}$
+D. ${0,(580)}$
+Đáp án: D
+Lời giải:
+Dãy chữ số ${580}$ lặp lại vô hạn. Vậy ${0,580580... = 0,(580)}$.
+
+---
+
+Câu 8. Sử dụng chu kì, hãy viết gọn số thập phân ${0,62313131...}$.
+A. ${0,62(31)}$
+B. ${0,(6231)}$
+C. ${0,6(231)}$
+D. ${0,623(1)}$
+Đáp án: A
+Lời giải:
+Dãy chữ số ${31}$ lặp lại vô hạn sau chữ số ${2}$. Vậy ${0,62313131... = 0,62(31)}$.
+
+---
+
+Câu 9. Sử dụng chu kì, hãy viết gọn số thập phân ${-1,020202...}$.
+A. ${-1,(02)}$
+B. ${-1,0(2)}$
+C. ${-1,(020)}$
+D. ${-1,02}$
+Đáp án: A
+Lời giải:
+Dãy chữ số ${02}$ lặp lại vô hạn. Vậy ${-1,020202... = -1,(02)}$.
+
+---
+
+Câu 10. Sử dụng chu kì, hãy viết gọn số thập phân ${-6,767676...}$.
+A. ${-6,7(6)}$
+B. ${-6,(76)}$
+C. ${-6,(767)}$
+D. ${-6,76}$
+Đáp án: B
+Lời giải:
+Dãy chữ số ${76}$ lặp lại vô hạn. Vậy ${-6,767676... = -6,(76)}$.
+
+---
+
+Câu 11. Hãy biểu diễn số thập phân ${7,2}$ dưới dạng số hữu tỉ.
+A. ${\frac{36}{5}}$
+B. ${\frac{7}{2}}$
+C. ${\frac{72}{5}}$
+D. ${\frac{18}{5}}$
+Đáp án: A
+Lời giải:
+${7,2 = \frac{72}{10} = \frac{36}{5}}$.
+
+---
+
+Câu 12. Hãy biểu diễn số thập phân ${0,25}$ dưới dạng số hữu tỉ.
+A. ${\frac{1}{25}}$
+B. ${\frac{1}{4}}$
+C. ${\frac{25}{1}}$
+D. ${\frac{2}{5}}$
+Đáp án: B
+Lời giải:
+${0,25 = \frac{25}{100} = \frac{1}{4}}$.
+
+---
+
+Câu 13. Hãy biểu diễn số thập phân ${0,(2)}$ dưới dạng số hữu tỉ.
+A. ${\frac{2}{10}}$
+B. ${\frac{2}{9}}$
+C. ${\frac{1}{5}}$
+D. ${\frac{2}{1}}$
+Đáp án: B
+Lời giải:
+Áp dụng công thức ${0,(a) = \frac{a}{9}}$, ta có ${0,(2) = \frac{2}{9}}$.
+
+---
+
+Câu 14. Hãy biểu diễn số thập phân ${2,(35)}$ dưới dạng số hữu tỉ.
+A. ${\frac{235}{99}}$
+B. ${\frac{233}{99}}$
+C. ${\frac{235}{100}}$
+D. ${\frac{35}{99}}$
+Đáp án: B
+Lời giải:
+${2,(35) = 2 + 0,(35) = 2 + \frac{35}{99} = \frac{198}{99} + \frac{35}{99} = \frac{233}{99}}$.
+
+---
+
+Câu 15. Làm tròn số ${21441}$ đến hàng chục.
+A. ${21440}$
+B. ${21450}$
+C. ${21400}$
+D. ${21000}$
+Đáp án: A
+Lời giải:
+Chữ số hàng chục là ${4}$. Chữ số ngay bên phải là ${1 < 5}$. Giữ nguyên chữ số hàng chục và thay chữ số bên phải bằng ${0}$. Kết quả là ${21440}$.
+
+---
+
+Câu 16. Làm tròn số ${3,819}$ đến hàng phần trăm.
+A. ${3,81}$
+B. ${3,82}$
+C. ${3,80}$
+D. ${3,90}$
+Đáp án: B
+Lời giải:
+Chữ số hàng phần trăm là ${1}$. Chữ số ngay bên phải là ${9 \ge 5}$. Tăng chữ số hàng phần trăm lên một đơn vị (${1 \to 2}$) và bỏ các chữ số phía sau. Kết quả là ${3,82}$.
+
+TÓM TẮT BÀI HỌC
+
+TITLE: Làm quen với số thập phân vô hạn tuần hoàn — Tóm tắt
+ROOT: Số thập phân
+- Số thập phân hữu hạn
+  - Định nghĩa
+  - Ví dụ: ${\frac{1}{2} = 0,5}$
+- Số thập phân vô hạn tuần hoàn
+  - Định nghĩa: phần thập phân lặp lại theo chu kì
+  - Chu kì: dãy số lặp lại, đặt trong ngoặc đơn
+  - Ví dụ: ${\frac{1}{3} = 0,(3)}$
+  - Chuyển đổi: Từ phân số sang thập phân, từ thập phân tuần hoàn sang phân số
+- Làm tròn số
+  - Quy tắc: So sánh chữ số bên phải hàng quy tròn với ${5}$
+    - ${< 5}$: giữ nguyên hàng quy tròn
+    - ${\ge 5}$: tăng hàng quy tròn lên ${1}$ đơn vị
+  - Làm tròn với độ chính xác ${d}$: làm tròn đến hàng trên hàng thập phân cao nhất của ${d}$ một bậc

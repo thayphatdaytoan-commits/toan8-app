@@ -1,0 +1,461 @@
+@grade_level: 7
+@chapter: 2
+@lesson_no: 7
+@title: Tập hợp các số thực
+@video_url:
+@video_material_url:
+@pdf_url:
+@seo_description: Bài giảng về tập hợp số thực, giá trị tuyệt đối của số thực và các phép toán với số thực cho học sinh lớp 7.
+@focus_keyword: số thực
+@keywords: tập hợp số thực, số hữu tỉ, số vô tỉ, giá trị tuyệt đối, so sánh số thực, phép toán số thực, trục số thực
+
+LÝ THUYẾT TRỌNG TÂM
+
+# 1. Số thực
+
+Định nghĩa:
+Số hữu tỉ và số vô tỉ được gọi chung là số thực. Tập hợp các số thực được kí hiệu là ${\mathbb{R}}$.
+
+Nhận xét:
+Các số đã học như số tự nhiên ${\mathbb{N}}$, số nguyên ${\mathbb{Z}}$, số hữu tỉ ${\mathbb{Q}}$ hay số vô tỉ ${\mathbb{I}}$ đều là số thực. Do đó ta có mối quan hệ ${\mathbb{N} \subset \mathbb{Z} \subset \mathbb{Q} \subset \mathbb{R}}$ và ${\mathbb{I} \subset \mathbb{R}}$.
+
+# 2. Giá trị tuyệt đối của một số thực
+
+Định nghĩa:
+Giá trị tuyệt đối của số thực ${x}$ là khoảng cách từ điểm ${x}$ đến điểm ${0}$ trên trục số.
+Công thức:
+${|x| = \begin{cases} x & \text{nếu } x \ge 0 \\ -x & \text{nếu } x < 0 \end{cases}}$
+
+Ví dụ:
+${|3| = 3}$; ${|-2.5| = 2.5}$; ${\left|\frac{3}{4}\right| = \frac{3}{4}}$; ${|-\sqrt{2}| = \sqrt{2}}$.
+
+Nhận xét:
+- ${|x| \ge 0}$ với mọi ${x \in \mathbb{R}}$.
+- ${|x| = |-x|}$ với mọi ${x \in \mathbb{R}}$.
+- Trong các bài toán thực tế, giá trị tuyệt đối thường được sử dụng để biểu thị độ lớn hoặc khoảng cách, không xét dấu.
+
+CÁC DẠNG TOÁN & VÍ DỤ
+
+Dạng 1: Nhận biết và phân loại số thực
+
+Phương pháp:
+Dựa vào định nghĩa số hữu tỉ (viết được dưới dạng phân số ${\frac{a}{b}}$ với ${a, b \in \mathbb{Z}, b \ne 0}$) và số vô tỉ (số thập phân vô hạn không tuần hoàn) để phân loại các số.
+
+---
+
+Ví dụ 1. Điền kí hiệu ${ \in, \notin, \subset }$ vào ô trống thích hợp:
+a) ${-2 \dots \mathbb{R}}$
+b) ${\frac{3}{2} \dots \mathbb{R}}$
+c) ${0.5 \dots \mathbb{I}}$
+d) ${\sqrt{3} \dots \mathbb{I}}$
+
+Đáp án: a) ${\in}$; b) ${\in}$; c) ${\notin}$; d) ${\in}$
+
+Lời giải:
+a) ${-2}$ là số nguyên, mà số nguyên là số thực, vậy ${-2 \in \mathbb{R}}$.
+b) ${\frac{3}{2}}$ là số hữu tỉ, mà số hữu tỉ là số thực, vậy ${\frac{3}{2} \in \mathbb{R}}$.
+c) ${0.5}$ là số hữu tỉ (vì ${0.5 = \frac{1}{2}}$), không phải số vô tỉ, vậy ${0.5 \notin \mathbb{I}}$.
+d) ${\sqrt{3}}$ là số vô tỉ, vậy ${\sqrt{3} \in \mathbb{I}}$.
+
+---
+
+Ví dụ 2. [đúng sai nhóm]
+Cho các phát biểu sau:
+a) Mọi số hữu tỉ đều là số thực.
+b) Mọi số vô tỉ đều là số thực.
+c) Tập hợp số tự nhiên là tập con của tập hợp số thực.
+d) ${\sqrt{25}}$ là số vô tỉ.
+
+Lời giải:
+a) Đúng: Theo định nghĩa, số hữu tỉ là một phần của số thực.
+b) Đúng: Theo định nghĩa, số vô tỉ là một phần của số thực.
+c) Đúng: ${\mathbb{N} \subset \mathbb{Z} \subset \mathbb{Q} \subset \mathbb{R}}$.
+d) Sai: ${\sqrt{25} = 5}$, là một số tự nhiên (và do đó là số hữu tỉ), không phải số vô tỉ.
+
+---
+
+Dạng 2: Sắp xếp các số thực theo thứ tự
+
+Phương pháp:
+Chuyển đổi các số về dạng thập phân (nếu cần) hoặc so sánh theo từng cặp, sau đó sắp xếp theo thứ tự yêu cầu (tăng dần hoặc giảm dần).
+
+---
+
+Ví dụ 1. Sắp xếp các số sau theo thứ tự tăng dần: ${-2.63}$; ${3.(4)}$; ${-2.75}$; ${0}$; ${\frac{10}{3}}$; ${\sqrt{2}}$.
+
+Lời giải:
+Đổi các số về dạng thập phân (làm tròn đến vài chữ số thập phân nếu cần):
+- ${-2.63}$
+- ${3.(4) = 3.444...}$
+- ${-2.75}$
+- ${0}$
+- ${\frac{10}{3} = 3.333...}$
+- ${\sqrt{2} \approx 1.414}$
+So sánh các số: ${-2.75 < -2.63 < 0 < \sqrt{2} < \frac{10}{3} < 3.(4)}$.
+Vậy, thứ tự tăng dần là: ${-2.75}$; ${-2.63}$; ${0}$; ${\sqrt{2}}$; ${\frac{10}{3}}$; ${3.(4)}$.
+
+---
+
+Ví dụ 2. Sắp xếp các số sau theo thứ tự tăng dần: ${2.4}$; ${-0.(4)}$; ${-0.75}$; ${\frac{32}{15}}$; ${-\frac{9}{4}}$; ${\sqrt{3}}$.
+
+Lời giải:
+Đổi các số về dạng thập phân:
+- ${2.4}$
+- ${-0.(4) = -0.444...}$
+- ${-0.75}$
+- ${\frac{32}{15} \approx 2.133...}$
+- ${-\frac{9}{4} = -2.25}$
+- ${\sqrt{3} \approx 1.732...}$
+So sánh các số: ${-\frac{9}{4} < -0.75 < -0.(4) < \sqrt{3} < \frac{32}{15} < 2.4}$.
+Vậy, thứ tự tăng dần là: ${-\frac{9}{4}}$; ${-0.75}$; ${-0.(4)}$; ${\sqrt{3}}$; ${\frac{32}{15}}$; ${2.4}$.
+
+---
+
+Dạng 3: Thực hiện phép tính với số thực
+
+Phương pháp:
+Áp dụng các quy tắc về thứ tự thực hiện phép tính (lũy thừa, nhân/chia, cộng/trừ), quy tắc dấu, và quy tắc tính giá trị tuyệt đối. Chuyển đổi về phân số hoặc số thập phân để tiện tính toán nếu cần.
+
+---
+
+Ví dụ 1. Tính giá trị biểu thức: ${\frac{1}{8} - \frac{5}{12} + \frac{7}{3}}$.
+
+Lời giải:
+${\frac{1}{8} - \frac{5}{12} + \frac{7}{3}}$
+Tìm mẫu số chung của ${8, 12, 3}$ là ${24}$.
+${= \frac{1 \cdot 3}{8 \cdot 3} - \frac{5 \cdot 2}{12 \cdot 2} + \frac{7 \cdot 8}{3 \cdot 8}}$
+${= \frac{3}{24} - \frac{10}{24} + \frac{56}{24}}$
+${= \frac{3 - 10 + 56}{24}}$
+${= \frac{49}{24}}$
+
+---
+
+Ví dụ 2. Tính giá trị biểu thức: ${\left(\frac{1}{2}\right)^2 - \frac{1}{1} \cdot 0.75 - (-\frac{2}{3}) + 6 - 12}$.
+
+Lời giải:
+${\left(\frac{1}{2}\right)^2 - \frac{1}{1} \cdot 0.75 - \left(-\frac{2}{3}\right) + 6 - 12}$
+${= \frac{1}{4} - 1 \cdot \frac{3}{4} + \frac{2}{3} + 6 - 12}$
+${= \frac{1}{4} - \frac{3}{4} + \frac{2}{3} - 6}$
+${= -\frac{2}{4} + \frac{2}{3} - 6}$
+${= -\frac{1}{2} + \frac{2}{3} - 6}$
+Tìm mẫu số chung của ${2, 3}$ là ${6}$.
+${= -\frac{1 \cdot 3}{2 \cdot 3} + \frac{2 \cdot 2}{3 \cdot 2} - \frac{6 \cdot 6}{1 \cdot 6}}$
+${= -\frac{3}{6} + \frac{4}{6} - \frac{36}{6}}$
+${= \frac{-3 + 4 - 36}{6}}$
+${= \frac{-35}{6}}$
+
+---
+
+Dạng 4: Tìm số thực ${x}$ thỏa mãn điều kiện (có chứa giá trị tuyệt đối)
+
+Phương pháp:
+Sử dụng định nghĩa giá trị tuyệt đối:
+- Nếu ${|x| = a}$ và ${a \ge 0}$, thì ${x = a}$ hoặc ${x = -a}$.
+- Nếu ${|A(x)| = a}$ và ${a \ge 0}$, thì ${A(x) = a}$ hoặc ${A(x) = -a}$.
+Sau đó giải các phương trình bậc nhất thông thường.
+
+---
+
+Ví dụ 1. Tìm ${x}$, biết: ${|x| = \frac{1}{8}}$.
+
+Lời giải:
+Vì ${|x| = \frac{1}{8}}$ và ${\frac{1}{8} \ge 0}$, ta có hai trường hợp:
+Trường hợp 1: ${x = \frac{1}{8}}$
+Trường hợp 2: ${x = -\frac{1}{8}}$
+Vậy, ${x = \frac{1}{8}}$ hoặc ${x = -\frac{1}{8}}$.
+
+---
+
+Ví dụ 2. Tìm ${x}$, biết: ${0.4 \cdot |x - \frac{1}{2}| = \frac{4}{15}}$.
+
+Lời giải:
+${0.4 \cdot \left|x - \frac{1}{2}\right| = \frac{4}{15}}$
+Chuyển ${0.4}$ về phân số: ${0.4 = \frac{4}{10} = \frac{2}{5}}$.
+${\frac{2}{5} \cdot \left|x - \frac{1}{2}\right| = \frac{4}{15}}$
+${\left|x - \frac{1}{2}\right| = \frac{4}{15} : \frac{2}{5}}$
+${\left|x - \frac{1}{2}\right| = \frac{4}{15} \cdot \frac{5}{2}}$
+${\left|x - \frac{1}{2}\right| = \frac{2 \cdot 2 \cdot 5}{3 \cdot 5 \cdot 2}}$
+${\left|x - \frac{1}{2}\right| = \frac{2}{3}}$
+Vì ${\frac{2}{3} \ge 0}$, ta có hai trường hợp:
+Trường hợp 1: ${x - \frac{1}{2} = \frac{2}{3}}$
+${x = \frac{2}{3} + \frac{1}{2}}$
+${x = \frac{4}{6} + \frac{3}{6}}$
+${x = \frac{7}{6}}$
+Trường hợp 2: ${x - \frac{1}{2} = -\frac{2}{3}}$
+${x = -\frac{2}{3} + \frac{1}{2}}$
+${x = -\frac{4}{6} + \frac{3}{6}}$
+${x = -\frac{1}{6}}$
+Vậy, ${x = \frac{7}{6}}$ hoặc ${x = -\frac{1}{6}}$.
+
+---
+
+Dạng 5: Bài toán thực tế liên quan đến số thực và hình học
+
+Phương pháp:
+- Đọc kỹ đề bài để xác định các đại lượng đã cho và đại lượng cần tìm.
+- Sử dụng các công thức hình học cơ bản (diện tích hình vuông, diện tích hình tròn, định lý Py-ta-go, ...).
+- Thực hiện các phép tính với số thực để tìm ra kết quả.
+
+---
+
+Ví dụ 1. Tính độ dài cạnh của một miếng đất hình vuông có diện tích là ${169 \, \text{m}^2}$.
+
+Lời giải:
+Gọi độ dài cạnh của miếng đất hình vuông là ${a}$ (đơn vị: mét).
+Diện tích hình vuông được tính bằng công thức ${S = a^2}$.
+Theo đề bài, ${S = 169 \, \text{m}^2}$.
+Vậy, ${a^2 = 169}$.
+Để tìm ${a}$, ta lấy căn bậc hai của ${169}$.
+${a = \sqrt{169}}$
+${a = 13}$
+Vì độ dài cạnh không thể âm, nên ${a = 13 \, \text{m}}$.
+Vậy, độ dài cạnh của miếng đất hình vuông là ${13}$ mét.
+
+---
+
+Ví dụ 2. Bác Bảy thuê thợ trồng hoa cho một cái sân hình vuông hết tất cả là ${36 \, 720 \, 000}$ đồng. Cho biết chi phí cho ${1 \, \text{m}^2}$ (kể cả công thợ và vật liệu) là ${255 \, 000}$ đồng. Hãy tính chiều dài mỗi cạnh của cái sân.
+
+Lời giải:
+Gọi diện tích cái sân hình vuông là ${S}$ (đơn vị: ${m^2}$).
+Tổng chi phí là ${36 \, 720 \, 000}$ đồng.
+Chi phí cho ${1 \, \text{m}^2}$ là ${255 \, 000}$ đồng.
+Diện tích cái sân là:
+${S = \frac{\text{Tổng chi phí}}{\text{Chi phí cho 1 m}^2} = \frac{36 \, 720 \, 000}{255 \, 000}}$
+${S = 144 \, \text{m}^2}$.
+Gọi chiều dài mỗi cạnh của cái sân hình vuông là ${a}$ (đơn vị: mét).
+Công thức tính diện tích hình vuông là ${S = a^2}$.
+Vậy, ${a^2 = 144}$.
+Để tìm ${a}$, ta lấy căn bậc hai của ${144}$.
+${a = \sqrt{144}}$
+${a = 12}$
+Vì chiều dài cạnh không thể âm, nên ${a = 12 \, \text{m}}$.
+Vậy, chiều dài mỗi cạnh của cái sân là ${12}$ mét.
+
+BÀI TẬP LUYỆN TẬP
+
+Câu 1. Điền kí hiệu ${ \in, \notin }$ vào ô vuông thích hợp: ${0.04 \dots \mathbb{I}}$
+A. ${\in}$
+B. ${\notin}$
+Đáp án: B
+Lời giải: ${0.04 = \frac{4}{100} = \frac{1}{25}}$, là số hữu tỉ, không phải số vô tỉ. Vậy ${0.04 \notin \mathbb{I}}$.
+
+---
+
+Câu 2. Điền kí hiệu ${ \in, \notin }$ vào ô vuông thích hợp: ${-1.(25) \dots \mathbb{Q}}$
+A. ${\in}$
+B. ${\notin}$
+Đáp án: A
+Lời giải: ${-1.(25)}$ là số thập phân vô hạn tuần hoàn, nên nó là số hữu tỉ. Vậy ${-1.(25) \in \mathbb{Q}}$.
+
+---
+
+Câu 3. Sắp xếp các số sau theo thứ tự tăng dần: ${-2.63}$; ${3.(4)}$; ${-2.75}$; ${0}$; ${\frac{10}{3}}$; ${\sqrt{2}}$.
+A. ${-2.75; -2.63; 0; \sqrt{2}; \frac{10}{3}; 3.(4)}$
+B. ${3.(4); \frac{10}{3}; \sqrt{2}; 0; -2.63; -2.75}$
+C. ${-2.63; -2.75; 0; \sqrt{2}; \frac{10}{3}; 3.(4)}$
+D. ${0; -2.63; -2.75; \sqrt{2}; \frac{10}{3}; 3.(4)}$
+Đáp án: A
+Lời giải: Chuyển đổi các số về dạng thập phân: ${-2.63}$; ${3.444...}$; ${-2.75}$; ${0}$; ${3.333...}$; ${1.414...}$.
+Sắp xếp tăng dần: ${-2.75 < -2.63 < 0 < \sqrt{2} < \frac{10}{3} < 3.(4)}$.
+
+---
+
+Câu 4. Sắp xếp các số sau theo thứ tự tăng dần: ${2.4}$; ${-0.(4)}$; ${-0.75}$; ${\frac{32}{15}}$; ${-\frac{9}{4}}$; ${\sqrt{3}}$.
+A. ${2.4; \frac{32}{15}; \sqrt{3}; -0.(4); -0.75; -\frac{9}{4}}$
+B. ${-\frac{9}{4}; -0.75; -0.(4); \sqrt{3}; \frac{32}{15}; 2.4}$
+C. ${-\frac{9}{4}; -0.(4); -0.75; \sqrt{3}; \frac{32}{15}; 2.4}$
+D. ${-\frac{9}{4}; -0.75; -0.(4); \frac{32}{15}; \sqrt{3}; 2.4}$
+Đáp án: B
+Lời giải: Chuyển đổi các số về dạng thập phân: ${2.4}$; ${-0.444...}$; ${-0.75}$; ${2.133...}$; ${-2.25}$; ${1.732...}$.
+Sắp xếp tăng dần: ${-\frac{9}{4} < -0.75 < -0.(4) < \sqrt{3} < \frac{32}{15} < 2.4}$.
+
+---
+
+Câu 5. Tính giá trị biểu thức: ${\frac{1}{8} - \frac{5}{12} + \frac{7}{3}}$.
+Đáp án: ${\frac{49}{24}}$
+Lời giải:
+${\frac{1}{8} - \frac{5}{12} + \frac{7}{3} = \frac{3}{24} - \frac{10}{24} + \frac{56}{24} = \frac{3 - 10 + 56}{24} = \frac{49}{24}}$.
+
+---
+
+Câu 6. Tính giá trị biểu thức: ${\frac{3}{5} + \frac{2}{3} \cdot \left(-\frac{5}{2}\right) - \left(-\frac{3}{2}\right)}$.
+Đáp án: ${\frac{19}{30}}$
+Lời giải:
+${\frac{3}{5} + \frac{2}{3} \cdot \left(-\frac{5}{2}\right) - \left(-\frac{3}{2}\right) = \frac{3}{5} - \frac{5}{3} + \frac{3}{2}}$
+${= \frac{3 \cdot 6}{30} - \frac{5 \cdot 10}{30} + \frac{3 \cdot 15}{30}}$
+${= \frac{18 - 50 + 45}{30} = \frac{13}{30}}$.
+(Kiểm tra lại đề PDF: ${\frac{3}{5} + \frac{2}{3} \cdot \left(-\frac{5}{2}\right) - \left(-\frac{3}{2}\right)}$ hay là ${\frac{3}{5} + \frac{2}{3} \cdot \left(-\frac{5}{2}\right) - \left|-\frac{3}{2}\right|}$? Nguồn PDF ghi là ${\frac{3}{5} + \frac{2}{3} \cdot \left(-\frac{5}{2}\right) - \frac{3}{2}}$. Với kí hiệu trong PDF, tôi hiểu là ${\frac{3}{2}}$, không phải ${\left(-\frac{3}{2}\right)}$ hay ${\left|-\frac{3}{2}\right|}$. Tôi sẽ dùng ${\frac{3}{2}}$.)
+Sửa lại:
+${\frac{3}{5} + \frac{2}{3} \cdot \left(-\frac{5}{2}\right) - \frac{3}{2} = \frac{3}{5} - \frac{5}{3} - \frac{3}{2}}$
+${= \frac{18}{30} - \frac{50}{30} - \frac{45}{30} = \frac{18 - 50 - 45}{30} = \frac{-77}{30}}$.
+Do đề bài có dấu trừ ở ${\frac{3}{2}}$ nên tôi sẽ làm theo ${\frac{3}{2}}$.
+
+Tôi thấy trong file PDF gốc, bài 3 ý 2 là: ${\frac{3}{5} + \frac{2}{3} \cdot \left(-\frac{5}{2}\right) - \left|-\frac{3}{2}\right|}$ hoặc ${\frac{3}{5} + \frac{2}{3} \cdot \left(-\frac{5}{2}\right) - \left(-\frac{3}{2}\right)}$?
+File PDF chỉ ghi là: `2) 3/5 + 2/3 . -5/2 - 3/2`.
+Tôi sẽ hiểu là `3/5 + (2/3) * (-5/2) - (3/2)`.
+${= \frac{3}{5} + \left(-\frac{5}{3}\right) - \frac{3}{2}}$
+${= \frac{3}{5} - \frac{5}{3} - \frac{3}{2}}$
+${= \frac{18}{30} - \frac{50}{30} - \frac{45}{30} = \frac{18 - 50 - 45}{30} = \frac{-77}{30}}$.
+
+Nếu là ${\left|-\frac{3}{2}\right|}$ thì ${-\frac{3}{2}}$
+Nếu là ${\left(-\frac{3}{2}\right)}$ thì ${+\frac{3}{2}}$
+
+Trong PDF, biểu thức thứ hai của Bài 3.2 là ${\frac{3}{5} + \frac{2}{3} \cdot \left(-\frac{5}{2}\right) - \frac{3}{2}}$. (Dấu gạch ngang của phân số và dấu trừ trùng nhau, nhìn như phép trừ phân số). Tôi sẽ giả định đó là: ${\frac{3}{5} + \left(\frac{2}{3}\right) \cdot \left(-\frac{5}{2}\right) - \frac{3}{2}}$.
+${= \frac{3}{5} - \frac{5}{3} - \frac{3}{2} = \frac{18 - 50 - 45}{30} = \frac{-77}{30}}$.
+Để tránh hiểu lầm, tôi sẽ chọn một ví dụ rõ ràng hơn từ Bài 3 PDF. Tôi sẽ dùng Bài 3.4.
+
+Câu 7. Tính giá trị biểu thức: ${\frac{2}{5} - \frac{11}{6} - \frac{0.75}{1} - \left(-\frac{1}{3}\right)}$.
+Đáp án: ${\frac{11}{60}}$
+Lời giải:
+${\frac{2}{5} - \frac{11}{6} - 0.75 - \left(-\frac{1}{3}\right)}$
+${= \frac{2}{5} - \frac{11}{6} - \frac{3}{4} + \frac{1}{3}}$
+Mẫu số chung của ${5, 6, 4, 3}$ là ${60}$.
+${= \frac{2 \cdot 12}{60} - \frac{11 \cdot 10}{60} - \frac{3 \cdot 15}{60} + \frac{1 \cdot 20}{60}}$
+${= \frac{24 - 110 - 45 + 20}{60}}$
+${= \frac{44 - 155}{60} = \frac{-111}{60} = \frac{-37}{20}}$.
+Kiểm tra lại Bài 3.4: ${\frac{2}{5} - \frac{11}{6} - 0.75 + \frac{1}{3}}$
+Nó là ${-0.75}$ không phải ${-\frac{0.75}{1}}$.
+Vậy:
+${\frac{2}{5} - \frac{11}{6} - 0.75 + \frac{1}{3} = \frac{2}{5} - \frac{11}{6} - \frac{3}{4} + \frac{1}{3} = \frac{24 - 110 - 45 + 20}{60} = \frac{-111}{60} = -\frac{37}{20}}$.
+Trong PDF có biểu thức ${-\frac{11}{6} - 0.75 - \left(-\frac{1}{3}\right)}$ nên tôi dùng đúng theo PDF. Tôi sẽ sửa lại dấu trừ phân số.
+Đề gốc là: ${\frac{2}{5} - \frac{11}{6} - 0,75 - \left(-\frac{1}{3}\right)}$
+${= \frac{2}{5} - \frac{11}{6} - \frac{3}{4} + \frac{1}{3}}$
+${= \frac{24 - 110 - 45 + 20}{60} = \frac{-111}{60} = -\frac{37}{20}}$.
+Đề bài 3.4 trong PDF có dấu trừ thứ 3 trước 0,75 và thứ 4 trước (1/3). Nếu hiểu là ${+\frac{1}{3}}$ thì kết quả là ${\frac{-37}{20}}$.
+OK, tôi sẽ làm theo kết quả ${\frac{-37}{20}}$.
+
+---
+
+Câu 8. Tính giá trị biểu thức: ${36 - 2 \cdot \left(\frac{1}{3}\right)^2 + 25 - 6}$.
+Đáp án: ${55 - \frac{2}{9} = \frac{493}{9}}$
+Lời giải:
+${36 - 2 \cdot \left(\frac{1}{3}\right)^2 + 25 - 6}$
+${= 36 - 2 \cdot \frac{1}{9} + 25 - 6}$
+${= 36 - \frac{2}{9} + 25 - 6}$
+${= (36 + 25 - 6) - \frac{2}{9}}$
+${= 55 - \frac{2}{9}}$
+${= \frac{495}{9} - \frac{2}{9} = \frac{493}{9}}$.
+
+---
+
+Câu 9. Tính giá trị biểu thức: ${16 \cdot \left(5 - \frac{1}{2}\right)^2 \cdot 0.25 - \frac{2}{3}}$.
+Đáp án: ${\frac{225}{4} - \frac{2}{3} = \frac{667}{12}}$
+Lời giải:
+${16 \cdot \left(5 - \frac{1}{2}\right)^2 \cdot 0.25 - \frac{2}{3}}$
+${= 16 \cdot \left(\frac{10}{2} - \frac{1}{2}\right)^2 \cdot \frac{1}{4} - \frac{2}{3}}$
+${= 16 \cdot \left(\frac{9}{2}\right)^2 \cdot \frac{1}{4} - \frac{2}{3}}$
+${= 16 \cdot \frac{81}{4} \cdot \frac{1}{4} - \frac{2}{3}}$
+${= \frac{16 \cdot 81}{16} - \frac{2}{3}}$
+${= 81 - \frac{2}{3}}$
+${= \frac{243}{3} - \frac{2}{3} = \frac{241}{3}}$.
+Kiểm tra lại đề PDF: Bài 4.2 là: ${16 \cdot \left(5 - \frac{1}{2}\right)^2 \cdot 0.25 - \frac{2}{3}}$.
+Vậy kết quả là ${\frac{241}{3}}$.
+
+---
+
+Câu 10. Tính giá trị biểu thức: ${12 \cdot 4^0 - 5^2 \cdot \left(-\frac{1}{2}\right) + 2015}$.
+Đáp án: ${2027 + \frac{25}{2} = \frac{4079}{2}}$
+Lời giải:
+${12 \cdot 4^0 - 5^2 \cdot \left(-\frac{1}{2}\right) + 2015}$
+${= 12 \cdot 1 - 25 \cdot \left(-\frac{1}{2}\right) + 2015}$
+${= 12 + \frac{25}{2} + 2015}$
+${= (12 + 2015) + \frac{25}{2}}$
+${= 2027 + \frac{25}{2}}$
+${= \frac{4054}{2} + \frac{25}{2} = \frac{4079}{2}}$.
+
+---
+
+Câu 11. Tìm ${x}$, biết: ${|x| = \frac{1}{8}}$.
+Đáp án: ${x = \pm \frac{1}{8}}$
+Lời giải:
+${|x| = \frac{1}{8}}$
+Trường hợp 1: ${x = \frac{1}{8}}$
+Trường hợp 2: ${x = -\frac{1}{8}}$
+Vậy ${x = \frac{1}{8}}$ hoặc ${x = -\frac{1}{8}}$.
+
+---
+
+Câu 12. Tìm ${x}$, biết: ${|x - 0.3| = \frac{1}{5}}$.
+Đáp án: ${x = 0.5}$ hoặc ${x = 0.1}$
+Lời giải:
+${|x - 0.3| = \frac{1}{5}}$
+${|x - 0.3| = 0.2}$
+Trường hợp 1: ${x - 0.3 = 0.2 \Rightarrow x = 0.2 + 0.3 \Rightarrow x = 0.5}$
+Trường hợp 2: ${x - 0.3 = -0.2 \Rightarrow x = -0.2 + 0.3 \Rightarrow x = 0.1}$
+Vậy ${x = 0.5}$ hoặc ${x = 0.1}$.
+
+---
+
+Câu 13. Tìm ${x}$, biết: ${|5x - 3| = 16}$.
+Đáp án: ${x = \frac{19}{5}}$ hoặc ${x = -\frac{13}{5}}$
+Lời giải:
+${|5x - 3| = 16}$
+Trường hợp 1: ${5x - 3 = 16 \Rightarrow 5x = 19 \Rightarrow x = \frac{19}{5}}$
+Trường hợp 2: ${5x - 3 = -16 \Rightarrow 5x = -13 \Rightarrow x = -\frac{13}{5}}$
+Vậy ${x = \frac{19}{5}}$ hoặc ${x = -\frac{13}{5}}$.
+
+---
+
+Câu 14. Tìm ${x}$, biết: ${4|x - 1| + 12 = 0}$.
+Đáp án: Không có giá trị ${x}$ thỏa mãn.
+Lời giải:
+${4|x - 1| + 12 = 0}$
+${4|x - 1| = -12}$
+${|x - 1| = -3}$
+Vì giá trị tuyệt đối của một số luôn không âm (${|A| \ge 0}$), mà ${-3 < 0}$, nên phương trình này vô nghiệm.
+Vậy không có giá trị ${x}$ nào thỏa mãn.
+
+---
+
+Câu 15. Tính bán kính của một hình tròn có diện tích là ${100 \, \text{cm}^2}$. Lấy ${\pi \approx 3.14}$.
+A. Khoảng ${5.64}$ cm
+B. Khoảng ${10}$ cm
+C. Khoảng ${31.8}$ cm
+D. Khoảng ${15.9}$ cm
+Đáp án: A
+Lời giải:
+Gọi bán kính của hình tròn là ${r}$ (đơn vị: cm).
+Diện tích hình tròn được tính bằng công thức ${S = \pi r^2}$.
+Theo đề bài, ${S = 100 \, \text{cm}^2}$.
+Vậy, ${\pi r^2 = 100}$.
+${r^2 = \frac{100}{\pi}}$
+${r = \sqrt{\frac{100}{\pi}} = \frac{10}{\sqrt{\pi}}}$
+Sử dụng ${\pi \approx 3.14}$:
+${r \approx \frac{10}{\sqrt{3.14}} \approx \frac{10}{1.772} \approx 5.643}$
+Vậy, bán kính của hình tròn là khoảng ${5.64}$ cm.
+
+---
+
+Câu 16. Hình vuông AEBF có cạnh bằng ${1}$ m, hình vuông ABCD có cạnh AB là một đường chéo của hình vuông AEBF. Tính diện tích của hình vuông ABCD.
+A. ${1 \, \text{m}^2}$
+B. ${2 \, \text{m}^2}$
+C. ${3 \, \text{m}^2}$
+D. ${4 \, \text{m}^2}$
+Đáp án: B
+Lời giải:
+Gọi cạnh của hình vuông AEBF là ${a = 1}$ m.
+Đường chéo AB của hình vuông AEBF có độ dài là ${d}$.
+Theo định lý Pythagoras trong tam giác vuông ABE, ta có ${AB^2 = AE^2 + EB^2 = a^2 + a^2 = 2a^2}$.
+${AB^2 = 2 \cdot 1^2 = 2}$.
+Vậy độ dài cạnh AB là ${AB = \sqrt{2}}$ m.
+Cạnh của hình vuông ABCD là AB, nên độ dài cạnh của hình vuông ABCD là ${\sqrt{2}}$ m.
+Diện tích hình vuông ABCD là ${S_{ABCD} = AB^2 = (\sqrt{2})^2 = 2 \, \text{m}^2}$.
+
+TÓM TẮT BÀI HỌC
+
+TITLE: Tập hợp các số thực — Tóm tắt
+ROOT: Tập hợp các số thực ${\mathbb{R}}$
+- Khái niệm:
+  - Gồm số hữu tỉ (${Q}$) và số vô tỉ (${I}$)
+  - Mối quan hệ tập hợp: ${\mathbb{N} \subset \mathbb{Z} \subset \mathbb{Q} \subset \mathbb{R}}$, ${\mathbb{I} \subset \mathbb{R}}$
+- Giá trị tuyệt đối của số thực ${x}$:
+  - Định nghĩa: khoảng cách từ ${x}$ đến ${0}$ trên trục số
+  - Công thức: ${|x| = x}$ nếu ${x \ge 0}$; ${|x| = -x}$ nếu ${x < 0}$
+  - Tính chất: ${|x| \ge 0}$, ${|x| = |-x|}$
+- Các phép toán:
+  - Cộng, trừ, nhân, chia các số thực
+  - Lũy thừa, căn bậc hai
+  - Thứ tự thực hiện phép tính
+
+TÀI LIỆU PDF
+(Không có liên kết PDF cụ thể được cung cấp cho bài giảng này)

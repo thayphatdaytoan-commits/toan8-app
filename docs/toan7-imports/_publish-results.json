@@ -1,0 +1,726 @@
+{
+  "results": [
+    {
+      "file": "01-bai-1-tap-hop-cac-so-huu-ti.txt",
+      "ok": true,
+      "importResult": {
+        "ok": true,
+        "name": "01-bai-1-tap-hop-cac-so-huu-ti.txt",
+        "bytes": 5306
+      },
+      "alerts": [
+        "Đã import: 0 mục lý thuyết/ví dụ, 16 phần bài tập luyện tập — SEO: TK chính «tập hợp số hữu tỉ», 5 từ khóa phụ. Kiểm tra Chương/Bài/Tiêu đề rồi Lưu."
+      ],
+      "selects": [
+        {
+          "name": "",
+          "value": "7",
+          "options": [
+            "ALL",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "7",
+          "options": [
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "1",
+          "options": [
+            "— Chọn chương —",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "1",
+          "options": [
+            "— Chọn bài —",
+            "1",
+            "OT1",
+            "2",
+            "3",
+            "4"
+          ],
+          "label": ""
+        }
+      ],
+      "preSave": {
+        "hasSave": true,
+        "snippet": "Lớp Học Toán Thầy Phát\nĐăng xuất Admin\nBài Giảng\nĐề Thi\nNgân hàng câu\nSơ đồ tư duy ngược\nÔn tập map\nQuản lí lớp học\nQuản lí giáo viên\nTrang chủ\nGia sư AI\nCâu hỏi\nĐố vui\nBlog\nTài liệu\nAdmin tổng\nKhối Lớp:\nToàn Trường (All)\nToán 6\nToán 7\nToán 8\nToán 9\nToán 10\nToán 11\nToán 12\nThêm Bài Giảng Mới\nToán 6\nToán 7\nToán 8\nToán 9\nToán 10\nToán 11\nToán 12\n— Chọn chương —\nChương I — SỐ HỮU TỈ\nChương II — SỐ THỰ"
+      }
+    },
+    {
+      "file": "02-bai-2-cong-tru-nhan-chia-so-huu-ti.txt",
+      "ok": true,
+      "importResult": {
+        "ok": true,
+        "name": "02-bai-2-cong-tru-nhan-chia-so-huu-ti.txt",
+        "bytes": 5764
+      },
+      "alerts": [
+        "Đã import: 0 mục lý thuyết/ví dụ, 16 phần bài tập luyện tập — SEO: TK chính «phép tính số hữu tỉ», 4 từ khóa phụ. Kiểm tra Chương/Bài/Tiêu đề rồi Lưu."
+      ],
+      "selects": [
+        {
+          "name": "",
+          "value": "7",
+          "options": [
+            "ALL",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "7",
+          "options": [
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "1",
+          "options": [
+            "— Chọn chương —",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "2",
+          "options": [
+            "— Chọn bài —",
+            "1",
+            "OT1",
+            "2",
+            "3",
+            "4"
+          ],
+          "label": ""
+        }
+      ],
+      "preSave": {
+        "hasSave": true,
+        "snippet": "Lớp Học Toán Thầy Phát\nĐăng xuất Admin\nBài Giảng\nĐề Thi\nNgân hàng câu\nSơ đồ tư duy ngược\nÔn tập map\nQuản lí lớp học\nQuản lí giáo viên\nTrang chủ\nGia sư AI\nCâu hỏi\nĐố vui\nBlog\nTài liệu\nAdmin tổng\nKhối Lớp:\nToàn Trường (All)\nToán 6\nToán 7\nToán 8\nToán 9\nToán 10\nToán 11\nToán 12\nThêm Bài Giảng Mới\nToán 6\nToán 7\nToán 8\nToán 9\nToán 10\nToán 11\nToán 12\n— Chọn chương —\nChương I — SỐ HỮU TỈ\nChương II — SỐ THỰ"
+      }
+    },
+    {
+      "file": "03-bai-3-luy-thua-so-mu-tu-nhien.txt",
+      "ok": true,
+      "importResult": {
+        "ok": true,
+        "name": "03-bai-3-luy-thua-so-mu-tu-nhien.txt",
+        "bytes": 5956
+      },
+      "alerts": [
+        "Đã import: 0 mục lý thuyết/ví dụ, 16 phần bài tập luyện tập — SEO: TK chính «lũy thừa số hữu tỉ», 4 từ khóa phụ. Kiểm tra Chương/Bài/Tiêu đề rồi Lưu."
+      ],
+      "selects": [
+        {
+          "name": "",
+          "value": "7",
+          "options": [
+            "ALL",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "7",
+          "options": [
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "1",
+          "options": [
+            "— Chọn chương —",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "3",
+          "options": [
+            "— Chọn bài —",
+            "1",
+            "OT1",
+            "2",
+            "3",
+            "4"
+          ],
+          "label": ""
+        }
+      ],
+      "preSave": {
+        "hasSave": true,
+        "snippet": "Lớp Học Toán Thầy Phát\nĐăng xuất Admin\nBài Giảng\nĐề Thi\nNgân hàng câu\nSơ đồ tư duy ngược\nÔn tập map\nQuản lí lớp học\nQuản lí giáo viên\nTrang chủ\nGia sư AI\nCâu hỏi\nĐố vui\nBlog\nTài liệu\nAdmin tổng\nKhối Lớp:\nToàn Trường (All)\nToán 6\nToán 7\nToán 8\nToán 9\nToán 10\nToán 11\nToán 12\nThêm Bài Giảng Mới\nToán 6\nToán 7\nToán 8\nToán 9\nToán 10\nToán 11\nToán 12\n— Chọn chương —\nChương I — SỐ HỮU TỈ\nChương II — SỐ THỰ"
+      }
+    },
+    {
+      "file": "04-bai-4-thu-tu-phep-tinh-chuyen-ve.txt",
+      "ok": true,
+      "importResult": {
+        "ok": true,
+        "name": "04-bai-4-thu-tu-phep-tinh-chuyen-ve.txt",
+        "bytes": 5074
+      },
+      "alerts": [
+        "Đã import: 0 mục lý thuyết/ví dụ, 16 phần bài tập luyện tập — SEO: TK chính «thứ tự phép tính chuyển vế», 5 từ khóa phụ. Kiểm tra Chương/Bài/Tiêu đề rồi Lưu."
+      ],
+      "selects": [
+        {
+          "name": "",
+          "value": "7",
+          "options": [
+            "ALL",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "7",
+          "options": [
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "1",
+          "options": [
+            "— Chọn chương —",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "4",
+          "options": [
+            "— Chọn bài —",
+            "1",
+            "OT1",
+            "2",
+            "3",
+            "4"
+          ],
+          "label": ""
+        }
+      ],
+      "preSave": {
+        "hasSave": true,
+        "snippet": "Lớp Học Toán Thầy Phát\nĐăng xuất Admin\nBài Giảng\nĐề Thi\nNgân hàng câu\nSơ đồ tư duy ngược\nÔn tập map\nQuản lí lớp học\nQuản lí giáo viên\nTrang chủ\nGia sư AI\nCâu hỏi\nĐố vui\nBlog\nTài liệu\nAdmin tổng\nKhối Lớp:\nToàn Trường (All)\nToán 6\nToán 7\nToán 8\nToán 9\nToán 10\nToán 11\nToán 12\nThêm Bài Giảng Mới\nToán 6\nToán 7\nToán 8\nToán 9\nToán 10\nToán 11\nToán 12\n— Chọn chương —\nChương I — SỐ HỮU TỈ\nChương II — SỐ THỰ"
+      }
+    },
+    {
+      "file": "05-on-tap-chuong-I.txt",
+      "ok": true,
+      "importResult": {
+        "ok": true,
+        "name": "05-on-tap-chuong-I.txt",
+        "bytes": 4471
+      },
+      "alerts": [
+        "Đã import: 0 mục lý thuyết/ví dụ, 16 phần bài tập luyện tập — SEO: TK chính «ôn tập số hữu tỉ», 4 từ khóa phụ. Kiểm tra Chương/Bài/Tiêu đề rồi Lưu."
+      ],
+      "selects": [
+        {
+          "name": "",
+          "value": "7",
+          "options": [
+            "ALL",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "7",
+          "options": [
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "1",
+          "options": [
+            "— Chọn chương —",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "OT1",
+          "options": [
+            "— Chọn bài —",
+            "1",
+            "OT1",
+            "2",
+            "3",
+            "4"
+          ],
+          "label": ""
+        }
+      ],
+      "preSave": {
+        "hasSave": true,
+        "snippet": "Lớp Học Toán Thầy Phát\nĐăng xuất Admin\nBài Giảng\nĐề Thi\nNgân hàng câu\nSơ đồ tư duy ngược\nÔn tập map\nQuản lí lớp học\nQuản lí giáo viên\nTrang chủ\nGia sư AI\nCâu hỏi\nĐố vui\nBlog\nTài liệu\nAdmin tổng\nKhối Lớp:\nToàn Trường (All)\nToán 6\nToán 7\nToán 8\nToán 9\nToán 10\nToán 11\nToán 12\nThêm Bài Giảng Mới\nToán 6\nToán 7\nToán 8\nToán 9\nToán 10\nToán 11\nToán 12\n— Chọn chương —\nChương I — SỐ HỮU TỈ\nChương II — SỐ THỰ"
+      }
+    },
+    {
+      "file": "06-bai-5-thap-phan-vo-han-tuan-hoan.txt",
+      "ok": true,
+      "importResult": {
+        "ok": true,
+        "name": "06-bai-5-thap-phan-vo-han-tuan-hoan.txt",
+        "bytes": 4617
+      },
+      "alerts": [
+        "Đã import: 0 mục lý thuyết/ví dụ, 16 phần bài tập luyện tập — SEO: TK chính «số thập phân vô hạn tuần hoàn», 4 từ khóa phụ. Kiểm tra Chương/Bài/Tiêu đề rồi Lưu."
+      ],
+      "selects": [
+        {
+          "name": "",
+          "value": "7",
+          "options": [
+            "ALL",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "7",
+          "options": [
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "2",
+          "options": [
+            "— Chọn chương —",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "5",
+          "options": [
+            "— Chọn bài —",
+            "OT2",
+            "5",
+            "6",
+            "7"
+          ],
+          "label": ""
+        }
+      ],
+      "preSave": {
+        "hasSave": true,
+        "snippet": "Lớp Học Toán Thầy Phát\nĐăng xuất Admin\nBài Giảng\nĐề Thi\nNgân hàng câu\nSơ đồ tư duy ngược\nÔn tập map\nQuản lí lớp học\nQuản lí giáo viên\nTrang chủ\nGia sư AI\nCâu hỏi\nĐố vui\nBlog\nTài liệu\nAdmin tổng\nKhối Lớp:\nToàn Trường (All)\nToán 6\nToán 7\nToán 8\nToán 9\nToán 10\nToán 11\nToán 12\nThêm Bài Giảng Mới\nToán 6\nToán 7\nToán 8\nToán 9\nToán 10\nToán 11\nToán 12\n— Chọn chương —\nChương I — SỐ HỮU TỈ\nChương II — SỐ THỰ"
+      }
+    },
+    {
+      "file": "07-bai-6-so-vo-ti-can-bac-hai.txt",
+      "ok": true,
+      "importResult": {
+        "ok": true,
+        "name": "07-bai-6-so-vo-ti-can-bac-hai.txt",
+        "bytes": 3784
+      },
+      "alerts": [
+        "Đã import: 0 mục lý thuyết/ví dụ, 16 phần bài tập luyện tập — SEO: TK chính «căn bậc hai số học», 3 từ khóa phụ. Kiểm tra Chương/Bài/Tiêu đề rồi Lưu."
+      ],
+      "selects": [
+        {
+          "name": "",
+          "value": "7",
+          "options": [
+            "ALL",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "7",
+          "options": [
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "2",
+          "options": [
+            "— Chọn chương —",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "6",
+          "options": [
+            "— Chọn bài —",
+            "OT2",
+            "5",
+            "6",
+            "7"
+          ],
+          "label": ""
+        }
+      ],
+      "preSave": {
+        "hasSave": true,
+        "snippet": "Lớp Học Toán Thầy Phát\nĐăng xuất Admin\nBài Giảng\nĐề Thi\nNgân hàng câu\nSơ đồ tư duy ngược\nÔn tập map\nQuản lí lớp học\nQuản lí giáo viên\nTrang chủ\nGia sư AI\nCâu hỏi\nĐố vui\nBlog\nTài liệu\nAdmin tổng\nKhối Lớp:\nToàn Trường (All)\nToán 6\nToán 7\nToán 8\nToán 9\nToán 10\nToán 11\nToán 12\nThêm Bài Giảng Mới\nToán 6\nToán 7\nToán 8\nToán 9\nToán 10\nToán 11\nToán 12\n— Chọn chương —\nChương I — SỐ HỮU TỈ\nChương II — SỐ THỰ"
+      }
+    },
+    {
+      "file": "08-bai-7-tap-hop-cac-so-thuc.txt",
+      "ok": true,
+      "importResult": {
+        "ok": true,
+        "name": "08-bai-7-tap-hop-cac-so-thuc.txt",
+        "bytes": 4142
+      },
+      "alerts": [
+        "Đã import: 0 mục lý thuyết/ví dụ, 16 phần bài tập luyện tập — SEO: TK chính «tập hợp số thực», 4 từ khóa phụ. Kiểm tra Chương/Bài/Tiêu đề rồi Lưu."
+      ],
+      "selects": [
+        {
+          "name": "",
+          "value": "7",
+          "options": [
+            "ALL",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "7",
+          "options": [
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "2",
+          "options": [
+            "— Chọn chương —",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "7",
+          "options": [
+            "— Chọn bài —",
+            "OT2",
+            "5",
+            "6",
+            "7"
+          ],
+          "label": ""
+        }
+      ],
+      "preSave": {
+        "hasSave": true,
+        "snippet": "Lớp Học Toán Thầy Phát\nĐăng xuất Admin\nBài Giảng\nĐề Thi\nNgân hàng câu\nSơ đồ tư duy ngược\nÔn tập map\nQuản lí lớp học\nQuản lí giáo viên\nTrang chủ\nGia sư AI\nCâu hỏi\nĐố vui\nBlog\nTài liệu\nAdmin tổng\nKhối Lớp:\nToàn Trường (All)\nToán 6\nToán 7\nToán 8\nToán 9\nToán 10\nToán 11\nToán 12\nThêm Bài Giảng Mới\nToán 6\nToán 7\nToán 8\nToán 9\nToán 10\nToán 11\nToán 12\n— Chọn chương —\nChương I — SỐ HỮU TỈ\nChương II — SỐ THỰ"
+      }
+    },
+    {
+      "file": "09-on-tap-chuong-II.txt",
+      "ok": true,
+      "importResult": {
+        "ok": true,
+        "name": "09-on-tap-chuong-II.txt",
+        "bytes": 3997
+      },
+      "alerts": [
+        "Đã import: 0 mục lý thuyết/ví dụ, 16 phần bài tập luyện tập — SEO: TK chính «ôn tập số thực», 4 từ khóa phụ. Kiểm tra Chương/Bài/Tiêu đề rồi Lưu."
+      ],
+      "selects": [
+        {
+          "name": "",
+          "value": "7",
+          "options": [
+            "ALL",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "7",
+          "options": [
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "2",
+          "options": [
+            "— Chọn chương —",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "label": ""
+        },
+        {
+          "name": "",
+          "value": "OT2",
+          "options": [
+            "— Chọn bài —",
+            "OT2",
+            "5",
+            "6",
+            "7"
+          ],
+          "label": ""
+        }
+      ],
+      "preSave": {
+        "hasSave": true,
+        "snippet": "Lớp Học Toán Thầy Phát\nĐăng xuất Admin\nBài Giảng\nĐề Thi\nNgân hàng câu\nSơ đồ tư duy ngược\nÔn tập map\nQuản lí lớp học\nQuản lí giáo viên\nTrang chủ\nGia sư AI\nCâu hỏi\nĐố vui\nBlog\nTài liệu\nAdmin tổng\nKhối Lớp:\nToàn Trường (All)\nToán 6\nToán 7\nToán 8\nToán 9\nToán 10\nToán 11\nToán 12\nThêm Bài Giảng Mới\nToán 6\nToán 7\nToán 8\nToán 9\nToán 10\nToán 11\nToán 12\n— Chọn chương —\nChương I — SỐ HỮU TỈ\nChương II — SỐ THỰ"
+      }
+    }
+  ],
+  "count": {
+    "folderCount": null,
+    "sampleTitles": [
+      "Lớp Học Toán Thầy Phát",
+      "Bài Giảng",
+      "Đề Thi",
+      "Ngân hàng câu",
+      "Sơ đồ tư duy ngược",
+      "Ôn tập map",
+      "Quản lí lớp học",
+      "Quản lí giáo viên",
+      "Trang chủ",
+      "Gia sư AI",
+      "Câu hỏi",
+      "Đố vui",
+      "Blog",
+      "Tài liệu",
+      "Khối Lớp:Toàn Trường (All)Toán 6Toán 7Toán 8Toán 9Toán 10Toán 11Toán 12",
+      "Kho Bài Giảng",
+      "Đăng Bài Mới",
+      "Bài mới"
+    ],
+    "bodyHasKho": true
+  }
+}

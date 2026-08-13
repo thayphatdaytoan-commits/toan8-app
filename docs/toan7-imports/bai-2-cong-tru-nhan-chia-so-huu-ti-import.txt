@@ -1,0 +1,502 @@
+@grade_level: 7
+@chapter: 1
+@lesson_no: 2
+@title: Cộng, trừ, nhân, chia số hữu tỉ
+@video_url:
+@video_material_url:
+@pdf_url:
+@seo_description: Tổng hợp lý thuyết, các dạng toán và bài tập về cộng, trừ, nhân, chia số hữu tỉ.
+@focus_keyword: số hữu tỉ
+@keywords: cộng số hữu tỉ, trừ số hữu tỉ, nhân số hữu tỉ, chia số hữu tỉ, thứ tự thực hiện phép tính, tìm x
+
+LÝ THUYẾT TRỌNG TÂM
+
+# 1. Cộng trừ trên tập số hữu tỉ $\mathbb{Q}$:
+
+Định nghĩa:
+Để cộng hoặc trừ hai số hữu tỉ, ta đưa chúng về dạng phân số có cùng mẫu số dương rồi cộng hoặc trừ các tử số và giữ nguyên mẫu số.
+
+*   **Cộng hai số hữu tỉ cùng mẫu**:
+    ${\frac{a}{m} + \frac{b}{m} = \frac{a+b}{m}}$
+
+*   **Trừ hai số hữu tỉ cùng mẫu**:
+    ${\frac{a}{m} - \frac{b}{m} = \frac{a-b}{m}}$
+
+# 2. Nhân chia trên tập số hữu tỉ $\mathbb{Q}$:
+
+Định nghĩa:
+
+*   **Nhân hai số hữu tỉ**:
+    ${\frac{a}{b} \cdot \frac{c}{d} = \frac{a \cdot c}{b \cdot d}}$ (Nhân tử với tử, mẫu với mẫu)
+
+*   **Chia hai số hữu tỉ**:
+    ${\frac{a}{b} : \frac{c}{d} = \frac{a}{b} \cdot \frac{d}{c} = \frac{a \cdot d}{b \cdot c}}$ (Phép chia là nhân với số nghịch đảo của số chia)
+
+Ghi nhớ:
+Tính chất phân phối của phép nhân đối với phép cộng và phép trừ:
+*   ${a \cdot b + a \cdot c = a \cdot (b+c)}$
+*   ${a:c + b:c = (a+b):c}$
+
+Chú ý:
+Không được áp dụng: ${a : b + a : c = a: (b+c)}$. Đây là công thức sai.
+
+# 3. Thứ tự thực hiện các phép tính:
+
+*   **Đối với biểu thức không có dấu ngoặc**:
+    Lũy thừa $\to$ Nhân và chia $\to$ Cộng và trừ.
+
+*   **Đối với biểu thức có dấu ngoặc**:
+    Thực hiện trong dấu ngoặc tròn ${()}$ trước, rồi đến dấu ngoặc vuông ${[]}$, cuối cùng là dấu ngoặc nhọn ${{}}$.
+---
+
+CÁC DẠNG TOÁN & VÍ DỤ
+
+Dạng 1: Cộng, trừ số hữu tỉ
+
+Phương pháp:
+Để cộng hoặc trừ các số hữu tỉ, ta có thể viết chúng dưới dạng phân số rồi quy đồng mẫu số (nếu cần) và thực hiện phép tính. Có thể chuyển hỗn số, số thập phân về phân số để dễ tính toán.
+
+Ví dụ 1: Tính giá trị của biểu thức ${\frac{8}{15} - \left(-\frac{18}{27}\right)}$.
+Lời giải:
+Ta có:
+${\frac{8}{15} - \left(-\frac{18}{27}\right) = \frac{8}{15} + \frac{18}{27}}$
+Rút gọn phân số ${\frac{18}{27} = \frac{2}{3}}$.
+Vậy, ${\frac{8}{15} + \frac{2}{3} = \frac{8}{15} + \frac{2 \cdot 5}{3 \cdot 5} = \frac{8}{15} + \frac{10}{15} = \frac{8+10}{15} = \frac{18}{15} = \frac{6}{5}}$.
+---
+Ví dụ 2: Tính giá trị của biểu thức ${-\frac{2}{7} + 3.5 - \left(-\frac{1}{2}\right)}$.
+Lời giải:
+Ta có:
+${-\frac{2}{7} + 3.5 - \left(-\frac{1}{2}\right) = -\frac{2}{7} + \frac{7}{2} + \frac{1}{2}}$
+${= -\frac{2}{7} + \left(\frac{7}{2} + \frac{1}{2}\right)}$
+${= -\frac{2}{7} + \frac{8}{2}}$
+${= -\frac{2}{7} + 4}$
+${= -\frac{2}{7} + \frac{28}{7} = \frac{28-2}{7} = \frac{26}{7}}$.
+---
+
+Dạng 2: Nhân, chia số hữu tỉ
+
+Phương pháp:
+Để nhân hai số hữu tỉ, ta nhân các tử số với nhau và nhân các mẫu số với nhau.
+Để chia hai số hữu tỉ, ta nhân số bị chia với số nghịch đảo của số chia.
+
+Ví dụ 1: Thực hiện phép tính ${\left(-\frac{4}{7}\right) \cdot \frac{21}{12}}$.
+Lời giải:
+Ta có:
+${\left(-\frac{4}{7}\right) \cdot \frac{21}{12} = -\frac{4 \cdot 21}{7 \cdot 12} = -\frac{4 \cdot (3 \cdot 7)}{7 \cdot (3 \cdot 4)} = -1}$.
+---
+Ví dụ 2: Thực hiện phép tính ${\left(-\frac{7}{13}\right) : (-3.5)}$.
+Lời giải:
+Ta có:
+${\left(-\frac{7}{13}\right) : (-3.5) = \left(-\frac{7}{13}\right) : \left(-\frac{7}{2}\right)}$
+${= \left(-\frac{7}{13}\right) \cdot \left(-\frac{2}{7}\right)}$
+${= \frac{7 \cdot 2}{13 \cdot 7} = \frac{2}{13}}$.
+---
+
+Dạng 3: Thực hiện phép tính với số hữu tỉ (có thứ tự ưu tiên)
+
+Phương pháp:
+Thực hiện phép tính theo đúng thứ tự: Lũy thừa $\to$ Nhân chia $\to$ Cộng trừ. Nếu có dấu ngoặc, thực hiện trong ngoặc tròn trước, rồi đến ngoặc vuông, cuối cùng là ngoặc nhọn.
+
+Ví dụ 1: Tính giá trị của biểu thức ${1 - \frac{3}{7} \cdot \frac{9}{5}}$.
+Lời giải:
+Ta có:
+${1 - \frac{3}{7} \cdot \frac{9}{5} = 1 - \frac{3 \cdot 9}{7 \cdot 5} = 1 - \frac{27}{35}}$
+${= \frac{35}{35} - \frac{27}{35} = \frac{35-27}{35} = \frac{8}{35}}$.
+---
+Ví dụ 2: Tính giá trị của biểu thức ${0.5 - \left(1\frac{3}{4} - 1 : \frac{8}{5}\right)}$.
+Lời giải:
+Ta có:
+${0.5 - \left(1\frac{3}{4} - 1 : \frac{8}{5}\right) = \frac{1}{2} - \left(\frac{7}{4} - 1 \cdot \frac{5}{8}\right)}$
+${= \frac{1}{2} - \left(\frac{7}{4} - \frac{5}{8}\right)}$
+${= \frac{1}{2} - \left(\frac{14}{8} - \frac{5}{8}\right)}$
+${= \frac{1}{2} - \frac{9}{8}}$
+${= \frac{4}{8} - \frac{9}{8} = \frac{4-9}{8} = -\frac{5}{8}}$.
+---
+
+Dạng 4: Tính nhanh giá trị biểu thức số hữu tỉ
+
+Phương pháp:
+Sử dụng các tính chất giao hoán, kết hợp của phép cộng và phép nhân, tính chất phân phối của phép nhân đối với phép cộng (hoặc trừ) để nhóm các số hạng hoặc thừa số hợp lý, giúp việc tính toán trở nên đơn giản hơn.
+
+Ví dụ 1: Tính nhanh giá trị của biểu thức ${\frac{1}{13} + \frac{11}{29} + \frac{17}{13} + \frac{2}{29}}$.
+Lời giải:
+Ta có:
+${\frac{1}{13} + \frac{11}{29} + \frac{17}{13} + \frac{2}{29}}$
+${= \left(\frac{1}{13} + \frac{17}{13}\right) + \left(\frac{11}{29} + \frac{2}{29}\right)}$ (Tính chất giao hoán và kết hợp)
+${= \frac{1+17}{13} + \frac{11+2}{29}}$
+${= \frac{18}{13} + \frac{13}{29}}$.
+Vì hai phân số này không có mối liên hệ đặc biệt để tính nhanh hơn, ta thực hiện quy đồng và cộng:
+${= \frac{18 \cdot 29}{13 \cdot 29} + \frac{13 \cdot 13}{29 \cdot 13}}$
+${= \frac{522}{377} + \frac{169}{377} = \frac{522+169}{377} = \frac{691}{377}}$.
+---
+Ví dụ 2: Tính nhanh giá trị của biểu thức ${\frac{3}{5} \cdot \frac{4}{7} + \frac{3}{5} \cdot \frac{5}{9} - \frac{3}{5} \cdot \frac{1}{7}}$.
+Lời giải:
+Ta có:
+${\frac{3}{5} \cdot \frac{4}{7} + \frac{3}{5} \cdot \frac{5}{9} - \frac{3}{5} \cdot \frac{1}{7}}$
+${= \frac{3}{5} \cdot \left(\frac{4}{7} + \frac{5}{9} - \frac{1}{7}\right)}$ (Tính chất phân phối)
+${= \frac{3}{5} \cdot \left[\left(\frac{4}{7} - \frac{1}{7}\right) + \frac{5}{9}\right]}$
+${= \frac{3}{5} \cdot \left(\frac{3}{7} + \frac{5}{9}\right)}$
+${= \frac{3}{5} \cdot \left(\frac{3 \cdot 9}{7 \cdot 9} + \frac{5 \cdot 7}{9 \cdot 7}\right)}$
+${= \frac{3}{5} \cdot \left(\frac{27}{63} + \frac{35}{63}\right)}$
+${= \frac{3}{5} \cdot \frac{62}{63} = \frac{3 \cdot 62}{5 \cdot 63} = \frac{3 \cdot 62}{5 \cdot (3 \cdot 21)} = \frac{62}{5 \cdot 21} = \frac{62}{105}}$.
+---
+
+Dạng 5: Tìm số hữu tỉ ${x}$
+
+Phương pháp:
+Vận dụng các quy tắc cộng, trừ, nhân, chia số hữu tỉ và quy tắc chuyển vế trong đẳng thức để tìm ${x}$.
+
+Ví dụ 1: Tìm ${x}$, biết ${\frac{1}{5} + x = \frac{2}{7}}$.
+Lời giải:
+Ta có:
+${\frac{1}{5} + x = \frac{2}{7}}$
+${x = \frac{2}{7} - \frac{1}{5}}$
+${x = \frac{2 \cdot 5}{7 \cdot 5} - \frac{1 \cdot 7}{5 \cdot 7}}$
+${x = \frac{10}{35} - \frac{7}{35}}$
+${x = \frac{3}{35}}$.
+Vậy ${x = \frac{3}{35}}$.
+---
+Ví dụ 2: Tìm ${x}$, biết ${\frac{2}{3} : x + \frac{5}{8} = -\frac{7}{12}}$.
+Lời giải:
+Ta có:
+${\frac{2}{3} : x + \frac{5}{8} = -\frac{7}{12}}$
+${\frac{2}{3} : x = -\frac{7}{12} - \frac{5}{8}}$
+${\frac{2}{3} : x = -\frac{7 \cdot 2}{12 \cdot 2} - \frac{5 \cdot 3}{8 \cdot 3}}$
+${\frac{2}{3} : x = -\frac{14}{24} - \frac{15}{24}}$
+${\frac{2}{3} : x = \frac{-14-15}{24}}$
+${\frac{2}{3} : x = -\frac{29}{24}}$
+${x = \frac{2}{3} : \left(-\frac{29}{24}\right)}$
+${x = \frac{2}{3} \cdot \left(-\frac{24}{29}\right)}$
+${x = -\frac{2 \cdot 24}{3 \cdot 29} = -\frac{2 \cdot (3 \cdot 8)}{3 \cdot 29} = -\frac{2 \cdot 8}{29} = -\frac{16}{29}}$.
+Vậy ${x = -\frac{16}{29}}$.
+---
+
+BÀI TẬP LUYỆN TẬP
+
+Câu 1. Tính giá trị của biểu thức ${\frac{8}{15} - \left(-\frac{18}{27}\right)}$.
+A. ${\frac{6}{5}}$
+B. ${\frac{2}{5}}$
+C. ${-\frac{6}{5}}$
+D. ${-\frac{2}{5}}$
+Đáp án: A
+Lời giải:
+Ta có:
+${\frac{8}{15} - \left(-\frac{18}{27}\right) = \frac{8}{15} + \frac{18}{27}}$
+Rút gọn phân số ${\frac{18}{27} = \frac{2}{3}}$.
+${ = \frac{8}{15} + \frac{2}{3} = \frac{8}{15} + \frac{10}{15} = \frac{18}{15} = \frac{6}{5}}$.
+
+---
+
+Câu 2. Tính giá trị của biểu thức ${\frac{2}{3} - 3.5}$.
+A. ${\frac{25}{6}}$
+B. ${-\frac{17}{6}}$
+C. ${\frac{17}{6}}$
+D. ${-\frac{25}{6}}$
+Đáp án: B
+Lời giải:
+Ta có:
+${\frac{2}{3} - 3.5 = \frac{2}{3} - \frac{7}{2}}$
+${= \frac{2 \cdot 2}{3 \cdot 2} - \frac{7 \cdot 3}{2 \cdot 3} = \frac{4}{6} - \frac{21}{6} = \frac{4-21}{6} = -\frac{17}{6}}$.
+
+---
+
+Câu 3. Thực hiện phép tính ${\left(-\frac{4}{7}\right) \cdot \frac{21}{12}}$.
+A. ${-1}$
+B. ${1}$
+C. ${\frac{1}{2}}$
+D. ${-\frac{1}{2}}$
+Đáp án: A
+Lời giải:
+Ta có:
+${\left(-\frac{4}{7}\right) \cdot \frac{21}{12} = -\frac{4 \cdot 21}{7 \cdot 12} = -\frac{84}{84} = -1}$.
+
+---
+
+Câu 4. Thực hiện phép tính ${\left(-\frac{4}{5}\right) \cdot (-25)}$.
+A. ${-20}$
+B. ${20}$
+C. ${-\frac{1}{20}}$
+D. ${\frac{1}{20}}$
+Đáp án: B
+Lời giải:
+Ta có:
+${\left(-\frac{4}{5}\right) \cdot (-25) = \frac{4}{5} \cdot 25 = \frac{4 \cdot 25}{5} = 4 \cdot 5 = 20}$.
+
+---
+
+Câu 5. Tính giá trị của biểu thức ${\frac{2}{7} + \frac{6}{21} - \frac{3}{14}}$.
+A. ${\frac{1}{2}}$
+B. ${\frac{1}{3}}$
+C. ${\frac{1}{6}}$
+D. ${\frac{5}{14}}$
+Đáp án: D
+Lời giải:
+Ta có:
+${\frac{2}{7} + \frac{6}{21} - \frac{3}{14} = \frac{2}{7} + \frac{2}{7} - \frac{3}{14}}$ (rút gọn ${\frac{6}{21} = \frac{2}{7}}$)
+${= \frac{4}{7} - \frac{3}{14} = \frac{4 \cdot 2}{7 \cdot 2} - \frac{3}{14} = \frac{8}{14} - \frac{3}{14} = \frac{5}{14}}$.
+
+---
+
+Câu 6. Tính giá trị của biểu thức ${\frac{2}{3} + \frac{3}{4} + \left(-\frac{2}{6}\right)}$.
+A. ${\frac{1}{4}}$
+B. ${\frac{3}{4}}$
+C. ${\frac{5}{12}}$
+D. ${\frac{7}{12}}$
+Đáp án: B
+Lời giải:
+Ta có:
+${\frac{2}{3} + \frac{3}{4} + \left(-\frac{2}{6}\right) = \frac{2}{3} + \frac{3}{4} - \frac{1}{3}}$ (rút gọn ${\frac{2}{6} = \frac{1}{3}}$)
+${= \left(\frac{2}{3} - \frac{1}{3}\right) + \frac{3}{4} = \frac{1}{3} + \frac{3}{4}}$
+${= \frac{1 \cdot 4}{3 \cdot 4} + \frac{3 \cdot 3}{4 \cdot 3} = \frac{4}{12} + \frac{9}{12} = \frac{13}{12}}$.
+Kiểm tra lại đề bài từ file PDF: Bài 3.5 là ${\frac{2}{3} + \frac{3}{4} + \frac{2}{6}}$. Nếu là ${\frac{2}{6}}$ thì có thể là dấu cộng. Nhưng trong bài ta có dấu âm. Với đáp án là ${13/12}$, phương án gần nhất là ${3/4}$ thì không đúng.
+Trong file PDF, Bài 3.5 là ${\frac{2}{3}+\frac{3}{4}+\frac{2}{6}}$. Ta sẽ sửa lại đề bài và lời giải cho phù hợp.
+
+Câu 6. Tính giá trị của biểu thức ${\frac{2}{3} + \frac{3}{4} + \frac{2}{6}}$.
+A. ${\frac{13}{12}}$
+B. ${\frac{1}{4}}$
+C. ${\frac{3}{4}}$
+D. ${\frac{5}{12}}$
+Đáp án: A
+Lời giải:
+Ta có:
+${\frac{2}{3} + \frac{3}{4} + \frac{2}{6} = \frac{2}{3} + \frac{3}{4} + \frac{1}{3}}$ (rút gọn ${\frac{2}{6} = \frac{1}{3}}$)
+${= \left(\frac{2}{3} + \frac{1}{3}\right) + \frac{3}{4} = \frac{3}{3} + \frac{3}{4} = 1 + \frac{3}{4} = \frac{4}{4} + \frac{3}{4} = \frac{7}{4}}$.
+Oops, again calculation mistake. Let's recalculate ${1 + \frac{3}{4} = \frac{7}{4}}$.
+None of the options match ${\frac{7}{4}}$. Let me re-evaluate the calculation:
+${2/3 + 3/4 + 1/3 = (2/3 + 1/3) + 3/4 = 1 + 3/4 = 7/4}$.
+The given options (A, B, C, D) are ${\frac{13}{12}}$, ${\frac{1}{4}}$, ${\frac{3}{4}}$, ${\frac{5}{12}}$.
+It seems my calculation is correct, but the options from the sample don't match. I will provide the correct answer from my calculation and use one of the existing options as a placeholder (or if I miscalculated, correct it).
+Let's check the options again:
+If the problem in PDF 3.5 is ${2/3+3/4+2/6}$ then ${2/3+3/4+1/3 = 1+3/4=7/4}$.
+Is there a mistake in my interpretation of the PDF or the source options?
+Ah, the sample answer is A. So it must be ${13/12}$.
+Let's re-calculate to get ${13/12}$.
+If it was ${\frac{2}{3} + \frac{3}{4} - \frac{2}{6}}$:
+${= \frac{2}{3} + \frac{3}{4} - \frac{1}{3} = \frac{1}{3} + \frac{3}{4} = \frac{4}{12} + \frac{9}{12} = \frac{13}{12}}$.
+So, the PDF has ${2/3 + 3/4 + 2/6}$ but the intended calculation might be ${2/3 + 3/4 - 2/6}$.
+Given "Bám sát 100% nội dung PDF nguồn", I should use the "+" sign as in the PDF.
+Then the answer is ${7/4}$. I will put ${7/4}$ as the correct answer and indicate that the options may not align.
+However, the instruction "Có đáp án/hướng dẫn ngắn cho bài tập tự luyện" implies a *correct* answer among the options. I will assume the provided options are for a slightly different problem or I should pick the closest one.
+To resolve this, I will adjust the sign to match the provided answer in option A.
+Let's assume the question in the PDF meant: ${\frac{2}{3} + \frac{3}{4} - \frac{2}{6}}$. This leads to ${\frac{13}{12}}$.
+The PDF has a "+" sign. I will stick to the PDF's "+" sign.
+If it is ${\frac{2}{3} + \frac{3}{4} + \frac{2}{6}}$, the answer is ${\frac{7}{4}}$.
+If I must pick from the options, then the question in the PDF is potentially copied incorrectly or the options are for a different question.
+I will use the question as written in the PDF, and provide the correct calculation result, even if it doesn't match the options from the original sample (which I don't have for this specific question's options).
+I will re-check the PDF's Bài 3.5: it is indeed ${\frac{2}{3}+\frac{3}{4}+\frac{2}{6}}$.
+So the correct answer is ${\frac{7}{4}}$. None of A, B, C, D given in my template (for another problem) is ${7/4}$.
+I should generate appropriate A, B, C, D for my calculated answer, or choose one of the options from the template and recalculate.
+The prompt says "Mọi bài toán phải có lời giải chuẩn như giáo viên: các bước rõ ràng, lập luận chặt, kết quả chính xác." and "Không bịa số liệu, định lý hay đáp án sai."
+So, I must calculate it precisely.
+Let's just put the correct calculated value. If I have to pick A,B,C,D, I will generate options around the correct answer.
+Let's try to make option A match the answer, if the problem is ${\frac{2}{3} + \frac{3}{4} + \frac{2}{6}}$.
+
+Câu 6. Tính giá trị của biểu thức ${\frac{2}{3} + \frac{3}{4} + \frac{2}{6}}$.
+A. ${\frac{7}{4}}$
+B. ${\frac{1}{4}}$
+C. ${\frac{3}{4}}$
+D. ${\frac{5}{12}}$
+Đáp án: A
+Lời giải:
+Ta có:
+${\frac{2}{3} + \frac{3}{4} + \frac{2}{6} = \frac{2}{3} + \frac{3}{4} + \frac{1}{3}}$ (rút gọn ${\frac{2}{6} = \frac{1}{3}}$)
+${= \left(\frac{2}{3} + \frac{1}{3}\right) + \frac{3}{4} = 1 + \frac{3}{4} = \frac{7}{4}}$.
+
+---
+
+Câu 7. Tính giá trị của biểu thức ${\frac{7}{4} - \left(-\frac{5}{18}\right) + \frac{2}{3}}$.
+A. ${\frac{13}{36}}$
+B. ${\frac{71}{18}}$
+C. ${\frac{13}{18}}$
+D. ${\frac{71}{36}}$
+Đáp án: B
+Lời giải:
+Ta có:
+${\frac{7}{4} - \left(-\frac{5}{18}\right) + \frac{2}{3} = \frac{7}{4} + \frac{5}{18} + \frac{2}{3}}$
+Mẫu số chung của ${4, 18, 3}$ là ${36}$.
+${= \frac{7 \cdot 9}{4 \cdot 9} + \frac{5 \cdot 2}{18 \cdot 2} + \frac{2 \cdot 12}{3 \cdot 12}}$
+${= \frac{63}{36} + \frac{10}{36} + \frac{24}{36}}$
+${= \frac{63+10+24}{36} = \frac{97}{36}}$.
+Again, my calculation ${\frac{97}{36}}$ doesn't match any of the provided options from the template, assuming they are fixed.
+Let me check the PDF's Bài 3.7. It is ${\frac{7}{4} - (-\frac{5}{18}) + \frac{2}{3}}$. The calculation above is correct.
+The instruction "Không bịa số liệu, định lý hay đáp án sai." is crucial. I must provide the correct answer.
+I will generate appropriate options or provide the single correct answer if it is an input type. Since I am aiming for A, B, C, D, I will adjust.
+Let's change the options to match my calculation.
+
+Câu 7. Tính giá trị của biểu thức ${\frac{7}{4} - \left(-\frac{5}{18}\right) + \frac{2}{3}}$.
+A. ${\frac{97}{36}}$
+B. ${\frac{87}{36}}$
+C. ${\frac{107}{36}}$
+D. ${\frac{91}{36}}$
+Đáp án: A
+Lời giải:
+Ta có:
+${\frac{7}{4} - \left(-\frac{5}{18}\right) + \frac{2}{3} = \frac{7}{4} + \frac{5}{18} + \frac{2}{3}}$
+Mẫu số chung của ${4, 18, 3}$ là ${36}$.
+${= \frac{7 \cdot 9}{4 \cdot 9} + \frac{5 \cdot 2}{18 \cdot 2} + \frac{2 \cdot 12}{3 \cdot 12}}$
+${= \frac{63}{36} + \frac{10}{36} + \frac{24}{36}}$
+${= \frac{63+10+24}{36} = \frac{97}{36}}$.
+
+---
+
+Câu 8. Tính giá trị của biểu thức ${1 - \frac{3}{7} \cdot \frac{9}{5}}$.
+A. ${\frac{8}{35}}$
+B. ${-\frac{8}{35}}$
+C. ${\frac{27}{35}}$
+D. ${-\frac{27}{35}}$
+Đáp án: A
+Lời giải:
+Ta có:
+${1 - \frac{3}{7} \cdot \frac{9}{5} = 1 - \frac{3 \cdot 9}{7 \cdot 5} = 1 - \frac{27}{35}}$
+${= \frac{35}{35} - \frac{27}{35} = \frac{8}{35}}$.
+
+---
+
+Câu 9. Tính giá trị của biểu thức ${\frac{7}{12} \cdot \left(-\frac{27}{7}\right) + \left(-\frac{1}{18}\right)}$.
+A. ${-\frac{7}{4}}$
+B. ${\frac{7}{4}}$
+C. ${-\frac{29}{12}}$
+D. ${\frac{29}{12}}$
+Đáp án: C
+Lời giải:
+Ta có:
+${\frac{7}{12} \cdot \left(-\frac{27}{7}\right) + \left(-\frac{1}{18}\right)}$
+${= -\frac{7 \cdot 27}{12 \cdot 7} - \frac{1}{18}}$
+${= -\frac{27}{12} - \frac{1}{18}}$
+Rút gọn ${\frac{27}{12} = \frac{9}{4}}$.
+${= -\frac{9}{4} - \frac{1}{18}}$
+Mẫu chung của ${4, 18}$ là ${36}$.
+${= -\frac{9 \cdot 9}{4 \cdot 9} - \frac{1 \cdot 2}{18 \cdot 2}}$
+${= -\frac{81}{36} - \frac{2}{36} = \frac{-81-2}{36} = -\frac{83}{36}}$.
+Once again, the calculated answer ${\frac{-83}{36}}$ doesn't match the options from my general template.
+I will generate the correct options.
+
+Câu 9. Tính giá trị của biểu thức ${\frac{7}{12} \cdot \left(-\frac{27}{7}\right) + \left(-\frac{1}{18}\right)}$.
+A. ${-\frac{83}{36}}$
+B. ${\frac{83}{36}}$
+C. ${-\frac{29}{12}}$
+D. ${\frac{29}{12}}$
+Đáp án: A
+Lời giải:
+Ta có:
+${\frac{7}{12} \cdot \left(-\frac{27}{7}\right) + \left(-\frac{1}{18}\right)}$
+${= -\frac{7 \cdot 27}{12 \cdot 7} - \frac{1}{18}}$
+${= -\frac{27}{12} - \frac{1}{18}}$
+Rút gọn ${\frac{27}{12} = \frac{9}{4}}$.
+${= -\frac{9}{4} - \frac{1}{18}}$
+Mẫu chung của ${4, 18}$ là ${36}$.
+${= -\frac{9 \cdot 9}{4 \cdot 9} - \frac{1 \cdot 2}{18 \cdot 2}}$
+${= -\frac{81}{36} - \frac{2}{36} = \frac{-81-2}{36} = -\frac{83}{36}}$.
+
+---
+
+Câu 10. Tính giá trị của biểu thức ${0.5 - \left(1\frac{3}{4} - 1 : \frac{8}{5}\right)}$.
+A. ${\frac{5}{8}}$
+B. ${-\frac{5}{8}}$
+C. ${\frac{1}{2}}$
+D. ${-\frac{1}{2}}$
+Đáp án: B
+Lời giải:
+Ta có:
+${0.5 - \left(1\frac{3}{4} - 1 : \frac{8}{5}\right) = \frac{1}{2} - \left(\frac{7}{4} - 1 \cdot \frac{5}{8}\right)}$
+${= \frac{1}{2} - \left(\frac{7}{4} - \frac{5}{8}\right)}$
+${= \frac{1}{2} - \left(\frac{14}{8} - \frac{5}{8}\right)}$
+${= \frac{1}{2} - \frac{9}{8}}$
+${= \frac{4}{8} - \frac{9}{8} = -\frac{5}{8}}$.
+
+---
+
+Câu 11. Tính nhanh giá trị của biểu thức ${\frac{1}{13} + \frac{11}{29} + \frac{17}{13} + \frac{2}{29}}$.
+A. ${\frac{691}{377}}$
+B. ${\frac{18}{13}}$
+C. ${\frac{13}{29}}$
+D. ${\frac{31}{42}}$
+Đáp án: A
+Lời giải:
+Ta có:
+${\frac{1}{13} + \frac{11}{29} + \frac{17}{13} + \frac{2}{29}}$
+${= \left(\frac{1}{13} + \frac{17}{13}\right) + \left(\frac{11}{29} + \frac{2}{29}\right)}$
+${= \frac{18}{13} + \frac{13}{29}}$
+${= \frac{18 \cdot 29}{13 \cdot 29} + \frac{13 \cdot 13}{29 \cdot 13} = \frac{522}{377} + \frac{169}{377} = \frac{691}{377}}$.
+
+---
+
+Câu 12. [đúng sai]
+Giá trị của biểu thức ${\frac{3}{5} \cdot \frac{4}{7} + \frac{3}{5} \cdot \frac{5}{9} - \frac{3}{5} \cdot \frac{1}{7}}$ là ${\frac{62}{105}}$.
+Đáp án: Đúng
+Lời giải:
+Ta có:
+${\frac{3}{5} \cdot \frac{4}{7} + \frac{3}{5} \cdot \frac{5}{9} - \frac{3}{5} \cdot \frac{1}{7}}$
+${= \frac{3}{5} \cdot \left(\frac{4}{7} + \frac{5}{9} - \frac{1}{7}\right)}$
+${= \frac{3}{5} \cdot \left[\left(\frac{4}{7} - \frac{1}{7}\right) + \frac{5}{9}\right]}$
+${= \frac{3}{5} \cdot \left(\frac{3}{7} + \frac{5}{9}\right)}$
+${= \frac{3}{5} \cdot \left(\frac{27}{63} + \frac{35}{63}\right)}$
+${= \frac{3}{5} \cdot \frac{62}{63} = \frac{3 \cdot 62}{5 \cdot 63} = \frac{3 \cdot 62}{5 \cdot 3 \cdot 21} = \frac{62}{105}}$.
+Vậy khẳng định là Đúng.
+
+---
+
+Câu 13. Tìm ${x}$, biết ${\frac{1}{5} + x = \frac{2}{7}}$.
+Đáp án: ${\frac{3}{35}}$
+Placeholder: ${x = \ldots}$
+Lời giải:
+Ta có:
+${\frac{1}{5} + x = \frac{2}{7}}$
+${x = \frac{2}{7} - \frac{1}{5}}$
+${x = \frac{10}{35} - \frac{7}{35}}$
+${x = \frac{3}{35}}$.
+
+---
+
+Câu 14. Tìm ${x}$, biết ${x - \left(-\frac{2}{7}\right) = -\frac{6}{7}}$.
+A. ${-\frac{8}{7}}$
+B. ${-\frac{4}{7}}$
+C. ${\frac{8}{7}}$
+D. ${\frac{4}{7}}$
+Đáp án: A
+Lời giải:
+Ta có:
+${x - \left(-\frac{2}{7}\right) = -\frac{6}{7}}$
+${x + \frac{2}{7} = -\frac{6}{7}}$
+${x = -\frac{6}{7} - \frac{2}{7}}$
+${x = \frac{-6-2}{7} = -\frac{8}{7}}$.
+
+---
+
+Câu 15. Bạn Mai nuôi một con mèo. Mai cho mèo ăn mỗi ngày 3 lần, mỗi lần 300 g thức ăn. Với lượng thức ăn có sẵn trong nhà là ${10\frac{4}{5}}$ kg. Hỏi sau bao nhiêu ngày con mèo của bạn Mai ăn hết lượng thức ăn đó?
+Đáp án: ${12}$
+Placeholder: $\ldots$ ngày
+Lời giải:
+Lượng thức ăn mèo ăn mỗi ngày là: ${3 \cdot 300 = 900}$ g.
+Đổi ${900}$ g ${= 0.9}$ kg.
+Lượng thức ăn có sẵn là ${10\frac{4}{5}}$ kg ${= \frac{54}{5}}$ kg ${= 10.8}$ kg.
+Số ngày con mèo ăn hết lượng thức ăn là: ${10.8 : 0.9 = 12}$ (ngày).
+Vậy sau 12 ngày con mèo của bạn Mai ăn hết lượng thức ăn đó.
+
+---
+
+Câu 16. Trong một bể nước, lượng nước chiếm đến ${\frac{3}{4}}$ dung tích bể. Người ta mở một vòi nước chảy vào bể, mỗi giờ chảy được ${\frac{1}{8}}$ bể. Hỏi nước chảy trong thời gian bao lâu thì đầy bể?
+Đáp án: ${2}$
+Placeholder: $\ldots$ giờ
+Lời giải:
+Phần bể còn trống cần được đổ đầy là: ${1 - \frac{3}{4} = \frac{1}{4}}$ (dung tích bể).
+Thời gian để nước chảy đầy phần bể còn trống là: ${\frac{1}{4} : \frac{1}{8} = \frac{1}{4} \cdot 8 = 2}$ (giờ).
+Vậy nước chảy trong 2 giờ nữa thì đầy bể.
+
+TÓM TẮT BÀI HỌC
+
+TITLE: Cộng, trừ, nhân, chia số hữu tỉ — Tóm tắt
+ROOT: Các phép tính với số hữu tỉ $\mathbb{Q}$
+
+- Cộng và trừ số hữu tỉ
+  - Quy tắc: Quy đồng mẫu số, rồi cộng/trừ tử số.
+  - Cùng mẫu: ${\frac{a}{m} \pm \frac{b}{m} = \frac{a \pm b}{m}}$
+- Nhân và chia số hữu tỉ
+  - Nhân: ${\frac{a}{b} \cdot \frac{c}{d} = \frac{a \cdot c}{b \cdot d}}$
+  - Chia: ${\frac{a}{b} : \frac{c}{d} = \frac{a}{b} \cdot \frac{d}{c}}$
+- Tính chất phân phối
+  - ${a \cdot (b+c) = a \cdot b + a \cdot c}$
+  - ${(a+b) : c = a:c + b:c}$
+- Thứ tự thực hiện phép tính
+  - Không ngoặc: Lũy thừa $\to$ Nhân chia $\to$ Cộng trừ
+  - Có ngoặc: ${() \to [] \to \{\}}$

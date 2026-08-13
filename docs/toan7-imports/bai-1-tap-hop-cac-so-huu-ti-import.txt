@@ -1,0 +1,391 @@
+@grade_level: 7
+@chapter: 1
+@lesson_no: 1
+@title: Tập hợp các số hữu tỉ
+@video_url: 
+@video_material_url: 
+@pdf_url: 
+@seo_description: Tìm hiểu về tập hợp các số hữu tỉ, cách nhận biết, biểu diễn trên trục số, tìm số đối và so sánh các số hữu tỉ.
+@focus_keyword: số hữu tỉ
+@keywords: tập hợp Q, số hữu tỉ dương, số hữu tỉ âm, số đối, trục số, so sánh số hữu tỉ
+
+LÝ THUYẾT TRỌNG TÂM
+
+Định nghĩa:
+
+Số hữu tỉ là số viết được dưới dạng phân số ${ \frac{a}{b} }$ với ${ a, b \in \mathbb{Z} }$ và ${ b \neq 0 }$. Tập hợp các số hữu tỉ kí hiệu là ${ \mathbb{Q} }$.
+
+---
+
+Ghi nhớ:
+
+- Số hữu tỉ lớn hơn ${0}$ gọi là số hữu tỉ dương, số hữu tỉ nhỏ hơn ${0}$ gọi là số hữu tỉ âm. Số hữu tỉ ${0}$ không là số hữu tỉ dương và cũng không là số hữu tỉ âm.
+- Các số tự nhiên, số nguyên, số thập phân đã biết đều viết được dưới dạng phân số nên chúng đều là các số hữu tỉ. Điều này có nghĩa là ${ \mathbb{N} \subset \mathbb{Z} \subset \mathbb{Q} }$.
+- Số đối của số hữu tỉ ${x}$ kí hiệu là ${-x}$.
+
+CÁC DẠNG TOÁN & VÍ DỤ
+
+Dạng 1: Nhận biết và viết số hữu tỉ dưới dạng phân số
+
+Phương pháp:
+
+Để chứng tỏ một số là số hữu tỉ, ta cần viết số đó dưới dạng phân số ${ \frac{a}{b} }$ với ${ a, b \in \mathbb{Z} }$ và ${ b \neq 0 }$.
+
+---
+
+Ví dụ 1:
+
+Chứng tỏ các số ${-2}$ và ${0,2}$ là số hữu tỉ.
+
+Lời giải:
+
+- Số ${-2}$ có thể viết là ${ \frac{-2}{1} }$. Vì ${ -2 \in \mathbb{Z} }$ và ${ 1 \in \mathbb{Z}, 1 \neq 0 }$, nên ${-2}$ là số hữu tỉ.
+- Số ${0,2}$ có thể viết là ${ \frac{2}{10} = \frac{1}{5} }$. Vì ${ 1 \in \mathbb{Z} }$ và ${ 5 \in \mathbb{Z}, 5 \neq 0 }$, nên ${0,2}$ là số hữu tỉ.
+
+---
+
+Ví dụ 2:
+
+Chứng tỏ các số ${3\frac{3}{5}}$ và ${32\%}$ là số hữu tỉ.
+
+Lời giải:
+
+- Số ${3\frac{3}{5}}$ có thể viết là ${ \frac{3 \cdot 5 + 3}{5} = \frac{18}{5} }$. Vì ${ 18 \in \mathbb{Z} }$ và ${ 5 \in \mathbb{Z}, 5 \neq 0 }$, nên ${3\frac{3}{5}}$ là số hữu tỉ.
+- Số ${32\%}$ có thể viết là ${ \frac{32}{100} = \frac{8}{25} }$. Vì ${ 8 \in \mathbb{Z} }$ và ${ 25 \in \mathbb{Z}, 25 \neq 0 }$, nên ${32\%}$ là số hữu tỉ.
+
+---
+
+Dạng 2: Xác định mối quan hệ của số hữu tỉ với các tập số khác
+
+Phương pháp:
+
+Nắm vững định nghĩa các tập hợp số tự nhiên (${ \mathbb{N} }$), số nguyên (${ \mathbb{Z} }$), số hữu tỉ (${ \mathbb{Q} }$) và quan hệ bao hàm giữa chúng: ${ \mathbb{N} \subset \mathbb{Z} \subset \mathbb{Q} }$.
+- Số tự nhiên là các số ${ 0, 1, 2, 3, ... }$.
+- Số nguyên là các số ${ ..., -2, -1, 0, 1, 2, ... }$.
+- Số hữu tỉ là các số viết được dưới dạng phân số.
+
+---
+
+Ví dụ 1:
+
+Điền kí hiệu thích hợp (${ \in }$ hoặc ${ \notin }$) vào ô trống: ${-3 \text{ ? } \mathbb{Q}}$ và ${-\frac{2}{3} \text{ ? } \mathbb{Z}}$.
+
+Lời giải:
+
+- Số ${-3}$ là một số nguyên, mà mọi số nguyên đều là số hữu tỉ. Vậy ${ -3 \in \mathbb{Q} }$.
+- Số ${-\frac{2}{3}}$ không phải là một số nguyên vì nó không thể viết dưới dạng số nguyên (${-2}$ không chia hết cho ${3}$). Vậy ${ -\frac{2}{3} \notin \mathbb{Z} }$.
+
+---
+
+Ví dụ 2:
+
+Điền kí hiệu thích hợp (${ \in }$ hoặc ${ \notin }$) vào ô trống: ${4,7 \text{ ? } \mathbb{Z}}$ và ${0 \text{ ? } \mathbb{Q}}$.
+
+Lời giải:
+
+- Số ${4,7}$ là một số thập phân, không phải là số nguyên. Vậy ${ 4,7 \notin \mathbb{Z} }$.
+- Số ${0}$ là một số nguyên, mà mọi số nguyên đều là số hữu tỉ (ví dụ: ${ 0 = \frac{0}{1} }$). Vậy ${ 0 \in \mathbb{Q} }$.
+
+---
+
+Dạng 3: Tìm số đối của một số hữu tỉ
+
+Phương pháp:
+
+Số đối của số hữu tỉ ${x}$ là ${-x}$.
+- Nếu ${x}$ là số dương thì ${-x}$ là số âm.
+- Nếu ${x}$ là số âm thì ${-x}$ là số dương.
+- Số đối của ${0}$ là ${0}$.
+Tổng của một số hữu tỉ với số đối của nó bằng ${0}$.
+
+---
+
+Ví dụ 1:
+
+Tìm số đối của ${ \frac{3}{2} }$ và ${ -\frac{6}{15} }$.
+
+Lời giải:
+
+- Số đối của ${ \frac{3}{2} }$ là ${ -\frac{3}{2} }$.
+- Số đối của ${ -\frac{6}{15} }$ là ${ \frac{6}{15} }$.
+
+---
+
+Ví dụ 2:
+
+Tìm số đối của ${ 7,32 }$ và ${ -12,5 }$.
+
+Lời giải:
+
+- Số đối của ${ 7,32 }$ là ${ -7,32 }$.
+- Số đối của ${ -12,5 }$ là ${ 12,5 }$.
+
+---
+
+Dạng 4: Biểu diễn và đọc điểm biểu diễn số hữu tỉ trên trục số
+
+Phương pháp:
+
+- **Để biểu diễn số hữu tỉ ${ \frac{a}{b} }$ (với ${ b > 0 }$, ${ \frac{a}{b} }$ là phân số tối giản) trên trục số:**
+  - Bước 1: Vẽ trục số, chia đoạn thẳng đơn vị (ví dụ từ ${0}$ đến ${1}$) thành ${b}$ phần bằng nhau.
+  - Bước 2: Lấy ${a}$ đoạn như thế (về phía dương nếu ${a>0}$, về phía âm nếu ${a<0}$) kể từ gốc ${0}$. Điểm cuối cùng chính là điểm biểu diễn số ${ \frac{a}{b} }$.
+- **Để đọc điểm biểu diễn số hữu tỉ trên trục số:**
+  - Xác định gốc ${0}$ và các điểm đơn vị (${1, -1, ...}$).
+  - Đếm số phần mà điểm đó cách gốc ${0}$ và xác định chiều (dương/âm) để tìm giá trị số hữu tỉ.
+
+---
+
+Ví dụ 1:
+
+Trên trục số, điểm A nằm giữa ${0}$ và ${1}$ và cách gốc ${0}$ một khoảng bằng ${ \frac{2}{3} }$ đơn vị. Điểm B nằm giữa ${-1}$ và ${0}$ và cách gốc ${0}$ một khoảng bằng ${ \frac{1}{2} }$ đơn vị. Hỏi các điểm A, B biểu diễn những số hữu tỉ nào?
+
+Lời giải:
+
+- Điểm A nằm giữa ${0}$ và ${1}$ và cách gốc ${0}$ một khoảng bằng ${ \frac{2}{3} }$ đơn vị. Vậy điểm A biểu diễn số hữu tỉ ${ \frac{2}{3} }$.
+- Điểm B nằm giữa ${-1}$ và ${0}$ và cách gốc ${0}$ một khoảng bằng ${ \frac{1}{2} }$ đơn vị (về phía âm). Vậy điểm B biểu diễn số hữu tỉ ${ -\frac{1}{2} }$.
+
+---
+
+Ví dụ 2:
+
+Hãy mô tả cách biểu diễn số hữu tỉ ${ \frac{4}{6} }$ và ${ -\frac{20}{8} }$ trên trục số.
+
+Lời giải:
+
+- Với số hữu tỉ ${ \frac{4}{6} }$:
+  - Rút gọn phân số: ${ \frac{4}{6} = \frac{2}{3} }$.
+  - Vẽ trục số. Chia đoạn thẳng đơn vị (từ ${0}$ đến ${1}$) thành ${3}$ phần bằng nhau.
+  - Lấy ${2}$ phần kể từ gốc ${0}$ về phía số dương. Điểm đó biểu diễn số ${ \frac{2}{3} }$.
+- Với số hữu tỉ ${ -\frac{20}{8} }$:
+  - Rút gọn phân số: ${ -\frac{20}{8} = -\frac{5}{2} = -2\frac{1}{2} }$.
+  - Vẽ trục số. Từ điểm ${-2}$, chia đoạn thẳng từ ${-2}$ đến ${-3}$ thành ${2}$ phần bằng nhau.
+  - Lấy ${1}$ phần kể từ điểm ${-2}$ về phía số âm. Điểm đó biểu diễn số ${ -\frac{5}{2} }$.
+
+---
+
+Dạng 5: So sánh các số hữu tỉ
+
+Phương pháp:
+
+Để so sánh hai số hữu tỉ ${x}$ và ${y}$, ta thường làm như sau:
+- **Cách 1: Đưa về cùng mẫu dương.**
+  - Viết ${x}$ và ${y}$ dưới dạng phân số có cùng mẫu dương.
+  - So sánh các tử số. Phân số nào có tử số lớn hơn thì lớn hơn.
+- **Cách 2: So sánh với ${0}$.**
+  - Số hữu tỉ dương lớn hơn ${0}$.
+  - Số hữu tỉ âm nhỏ hơn ${0}$.
+  - Số hữu tỉ dương lớn hơn số hữu tỉ âm.
+- **Cách 3: Đổi sang số thập phân (nếu thích hợp).**
+  - Chuyển số hữu tỉ về dạng số thập phân để so sánh.
+
+---
+
+Ví dụ 1:
+
+So sánh các số hữu tỉ ${ -\frac{2}{5} }$ và ${ -\frac{3}{4} }$.
+
+Lời giải:
+
+Ta quy đồng mẫu số của hai phân số:
+Mẫu số chung nhỏ nhất của ${5}$ và ${4}$ là ${20}$.
+${ -\frac{2}{5} = \frac{-2 \cdot 4}{5 \cdot 4} = \frac{-8}{20} }$
+${ -\frac{3}{4} = \frac{-3 \cdot 5}{4 \cdot 5} = \frac{-15}{20} }$
+Vì ${ -8 > -15 }$ nên ${ \frac{-8}{20} > \frac{-15}{20} }$.
+Vậy ${ -\frac{2}{5} > -\frac{3}{4} }$.
+
+---
+
+Ví dụ 2:
+
+So sánh các số hữu tỉ ${ 0,75 }$ và ${ \frac{500}{800} }$.
+
+Lời giải:
+
+Ta có:
+${ 0,75 = \frac{75}{100} = \frac{3}{4} }$
+${ \frac{500}{800} = \frac{5}{8} }$
+Mẫu số chung nhỏ nhất của ${4}$ và ${8}$ là ${8}$.
+${ \frac{3}{4} = \frac{3 \cdot 2}{4 \cdot 2} = \frac{6}{8} }$
+So sánh ${ \frac{6}{8} }$ và ${ \frac{5}{8} }$.
+Vì ${ 6 > 5 }$ nên ${ \frac{6}{8} > \frac{5}{8} }$.
+Vậy ${ 0,75 > \frac{500}{800} }$.
+
+BÀI TẬP LUYỆN TẬP
+
+Câu 1. Chứng tỏ số ${-2}$ là số hữu tỉ.
+Đáp án: Là số hữu tỉ.
+Lời giải: Số ${-2}$ có thể viết là ${ \frac{-2}{1} }$. Vì ${ -2 \in \mathbb{Z} }$ và ${ 1 \in \mathbb{Z}, 1 \neq 0 }$, nên ${-2}$ là số hữu tỉ.
+
+---
+
+Câu 2. Chứng tỏ số ${3\frac{3}{5}}$ là số hữu tỉ.
+Đáp án: Là số hữu tỉ.
+Lời giải: Số ${3\frac{3}{5}}$ có thể viết là ${ \frac{3 \cdot 5 + 3}{5} = \frac{18}{5} }$. Vì ${ 18 \in \mathbb{Z} }$ và ${ 5 \in \mathbb{Z}, 5 \neq 0 }$, nên ${3\frac{3}{5}}$ là số hữu tỉ.
+
+---
+
+Câu 3. Chứng tỏ số ${0,2}$ là số hữu tỉ.
+Đáp án: Là số hữu tỉ.
+Lời giải: Số ${0,2}$ có thể viết là ${ \frac{2}{10} }$. Vì ${ 2 \in \mathbb{Z} }$ và ${ 10 \in \mathbb{Z}, 10 \neq 0 }$, nên ${0,2}$ là số hữu tỉ.
+
+---
+
+Câu 4. Chứng tỏ số ${32\%}$ là số hữu tỉ.
+Đáp án: Là số hữu tỉ.
+Lời giải: Số ${32\%}$ có thể viết là ${ \frac{32}{100} }$. Vì ${ 32 \in \mathbb{Z} }$ và ${ 100 \in \mathbb{Z}, 100 \neq 0 }$, nên ${32\%}$ là số hữu tỉ.
+
+---
+
+Câu 5. Điền kí hiệu thích hợp vào ô trống: ${-3 \text{ ? } \mathbb{Q}}$.
+A. ${ \in }$
+B. ${ \notin }$
+Đáp án: A
+Lời giải: Số ${-3}$ là một số nguyên. Mọi số nguyên đều là số hữu tỉ (có thể viết dưới dạng ${ \frac{-3}{1} }$). Vậy ${ -3 \in \mathbb{Q} }$.
+
+---
+
+Câu 6. Điền kí hiệu thích hợp vào ô trống: ${-\frac{3}{2} \text{ ? } \mathbb{Z}}$.
+A. ${ \in }$
+B. ${ \notin }$
+Đáp án: B
+Lời giải: Số ${-\frac{3}{2} = -1,5}$. Đây là một số thập phân, không phải là số nguyên. Vậy ${ -\frac{3}{2} \notin \mathbb{Z} }$.
+
+---
+
+Câu 7. Điền kí hiệu thích hợp vào ô trống: ${4,7 \text{ ? } \mathbb{Q}}$.
+A. ${ \in }$
+B. ${ \notin }$
+Đáp án: A
+Lời giải: Số ${4,7}$ là một số thập phân, có thể viết dưới dạng phân số ${ \frac{47}{10} }$. Vậy ${ 4,7 \in \mathbb{Q} }$.
+
+---
+
+Câu 8. Tìm số đối của ${ \frac{3}{2} }$.
+Đáp án: ${ -\frac{3}{2} }$
+Lời giải: Số đối của một số ${x}$ là ${-x}$. Vậy số đối của ${ \frac{3}{2} }$ là ${ -\frac{3}{2} }$.
+
+---
+
+Câu 9. Tìm số đối của ${ -\frac{6}{15} }$.
+Đáp án: ${ \frac{6}{15} }$
+Lời giải: Số đối của một số ${x}$ là ${-x}$. Vậy số đối của ${ -\frac{6}{15} }$ là ${ \frac{6}{15} }$.
+
+---
+
+Câu 10. Tìm số đối của ${ 7,32 }$.
+Đáp án: ${ -7,32 }$
+Lời giải: Số đối của một số ${x}$ là ${-x}$. Vậy số đối của ${ 7,32 }$ là ${ -7,32 }$.
+
+---
+
+Câu 11. Điểm M biểu diễn số hữu tỉ nào trên trục số, nếu nó nằm giữa ${0}$ và ${1}$ và cách gốc ${0}$ một khoảng bằng ${ \frac{1}{3} }$ đơn vị?
+Đáp án: ${ \frac{1}{3} }$
+Lời giải: Vì điểm M nằm giữa ${0}$ và ${1}$ (phía dương) và cách gốc ${0}$ một khoảng bằng ${ \frac{1}{3} }$ đơn vị, nên điểm M biểu diễn số ${ \frac{1}{3} }$.
+
+---
+
+Câu 12. Số hữu tỉ ${ \frac{15}{9} }$ có thể được biểu diễn trên trục số dưới dạng phân số tối giản nào?
+Đáp án: ${ \frac{5}{3} }$
+Lời giải: Để biểu diễn trên trục số, ta thường rút gọn phân số về dạng tối giản. ${ \frac{15}{9} = \frac{15 \div 3}{9 \div 3} = \frac{5}{3} }$.
+
+---
+
+Câu 13. So sánh ${ -\frac{2}{5} }$ và ${ -\frac{3}{4} }$.
+A. ${ -\frac{2}{5} > -\frac{3}{4} }$
+B. ${ -\frac{2}{5} < -\frac{3}{4} }$
+C. ${ -\frac{2}{5} = -\frac{3}{4} }$
+Đáp án: A
+Lời giải:
+Quy đồng mẫu số: Mẫu chung là ${20}$.
+${ -\frac{2}{5} = \frac{-2 \cdot 4}{5 \cdot 4} = \frac{-8}{20} }$
+${ -\frac{3}{4} = \frac{-3 \cdot 5}{4 \cdot 5} = \frac{-15}{20} }$
+Vì ${ -8 > -15 }$ nên ${ \frac{-8}{20} > \frac{-15}{20} }$.
+Vậy ${ -\frac{2}{5} > -\frac{3}{4} }$.
+
+---
+
+Câu 14. So sánh ${ 0,75 }$ và ${ \frac{500}{800} }$.
+A. ${ 0,75 > \frac{500}{800} }$
+B. ${ 0,75 < \frac{500}{800} }$
+C. ${ 0,75 = \frac{500}{800} }$
+Đáp án: A
+Lời giải:
+Chuyển đổi các số về cùng dạng:
+${ 0,75 = \frac{75}{100} = \frac{3}{4} }$
+${ \frac{500}{800} = \frac{500 \div 100}{800 \div 100} = \frac{5}{8} }$
+Quy đồng mẫu số: Mẫu chung là ${8}$.
+${ \frac{3}{4} = \frac{3 \cdot 2}{4 \cdot 2} = \frac{6}{8} }$
+So sánh ${ \frac{6}{8} }$ và ${ \frac{5}{8} }$. Vì ${ 6 > 5 }$ nên ${ \frac{6}{8} > \frac{5}{8} }$.
+Vậy ${ 0,75 > \frac{500}{800} }$.
+
+---
+
+Câu 15. [đúng sai nhóm]
+Ở vòng 1 cuộc thi tìm hiểu về bảo vệ môi trường, bạn Hải đã trả lời đúng được ${92\%}$ số câu trắc nghiệm. Ở vòng 2, bạn Hải đã trả lời đúng được ${36}$ câu trong số ${40}$ câu trắc nghiệm. Trong hai vòng thi, vòng nào bạn Hải làm bài tốt hơn?
+a) Vòng 1 làm tốt hơn Vòng 2.
+b) Vòng 2 làm tốt hơn Vòng 1.
+c) Hai vòng làm bài tốt như nhau.
+d) Không đủ thông tin để kết luận.
+Lời giải
+a) Sai:
+Vòng 1: Tỉ lệ đúng là ${92\% = \frac{92}{100} = \frac{23}{25}}$.
+Vòng 2: Tỉ lệ đúng là ${ \frac{36}{40} = \frac{36 \div 4}{40 \div 4} = \frac{9}{10} }$.
+Quy đồng mẫu số để so sánh:
+${ \frac{23}{25} = \frac{23 \cdot 2}{25 \cdot 2} = \frac{46}{50} }$
+${ \frac{9}{10} = \frac{9 \cdot 5}{10 \cdot 5} = \frac{45}{50} }$
+Vì ${ \frac{46}{50} > \frac{45}{50} }$ nên ${92\% > \frac{36}{40}}$.
+Vậy vòng 1 làm tốt hơn vòng 2.
+b) Sai:
+c) Sai:
+d) Sai:
+
+---
+
+Câu 16. [sắp xếp]
+Máy ảnh thường có nhiều tốc độ màn trập (tức khoảng thời gian mà màn trập mở cửa). Tốc độ màn trập tính bằng giây, thường là ${ \frac{1}{125}; \frac{1}{15}; 0,125; \frac{1}{60}; 0,004; \frac{1}{4} }$.
+Hãy sắp xếp các tốc độ này từ nhanh nhất đến chậm nhất (tức từ nhỏ nhất đến lớn nhất).
+1. ${ \frac{1}{125} }$
+2. ${ \frac{1}{15} }$
+3. ${ 0,125 }$
+4. ${ \frac{1}{60} }$
+5. ${ 0,004 }$
+6. ${ \frac{1}{4} }$
+Đáp án: 5,1,4,2,3,6
+Lời giải:
+Chuyển đổi tất cả các số về dạng thập phân hoặc phân số cùng mẫu để dễ so sánh:
+${ \frac{1}{125} = 0,008 }$
+${ \frac{1}{15} \approx 0,0667 }$
+${ 0,125 }$
+${ \frac{1}{60} \approx 0,0167 }$
+${ 0,004 }$
+${ \frac{1}{4} = 0,25 }$
+Sắp xếp từ nhỏ nhất (nhanh nhất) đến lớn nhất (chậm nhất):
+${ 0,004 }$ (số 5)
+${ 0,008 }$ (${ \frac{1}{125} }$, số 1)
+${ 0,0167 }$ (${ \frac{1}{60} }$, số 4)
+${ 0,125 }$ (số 3)
+${ 0,0667 }$ (${ \frac{1}{15} }$, số 2)
+${ 0,25 }$ (${ \frac{1}{4} }$, số 6)
+Thứ tự đúng là: ${0,004; \frac{1}{125}; \frac{1}{60}; 0,125; \frac{1}{15}; \frac{1}{4}}$.
+Vậy thứ tự các số thứ tự là: ${5, 1, 4, 3, 2, 6}$.
+
+TÓM TẮT BÀI HỌC
+
+TITLE: Tập hợp các số hữu tỉ — Tóm tắt
+ROOT: Số hữu tỉ (${ \mathbb{Q} }$)
+- Định nghĩa: ${ \frac{a}{b} }$, ${ a, b \in \mathbb{Z}, b \neq 0 }$
+- Phân loại:
+  - Số hữu tỉ dương (${ > 0 }$)
+  - Số hữu tỉ âm (${ < 0 }$)
+  - Số ${0}$
+- Các tập số: ${ \mathbb{N} \subset \mathbb{Z} \subset \mathbb{Q} }$
+- Số đối:
+  - Của ${x}$ là ${-x}$
+  - ${x + (-x) = 0 }$
+- Biểu diễn trên trục số:
+  - Chia đoạn đơn vị
+  - Xác định vị trí
+- So sánh:
+  - Quy đồng mẫu dương
+  - So sánh tử số
+  - So sánh với ${0}$

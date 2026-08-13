@@ -1,0 +1,340 @@
+@grade_level: 7
+@chapter: 1
+@lesson_no: 3
+@title: Luỹ thừa với số mũ tự nhiên của một số hữu tỉ
+@video_url:
+@video_material_url:
+@pdf_url:
+@seo_description: Bài giảng về luỹ thừa với số mũ tự nhiên của một số hữu tỉ, bao gồm định nghĩa, các công thức và bài tập vận dụng.
+@focus_keyword: lũy thừa số hữu tỉ
+@keywords: lũy thừa, số mũ tự nhiên, cơ số, công thức lũy thừa, tính toán lũy thừa, so sánh lũy thừa
+
+LÝ THUYẾT TRỌNG TÂM
+
+Định nghĩa:
+
+Lũy thừa bậc ${n}$ của số hữu tỉ ${x}$ kí hiệu là ${x^n}$ là tích của ${n}$ thừa số ${x}$ với ${n \in \mathbb{N}, n > 1}$.
+Tổng quát: ${x^n = x \cdot x \cdot \dots \cdot x}$ (${n}$ thừa số ${x}$) với ${x \in \mathbb{Q}, n \in \mathbb{N}, n > 1}$.
+Đọc là "${x}$ mũ ${n}$" hoặc "${x}$ lũy thừa ${n}$", ${x}$ gọi là cơ số, ${n}$ gọi là số mũ.
+Ví dụ: ${\left(-\frac{2}{5}\right)^3 = \left(-\frac{2}{5}\right) \cdot \left(-\frac{2}{5}\right) \cdot \left(-\frac{2}{5}\right) = -\frac{8}{125}}$. Cơ số là ${-\frac{2}{5}}$, số mũ là ${3}$.
+
+---
+
+Quy ước:
+
+${x^1 = x}$
+${x^0 = 1}$ (với ${x \neq 0}$)
+
+---
+
+Các công thức:
+
+1.  Nhân hai lũy thừa cùng cơ số: ${a^m \cdot a^n = a^{m+n}}$
+2.  Chia hai lũy thừa cùng cơ số: ${a^m : a^n = a^{m-n}}$ (với ${a \neq 0}$)
+3.  Lũy thừa của lũy thừa: ${ (a^m)^n = a^{m \cdot n} }$
+4.  Lũy thừa của một tích bằng tích các lũy thừa: ${ (a \cdot b)^n = a^n \cdot b^n }$
+5.  Lũy thừa của một thương bằng thương các lũy thừa: ${ \left(\frac{a}{b}\right)^n = \frac{a^n}{b^n} }$ (với ${b \neq 0}$)
+
+CÁC DẠNG TOÁN & VÍ DỤ
+
+Dạng 1: Tính giá trị lũy thừa và áp dụng các công thức cơ bản
+
+Phương pháp:
+Vận dụng định nghĩa và các công thức lũy thừa để tính toán hoặc rút gọn biểu thức. Chú ý đến dấu của cơ số và số mũ.
+
+---
+
+Ví dụ 1:
+Tính giá trị của biểu thức: ${\left(\frac{1}{6}\right)^5 \cdot \left(\frac{1}{6}\right)^2}$
+
+Lời giải:
+Áp dụng công thức nhân hai lũy thừa cùng cơ số ${a^m \cdot a^n = a^{m+n}}$:
+${\left(\frac{1}{6}\right)^5 \cdot \left(\frac{1}{6}\right)^2 = \left(\frac{1}{6}\right)^{5+2} = \left(\frac{1}{6}\right)^7}$
+${ = \frac{1^7}{6^7} = \frac{1}{279936}}$
+
+---
+
+Ví dụ 2:
+Tính giá trị của biểu thức: ${\left(-\frac{1}{2}\right)^3}$
+
+Lời giải:
+Áp dụng định nghĩa lũy thừa:
+${\left(-\frac{1}{2}\right)^3 = \left(-\frac{1}{2}\right) \cdot \left(-\frac{1}{2}\right) \cdot \left(-\frac{1}{2}\right) = -\frac{1}{8}}$
+
+---
+
+Dạng 2: Rút gọn biểu thức chứa lũy thừa phức tạp
+
+Phương pháp:
+Sử dụng linh hoạt các công thức lũy thừa để đưa biểu thức về dạng tối giản nhất. Có thể cần biến đổi cơ số về cùng một số hoặc biến đổi số mũ.
+
+---
+
+Ví dụ 1:
+Rút gọn biểu thức: ${ \left[\left(\frac{3}{5}\right)^4 \cdot \left(\frac{3}{5}\right)^3\right] : \left(\frac{3}{5}\right)^7 }$
+
+Lời giải:
+Áp dụng công thức nhân lũy thừa cùng cơ số, sau đó chia lũy thừa cùng cơ số:
+${ \left[\left(\frac{3}{5}\right)^4 \cdot \left(\frac{3}{5}\right)^3\right] : \left(\frac{3}{5}\right)^7 = \left(\frac{3}{5}\right)^{4+3} : \left(\frac{3}{5}\right)^7 }$
+${ = \left(\frac{3}{5}\right)^7 : \left(\frac{3}{5}\right)^7 = \left(\frac{3}{5}\right)^{7-7} = \left(\frac{3}{5}\right)^0 = 1 }$
+
+---
+
+Ví dụ 2:
+Rút gọn biểu thức: ${ \frac{4^5 \cdot 9^4}{8^3 \cdot 27^3} }$
+
+Lời giải:
+Biến đổi các cơ số về dạng lũy thừa của các số nguyên tố:
+${ 4 = 2^2 }$, ${ 9 = 3^2 }$, ${ 8 = 2^3 }$, ${ 27 = 3^3 }$
+Thay vào biểu thức:
+${ \frac{4^5 \cdot 9^4}{8^3 \cdot 27^3} = \frac{(2^2)^5 \cdot (3^2)^4}{(2^3)^3 \cdot (3^3)^3} }$
+Áp dụng công thức lũy thừa của lũy thừa ${ (a^m)^n = a^{m \cdot n} }$:
+${ = \frac{2^{10} \cdot 3^8}{2^9 \cdot 3^9} }$
+Áp dụng công thức chia lũy thừa cùng cơ số ${ a^m : a^n = a^{m-n} }$:
+${ = 2^{10-9} \cdot 3^{8-9} = 2^1 \cdot 3^{-1} = 2 \cdot \frac{1}{3} = \frac{2}{3} }$
+
+---
+
+Dạng 3: Viết các biểu thức dưới dạng lũy thừa của một số hữu tỉ
+
+Phương pháp:
+Sử dụng các công thức lũy thừa ngược lại để đưa biểu thức về dạng ${x^n}$.
+
+---
+
+Ví dụ 1:
+Viết biểu thức sau dưới dạng lũy thừa của một số hữu tỉ: ${2^4 \cdot 8^3}$
+
+Lời giải:
+Biến đổi ${8}$ về cơ số ${2}$: ${8 = 2^3}$
+${2^4 \cdot 8^3 = 2^4 \cdot (2^3)^3}$
+Áp dụng công thức lũy thừa của lũy thừa:
+${ = 2^4 \cdot 2^{3 \cdot 3} = 2^4 \cdot 2^9}$
+Áp dụng công thức nhân lũy thừa cùng cơ số:
+${ = 2^{4+9} = 2^{13}}$
+
+---
+
+Ví dụ 2:
+Viết biểu thức sau dưới dạng lũy thừa của một số hữu tỉ: ${64 : 2^5}$
+
+Lời giải:
+Biến đổi ${64}$ về cơ số ${2}$: ${64 = 2^6}$
+${64 : 2^5 = 2^6 : 2^5}$
+Áp dụng công thức chia lũy thừa cùng cơ số:
+${ = 2^{6-5} = 2^1 = 2}$
+
+---
+
+Dạng 4: So sánh các lũy thừa
+
+Phương pháp:
+Để so sánh hai lũy thừa, ta thường đưa chúng về cùng cơ số hoặc cùng số mũ.
+Nếu cùng cơ số (${a > 1}$), lũy thừa nào có số mũ lớn hơn thì lớn hơn.
+Nếu cùng số mũ dương, lũy thừa nào có cơ số lớn hơn thì lớn hơn.
+
+---
+
+Ví dụ 1:
+So sánh: ${2^{30}}$ và ${3^{20}}$
+
+Lời giải:
+Ta có:
+${2^{30} = (2^3)^{10} = 8^{10}}$
+${3^{20} = (3^2)^{10} = 9^{10}}$
+Vì ${8 < 9}$ và số mũ là ${10 > 0}$, nên ${8^{10} < 9^{10}}$.
+Vậy ${2^{30} < 3^{20}}$.
+
+---
+
+Ví dụ 2:
+So sánh: ${5^{300}}$ và ${3^{500}}$
+
+Lời giải:
+Ta có:
+${5^{300} = (5^3)^{100} = 125^{100}}$
+${3^{500} = (3^5)^{100} = 243^{100}}$
+Vì ${125 < 243}$ và số mũ là ${100 > 0}$, nên ${125^{100} < 243^{100}}$.
+Vậy ${5^{300} < 3^{500}}$.
+
+---
+
+Dạng 5: Tìm ${x}$ trong biểu thức lũy thừa
+
+Phương pháp:
+Biến đổi biểu thức về dạng ${a^x = a^k}$ hoặc ${x^n = b^n}$ để tìm ${x}$.
+Lưu ý các trường hợp đặc biệt như số mũ chẵn, lẻ hoặc cơ số âm.
+
+---
+
+Ví dụ 1:
+Tìm ${x}$, biết: ${x^3 : (-2)^2 = -2}$
+
+Lời giải:
+${x^3 : (-2)^2 = -2}$
+${x^3 : 4 = -2}$
+${x^3 = -2 \cdot 4}$
+${x^3 = -8}$
+${x^3 = (-2)^3}$
+Vậy ${x = -2}$.
+
+---
+
+Ví dụ 2:
+Tìm ${x}$, biết: ${x^2 = 8}$
+
+Lời giải:
+${x^2 = 8}$
+Không có số nguyên hoặc số hữu tỉ nào bình phương bằng ${8}$. Nếu ${x}$ là số thực, thì ${x = \pm \sqrt{8} = \pm 2\sqrt{2}}$.
+Trong chương trình lớp 7, với số mũ tự nhiên, ta thường tìm ${x}$ là số hữu tỉ. Vì ${8}$ không phải là bình phương của một số hữu tỉ, nên không có giá trị ${x}$ hữu tỉ thỏa mãn.
+(Ghi chú: Đối với cấp THCS, nếu không có số hữu tỉ, thường không yêu cầu tìm nghiệm vô tỉ).
+Giả sử đề bài là ${x^2 = 4}$ thì ${x = \pm 2}$.
+Hoặc nếu đề bài là ${x^3 = 8}$ thì ${x = 2}$.
+Với ${x^2 = 8}$, nếu giới hạn trong số hữu tỉ, không có nghiệm.
+(Để phù hợp với cấp lớp 7, tôi sẽ chọn một ví dụ từ PDF có nghiệm hữu tỉ cho ${x^2}$ hoặc ${x^3}$).
+
+*Điều chỉnh Ví dụ 2 để phù hợp với lớp 7 và có nghiệm hữu tỉ:*
+Ví dụ 2 (Đã chỉnh sửa):
+Tìm ${x}$, biết: ${x^2 = 81}$
+
+Lời giải:
+${x^2 = 81}$
+${x^2 = 9^2}$ hoặc ${x^2 = (-9)^2}$
+Vậy ${x = 9}$ hoặc ${x = -9}$.
+
+BÀI TẬP LUYỆN TẬP
+
+Câu 1. Rút gọn các phép tính với lũy thừa: ${\left(\frac{1}{6}\right)^5 \cdot \left(\frac{1}{6}\right)^2}$
+Đáp án: ${\frac{1}{279936}}$
+Lời giải:
+Áp dụng công thức ${a^m \cdot a^n = a^{m+n}}$:
+${\left(\frac{1}{6}\right)^5 \cdot \left(\frac{1}{6}\right)^2 = \left(\frac{1}{6}\right)^{5+2} = \left(\frac{1}{6}\right)^7 = \frac{1^7}{6^7} = \frac{1}{279936}}$.
+
+---
+
+Câu 2. Rút gọn các phép tính với lũy thừa: ${\left(-\frac{4}{9}\right)^{13} : \left(-\frac{4}{9}\right)^{13}}$
+Đáp án: ${1}$
+Lời giải:
+Áp dụng công thức ${a^m : a^n = a^{m-n}}$:
+${\left(-\frac{4}{9}\right)^{13} : \left(-\frac{4}{9}\right)^{13} = \left(-\frac{4}{9}\right)^{13-13} = \left(-\frac{4}{9}\right)^0 = 1}$.
+
+---
+
+Câu 3. Rút gọn các phép tính với lũy thừa: ${\left(\frac{3}{7}\right)^4 : \left(-\frac{3}{7}\right)^2}$
+Đáp án: ${\frac{9}{49}}$
+Lời giải:
+Ta có ${\left(-\frac{3}{7}\right)^2 = \left(\frac{3}{7}\right)^2}$.
+Vậy ${\left(\frac{3}{7}\right)^4 : \left(-\frac{3}{7}\right)^2 = \left(\frac{3}{7}\right)^4 : \left(\frac{3}{7}\right)^2 = \left(\frac{3}{7}\right)^{4-2} = \left(\frac{3}{7}\right)^2 = \frac{3^2}{7^2} = \frac{9}{49}}$.
+
+---
+
+Câu 4. Rút gọn các phép tính với lũy thừa: ${\left(-\frac{2}{3}\right)^2 \cdot \left(-\frac{2}{3}\right)^5}$
+Đáp án: ${-\frac{128}{2187}}$
+Lời giải:
+Áp dụng công thức ${a^m \cdot a^n = a^{m+n}}$:
+${\left(-\frac{2}{3}\right)^2 \cdot \left(-\frac{2}{3}\right)^5 = \left(-\frac{2}{3}\right)^{2+5} = \left(-\frac{2}{3}\right)^7 = -\frac{2^7}{3^7} = -\frac{128}{2187}}$.
+
+---
+
+Câu 5. Tính giá trị: ${\left(\frac{4}{7}\right)^2}$
+Đáp án: ${\frac{16}{49}}$
+Lời giải:
+${\left(\frac{4}{7}\right)^2 = \frac{4^2}{7^2} = \frac{16}{49}}$.
+
+---
+
+Câu 6. Tính giá trị: ${\left(-\frac{1}{2}\right)^3}$
+Đáp án: ${-\frac{1}{8}}$
+Lời giải:
+${\left(-\frac{1}{2}\right)^3 = \left(-\frac{1}{2}\right) \cdot \left(-\frac{1}{2}\right) \cdot \left(-\frac{1}{2}\right) = -\frac{1}{8}}$.
+
+---
+
+Câu 7. Tính giá trị: ${\left[\left(-\frac{3}{5}\right)^4 \cdot \left(-\frac{3}{5}\right)^3\right] : \left(-\frac{3}{5}\right)^7}$
+Đáp án: ${1}$
+Lời giải:
+${\left[\left(-\frac{3}{5}\right)^4 \cdot \left(-\frac{3}{5}\right)^3\right] : \left(-\frac{3}{5}\right)^7 = \left(-\frac{3}{5}\right)^{4+3} : \left(-\frac{3}{5}\right)^7 = \left(-\frac{3}{5}\right)^7 : \left(-\frac{3}{5}\right)^7 = \left(-\frac{3}{5}\right)^{7-7} = \left(-\frac{3}{5}\right)^0 = 1}$.
+
+---
+
+Câu 8. Tính giá trị: ${\frac{7^5 \cdot 7^4}{7^7}}$
+Đáp án: ${49}$
+Lời giải:
+${\frac{7^5 \cdot 7^4}{7^7} = \frac{7^{5+4}}{7^7} = \frac{7^9}{7^7} = 7^{9-7} = 7^2 = 49}$.
+
+---
+
+Câu 9. Viết biểu thức dưới dạng lũy thừa của một số hữu tỉ: ${2^4 \cdot 8^3}$
+Đáp án: ${2^{13}}$
+Lời giải:
+${2^4 \cdot 8^3 = 2^4 \cdot (2^3)^3 = 2^4 \cdot 2^9 = 2^{4+9} = 2^{13}}$.
+
+---
+
+Câu 10. Viết biểu thức dưới dạng lũy thừa của một số hữu tỉ: ${ (2^3)^2 }$
+Đáp án: ${2^6}$
+Lời giải:
+${(2^3)^2 = 2^{3 \cdot 2} = 2^6}$.
+
+---
+
+Câu 11. So sánh: ${2^{24}}$ và ${3^{16}}$
+Đáp án: ${2^{24} < 3^{16}}$
+Lời giải:
+Ta có:
+${2^{24} = (2^3)^8 = 8^8}$
+${3^{16} = (3^2)^8 = 9^8}$
+Vì ${8 < 9}$ và số mũ ${8 > 0}$, nên ${8^8 < 9^8}$.
+Vậy ${2^{24} < 3^{16}}$.
+
+---
+
+Câu 12. So sánh: ${16^{11}}$ và ${32^9}$
+Đáp án: ${16^{11} < 32^9}$
+Lời giải:
+Ta có:
+${16^{11} = (2^4)^{11} = 2^{44}}$
+${32^9 = (2^5)^9 = 2^{45}}$
+Vì ${44 < 45}$ và cơ số ${2 > 1}$, nên ${2^{44} < 2^{45}}$.
+Vậy ${16^{11} < 32^9}$.
+
+---
+
+Câu 13. Tìm ${x}$, biết: ${x^3 : (-2)^2 = -2}$
+Đáp án: ${-2}$
+Lời giải:
+${x^3 : (-2)^2 = -2}$
+${x^3 : 4 = -2}$
+${x^3 = -2 \cdot 4}$
+${x^3 = -8}$
+${x^3 = (-2)^3}$
+Vậy ${x = -2}$.
+
+---
+
+Câu 14. Tìm ${x}$, biết: ${x^7 \cdot \left(\frac{3}{7}\right)^3 = \left(\frac{3}{7}\right)^9}$
+Đáp án: ${\left(\frac{3}{7}\right)^6}$
+Lời giải:
+${x^7 \cdot \left(\frac{3}{7}\right)^3 = \left(\frac{3}{7}\right)^9}$
+${x^7 = \left(\frac{3}{7}\right)^9 : \left(\frac{3}{7}\right)^3}$
+${x^7 = \left(\frac{3}{7}\right)^{9-3}}$
+${x^7 = \left(\frac{3}{7}\right)^6}$
+(Lưu ý: Đối với lớp 7, kết quả có thể để dưới dạng lũy thừa).
+
+---
+
+Câu 15. Tìm ${x}$, biết: ${x^3 = 8}$
+Đáp án: ${2}$
+Lời giải:
+${x^3 = 8}$
+${x^3 = 2^3}$
+Vậy ${x = 2}$.
+
+---
+
+Câu 16. Tìm ${x}$, biết: ${x^2 = 25}$
+Đáp án: ${x = 5}$ hoặc ${x = -5}$
+Lời giải:
+${x^2 = 25}$
+${x^2 = 5^2}$ hoặc ${x^2 = (-5)^2}$
+Vậy ${x = 5}$ hoặc ${x = -5}$.
