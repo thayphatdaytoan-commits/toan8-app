@@ -1,0 +1,213 @@
+@grade_level: 7
+@chapter: 1
+@lesson_no: 2
+@title: Cộng, trừ, nhân, chia số hữu tỉ
+@video_url:
+@video_material_url:
+@pdf_url:
+@seo_description: Bài 2 Toán 7: cộng trừ nhân chia số hữu tỉ, tính nhanh và bài toán thực tế.
+@focus_keyword: phép tính số hữu tỉ
+@keywords: cộng trừ nhân chia, số hữu tỉ, tính nhanh, Toán 7
+LÝ THUYẾT TRỌNG TÂM
+# 1. Cộng, trừ số hữu tỉ
+Ghi nhớ:
+- Cùng mẫu: $\dfrac{a}{m} + \dfrac{b}{m} = \dfrac{a+b}{m}$; $\dfrac{a}{m} - \dfrac{b}{m} = \dfrac{a-b}{m}$.
+- Khác mẫu: quy đồng mẫu rồi cộng/trừ tử.
+---
+# 2. Nhân, chia số hữu tỉ
+Ghi nhớ:
+- $\dfrac{a}{b} \cdot \dfrac{c}{d} = \dfrac{ac}{bd}$.
+- $\dfrac{a}{b} : \dfrac{c}{d} = \dfrac{a}{b} \cdot \dfrac{d}{c} = \dfrac{ad}{bc}$ ($c \ne 0$).
+---
+# 3. Phân phối
+Ghi nhớ:
+$a(b+c)=ab+ac$. Không dùng $a:b + a:c = a:(b+c)$ (sai).
+
+CÁC DẠNG TOÁN & VÍ DỤ
+Dạng 1: Cộng, trừ, nhân, chia số hữu tỉ
+Phương pháp:
+Quy đồng mẫu khi cộng/trừ; nhân tử với tử, mẫu với mẫu; chia thì nhân với nghịch đảo.
+---
+Ví dụ 1:
+Tính $\dfrac{8}{18}-\dfrac{15}{27}$.
+A. $-\dfrac{1}{6}$
+B. $\dfrac{1}{6}$
+C. $-\dfrac{1}{9}$
+D. $\dfrac{1}{9}$
+Đáp án: C
+Lời giải:
+$\dfrac{8}{18}=\dfrac{4}{9}$, $\dfrac{15}{27}=\dfrac{5}{9}$ nên $\dfrac{4}{9}-\dfrac{5}{9}=-\dfrac{1}{9}$.
+---
+Ví dụ 2:
+Tính $\left(-\dfrac{4}{7}\right)\cdot\dfrac{21}{12}$.
+A. $-1$
+B. $1$
+C. $-\dfrac{1}{2}$
+D. $\dfrac{1}{2}$
+Đáp án: A
+Lời giải:
+$\left(-\dfrac{4}{7}\right)\cdot\dfrac{21}{12}=-\dfrac{84}{84}=-1$.
+---
+Dạng 2: Tính nhanh và tìm ẩn $x$
+Phương pháp:
+Nhóm hạng tử cùng mẫu; dùng phân phối. Giải phương trình bằng chuyển vế đổi dấu.
+---
+Ví dụ 1:
+Tính nhanh $\dfrac{11}{13}+\dfrac{17}{29}+\dfrac{2}{13}+\dfrac{17}{29}$.
+A. $1+\dfrac{34}{29}$
+B. $\dfrac{13}{13}+\dfrac{17}{29}$
+C. $1+\dfrac{17}{29}$
+D. $\dfrac{34}{29}$
+Đáp án: A
+Lời giải:
+$\dfrac{11+2}{13}+\dfrac{17+17}{29}=1+\dfrac{34}{29}$.
+---
+Ví dụ 2:
+Tìm $x$ biết $x-\dfrac{1}{2}=\dfrac{5}{7}$.
+A. $\dfrac{17}{14}$
+B. $\dfrac{3}{14}$
+C. $\dfrac{5}{14}$
+D. $\dfrac{12}{7}$
+Đáp án: A
+Lời giải:
+$x=\dfrac{5}{7}+\dfrac{1}{2}=\dfrac{10+7}{14}=\dfrac{17}{14}$.
+
+BÀI TẬP LUYỆN TẬP
+Câu 1. Tính $\dfrac{8}{18}-\dfrac{15}{27}$.
+A. $-\dfrac{1}{6}$
+B. $\dfrac{1}{6}$
+C. $-\dfrac{1}{9}$
+D. $\dfrac{1}{9}$
+Đáp án: C
+Lời giải:
+$\dfrac{4}{9}-\dfrac{5}{9}=-\dfrac{1}{9}$.
+---
+
+Câu 2. Tính $-\dfrac{5}{12}+0{,}75$.
+A. $\dfrac{1}{3}$
+B. $\dfrac{1}{4}$
+C. $-\dfrac{1}{3}$
+D. $\dfrac{2}{3}$
+Đáp án: A
+Lời giải:
+$0{,}75=\dfrac{3}{4}=\dfrac{9}{12}$ nên $-\dfrac{5}{12}+\dfrac{9}{12}=\dfrac{4}{12}=\dfrac{1}{3}$.
+---
+
+Câu 3. Tính $\left(-\dfrac{4}{7}\right)\cdot\dfrac{21}{12}$.
+A. $-1$
+B. $1$
+C. $-\dfrac{1}{2}$
+D. $\dfrac{1}{2}$
+Đáp án: A
+Lời giải:
+$-\dfrac{4\cdot21}{7\cdot12}=-1$.
+---
+
+Câu 4. Tính $\dfrac{17}{15}:\dfrac{4}{5}$.
+A. $\dfrac{17}{12}$
+B. $\dfrac{68}{75}$
+C. $\dfrac{17}{4}$
+D. $\dfrac{4}{17}$
+Đáp án: A
+Lời giải:
+$\dfrac{17}{15}\cdot\dfrac{5}{4}=\dfrac{17}{12}$.
+---
+
+Câu 5. Tính $\dfrac{2}{7}+\dfrac{6}{21}-\dfrac{3}{14}$.
+A. $\dfrac{5}{14}$
+B. $\dfrac{1}{2}$
+C. $\dfrac{3}{14}$
+D. $\dfrac{11}{42}$
+Đáp án: A
+Lời giải:
+Quy đồng mẫu $42$: $\dfrac{12}{42}+\dfrac{12}{42}-\dfrac{9}{42}=\dfrac{15}{42}=\dfrac{5}{14}$.
+---
+
+Câu 6. Tính $\dfrac{7}{3}\cdot\dfrac{1}{3}\cdot\dfrac{9}{5}$.
+A. $\dfrac{7}{5}$
+B. $\dfrac{21}{5}$
+C. $\dfrac{7}{15}$
+D. $\dfrac{63}{45}$
+Đáp án: A
+Lời giải:
+$\dfrac{7\cdot1\cdot9}{3\cdot3\cdot5}=\dfrac{63}{45}=\dfrac{7}{5}$.
+---
+
+Câu 7. Tính nhanh $\dfrac{11}{13}+\dfrac{17}{29}+\dfrac{2}{13}+\dfrac{17}{29}$.
+A. $1+\dfrac{34}{29}$
+B. $1+\dfrac{17}{29}$
+C. $\dfrac{13}{13}+\dfrac{17}{29}$
+D. $\dfrac{34}{29}$
+Đáp án: A
+Lời giải:
+Nhóm: $1+\dfrac{34}{29}$.
+---
+
+Câu 8. Tìm $x$ biết $x-\dfrac{1}{2}=\dfrac{5}{7}$. Viết đáp án dạng phân số tối giản.
+Đáp án: 17/14
+Placeholder: x = …
+Lời giải:
+$x=\dfrac{5}{7}+\dfrac{1}{2}=\dfrac{17}{14}$.
+---
+
+Câu 9. Tìm $x$ biết $-\dfrac{2}{7}-x=-\dfrac{6}{7}$.
+Đáp án: 4/7
+Placeholder: x = …
+Lời giải:
+$-x=-\dfrac{6}{7}+\dfrac{2}{7}=-\dfrac{4}{7}$ nên $x=\dfrac{4}{7}$.
+---
+
+Câu 10. Tìm $x$ biết $-\dfrac{4}{7}x=\dfrac{1}{3}$.
+Đáp án: -7/12
+Placeholder: x = …
+Lời giải:
+$x=\dfrac{1}{3}:\left(-\dfrac{4}{7}\right)=\dfrac{1}{3}\cdot\left(-\dfrac{7}{4}\right)=-\dfrac{7}{12}$.
+---
+
+Câu 11. Bể chứa nước $\dfrac{3}{4}$ dung tích. Mỗi giờ thêm $\dfrac{1}{8}$ bể. Hỏi sau bao nhiêu giờ thì đầy bể?
+Đáp án: 2
+Placeholder: Số giờ = …
+Lời giải:
+Còn thiếu $1-\dfrac{3}{4}=\dfrac{1}{4}$. Thời gian: $\dfrac{1}{4}:\dfrac{1}{8}=2$ (giờ).
+---
+
+Câu 12. Sau khi ghép, mảnh ván dài $3{,}2\,\mathrm{m}$, phần ghép chung $\dfrac{3}{50}\,\mathrm{m}$, mảnh thứ nhất dài $2\dfrac{1}{5}\,\mathrm{m}$. Chiều dài mảnh thứ hai là?
+A. $1{,}06\,\mathrm{m}$
+B. $1\,\mathrm{m}$
+C. $1{,}2\,\mathrm{m}$
+D. $0{,}96\,\mathrm{m}$
+Đáp án: A
+Lời giải:
+Tổng hai mảnh $=3{,}2+\dfrac{3}{50}=3{,}26$. Mảnh 1 $=2{,}2$. Mảnh 2 $=3{,}26-2{,}2=1{,}06\,\mathrm{m}$.
+---
+
+Câu 13. Lượng gạo còn $\dfrac{2}{3}$ thùng, mỗi tháng dùng $10\,\mathrm{kg}$, còn đủ $6$ tháng. Thùng chứa tối đa bao nhiêu kg?
+Đáp án: 90
+Placeholder: Số kg = …
+Lời giải:
+$\dfrac{2}{3}$ thùng $=10\cdot6=60\,\mathrm{kg}$ nên cả thùng $=60:\dfrac{2}{3}=90\,\mathrm{kg}$.
+---
+
+Câu 14. Tuần đầu làm $\dfrac{1}{5}$, hai tuần sau làm $\dfrac{1}{2}$, còn thiếu $300$ sản phẩm. Tổng sản phẩm cần làm trong tháng là?
+Đáp án: 1000
+Placeholder: Tổng = …
+Lời giải:
+Đã làm $\dfrac{1}{5}+\dfrac{1}{2}=\dfrac{7}{10}$, còn $\dfrac{3}{10}=300$ nên tổng $=300:\dfrac{3}{10}=1000$.
+---
+
+Câu 15. Đỉnh Bà Đen cao bằng $\dfrac{2}{5}$ Ngọc Linh; Ngọc Linh bằng $0{,}78$ Phan Xi Păng. Bà Đen bằng bao nhiêu phần Phan Xi Păng?
+A. $0{,}312$
+B. $0{,}39$
+C. $0{,}78$
+D. $\dfrac{2}{5}$
+Đáp án: A
+Lời giải:
+$\dfrac{2}{5}\cdot 0{,}78=0{,}312$.
+---
+
+Câu 16. Đỉnh Bà Đen cao khoảng $980\,\mathrm{m}$ và bằng $\dfrac{2}{5}$ Ngọc Linh. Độ cao Ngọc Linh (m) là?
+Đáp án: 2450
+Placeholder: Độ cao = …
+Lời giải:
+Ngọc Linh $=980:\dfrac{2}{5}=2450\,\mathrm{m}$.
+---

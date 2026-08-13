@@ -1,0 +1,221 @@
+@grade_level: 7
+@chapter: 2
+@lesson_no: 5
+@title: Làm quen với số thập phân vô hạn tuần hoàn
+@video_url:
+@video_material_url:
+@pdf_url:
+@seo_description: Bài 5 Toán 7: thập phân hữu hạn, vô hạn tuần hoàn, đổi phân số và làm tròn số.
+@focus_keyword: số thập phân vô hạn tuần hoàn
+@keywords: thập phân tuần hoàn, làm tròn số, số hữu tỉ, Toán 7
+LÝ THUYẾT TRỌNG TÂM
+# 1. Số thập phân hữu hạn và vô hạn tuần hoàn
+Ghi nhớ:
+- Mỗi số hữu tỉ viết được dưới dạng thập phân hữu hạn hoặc vô hạn tuần hoàn.
+- Ngược lại, mỗi thập phân hữu hạn hoặc vô hạn tuần hoàn biểu diễn một số hữu tỉ.
+- Kí hiệu chu kì: $4{,}(3)=4{,}333\ldots$; $2{,}(35)=2{,}353535\ldots$.
+---
+# 2. Làm tròn số
+Phương pháp:
+Gạch hàng quy tròn; nhìn chữ số bên phải: $\ge 5$ thì tăng $1$, $<5$ thì giữ nguyên; bỏ/ thay $0$ các chữ số bên phải.
+
+CÁC DẠNG TOÁN & VÍ DỤ
+Dạng 1: Đổi phân số ↔ thập phân tuần hoàn
+Phương pháp:
+Chia tử cho mẫu để được thập phân; với $0{,}(a)$ dùng $x=0{,}aaa\ldots$ rồi $10x-x$.
+---
+Ví dụ 1:
+Viết $\dfrac{7}{4}$ dưới dạng thập phân.
+A. $1{,}75$
+B. $1{,}7$
+C. $1{,}(7)$
+D. $0{,}75$
+Đáp án: A
+Lời giải:
+$\dfrac{7}{4}=1{,}75$.
+---
+Ví dụ 2:
+Viết gọn $2{,}212121\ldots$.
+A. $2{,}(21)$
+B. $2{,}2(1)$
+C. $2{,}(2)$
+D. $2{,}21$
+Đáp án: A
+Lời giải:
+Chu kì gồm hai chữ số $21$: $2{,}(21)$.
+---
+Dạng 2: Làm tròn số
+Phương pháp:
+Xác định hàng quy tròn rồi áp dụng quy tắc $\ge 5$ tăng, $<5$ giữ.
+---
+Ví dụ 1:
+Làm tròn $3{,}819$ đến hàng phần trăm.
+A. $3{,}82$
+B. $3{,}81$
+C. $3{,}8$
+D. $4$
+Đáp án: A
+Lời giải:
+Hàng phần trăm là chữ số $1$; bên phải $9\ge 5$ nên làm tròn thành $3{,}82$.
+---
+Ví dụ 2:
+$299792458$ làm tròn thành $300000000$ là làm tròn đến hàng nào?
+A. Hàng triệu
+B. Hàng trăm triệu
+C. Hàng nghìn
+D. Hàng tỉ
+Đáp án: B
+Lời giải:
+$300000000$ chính là làm tròn đến hàng trăm triệu.
+
+BÀI TẬP LUYỆN TẬP
+Câu 1. Viết $\dfrac{7}{4}$ dưới dạng thập phân.
+A. $1{,}75$
+B. $1{,}7$
+C. $1{,}(7)$
+D. $0{,}75$
+Đáp án: A
+Lời giải:
+$7:4=1{,}75$.
+---
+
+Câu 2. Viết $\dfrac{1}{3}$ dưới dạng thập phân tuần hoàn.
+A. $0{,}(3)$
+B. $0{,}3$
+C. $0{,}33$
+D. $1{,}(3)$
+Đáp án: A
+Lời giải:
+$1:3=0{,}333\ldots=0{,}(3)$.
+---
+
+Câu 3. Viết gọn $0{,}580580580\ldots$.
+A. $0{,}(580)$
+B. $0{,}5(80)$
+C. $0{,}58(0)$
+D. $0{,}580$
+Đáp án: A
+Lời giải:
+Chu kì $580$: $0{,}(580)$.
+---
+
+Câu 4. Viết gọn $0{,}62313131\ldots$.
+A. $0{,}62(31)$
+B. $0{,}(6231)$
+C. $0{,}6(231)$
+D. $0{,}6231$
+Đáp án: A
+Lời giải:
+Sau $62$ là chu kì $31$: $0{,}62(31)$.
+---
+
+Câu 5. Biểu diễn $0{,}(2)$ dưới dạng phân số.
+A. $\dfrac{2}{9}$
+B. $\dfrac{2}{10}$
+C. $\dfrac{1}{5}$
+D. $\dfrac{2}{99}$
+Đáp án: A
+Lời giải:
+Đặt $x=0{,}222\ldots$, $10x-x=2$ $\Rightarrow x=\dfrac{2}{9}$.
+---
+
+Câu 6. Biểu diễn $2{,}(35)$ dưới dạng phân số.
+A. $\dfrac{233}{99}$
+B. $\dfrac{235}{99}$
+C. $\dfrac{235}{100}$
+D. $\dfrac{23}{9}$
+Đáp án: A
+Lời giải:
+$x=2{,}3535\ldots$; $100x-x=233$ $\Rightarrow x=\dfrac{233}{99}$.
+---
+
+Câu 7. So sánh $4{,}(15)$ và $4{,}1(15)$.
+A. $4{,}(15) > 4{,}1(15)$
+B. $4{,}(15) < 4{,}1(15)$
+C. Bằng nhau
+D. Không so sánh được
+Đáp án: A
+Lời giải:
+$4{,}1515\ldots > 4{,}11515\ldots$.
+---
+
+Câu 8. Làm tròn $21441$ đến hàng chục.
+A. $21440$
+B. $21450$
+C. $21400$
+D. $21500$
+Đáp án: A
+Lời giải:
+Chữ số hàng đơn vị $1<5$ nên giữ $21440$.
+---
+
+Câu 9. Làm tròn $3{,}819$ đến hàng phần trăm.
+A. $3{,}82$
+B. $3{,}81$
+C. $3{,}8$
+D. $4$
+Đáp án: A
+Lời giải:
+Bên phải hàng phần trăm là $9\ge 5$ → $3{,}82$.
+---
+
+Câu 10. Làm tròn $-5$ đến hàng phần trăm (theo dạng $-5{,}00$).
+A. $-5{,}00$
+B. $-5$
+C. $-5{,}0$
+D. $-4{,}99$
+Đáp án: A
+Lời giải:
+$-5=-5{,}00$ khi lấy đến hàng phần trăm.
+---
+
+Câu 11. Dân số $7914638803$ làm tròn đến hàng tỉ. Kết quả?
+Đáp án: 8000000000
+Placeholder: Số ≈ …
+Lời giải:
+Hàng tỉ: nhìn $9\ge 5$ nên làm tròn thành $8000000000$.
+---
+
+Câu 12. $1\,\mathrm{inch}=2{,}54\,\mathrm{cm}$. Đường chéo Tivi $39$ inch (cm), làm tròn đến hàng đơn vị?
+Đáp án: 99
+Placeholder: Độ dài ≈ …
+Lời giải:
+$39\times 2{,}54=99{,}06\approx 99$.
+---
+
+Câu 13. Xăng $\le 26070$ đồng/lít, bình $3{,}7$ lít. Tiền đổ đầy (làm tròn nghìn đồng)?
+Đáp án: 96000
+Placeholder: Số tiền ≈ …
+Lời giải:
+$26070\times 3{,}7=96459\approx 96000$ (đến nghìn).
+---
+
+Câu 14. Vận tốc ánh sáng $299792458$ nói thành $300000000$ đã làm tròn đến hàng nào?
+A. Hàng trăm triệu
+B. Hàng triệu
+C. Hàng tỉ
+D. Hàng nghìn
+Đáp án: A
+Lời giải:
+$300000000$ là hàng trăm triệu.
+---
+
+Câu 15. So sánh $0{,}(15)$ và $0{,}15$.
+A. $0{,}(15) > 0{,}15$
+B. $0{,}(15) < 0{,}15$
+C. Bằng nhau
+D. Không so sánh được
+Đáp án: A
+Lời giải:
+$0{,}(15)=0{,}151515\ldots > 0{,}15$.
+---
+
+Câu 16. Số nào biểu diễn số hữu tỉ?
+A. $0{,}(6)$
+B. $\pi$
+C. $0{,}1010010001\ldots$ (không tuần hoàn)
+D. $\sqrt{2}$
+Đáp án: A
+Lời giải:
+$0{,}(6)=\dfrac{2}{3}\in\mathbb{Q}$.
+---

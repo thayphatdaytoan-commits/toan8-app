@@ -1,0 +1,196 @@
+@grade_level: 7
+@chapter: 2
+@lesson_no: 6
+@title: Số vô tỉ. Căn bậc hai số học
+@video_url:
+@video_material_url:
+@pdf_url:
+@seo_description: Bài 6 Toán 7: số vô tỉ và căn bậc hai số học, tính căn và giải phương trình đơn giản.
+@focus_keyword: căn bậc hai số học
+@keywords: số vô tỉ, căn bậc hai, Toán 7
+LÝ THUYẾT TRỌNG TÂM
+# 1. Số vô tỉ
+Định nghĩa:
+Số vô tỉ là số viết dưới dạng thập phân vô hạn không tuần hoàn; không viết được dưới dạng phân số $\dfrac{a}{b}$.
+Tập hợp các số vô tỉ thường kí hiệu $\mathbb{I}$ (hoặc nói "các số vô tỉ").
+Ví dụ: $\pi = 3{,}14159\ldots$; $\sqrt{2}=1{,}41421\ldots$.
+---
+# 2. Căn bậc hai số học
+Định nghĩa:
+Với $a \ge 0$, căn bậc hai số học của $a$ là số không âm $x$ sao cho $x^2 = a$, kí hiệu $\sqrt{a}$.
+Ghi nhớ:
+$\sqrt{a}\ge 0$; $(\sqrt{a})^2=a$; $\sqrt{a^2}=|a|$.
+
+CÁC DẠNG TOÁN & VÍ DỤ
+Dạng 1: Tính căn bậc hai số học
+Phương pháp:
+Tìm số không âm có bình phương bằng số trong căn; với phân số: $\sqrt{\dfrac{a}{b}}=\dfrac{\sqrt{a}}{\sqrt{b}}$.
+---
+Ví dụ 1:
+Tính $\sqrt{81}$.
+A. $9$
+B. $-9$
+C. $\pm 9$
+D. $81$
+Đáp án: A
+Lời giải:
+Căn bậc hai số học không âm: $\sqrt{81}=9$.
+---
+Ví dụ 2:
+Tính $\sqrt{\dfrac{64}{25}}$.
+A. $\dfrac{8}{5}$
+B. $-\dfrac{8}{5}$
+C. $\dfrac{64}{25}$
+D. $\dfrac{8}{25}$
+Đáp án: A
+Lời giải:
+$\sqrt{\dfrac{64}{25}}=\dfrac{8}{5}$.
+---
+Dạng 2: Phương trình chứa căn / bình phương
+Phương pháp:
+$\sqrt{x}=a$ ($a\ge 0$) $\Rightarrow x=a^2$. Với $x^2=a$ ($a\ge 0$) thì $x=\pm\sqrt{a}$ (chọn theo điều kiện).
+---
+Ví dụ 1:
+Tìm $x$ biết $\sqrt{x}=2$.
+A. $4$
+B. $2$
+C. $-4$
+D. $\pm 2$
+Đáp án: A
+Lời giải:
+$x=2^2=4$.
+---
+Ví dụ 2:
+Tìm $x\ge 0$ biết $x^2=9$.
+A. $3$
+B. $-3$
+C. $\pm 3$
+D. $9$
+Đáp án: A
+Lời giải:
+Vì yêu cầu $x\ge 0$ nên $x=3$.
+
+BÀI TẬP LUYỆN TẬP
+Câu 1. Tính $\sqrt{81}$.
+Đáp án: 9
+Placeholder: Kết quả = …
+Lời giải:
+$9^2=81$ và $9\ge 0$.
+---
+
+Câu 2. Tính $\sqrt{169}$.
+Đáp án: 13
+Placeholder: Kết quả = …
+Lời giải:
+$13^2=169$.
+---
+
+Câu 3. Tính $\sqrt{\dfrac{1}{9}}$.
+A. $\dfrac{1}{3}$
+B. $-\dfrac{1}{3}$
+C. $\dfrac{1}{9}$
+D. $3$
+Đáp án: A
+Lời giải:
+$\sqrt{\dfrac{1}{9}}=\dfrac{1}{3}$.
+---
+
+Câu 4. Tính $\sqrt{\dfrac{64}{25}}$.
+A. $\dfrac{8}{5}$
+B. $-\dfrac{8}{5}$
+C. $\dfrac{64}{25}$
+D. $\dfrac{8}{25}$
+Đáp án: A
+Lời giải:
+$\dfrac{8}{5}$.
+---
+
+Câu 5. Tính $\sqrt{81}-\sqrt{64}+\sqrt{49}$.
+A. $8$
+B. $6$
+C. $10$
+D. $2$
+Đáp án: A
+Lời giải:
+$9-8+7=8$.
+---
+
+Câu 6. Tìm $x$ biết $\sqrt{x}=2$.
+Đáp án: 4
+Placeholder: x = …
+Lời giải:
+$x=2^2=4$.
+---
+
+Câu 7. Tìm $x$ biết $\sqrt{x}=3$.
+Đáp án: 9
+Placeholder: x = …
+Lời giải:
+$x=9$.
+---
+
+Câu 8. Tìm $x$ biết $\sqrt{x}+1=4$.
+Đáp án: 9
+Placeholder: x = …
+Lời giải:
+$\sqrt{x}=3\Rightarrow x=9$.
+---
+
+Câu 9. Tìm $x$ biết $\sqrt{x}-2=5$.
+Đáp án: 49
+Placeholder: x = …
+Lời giải:
+$\sqrt{x}=7\Rightarrow x=49$.
+---
+
+Câu 10. Tìm $x\ge 0$ biết $x^2=9$.
+Đáp án: 3
+Placeholder: x = …
+Lời giải:
+$x=3$ (nhánh không âm).
+---
+
+Câu 11. Tìm tất cả $x$ thỏa $x^2=\dfrac{4}{9}$.
+A. $x=\pm\dfrac{2}{3}$
+B. $x=\dfrac{2}{3}$
+C. $x=-\dfrac{2}{3}$
+D. $x=\pm\dfrac{4}{9}$
+Đáp án: A
+Lời giải:
+$x=\pm\dfrac{2}{3}$.
+---
+
+Câu 12. Sân hình vuông chi phí $10125000$ đồng, đơn giá $125000$ đồng/m$^2$. Cạnh sân (m)?
+Đáp án: 9
+Placeholder: Cạnh = …
+Lời giải:
+Diện tích $=10125000:125000=81$; cạnh $=\sqrt{81}=9$.
+---
+
+Câu 13. Gửi $200000000$, sau $1$ năm nhận $214000000$. Lãi suất năm (% )?
+Đáp án: 7
+Placeholder: Lãi suất = …
+Lời giải:
+Lãi $=14000000$; suất $=\dfrac{14}{200}=0{,}07=7\%$.
+---
+
+Câu 14. Gửi $100000000$, sau $2$ năm nhận $112360000$. Lãi suất năm kép $r$ thỏa $(1+r)^2=1{,}1236$. Giá trị $r$ (% )?
+Đáp án: 6
+Placeholder: r = …
+Lời giải:
+$1+r=\sqrt{1{,}1236}=1{,}06$ nên $r=6\%$.
+---
+
+Câu 15. [đúng sai]
+$\sqrt{2}$ là số hữu tỉ.
+Đáp án: Sai
+Lời giải:
+$\sqrt{2}$ là số vô tỉ.
+---
+
+Câu 16. [đúng sai]
+$\sqrt{9}=3$ (căn bậc hai số học).
+Đáp án: Đúng
+Lời giải:
+Căn bậc hai số học lấy giá trị không âm.
+---

@@ -1,0 +1,191 @@
+@grade_level: 7
+@chapter: 1
+@lesson_no: OT1
+@title: Ôn tập chương I
+@video_url:
+@video_material_url:
+@pdf_url:
+@seo_description: Ôn tập Chương I Toán 7: số hữu tỉ, phép tính, lũy thừa và bài toán phần trăm.
+@focus_keyword: ôn tập số hữu tỉ
+@keywords: ôn tập chương I, số hữu tỉ, lũy thừa, Toán 7
+LÝ THUYẾT TRỌNG TÂM
+# Ôn tập Chương I — Số hữu tỉ
+Ghi nhớ:
+- $\mathbb{N} \subset \mathbb{Z} \subset \mathbb{Q}$.
+- Cộng/trừ: quy đồng mẫu; nhân: tử–mẫu; chia: nhân nghịch đảo.
+- Lũy thừa: $a^m a^n=a^{m+n}$, $a^m:a^n=a^{m-n}$, $(a^m)^n=a^{mn}$.
+- Thứ tự: ngoặc → lũy thừa → nhân chia → cộng trừ; chuyển vế đổi dấu.
+
+CÁC DẠNG TOÁN & VÍ DỤ
+Dạng 1: Tập hợp và biểu thức lũy thừa / hỗn hợp
+Phương pháp:
+Xét $\in/\notin$; rút gọn mũ; tính theo đúng thứ tự phép tính.
+---
+Ví dụ 1:
+Khẳng định $-5 \in \mathbb{N}$ là?
+A. Đúng
+B. Sai
+C. Đúng nếu coi $0$ thuộc $\mathbb{N}$
+D. Không kết luận
+Đáp án: B
+Lời giải:
+Số tự nhiên không âm; $-5 \notin \mathbb{N}$.
+---
+Ví dụ 2:
+Tính $\left[\left(\dfrac{3}{7}\right)^{100}\cdot\left(\dfrac{3}{7}\right)^{99}\right]:\left(\dfrac{3}{7}\right)^{100}$.
+A. $\left(\dfrac{3}{7}\right)^{99}$
+B. $\left(\dfrac{3}{7}\right)^{199}$
+C. $1$
+D. $\dfrac{3}{7}$
+Đáp án: A
+Lời giải:
+Số mũ: $100+99-100=99$.
+---
+Dạng 2: Tìm $x$ và giảm giá liên tiếp
+Phương pháp:
+Chuyển vế đổi dấu. Giảm liên tiếp: nhân lần lượt các hệ số còn lại.
+---
+Ví dụ 1:
+Tìm $x$ biết $\dfrac{3}{4}+x=\dfrac{7}{2}$.
+A. $\dfrac{11}{4}$
+B. $\dfrac{5}{4}$
+C. $\dfrac{13}{4}$
+D. $-\dfrac{11}{4}$
+Đáp án: A
+Lời giải:
+$x=\dfrac{7}{2}-\dfrac{3}{4}=\dfrac{14-3}{4}=\dfrac{11}{4}$.
+---
+Ví dụ 2:
+Máy giặt $10000000$ đồng, giảm $15\%$ rồi thêm $5\%$ trên giá đã giảm. Phải trả?
+A. $8075000$
+B. $8000000$
+C. $8500000$
+D. $9025000$
+Đáp án: A
+Lời giải:
+$10000000\times 0{,}85\times 0{,}95=8075000$.
+
+BÀI TẬP LUYỆN TẬP
+Câu 1. [đúng sai]
+$-5 \in \mathbb{N}$.
+Đáp án: Sai
+Lời giải:
+$-5 \notin \mathbb{N}$.
+---
+
+Câu 2. [đúng sai]
+$\dfrac{7}{2} \in \mathbb{Q}$.
+Đáp án: Đúng
+Lời giải:
+Đã là phân số với mẫu $\ne 0$.
+---
+
+Câu 3. [đúng sai]
+$3{,}01 \in \mathbb{Z}$.
+Đáp án: Sai
+Lời giải:
+$3{,}01$ không nguyên.
+---
+
+Câu 4. [đúng sai]
+$-25\% \in \mathbb{Q}$.
+Đáp án: Đúng
+Lời giải:
+$-25\%=-\dfrac{1}{4}\in\mathbb{Q}$.
+---
+
+Câu 5. Tính $\left[\left(\dfrac{3}{7}\right)^{100}\cdot\left(\dfrac{3}{7}\right)^{99}\right]:\left(\dfrac{3}{7}\right)^{100}$.
+A. $\left(\dfrac{3}{7}\right)^{99}$
+B. $\left(\dfrac{3}{7}\right)^{199}$
+C. $1$
+D. $\dfrac{3}{7}$
+Đáp án: A
+Lời giải:
+Mũ $100+99-100=99$.
+---
+
+Câu 6. Tính $\dfrac{2}{5}+\dfrac{3}{5}:\dfrac{1}{2}+\dfrac{1}{2}$.
+A. $\dfrac{21}{10}$
+B. $\dfrac{11}{5}$
+C. $2$
+D. $\dfrac{7}{5}$
+Đáp án: A
+Lời giải:
+Chia trước: $\dfrac{3}{5}:\dfrac{1}{2}=\dfrac{6}{5}$; rồi $\dfrac{2}{5}+\dfrac{6}{5}+\dfrac{1}{2}=\dfrac{8}{5}+\dfrac{1}{2}=\dfrac{16+5}{10}=\dfrac{21}{10}$.
+---
+
+Câu 7. Tính nhanh $\dfrac{2}{5}\cdot\dfrac{3}{8}+\dfrac{5}{8}\cdot\dfrac{2}{5}$.
+A. $\dfrac{2}{5}$
+B. $\dfrac{1}{5}$
+C. $1$
+D. $\dfrac{16}{40}$
+Đáp án: A
+Lời giải:
+Phân phối: $\dfrac{2}{5}\left(\dfrac{3}{8}+\dfrac{5}{8}\right)=\dfrac{2}{5}\cdot 1=\dfrac{2}{5}$.
+---
+
+Câu 8. Tính $\dfrac{15^2\cdot 9^3}{25\cdot 27}$.
+A. $81$
+B. $27$
+C. $9$
+D. $243$
+Đáp án: A
+Lời giải:
+Rút gọn theo thừa số nguyên tố được $81$.
+---
+
+Câu 9. Tìm $x$ biết $\dfrac{3}{4}+x=\dfrac{7}{2}$.
+Đáp án: 11/4
+Placeholder: x = …
+Lời giải:
+$x=\dfrac{7}{2}-\dfrac{3}{4}=\dfrac{11}{4}$.
+---
+
+Câu 10. Tìm $x$ biết $\dfrac{3}{5}+x=\dfrac{2}{5}$.
+Đáp án: -1/5
+Placeholder: x = …
+Lời giải:
+$x=\dfrac{2}{5}-\dfrac{3}{5}=-\dfrac{1}{5}$.
+---
+
+Câu 11. Tìm $x$ biết $5^x=125$.
+Đáp án: 3
+Placeholder: x = …
+Lời giải:
+$125=5^3$ nên $x=3$.
+---
+
+Câu 12. Tìm $x$ biết $x^2=9$ và $x>0$.
+Đáp án: 3
+Placeholder: x = …
+Lời giải:
+Vì $x>0$ nên $x=3$.
+---
+
+Câu 13. Máy giặt $10000000$, giảm $15\%$ rồi thêm $5\%$ trên giá đã giảm. Phải trả?
+Đáp án: 8075000
+Placeholder: Số tiền = …
+Lời giải:
+$10000000\times0{,}85\times0{,}95=8075000$.
+---
+
+Câu 14. Lò vi sóng trả $2640000$ sau giảm $15\%$ rồi thêm $5\%$ trên giá đã giảm. Giá niêm yết?
+Đáp án: 3270000
+Placeholder: Giá gốc = …
+Lời giải:
+Hệ số $0{,}85\times0{,}95=0{,}8075$; giá gốc $=2640000:0{,}8075=3270000$.
+---
+
+Câu 15. An trả $196000$ sau giảm $20\%$ rồi thêm $2\%$ trên giá đã giảm. Giá ban đầu?
+Đáp án: 250000
+Placeholder: Giá gốc = …
+Lời giải:
+Hệ số $0{,}8\times0{,}98=0{,}784$; $196000:0{,}784=250000$.
+---
+
+Câu 16. TV còn $12150000$ sau hai lần giảm $10\%$ liên tiếp. Giá ban đầu?
+Đáp án: 15000000
+Placeholder: Giá gốc = …
+Lời giải:
+Hệ số $0{,}9\times0{,}9=0{,}81$; $12150000:0{,}81=15000000$.
+---

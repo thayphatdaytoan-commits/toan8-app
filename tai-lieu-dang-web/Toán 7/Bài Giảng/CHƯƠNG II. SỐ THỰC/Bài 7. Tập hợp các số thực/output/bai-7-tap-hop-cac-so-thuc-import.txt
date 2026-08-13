@@ -1,0 +1,195 @@
+@grade_level: 7
+@chapter: 2
+@lesson_no: 7
+@title: Tập hợp các số thực
+@video_url:
+@video_material_url:
+@pdf_url:
+@seo_description: Bài 7 Toán 7: tập hợp số thực R, giá trị tuyệt đối và ứng dụng căn bậc hai.
+@focus_keyword: tập hợp số thực
+@keywords: số thực, giá trị tuyệt đối, tập hợp R, Toán 7
+LÝ THUYẾT TRỌNG TÂM
+# 1. Tập hợp số thực
+Định nghĩa:
+Số hữu tỉ và số vô tỉ gọi chung là số thực. Tập hợp các số thực kí hiệu $\mathbb{R}$.
+Ghi nhớ:
+$\mathbb{N}\subset\mathbb{Z}\subset\mathbb{Q}\subset\mathbb{R}$ và các số vô tỉ cũng thuộc $\mathbb{R}$.
+---
+# 2. Giá trị tuyệt đối
+Định nghĩa:
+$|x|=\begin{cases}x & \text{nếu } x\ge 0\\ -x & \text{nếu } x<0\end{cases}$.
+Ghi nhớ: $|x|\ge 0$; $|x|=|-x|$ với mọi $x\in\mathbb{R}$.
+
+CÁC DẠNG TOÁN & VÍ DỤ
+Dạng 1: Quan hệ thuộc / bao hàm tập hợp số
+Phương pháp:
+Số thập phân tuần hoàn $\in\mathbb{Q}\subset\mathbb{R}$; số vô hạn không tuần hoàn $\notin\mathbb{Q}$ nhưng $\in\mathbb{R}$.
+---
+Ví dụ 1:
+$-2 \in \mathbb{R}$?
+A. Đúng
+B. Sai
+C. Chỉ thuộc $\mathbb{Z}$
+D. Không kết luận
+Đáp án: A
+Lời giải:
+Mọi số nguyên đều là số thực.
+---
+Ví dụ 2:
+$\sqrt{2} \in \mathbb{Q}$?
+A. Đúng
+B. Sai
+C. Đúng vì viết được thập phân
+D. Không kết luận
+Đáp án: B
+Lời giải:
+$\sqrt{2}$ vô tỉ nên $\notin\mathbb{Q}$.
+---
+Dạng 2: Giá trị tuyệt đối và sắp xếp số thực
+Phương pháp:
+Tính $|x|$ theo định nghĩa; sắp xếp bằng cách so sánh trên trục số hoặc đưa về cùng dạng.
+---
+Ví dụ 1:
+Tính $\left|-\dfrac{3}{4}\right|$.
+A. $\dfrac{3}{4}$
+B. $-\dfrac{3}{4}$
+C. $\dfrac{4}{3}$
+D. $0$
+Đáp án: A
+Lời giải:
+$|-x|=|x|$ nên $\left|-\dfrac{3}{4}\right|=\dfrac{3}{4}$.
+---
+Ví dụ 2:
+Cạnh hình vuông diện tích $169\,\mathrm{m}^2$ bằng?
+A. $13\,\mathrm{m}$
+B. $12\,\mathrm{m}$
+C. $14\,\mathrm{m}$
+D. $169\,\mathrm{m}$
+Đáp án: A
+Lời giải:
+$\sqrt{169}=13$.
+
+BÀI TẬP LUYỆN TẬP
+Câu 1. [đúng sai]
+$-2 \in \mathbb{R}$.
+Đáp án: Đúng
+Lời giải:
+Số nguyên là số thực.
+---
+
+Câu 2. [đúng sai]
+$\dfrac{3}{2} \in \mathbb{R}$.
+Đáp án: Đúng
+Lời giải:
+Số hữu tỉ là số thực.
+---
+
+Câu 3. [đúng sai]
+$0{,}5 \in \mathbb{I}$ (tập số vô tỉ).
+Đáp án: Sai
+Lời giải:
+$0{,}5=\dfrac{1}{2}$ hữu tỉ.
+---
+
+Câu 4. [đúng sai]
+$\sqrt{3} \in \mathbb{R}$.
+Đáp án: Đúng
+Lời giải:
+Số vô tỉ cũng là số thực.
+---
+
+Câu 5. [đúng sai]
+$0{,}3(5) \in \mathbb{Q}$.
+Đáp án: Đúng
+Lời giải:
+Thập phân tuần hoàn là số hữu tỉ.
+---
+
+Câu 6. [đúng sai]
+$\sqrt{2} \in \mathbb{Q}$.
+Đáp án: Sai
+Lời giải:
+$\sqrt{2}$ vô tỉ.
+---
+
+Câu 7. Tính $\left|-3\right|$.
+Đáp án: 3
+Placeholder: |−3| = …
+Lời giải:
+$-3<0$ nên $|-3|=3$.
+---
+
+Câu 8. Tính $\left|-2{,}5\right|$.
+Đáp án: 2.5
+Placeholder: Kết quả = …
+Lời giải:
+$|-2{,}5|=2{,}5$.
+---
+
+Câu 9. Tính $\left|-\dfrac{3}{4}\right|$.
+A. $\dfrac{3}{4}$
+B. $-\dfrac{3}{4}$
+C. $\dfrac{4}{3}$
+D. $0$
+Đáp án: A
+Lời giải:
+$\dfrac{3}{4}$.
+---
+
+Câu 10. Sắp xếp tăng dần: $-2{,}63$; $3{,}(4)$; $-2{,}75$; $0$; $\dfrac{33}{10}$; $\sqrt{2}$.
+A. $-2{,}75; -2{,}63; 0; \sqrt{2}; 3{,}(4); \dfrac{33}{10}$
+B. $-2{,}75; -2{,}63; 0; \sqrt{2}; \dfrac{33}{10}; 3{,}(4)$
+C. $-2{,}63; -2{,}75; 0; \sqrt{2}; \dfrac{33}{10}; 3{,}(4)$
+D. $-2{,}75; -2{,}63; 0; \dfrac{33}{10}; \sqrt{2}; 3{,}(4)$
+Đáp án: B
+Lời giải:
+$-2{,}75<-2{,}63<0<\sqrt{2}\approx1{,}41<3{,}3=\dfrac{33}{10}<3{,}(4)=3{,}444\ldots$.
+---
+
+Câu 11. Tìm $x$ biết $|x|=8$. Nếu chỉ lấy nghiệm không âm thì $x=?$
+Đáp án: 8
+Placeholder: x = …
+Lời giải:
+Nghiệm là $\pm 8$; không âm chọn $8$.
+---
+
+Câu 12. Tìm $x$ biết $|x|-0{,}3=\dfrac{1}{5}$ và $x\ge 0$.
+Đáp án: 0.5
+Placeholder: x = …
+Lời giải:
+$|x|=0{,}3+0{,}2=0{,}5$; $x=0{,}5$.
+---
+
+Câu 13. Cạnh hình vuông diện tích $169\,\mathrm{m}^2$?
+Đáp án: 13
+Placeholder: Cạnh = …
+Lời giải:
+$\sqrt{169}=13$.
+---
+
+Câu 14. Bán kính hình tròn diện tích $100\,\mathrm{cm}^2$ (lấy $\pi=3{,}14$) gần bằng?
+A. $\approx 5{,}64$
+B. $10$
+C. $50$
+D. $\approx 31{,}4$
+Đáp án: A
+Lời giải:
+$r=\sqrt{\dfrac{100}{\pi}}\approx\sqrt{31{,}85}\approx 5{,}64$.
+---
+
+Câu 15. Sân vuông chi phí $36720000$ đồng, $255000$ đồng/m$^2$. Cạnh sân (m)?
+Đáp án: 12
+Placeholder: Cạnh = …
+Lời giải:
+Diện tích $=36720000:255000=144$; cạnh $=12$.
+---
+
+Câu 16. Hình vuông cạnh $1$, đường chéo bằng?
+A. $\sqrt{2}$
+B. $2$
+C. $1$
+D. $\dfrac{1}{2}$
+Đáp án: A
+Lời giải:
+Theo Pythagore: $\sqrt{1^2+1^2}=\sqrt{2}$.
+---

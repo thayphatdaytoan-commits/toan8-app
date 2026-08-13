@@ -1,0 +1,207 @@
+@grade_level: 7
+@chapter: 1
+@lesson_no: 4
+@title: Thứ tự thực hiện các phép tính. Quy tắc chuyển vế
+@video_url:
+@video_material_url:
+@pdf_url:
+@seo_description: Bài 4 Toán 7: thứ tự phép tính, dấu ngoặc, chuyển vế và bài toán phần trăm.
+@focus_keyword: thứ tự phép tính chuyển vế
+@keywords: thứ tự phép tính, dấu ngoặc, chuyển vế, phần trăm, Toán 7
+LÝ THUYẾT TRỌNG TÂM
+# 1. Thứ tự thực hiện phép tính
+Ghi nhớ:
+- Không có ngoặc: Lũy thừa → Nhân, chia (trái sang phải) → Cộng, trừ (trái sang phải).
+- Có ngoặc: thực hiện trong $(\ )$ rồi $[\ ]$ rồi $\{\ \}$.
+---
+# 2. Quy tắc dấu ngoặc
+Ghi nhớ:
+- Trước ngoặc có dấu $+$: giữ nguyên dấu các số hạng trong ngoặc.
+- Trước ngoặc có dấu $-$: đổi dấu tất cả các số hạng trong ngoặc.
+---
+# 3. Quy tắc chuyển vế
+Định lí:
+Khi chuyển một số hạng từ vế này sang vế kia của đẳng thức, phải đổi dấu số hạng đó.
+
+CÁC DẠNG TOÁN & VÍ DỤ
+Dạng 1: Tính biểu thức và chuyển vế tìm $x$
+Phương pháp:
+Theo thứ tự phép tính; khi tìm $x$ dùng quy tắc chuyển vế đổi dấu.
+---
+Ví dụ 1:
+Tính $\dfrac{7}{12}\cdot\dfrac{27}{7}\cdot\dfrac{1}{18}$.
+A. $\dfrac{1}{8}$
+B. $\dfrac{1}{4}$
+C. $\dfrac{3}{8}$
+D. $\dfrac{1}{16}$
+Đáp án: A
+Lời giải:
+$\dfrac{7\cdot27\cdot1}{12\cdot7\cdot18}=\dfrac{27}{216}=\dfrac{1}{8}$.
+---
+Ví dụ 2:
+Tìm $x$ biết $x+\dfrac{3}{4}=\dfrac{1}{2}$.
+A. $-\dfrac{1}{4}$
+B. $\dfrac{1}{4}$
+C. $\dfrac{5}{4}$
+D. $-\dfrac{5}{4}$
+Đáp án: A
+Lời giải:
+$x=\dfrac{1}{2}-\dfrac{3}{4}=-\dfrac{1}{4}$.
+---
+Dạng 2: Bài toán giảm giá, lãi suất
+Phương pháp:
+Sau giảm $p\%$ nhân $(1-p/100)$. Giá gốc = giá sau giảm $:(1-p/100)$.
+---
+Ví dụ 1:
+Sách $50000$ đồng giảm $15\%$. Phải trả bao nhiêu?
+A. $42500$
+B. $45000$
+C. $47500$
+D. $41500$
+Đáp án: A
+Lời giải:
+$50000\times 0{,}85=42500$.
+---
+Ví dụ 2:
+Mua đồng hồ $2600000$ đồng (đã giảm $35\%$). Giá gốc là?
+A. $4000000$
+B. $3500000$
+C. $3000000$
+D. $3900000$
+Đáp án: A
+Lời giải:
+$2600000:0{,}65=4000000$.
+
+BÀI TẬP LUYỆN TẬP
+Câu 1. Tính $\dfrac{7}{12}\cdot\dfrac{27}{7}\cdot\dfrac{1}{18}$.
+A. $\dfrac{1}{8}$
+B. $\dfrac{1}{4}$
+C. $\dfrac{3}{8}$
+D. $\dfrac{1}{16}$
+Đáp án: A
+Lời giải:
+Rút gọn được $\dfrac{1}{8}$.
+---
+
+Câu 2. Tính $\left(\dfrac{3}{4}+\dfrac{1}{4}\right)\cdot(-3)$.
+A. $-3$
+B. $3$
+C. $-\dfrac{9}{4}$
+D. $0$
+Đáp án: A
+Lời giải:
+Trong ngoặc $=1$, nhân $-3$ được $-3$.
+---
+
+Câu 3. Tính $\dfrac{5}{4}-\dfrac{3}{7}\cdot\dfrac{21}{8}$.
+A. $\dfrac{1}{8}$
+B. $\dfrac{5}{8}$
+C. $-\dfrac{1}{8}$
+D. $\dfrac{17}{8}$
+Đáp án: A
+Lời giải:
+Nhân trước: $\dfrac{3}{7}\cdot\dfrac{21}{8}=\dfrac{9}{8}$; rồi $\dfrac{5}{4}-\dfrac{9}{8}=\dfrac{10}{8}-\dfrac{9}{8}=\dfrac{1}{8}$.
+---
+
+Câu 4. Bỏ dấu ngoặc: $3-\left(2-\dfrac{1}{5}\right)$.
+A. $1+\dfrac{1}{5}$
+B. $5-\dfrac{1}{5}$
+C. $1-\dfrac{1}{5}$
+D. $3-2-\dfrac{1}{5}$
+Đáp án: A
+Lời giải:
+$3-2+\dfrac{1}{5}=1+\dfrac{1}{5}$.
+---
+
+Câu 5. Tìm $x$ biết $x+\dfrac{3}{4}=\dfrac{1}{2}$.
+Đáp án: -1/4
+Placeholder: x = …
+Lời giải:
+$x=\dfrac{1}{2}-\dfrac{3}{4}=-\dfrac{1}{4}$.
+---
+
+Câu 6. Tìm $x$ biết $\dfrac{5}{2}-x=\dfrac{3}{2}$.
+Đáp án: 1
+Placeholder: x = …
+Lời giải:
+$x=\dfrac{5}{2}-\dfrac{3}{2}=1$.
+---
+
+Câu 7. Sách giá $50000$ đồng giảm $15\%$. Số tiền phải trả?
+Đáp án: 42500
+Placeholder: Số tiền = …
+Lời giải:
+$50000\times 0{,}85=42500$.
+---
+
+Câu 8. Hằng mua $2$ áo ($200000$/áo) và $2$ quần ($350000$/quần), giảm $20\%$. Tổng phải trả?
+Đáp án: 880000
+Placeholder: Số tiền = …
+Lời giải:
+Tổng gốc $=2\cdot200000+2\cdot350000=1100000$; sau giảm $1100000\times 0{,}8=880000$.
+---
+
+Câu 9. Ly mua $5$ sách ($120000$/quyển), có thẻ giảm $10\%$, đưa $600000$. Tiền thừa nhận lại?
+Đáp án: 60000
+Placeholder: Tiền thừa = …
+Lời giải:
+Phải trả $5\cdot120000\times 0{,}9=540000$; thừa $600000-540000=60000$.
+---
+
+Câu 10. Bác Nam gửi $90$ triệu, lãi suất $6{,}5\%$/năm, rút sau $1$ năm (gốc+lãi). Số tiền rút?
+Đáp án: 96450000
+Placeholder: Số tiền = …
+Lời giải:
+$90\,000\,000\times 1{,}065=96\,450\,000$.
+---
+
+Câu 11. Đồng hồ mua $2600000$ đồng sau giảm $35\%$. Giá trước giảm?
+Đáp án: 4000000
+Placeholder: Giá gốc = …
+Lời giải:
+$2600000:0{,}65=4000000$.
+---
+
+Câu 12. Mua $10$ sách cùng loại, giảm $20\%$ phải trả $144000$. Giá mỗi quyển trước giảm?
+Đáp án: 18000
+Placeholder: Giá mỗi quyển = …
+Lời giải:
+Giá $10$ quyển trước giảm $=144000:0{,}8=180000$; mỗi quyển $=18000$.
+---
+
+Câu 13. Trả $2915000$ đã gồm VAT $10\%$. Giá chưa VAT?
+Đáp án: 2650000
+Placeholder: Giá = …
+Lời giải:
+Giá chưa thuế $=2915000:1{,}1=2650000$.
+---
+
+Câu 14. Tính $\dfrac{2}{3}:\dfrac{8}{9}\cdot\dfrac{5}{7}$.
+A. $\dfrac{15}{28}$
+B. $\dfrac{5}{14}$
+C. $\dfrac{10}{21}$
+D. $\dfrac{16}{63}$
+Đáp án: A
+Lời giải:
+$\dfrac{2}{3}\cdot\dfrac{9}{8}\cdot\dfrac{5}{7}=\dfrac{15}{28}$.
+---
+
+Câu 15. Tính $\left(\dfrac{1}{7}+\dfrac{6}{7}\right)\cdot\left(\dfrac{1}{2}-\dfrac{1}{3}\right)$.
+A. $\dfrac{1}{6}$
+B. $\dfrac{1}{2}$
+C. $\dfrac{1}{3}$
+D. $1$
+Đáp án: A
+Lời giải:
+$1\cdot\left(\dfrac{3-2}{6}\right)=\dfrac{1}{6}$.
+---
+
+Câu 16. Khẳng định nào đúng về thứ tự phép tính khi không có ngoặc?
+A. Lũy thừa → nhân chia → cộng trừ
+B. Cộng trừ → nhân chia → lũy thừa
+C. Nhân chia → lũy thừa → cộng trừ
+D. Từ trái sang phải bất kỳ
+Đáp án: A
+Lời giải:
+Quy tắc chuẩn: lũy thừa trước, rồi nhân chia, cuối cùng cộng trừ.
+---

@@ -1,0 +1,229 @@
+@grade_level: 7
+@chapter: 1
+@lesson_no: 3
+@title: Luỹ thừa với số mũ tự nhiên của một số hữu tỉ
+@video_url:
+@video_material_url:
+@pdf_url:
+@seo_description: Bài 3 Toán 7: lũy thừa số hữu tỉ, công thức nhân chia lũy thừa và dạng khoa học.
+@focus_keyword: lũy thừa số hữu tỉ
+@keywords: lũy thừa, số mũ tự nhiên, công thức lũy thừa, Toán 7
+LÝ THUYẾT TRỌNG TÂM
+# 1. Lũy thừa với số mũ tự nhiên
+Định nghĩa:
+Với $x \in \mathbb{Q}$ và $n \in \mathbb{N}$, $n \ge 1$: $x^n = \underbrace{x \cdot x \cdot \ldots \cdot x}_{n\ \text{thừa số}}$.
+Quy ước: $x^0 = 1$ với $x \ne 0$; $x^1 = x$.
+---
+# 2. Các công thức
+Ghi nhớ:
+- $a^m \cdot a^n = a^{m+n}$
+- $a^m : a^n = a^{m-n}$ ($a \ne 0$)
+- $(a^m)^n = a^{mn}$
+- $(ab)^n = a^n b^n$; $\left(\dfrac{a}{b}\right)^n = \dfrac{a^n}{b^n}$ ($b \ne 0$)
+
+CÁC DẠNG TOÁN & VÍ DỤ
+Dạng 1: Rút gọn và tính lũy thừa
+Phương pháp:
+Áp dụng công thức cùng cơ số; đưa cơ số về cùng dạng rồi cộng/trừ số mũ.
+---
+Ví dụ 1:
+Rút gọn $\left(\dfrac{1}{6}\right)^5 \cdot \left(\dfrac{1}{6}\right)^2$.
+A. $\left(\dfrac{1}{6}\right)^7$
+B. $\left(\dfrac{1}{6}\right)^{10}$
+C. $\left(\dfrac{1}{6}\right)^3$
+D. $\dfrac{1}{6^7}$ (khác A)
+Đáp án: A
+Lời giải:
+$\left(\dfrac{1}{6}\right)^5\cdot\left(\dfrac{1}{6}\right)^2=\left(\dfrac{1}{6}\right)^{7}$.
+---
+Ví dụ 2:
+Tính $\left(\dfrac{4}{7}\right)^2$.
+A. $\dfrac{16}{49}$
+B. $\dfrac{8}{14}$
+C. $\dfrac{16}{7}$
+D. $\dfrac{4}{49}$
+Đáp án: A
+Lời giải:
+$\left(\dfrac{4}{7}\right)^2=\dfrac{16}{49}$.
+---
+Dạng 2: Viết dưới dạng một lũy thừa và tính giá trị
+Phương pháp:
+Đưa các thừa số về cùng cơ số (thường là $2$, $3$, $5$,…) rồi dùng công thức nhân/chia lũy thừa.
+---
+Ví dụ 1:
+Tính $\dfrac{4^2 \cdot 4^3}{2^{10}}$.
+A. $1$
+B. $2$
+C. $4$
+D. $\dfrac{1}{2}$
+Đáp án: A
+Lời giải:
+$4=2^2$ nên $\dfrac{(2^2)^2 \cdot (2^2)^3}{2^{10}}=\dfrac{2^4 \cdot 2^6}{2^{10}}=\dfrac{2^{10}}{2^{10}}=1$.
+---
+Ví dụ 2:
+Tính $\left(-\dfrac{1}{2}\right)^3$.
+A. $-\dfrac{1}{8}$
+B. $\dfrac{1}{8}$
+C. $-\dfrac{1}{6}$
+D. $-\dfrac{3}{2}$
+Đáp án: A
+Lời giải:
+$\left(-\dfrac{1}{2}\right)^3=-\dfrac{1}{8}$.
+
+BÀI TẬP LUYỆN TẬP
+Câu 1. Rút gọn $\left(\dfrac{1}{6}\right)^5\cdot\left(\dfrac{1}{6}\right)^2$.
+A. $\left(\dfrac{1}{6}\right)^7$
+B. $\left(\dfrac{1}{6}\right)^{10}$
+C. $\left(\dfrac{1}{6}\right)^3$
+D. $\left(\dfrac{1}{36}\right)^7$
+Đáp án: A
+Lời giải:
+Cùng cơ số: cộng mũ $5+2=7$.
+---
+
+Câu 2. Rút gọn $\left(-\dfrac{13}{9}\right)^4 : \left(-\dfrac{13}{9}\right)^4$.
+A. $1$
+B. $-1$
+C. $\left(-\dfrac{13}{9}\right)^8$
+D. $0$
+Đáp án: A
+Lời giải:
+$a^n:a^n=1$ với $a\ne 0$.
+---
+
+Câu 3. Tính $\left(\dfrac{4}{7}\right)^2$.
+A. $\dfrac{16}{49}$
+B. $\dfrac{8}{14}$
+C. $\dfrac{16}{7}$
+D. $\dfrac{4}{49}$
+Đáp án: A
+Lời giải:
+$\dfrac{4^2}{7^2}=\dfrac{16}{49}$.
+---
+
+Câu 4. Tính $\left(-\dfrac{1}{2}\right)^3$.
+A. $-\dfrac{1}{8}$
+B. $\dfrac{1}{8}$
+C. $-\dfrac{1}{6}$
+D. $-\dfrac{3}{2}$
+Đáp án: A
+Lời giải:
+Mũ lẻ giữ dấu âm: $-\dfrac{1}{8}$.
+---
+
+Câu 5. Tính $\left(1\dfrac{1}{4}\right)^2$.
+A. $\dfrac{25}{16}$
+B. $\dfrac{9}{16}$
+C. $\dfrac{5}{4}$
+D. $\dfrac{25}{4}$
+Đáp án: A
+Lời giải:
+$1\dfrac{1}{4}=\dfrac{5}{4}$, $\left(\dfrac{5}{4}\right)^2=\dfrac{25}{16}$.
+---
+
+Câu 6. Tính $\left[\left(\dfrac{3}{5}\right)^4 \cdot \left(\dfrac{3}{5}\right)^5\right] : \left(\dfrac{3}{5}\right)^7$.
+A. $\left(\dfrac{3}{5}\right)^2$
+B. $\left(\dfrac{3}{5}\right)^9$
+C. $\left(\dfrac{3}{5}\right)^{16}$
+D. $1$
+Đáp án: A
+Lời giải:
+$\left(\dfrac{3}{5}\right)^{4+5-7}=\left(\dfrac{3}{5}\right)^2$.
+---
+
+Câu 7. Tính $\dfrac{4^2\cdot 4^3}{2^{10}}$.
+A. $1$
+B. $2$
+C. $4$
+D. $\dfrac{1}{2}$
+Đáp án: A
+Lời giải:
+$4=2^2$ nên biểu thức $=\dfrac{2^{10}}{2^{10}}=1$.
+---
+
+Câu 8. Tính $\dfrac{8^2\cdot 4^5}{2^{20}}$.
+A. $\dfrac{1}{16}$
+B. $1$
+C. $2$
+D. $\dfrac{1}{4}$
+Đáp án: A
+Lời giải:
+$8^2=2^6$, $4^5=2^{10}$ nên $\dfrac{2^{16}}{2^{20}}=\dfrac{1}{16}$.
+---
+
+Câu 9. Tính $\left(\dfrac{2}{3}\right)^3 \cdot \left(\dfrac{3}{4}\right)^3$.
+A. $\dfrac{1}{8}$
+B. $\dfrac{1}{4}$
+C. $\dfrac{8}{27}$
+D. $\dfrac{6}{12}$
+Đáp án: A
+Lời giải:
+$\left(\dfrac{2}{3}\cdot\dfrac{3}{4}\right)^3=\left(\dfrac{1}{2}\right)^3=\dfrac{1}{8}$.
+---
+
+Câu 10. Tính $3^0$ (với quy ước đã học).
+Đáp án: 1
+Placeholder: Kết quả = …
+Lời giải:
+Với $a\ne 0$, $a^0=1$.
+---
+
+Câu 11. Viết $4^8 \cdot 3$ dưới dạng nào gần với một lũy thừa nhất trong các lựa chọn?
+A. $3\cdot (2^2)^8 = 3\cdot 2^{16}$
+B. $12^8$
+C. $4^{11}$
+D. $7^8$
+Đáp án: A
+Lời giải:
+$4=2^2$ nên $4^8\cdot 3=3\cdot 2^{16}$.
+---
+
+Câu 12. Sắp xếp số dân (dạng $a\cdot 10^n$) từ bé đến lớn: Hàn Quốc $51{,}2\cdot 10^6$; Trung Quốc $143{,}9\cdot 10^7$; Hoa Kỳ $331\cdot 10^6$; Ấn Độ $13{,}8\cdot 10^8$; Việt Nam $97{,}3\cdot 10^6$.
+A. Hàn → VN → Mỹ → Ấn → Trung
+B. VN → Hàn → Mỹ → Ấn → Trung
+C. Hàn → Mỹ → VN → Ấn → Trung
+D. Hàn → VN → Ấn → Mỹ → Trung
+Đáp án: A
+Lời giải:
+Đổi về cùng dạng: Hàn $\approx 5{,}12\cdot 10^7$; VN $\approx 9{,}73\cdot 10^7$; Mỹ $\approx 3{,}31\cdot 10^8$; Ấn $\approx 1{,}38\cdot 10^9$; Trung $\approx 1{,}439\cdot 10^9$.
+---
+
+Câu 13. Ba chu kì bán rã Uranium-238 mỗi chu kì $4{,}468\cdot 10^9$ năm. Ba chu kì bằng?
+A. $1{,}3404\cdot 10^{10}$
+B. $1{,}3404\cdot 10^9$
+C. $4{,}468\cdot 10^{27}$
+D. $13{,}404\cdot 10^{10}$
+Đáp án: A
+Lời giải:
+$3\cdot 4{,}468\cdot 10^9 = 13{,}404\cdot 10^9 = 1{,}3404\cdot 10^{10}$.
+---
+
+Câu 14. Sau ba chu kì bán rã, khối lượng còn lại bằng bao nhiêu phần ban đầu?
+A. $\dfrac{1}{8}$
+B. $\dfrac{1}{4}$
+C. $\dfrac{1}{2}$
+D. $\dfrac{1}{16}$
+Đáp án: A
+Lời giải:
+Mỗi chu kì còn $\dfrac{1}{2}$ nên sau $3$ chu kì còn $\left(\dfrac{1}{2}\right)^3=\dfrac{1}{8}$.
+---
+
+Câu 15. Tính $\dfrac{15^2 \cdot 9^3}{25^2 \cdot 27}$.
+A. $\dfrac{81}{5}$
+B. $\dfrac{9}{5}$
+C. $\dfrac{27}{5}$
+D. $\dfrac{3}{5}$
+Đáp án: A
+Lời giải:
+Viết $15=3\cdot5$, $9=3^2$, $25=5^2$, $27=3^3$ rồi rút gọn được $\dfrac{3^4}{5}=\dfrac{81}{5}$.
+---
+
+Câu 16. Tính $\left[\left(\dfrac{7}{9}\right)^{11}\right]:\left[\left(\dfrac{7}{9}\right)^5 \cdot \left(\dfrac{7}{9}\right)^3\right]$.
+A. $\left(\dfrac{7}{9}\right)^3$
+B. $\left(\dfrac{7}{9}\right)^8$
+C. $\left(\dfrac{7}{9}\right)^{19}$
+D. $1$
+Đáp án: A
+Lời giải:
+Mũ: $11-(5+3)=3$.
+---

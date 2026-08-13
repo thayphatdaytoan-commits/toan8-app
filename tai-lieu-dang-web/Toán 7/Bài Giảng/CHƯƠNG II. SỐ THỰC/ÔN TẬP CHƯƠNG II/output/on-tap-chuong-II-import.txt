@@ -1,0 +1,188 @@
+@grade_level: 7
+@chapter: 2
+@lesson_no: OT2
+@title: Ôn tập chương II
+@video_url:
+@video_material_url:
+@pdf_url:
+@seo_description: Ôn tập Chương II Toán 7: số thực, thập phân tuần hoàn, căn bậc hai và bài toán thực tế.
+@focus_keyword: ôn tập số thực
+@keywords: ôn tập chương II, số thực, căn bậc hai, Toán 7
+LÝ THUYẾT TRỌNG TÂM
+# Ôn tập Chương II — Số thực
+Ghi nhớ:
+- Thập phân hữu hạn / tuần hoàn $\Leftrightarrow$ số hữu tỉ; vô hạn không tuần hoàn $\Rightarrow$ vô tỉ.
+- $\mathbb{Q}\cup\{\text{số vô tỉ}\}=\mathbb{R}$.
+- $\sqrt{a}$ ($a\ge 0$) là số không âm có bình phương bằng $a$.
+- $|x|$ là khoảng cách từ $x$ đến $0$ trên trục số.
+
+CÁC DẠNG TOÁN & VÍ DỤ
+Dạng 1: Phân loại số và tính biểu thức
+Phương pháp:
+Xét tập hợp; tính nhanh bằng nhóm hạng tử; dùng căn bậc hai số học.
+---
+Ví dụ 1:
+Khẳng định $0{,}2(6)\in\mathbb{Q}$ là?
+A. Đúng
+B. Sai
+C. Chỉ đúng với $\mathbb{R}$
+D. Không kết luận
+Đáp án: A
+Lời giải:
+Thập phân tuần hoàn biểu diễn số hữu tỉ.
+---
+Ví dụ 2:
+Tính $\left(\dfrac{3}{15}:\dfrac{2}{7}\right)+\left(\dfrac{12}{15}:\dfrac{2}{7}\right)$.
+A. $\dfrac{7}{2}$
+B. $\dfrac{15}{2}$
+C. $1$
+D. $\dfrac{21}{2}$
+Đáp án: A
+Lời giải:
+$\dfrac{3+12}{15}:\dfrac{2}{7}=1:\dfrac{2}{7}=\dfrac{7}{2}$.
+---
+Dạng 2: Tìm $x$ và bài toán giảm giá
+Phương pháp:
+Chuyển vế đổi dấu; giảm liên tiếp nhân các hệ số còn lại.
+---
+Ví dụ 1:
+Tìm $x$ biết $\sqrt{x}=3$.
+A. $9$
+B. $3$
+C. $-9$
+D. $\pm 3$
+Đáp án: A
+Lời giải:
+$x=9$.
+---
+Ví dụ 2:
+TV $20000000$, giảm $25\%$ rồi thêm $2\%$ (app). Phải trả?
+A. $14700000$
+B. $15000000$
+C. $14600000$
+D. $16000000$
+Đáp án: A
+Lời giải:
+$20000000\times 0{,}75\times 0{,}98=14700000$.
+
+BÀI TẬP LUYỆN TẬP
+Câu 1. [đúng sai]
+$-5 \in \mathbb{N}$.
+Đáp án: Sai
+Lời giải:
+$-5\notin\mathbb{N}$.
+---
+
+Câu 2. [đúng sai]
+$\dfrac{7}{2}\in\mathbb{Q}$.
+Đáp án: Đúng
+Lời giải:
+Là phân số.
+---
+
+Câu 3. [đúng sai]
+$0{,}2\in\mathbb{I}$ (vô tỉ).
+Đáp án: Sai
+Lời giải:
+$0{,}2$ hữu tỉ.
+---
+
+Câu 4. [đúng sai]
+$\sqrt{7}\in\mathbb{R}$.
+Đáp án: Đúng
+Lời giải:
+Vô tỉ là số thực.
+---
+
+Câu 5. [đúng sai]
+$0{,}2(6)\in\mathbb{Q}$.
+Đáp án: Đúng
+Lời giải:
+Tuần hoàn ⇒ hữu tỉ.
+---
+
+Câu 6. Tính $\dfrac{3}{15}:\dfrac{2}{7}+\dfrac{12}{15}:\dfrac{2}{7}$.
+A. $\dfrac{7}{2}$
+B. $\dfrac{15}{2}$
+C. $1$
+D. $\dfrac{3}{2}$
+Đáp án: A
+Lời giải:
+Nhóm được $1:\dfrac{2}{7}=\dfrac{7}{2}$.
+---
+
+Câu 7. Tính $\dfrac{11}{15}\cdot\dfrac{12}{13}+\dfrac{7}{15}\cdot\dfrac{11}{13}$.
+A. $\dfrac{209}{195}$
+B. $\dfrac{11}{15}$
+C. $1$
+D. $\dfrac{19}{13}$
+Đáp án: A
+Lời giải:
+$\dfrac{11}{15\cdot 13}(12+7)=\dfrac{11\cdot 19}{195}=\dfrac{209}{195}$.
+---
+
+Câu 8. Tính $\dfrac{4^9\cdot 5^6}{8^6\cdot 25^3}$.
+A. $\dfrac{1}{4}$
+B. $1$
+C. $4$
+D. $\dfrac{1}{2}$
+Đáp án: A
+Lời giải:
+Đổi $4=2^2$, $8=2^3$, $5^6/25^3=1$ rồi rút gọn được $\dfrac{1}{4}$.
+---
+
+Câu 9. Tìm $x$ biết $\dfrac{7}{4}+x=-\dfrac{3}{4}$.
+Đáp án: -5/2
+Placeholder: x = …
+Lời giải:
+$x=-\dfrac{3}{4}-\dfrac{7}{4}=-\dfrac{10}{4}=-\dfrac{5}{2}$.
+---
+
+Câu 10. Tìm $x$ biết $\sqrt{x}=3$.
+Đáp án: 9
+Placeholder: x = …
+Lời giải:
+$x=9$.
+---
+
+Câu 11. Tìm $x\ge 0$ biết $x^2=9$.
+Đáp án: 3
+Placeholder: x = …
+Lời giải:
+$x=3$.
+---
+
+Câu 12. TV $20000000$, giảm $25\%$ rồi thêm $2\%$. Phải trả?
+Đáp án: 14700000
+Placeholder: Số tiền = …
+Lời giải:
+$20000000\times0{,}75\times0{,}98=14700000$.
+---
+
+Câu 13. An (sinh tháng 11) mua máy tính $440000$, giảm $10\%$ rồi thêm $5\%$ trên giá đã giảm. Phải trả?
+Đáp án: 376200
+Placeholder: Số tiền = …
+Lời giải:
+$440000\times0{,}9\times0{,}95=376200$.
+---
+
+Câu 14. An trả $513000$ sau giảm $10\%$ rồi $5\%$ trên giá đã giảm. Giá ban đầu?
+Đáp án: 600000
+Placeholder: Giá gốc = …
+Lời giải:
+$513000:(0{,}9\times0{,}95)=513000:0{,}855=600000$.
+---
+
+Câu 15. An trả $266000$ sau giảm $20\%$ rồi thêm $5\%$ trên giá đã giảm. Giá ban đầu?
+Đáp án: 350000
+Placeholder: Giá gốc = …
+Lời giải:
+$266000:(0{,}8\times0{,}95)=266000:0{,}76=350000$.
+---
+
+Câu 16. TV sau giảm $15\%$ rồi thêm $10\%$ trên giá đã giảm còn $11475000$. Giá ban đầu?
+Đáp án: 15000000
+Placeholder: Giá gốc = …
+Lời giải:
+Hệ số $0{,}85\times0{,}9=0{,}765$; $11475000:0{,}765=15000000$.
+---
