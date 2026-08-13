@@ -1,0 +1,42 @@
+BÁO CÁO ĐĂNG BÀI GIẢNG
+Thời gian chạy: 2026-08-01 05:22 UTC
+Chế độ: CHẠY LẠI 1 BÀI (ĐÂY LÀ LẦN CHẠY LẠI)
+Agent: https://cursor.com/agents/bc-0e9e273c-40f7-4861-87c9-10a641a6fad2
+
+================================================================================
+THAM SỐ
+================================================================================
+- Khối: Toán 9
+- Chương: CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA (chapter = 3)
+- Bài: Bài 7. Căn bậc hai và căn thức bậc hai (lesson_no = 7)
+
+================================================================================
+BÀI ĐÃ ĐĂNG THÀNH CÔNG
+================================================================================
+1) Toán 9 / Chương III / Bài 7. Căn bậc hai và căn thức bậc hai
+   - File nguồn: tai-lieu-dang-web/Toán 9/Bài Giảng/CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA/Bài 7. Căn bậc hai và căn thức bậc hai/Bài 7. Căn bậc hai và căn thức bậc hai.docx
+   - Word từ bai-viet-ai: .../output/Bai-7-can-bac-hai-import.docx (gemini-2.5-flash, key 1)
+   - TXT chuẩn import (đã chỉnh META/mục): .../output/Bai-7-can-bac-hai-import.txt
+   - Trang học sinh: https://thayphatdaytoan-7832c.web.app/bai-giang/toan-9-chuong-iii-bai-7-can-bac-hai-va-can-thuc-bac-hai?grade=9
+   - Nội dung đã xác minh: Lý thuyết + Dạng toán/ví dụ + Bài tập luyện tập (khoảng 10 câu)
+   - SEO: focus_keyword «căn bậc hai toán 9», 5 từ khóa phụ
+
+================================================================================
+GHI CHÚ KỸ THUẬT
+================================================================================
+- Secrets môi trường lần này có đủ: GEMINI_API_KEY_1, GEMINI_API_KEY_2, TEACHER_ADMIN_PASSWORD (không ghi giá trị).
+- Word gốc từ bai-viet-ai lệch header mục (ví dụ "Các dạng toán và ví dụ" thay vì "CÁC DẠNG TOÁN & VÍ DỤ") nên lần import Word đầu chỉ nhận bài tập.
+- Đã chuyển sang TXT chuẩn (LÝ THUYẾT TRỌNG TÂM / CÁC DẠNG TOÁN & VÍ DỤ / BÀI TẬP TỰ LUYỆN + thẻ #[...]#).
+- Lưu ý: UI alert vẫn có thể hiện "0 mục lý thuyết/ví dụ" vì đếm mảng examples cũ; thực tế theory_core + examples_core đã vào form.
+- Lần lưu nhầm @chapter: III khiến bài lệch khỏi CHƯƠNG III (catalog dùng số 3). Đã sửa @chapter: 3, tạo lại + Lưu; danh sách CHƯƠNG III hiện lại đủ Bài 7–10.
+
+================================================================================
+BÀI LỖI / BỎ QUA
+================================================================================
+(Không còn bài lỗi sau khi khôi phục.)
+
+================================================================================
+VIỆC CẦN THEO DÕI (không chặn)
+================================================================================
+- Video / PDF tài liệu vẫn trống (nguồn chưa có URL) — giáo viên có thể bổ sung sau trên Admin.
+- Có thể cải tiến sau: map header "Các dạng toán và ví dụ" trong LessonParser, hoặc đếm theory_core/examples_core trong thông báo import.

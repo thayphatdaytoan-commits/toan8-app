@@ -1,0 +1,365 @@
+@grade_level: 9
+@chapter: 3
+@lesson_no: 7
+@title: Căn bậc hai và căn thức bậc hai
+@focus_keyword: căn bậc hai toán 9
+@keywords: căn thức bậc hai, điều kiện có nghĩa, hằng đẳng thức căn, so sánh căn bậc hai, phương trình chứa căn
+@seo_description: Lý thuyết căn bậc hai và căn thức bậc hai Toán 9: định nghĩa, điều kiện có nghĩa, hằng đẳng thức căn, dạng toán và bài tập có lời giải.
+@video_url:
+@pdf_url:
+
+LÝ THUYẾT TRỌNG TÂM
+1. Căn bậc hai
+#[Định nghĩa:
+Căn bậc hai của một số thực $a$ không âm là một số $x$ sao cho $x^2 = a$.
+]#
+
+Tính chất:
+    *   Mỗi số dương $a$ có đúng hai căn bậc hai là hai số đối nhau: số dương là $\sqrt{a}$ (gọi là căn bậc hai số học của $a$) và số âm là $-\sqrt{a}$.
+    *   Số $0$ có đúng một căn bậc hai là $0$, kí hiệu $\sqrt{0} = 0$.
+    *   Số âm không có căn bậc hai.
+Ví dụ:
+    *   Căn bậc hai của $9$ là $3$ và $-3$.
+    *   Căn bậc hai số học của $9$ là $\sqrt{9} = 3$.
+    *   Căn bậc hai của $16$ là $4$ và $-4$. Căn bậc hai số học của $16$ là $\sqrt{16} = 4$.
+2. So sánh các căn bậc hai số học
+Với hai số không âm $a, b$, ta có:
+Nếu $a < b$ thì $\sqrt{a} < \sqrt{b}$.
+Nếu $\sqrt{a} < \sqrt{b}$ thì $a < b$.
+3. Căn thức bậc hai
+#[Định nghĩa:
+Căn thức bậc hai là biểu thức có dạng $\sqrt{A}$, trong đó $A$ là một biểu thức đại số.
+]#
+
+Điều kiện xác định (hay có nghĩa): Biểu thức $\sqrt{A}$ xác định (có nghĩa) khi và chỉ khi biểu thức $A$ lấy giá trị không âm, tức là $A \ge 0$.
+Hằng đẳng thức $\sqrt{A^2} = |A|$:
+    *   Với mọi biểu thức $A$, ta có $\sqrt{A^2} = |A|$.
+    *   Lưu ý:
+        *   Nếu $A \ge 0$ thì $\sqrt{A^2} = A$.
+        *   Nếu $A < 0$ thì $\sqrt{A^2} = -A$.
+
+#[Ghi nhớ:
+- Số dương $a$ có hai căn bậc hai: $\sqrt{a}$ và $-\sqrt{a}$; số $0$ có một căn là $0$; số âm không có căn bậc hai.
+- $\sqrt{A}$ có nghĩa khi và chỉ khi $A \ge 0$.
+- Hằng đẳng thức: $\sqrt{A^2} = |A|$.
+]#
+
+CÁC DẠNG TOÁN & VÍ DỤ
+Dạng 1: Tìm căn bậc hai, căn bậc hai số học và tính giá trị của biểu thức chứa căn.
+#[Phương pháp:
+Nắm vững định nghĩa căn bậc hai và căn bậc hai số học. Thực hiện các phép tính theo thứ tự ưu tiên.
+]#
+
+#[Ví dụ:
+    a) Tìm các căn bậc hai của $49$ và $1,21$.
+    b) Tìm căn bậc hai số học của $64$ và $0,81$.
+]#
+
+#[Lời giải:
+
+        a)
+        *   Căn bậc hai của $49$ là $7$ và $-7$ vì $7^2 = 49$ và $(-7)^2 = 49$.
+        *   Căn bậc hai của $1,21$ là $1,1$ và $-1,1$ vì $1,1^2 = 1,21$ và $(-1,1)^2 = 1,21$.
+        b)
+        *   Căn bậc hai số học của $64$ là $\sqrt{64} = 8$.
+        *   Căn bậc hai số học của $0,81$ là $\sqrt{0,81} = 0,9$.
+]#
+
+#[Ví dụ:
+Tính giá trị các biểu thức sau:
+    a) $\sqrt{100} + \sqrt{1,44}$
+    b) $\sqrt{\frac{1}{25}} - \sqrt{\frac{4}{9}}$
+]#
+
+#[Lời giải:
+
+        a) $\sqrt{100} + \sqrt{1,44} = 10 + 1,2 = 11,2$.
+        b) $\sqrt{\frac{1}{25}} - \sqrt{\frac{4}{9}} = \frac{1}{5} - \frac{2}{3} = \frac{3}{15} - \frac{10}{15} = -\frac{7}{15}$.
+]#
+
+Dạng 2: Tìm điều kiện để căn thức bậc hai có nghĩa.
+#[Phương pháp:
+Biểu thức $\sqrt{A}$ có nghĩa khi và chỉ khi $A \ge 0$. Ta giải bất phương trình $A \ge 0$ để tìm điều kiện của biến.
+]#
+
+#[Ví dụ:
+Tìm $x$ để các biểu thức sau có nghĩa:
+    a) $\sqrt{2x - 6}$
+    b) $\sqrt{4 - x}$
+]#
+
+#[Lời giải:
+
+        a) Biểu thức $\sqrt{2x - 6}$ có nghĩa khi $2x - 6 \ge 0$.
+            $2x \ge 6$
+            $x \ge 3$.
+            Vậy với $x \ge 3$ thì biểu thức có nghĩa.
+        b) Biểu thức $\sqrt{4 - x}$ có nghĩa khi $4 - x \ge 0$.
+            $-x \ge -4$
+            $x \le 4$.
+            Vậy với $x \le 4$ thì biểu thức có nghĩa.
+]#
+
+#[Ví dụ:
+Tìm $x$ để các biểu thức sau có nghĩa:
+    a) $\sqrt{-3x}$
+    b) $\sqrt{x^2 + 1}$
+]#
+
+#[Lời giải:
+
+        a) Biểu thức $\sqrt{-3x}$ có nghĩa khi $-3x \ge 0$.
+            $x \le 0$ (chia cả hai vế cho $-3$ và đổi chiều bất đẳng thức).
+            Vậy với $x \le 0$ thì biểu thức có nghĩa.
+        b) Biểu thức $\sqrt{x^2 + 1}$ có nghĩa khi $x^2 + 1 \ge 0$.
+            Vì $x^2 \ge 0$ với mọi $x$, nên $x^2 + 1 \ge 1 > 0$ với mọi $x$.
+            Vậy biểu thức $\sqrt{x^2 + 1}$ có nghĩa với mọi giá trị của $x$.
+]#
+
+Dạng 3: Vận dụng hằng đẳng thức $\sqrt{A^2} = |A|$ để rút gọn biểu thức.
+#[Phương pháp:
+Xác định biểu thức $A$ dưới dấu căn. Áp dụng hằng đẳng thức $\sqrt{A^2} = |A|$. Sau đó, dựa vào điều kiện của biến hoặc giá trị cụ thể của $A$ để phá dấu giá trị tuyệt đối.
+]#
+
+#[Ví dụ:
+Rút gọn các biểu thức sau:
+    a) $\sqrt{(x-5)^2}$ với $x \ge 5$
+    b) $\sqrt{(3-x)^2}$ với $x < 3$
+]#
+
+#[Lời giải:
+
+        a) $\sqrt{(x-5)^2} = |x-5|$.
+            Vì $x \ge 5$ nên $x-5 \ge 0$.
+            Do đó, $\sqrt{(x-5)^2} = x-5$.
+        b) $\sqrt{(3-x)^2} = |3-x|$.
+            Vì $x < 3$ nên $3-x > 0$.
+            Do đó, $\sqrt{(3-x)^2} = 3-x$.
+]#
+
+#[Ví dụ:
+Rút gọn các biểu thức sau:
+    a) $\sqrt{(\sqrt{3}-2)^2}$
+    b) $\sqrt{(1-\sqrt{5})^2} + \sqrt{(\sqrt{5}+3)^2}$
+]#
+
+#[Lời giải:
+
+        a) $\sqrt{(\sqrt{3}-2)^2} = |\sqrt{3}-2|$.
+            Vì $\sqrt{3} < \sqrt{4}$, tức là $\sqrt{3} < 2$, nên $\sqrt{3}-2 < 0$.
+            Do đó, $|\sqrt{3}-2| = -(\sqrt{3}-2) = 2-\sqrt{3}$.
+            Vậy $\sqrt{(\sqrt{3}-2)^2} = 2-\sqrt{3}$.
+        b) $\sqrt{(1-\sqrt{5})^2} + \sqrt{(\sqrt{5}+3)^2} = |1-\sqrt{5}| + |\sqrt{5}+3|$.
+            Vì $\sqrt{1} < \sqrt{5}$, tức là $1 < \sqrt{5}$, nên $1-\sqrt{5} < 0$. Do đó $|1-\sqrt{5}| = -(1-\sqrt{5}) = \sqrt{5}-1$.
+            Vì $\sqrt{5} > 0$ và $3 > 0$ nên $\sqrt{5}+3 > 0$. Do đó $|\sqrt{5}+3| = \sqrt{5}+3$.
+            Vậy biểu thức đã cho bằng $(\sqrt{5}-1) + (\sqrt{5}+3) = \sqrt{5}-1+\sqrt{5}+3 = 2\sqrt{5}+2$.
+]#
+
+Dạng 4: Giải phương trình chứa căn bậc hai cơ bản.
+#[Phương pháp:
+    *   Dạng $\sqrt{x} = a$ (với $a \ge 0$): Bình phương hai vế để được $x = a^2$.
+    *   Dạng $\sqrt{A(x)} = B(x)$: Đặt điều kiện $A(x) \ge 0$ và $B(x) \ge 0$. Bình phương hai vế để được $A(x) = (B(x))^2$. Giải phương trình và kiểm tra điều kiện.
+]#
+
+#[Ví dụ:
+Giải các phương trình sau:
+    a) $\sqrt{x} = 4$
+    b) $\sqrt{x-2} = 5$
+]#
+
+#[Lời giải:
+
+        a) Điều kiện: $x \ge 0$.
+            $\sqrt{x} = 4$
+            Bình phương hai vế: $(\sqrt{x})^2 = 4^2$
+            $x = 16$.
+            Giá trị $x=16$ thỏa mãn điều kiện $x \ge 0$.
+            Vậy tập nghiệm của phương trình là $S = \{16\}$.
+        b) Điều kiện: $x-2 \ge 0 \Leftrightarrow x \ge 2$.
+            $\sqrt{x-2} = 5$
+            Bình phương hai vế: $(\sqrt{x-2})^2 = 5^2$
+            $x-2 = 25$
+            $x = 27$.
+            Giá trị $x=27$ thỏa mãn điều kiện $x \ge 2$.
+            Vậy tập nghiệm của phương trình là $S = \{27\}$.
+]#
+
+#[Ví dụ:
+Giải các phương trình sau:
+    a) $\sqrt{2x+1} = 3$
+    b) $\sqrt{4x^2} = 6$
+]#
+
+#[Lời giải:
+
+        a) Điều kiện: $2x+1 \ge 0 \Leftrightarrow 2x \ge -1 \Leftrightarrow x \ge -\frac{1}{2}$.
+            $\sqrt{2x+1} = 3$
+            Bình phương hai vế: $(\sqrt{2x+1})^2 = 3^2$
+            $2x+1 = 9$
+            $2x = 8$
+            $x = 4$.
+            Giá trị $x=4$ thỏa mãn điều kiện $x \ge -\frac{1}{2}$.
+            Vậy tập nghiệm của phương trình là $S = \{4\}$.
+        b) $\sqrt{4x^2} = 6$
+            $\sqrt{(2x)^2} = 6$
+            $|2x| = 6$
+            Trường hợp 1: $2x = 6 \Leftrightarrow x = 3$.
+            Trường hợp 2: $2x = -6 \Leftrightarrow x = -3$.
+            Vậy tập nghiệm của phương trình là $S = \{-3; 3\}$.
+]#
+
+Dạng 5: So sánh các căn bậc hai.
+#[Phương pháp:
+    *   Dùng tính chất: Với $a, b \ge 0$, nếu $a < b$ thì $\sqrt{a} < \sqrt{b}$.
+    *   Để so sánh một số với một căn bậc hai, ta bình phương số đó lên rồi so sánh với biểu thức dưới dấu căn. Ví dụ, để so sánh $A$ và $\sqrt{B}$ (với $A \ge 0, B \ge 0$), ta so sánh $A^2$ và $B$.
+]#
+
+#[Ví dụ:
+So sánh các cặp số sau:
+    a) $\sqrt{11}$ và $\sqrt{13}$
+    b) $3\sqrt{2}$ và $\sqrt{19}$
+]#
+
+#[Lời giải:
+
+        a) Ta có $11 < 13$.
+            Vì các số dưới dấu căn đều không âm, nên theo tính chất ta có $\sqrt{11} < \sqrt{13}$.
+        b) Ta có $3\sqrt{2} = \sqrt{3^2 \cdot 2} = \sqrt{9 \cdot 2} = \sqrt{18}$.
+            Bây giờ ta so sánh $\sqrt{18}$ và $\sqrt{19}$.
+            Vì $18 < 19$, nên $\sqrt{18} < \sqrt{19}$.
+            Vậy $3\sqrt{2} < \sqrt{19}$.
+]#
+
+#[Ví dụ:
+So sánh các cặp số sau:
+    a) $2$ và $\sqrt{3}$
+    b) $-5$ và $-\sqrt{24}$
+]#
+
+#[Lời giải:
+
+        a) Ta có $2 = \sqrt{2^2} = \sqrt{4}$.
+            Bây giờ ta so sánh $\sqrt{4}$ và $\sqrt{3}$.
+            Vì $4 > 3$, nên $\sqrt{4} > \sqrt{3}$.
+            Vậy $2 > \sqrt{3}$.
+        b) Ta so sánh $5$ và $\sqrt{24}$.
+            Ta có $5 = \sqrt{5^2} = \sqrt{25}$.
+            Vì $25 > 24$, nên $\sqrt{25} > \sqrt{24}$.
+            Suy ra $5 > \sqrt{24}$.
+            Nhân cả hai vế với $-1$ và đổi chiều bất đẳng thức, ta được $-5 < -\sqrt{24}$.
+            Vậy $-5 < -\sqrt{24}$.
+]#
+
+BÀI TẬP TỰ LUYỆN
+Câu 1. Tính giá trị của các biểu thức sau:
+a) $\sqrt{36} + \sqrt{144}$
+b) $\sqrt{0,09} - \sqrt{0,25}$
+c) $(\sqrt{7})^2 - \sqrt{169}$
+d) $\sqrt{2,25} \cdot \sqrt{100}$
+Lời giải: a) $\sqrt{36} + \sqrt{144} = 6 + 12 = 18$.
+b) $\sqrt{0,09} - \sqrt{0,25} = 0,3 - 0,5 = -0,2$.
+c) $(\sqrt{7})^2 - \sqrt{169} = 7 - 13 = -6$.
+d) $\sqrt{2,25} \cdot \sqrt{100} = 1,5 \cdot 10 = 15$.
+
+---
+
+Câu 2. Tìm $x$ để các biểu thức sau có nghĩa:
+a) $\sqrt{3x - 9}$
+b) $\sqrt{10 - 5x}$
+c) $\sqrt{\frac{1}{x+2}}$
+d) $\sqrt{x^2 - 4x + 4}$
+Lời giải: a) $\sqrt{3x - 9}$ có nghĩa khi $3x - 9 \ge 0 \Leftrightarrow 3x \ge 9 \Leftrightarrow x \ge 3$.
+b) $\sqrt{10 - 5x}$ có nghĩa khi $10 - 5x \ge 0 \Leftrightarrow -5x \ge -10 \Leftrightarrow x \le 2$.
+c) $\sqrt{\frac{1}{x+2}}$ có nghĩa khi $\frac{1}{x+2} \ge 0$. Vì $1 > 0$, nên ta cần $x+2 > 0 \Leftrightarrow x > 2$. (Lưu ý $x+2 \ne 0$).
+d) $\sqrt{x^2 - 4x + 4} = \sqrt{(x-2)^2}$. Biểu thức này luôn có nghĩa với mọi $x$ vì $(x-2)^2 \ge 0$.
+
+---
+
+Câu 3. Rút gọn các biểu thức sau:
+a) $\sqrt{(x+3)^2}$ với $x \ge -3$
+b) $\sqrt{(7-x)^2}$ với $x > 7$
+c) $\sqrt{(\sqrt{10}-3)^2}$
+d) $\sqrt{(2-\sqrt{7})^2} - \sqrt{(\sqrt{7}+1)^2}$
+Lời giải: a) $\sqrt{(x+3)^2} = |x+3|$. Với $x \ge -3$ thì $x+3 \ge 0$, nên $|x+3| = x+3$.
+b) $\sqrt{(7-x)^2} = |7-x|$. Với $x > 7$ thì $7-x < 0$, nên $|7-x| = -(7-x) = x-7$.
+c) $\sqrt{(\sqrt{10}-3)^2} = |\sqrt{10}-3|$. Vì $\sqrt{10} > \sqrt{9} = 3$, nên $\sqrt{10}-3 > 0$. Do đó $|\sqrt{10}-3| = \sqrt{10}-3$.
+d) $\sqrt{(2-\sqrt{7})^2} - \sqrt{(\sqrt{7}+1)^2} = |2-\sqrt{7}| - |\sqrt{7}+1|$.
+    Vì $\sqrt{4} < \sqrt{7}$, tức là $2 < \sqrt{7}$, nên $2-\sqrt{7} < 0$. Do đó $|2-\sqrt{7}| = -(2-\sqrt{7}) = \sqrt{7}-2$.
+    Vì $\sqrt{7} > 0$ và $1 > 0$ nên $\sqrt{7}+1 > 0$. Do đó $|\sqrt{7}+1| = \sqrt{7}+1$.
+    Vậy biểu thức bằng $(\sqrt{7}-2) - (\sqrt{7}+1) = \sqrt{7}-2-\sqrt{7}-1 = -3$.
+
+---
+
+Câu 4. Giải các phương trình sau:
+a) $\sqrt{x} = 9$
+b) $\sqrt{2x-3} = 7$
+c) $\sqrt{(x-1)^2} = 5$
+d) $\sqrt{x^2+6x+9} = 2$
+Lời giải: a) Điều kiện: $x \ge 0$. $\sqrt{x} = 9 \Leftrightarrow x = 9^2 \Leftrightarrow x = 81$. Thỏa mãn điều kiện.
+b) Điều kiện: $2x-3 \ge 0 \Leftrightarrow 2x \ge 3 \Leftrightarrow x \ge \frac{3}{2}$.
+    $\sqrt{2x-3} = 7 \Leftrightarrow 2x-3 = 7^2 \Leftrightarrow 2x-3 = 49 \Leftrightarrow 2x = 52 \Leftrightarrow x = 26$. Thỏa mãn điều kiện.
+c) $\sqrt{(x-1)^2} = 5 \Leftrightarrow |x-1| = 5$.
+    Trường hợp 1: $x-1 = 5 \Leftrightarrow x = 6$.
+    Trường hợp 2: $x-1 = -5 \Leftrightarrow x = -4$.
+d) $\sqrt{x^2+6x+9} = 2 \Leftrightarrow \sqrt{(x+3)^2} = 2 \Leftrightarrow |x+3| = 2$.
+    Trường hợp 1: $x+3 = 2 \Leftrightarrow x = -1$.
+    Trường hợp 2: $x+3 = -2 \Leftrightarrow x = -5$.
+
+---
+
+Câu 5. So sánh các cặp số sau:
+a) $\sqrt{15}$ và $\sqrt{12}$
+b) $4$ và $\sqrt{17}$
+c) $-3\sqrt{5}$ và $-\sqrt{44}$
+d) $\frac{1}{3}\sqrt{18}$ và $\frac{1}{2}\sqrt{8}$
+Lời giải: a) Vì $15 > 12$ nên $\sqrt{15} > \sqrt{12}$.
+b) Ta có $4 = \sqrt{4^2} = \sqrt{16}$. Vì $16 < 17$ nên $\sqrt{16} < \sqrt{17}$. Vậy $4 < \sqrt{17}$.
+c) Ta có $-3\sqrt{5} = -\sqrt{3^2 \cdot 5} = -\sqrt{9 \cdot 5} = -\sqrt{45}$.
+    Ta so sánh $\sqrt{45}$ và $\sqrt{44}$. Vì $45 > 44$ nên $\sqrt{45} > \sqrt{44}$.
+    Nhân với $-1$ và đổi chiều bất đẳng thức: $-\sqrt{45} < -\sqrt{44}$.
+    Vậy $-3\sqrt{5} < -\sqrt{44}$.
+d) Ta có $\frac{1}{3}\sqrt{18} = \sqrt{(\frac{1}{3})^2 \cdot 18} = \sqrt{\frac{1}{9} \cdot 18} = \sqrt{2}$.
+    Và $\frac{1}{2}\sqrt{8} = \sqrt{(\frac{1}{2})^2 \cdot 8} = \sqrt{\frac{1}{4} \cdot 8} = \sqrt{2}$.
+    Vậy $\frac{1}{3}\sqrt{18} = \frac{1}{2}\sqrt{8}$.
+
+---
+
+Câu 6. Căn bậc hai số học của $49$ bằng bao nhiêu?
+A. $-7$
+B. $7$
+C. $\pm 7$
+D. $49$
+Đáp án: B
+Lời giải: Căn bậc hai số học của $49$ là $\sqrt{49}=7$ (số không âm).
+
+---
+
+Câu 7. Biểu thức $\sqrt{2x-8}$ có nghĩa khi và chỉ khi:
+A. $x \ge 8$
+B. $x \ge 4$
+C. $x > 4$
+D. $x \le 4$
+Đáp án: B
+Lời giải: Điều kiện $2x-8\ge 0 \Leftrightarrow x\ge 4$.
+
+---
+
+Câu 8. Rút gọn $\sqrt{(x-3)^2}$ với $x\ge 3$.
+Đáp án: x-3
+Lời giải: $\sqrt{(x-3)^2}=|x-3|$. Vì $x\ge 3$ nên $|x-3|=x-3$.
+
+---
+
+Câu 9. Nghiệm của phương trình $\sqrt{x}=5$ là:
+A. $x=5$
+B. $x=10$
+C. $x=25$
+D. $x=\pm 5$
+Đáp án: C
+Lời giải: Bình phương hai vế: $x=25$ (thỏa $x\ge 0$).
+
+---
+
+Câu 10. Giá trị của $\sqrt{100}+\sqrt{1,44}$ bằng bao nhiêu?
+Đáp án: 11,2
+Lời giải: $\sqrt{100}+\sqrt{1,44}=10+1,2=11,2$.
