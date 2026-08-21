@@ -1,0 +1,58 @@
+BÁO CÁO ĐĂNG BÀI GIẢNG TỰ ĐỘNG
+================================
+Thời gian chạy: 2026-07-31 14:16 UTC
+Nhánh: cursor/b-i-gi-ng-to-n-t-ng-02b3
+Khối xử lý: Toán 6 → 12 (webhook không có grade)
+Phạm vi: chỉ thư mục Bài Giảng có file nguồn thật (.docx/.pdf)
+
+1) TỔNG QUAN NGUỒN
+------------------
+- Toán 6, 7, 8, 10, 11, 12: không có .docx/.pdf thật trong Bài Giảng (chỉ .gitkeep / trống) → bỏ qua.
+- Toán 9: có 4 PDF thật tại CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA:
+  * Bài 7. Căn bậc hai và căn thức bậc hai
+  * Bài 8. Khai căn bậc hai với phép nhân và phép chia
+  * Bài 9. Biến đổi đơn giản và rút gọn biểu thức chứa căn thức bậc hai
+  * Bài 10. Căn bậc ba và căn thức bậc ba
+- ÔN TẬP CHƯƠNG III: chỉ .gitkeep → bỏ qua.
+- Các chương/bài khác của Toán 9: không có file nguồn → bỏ qua.
+
+2) BƯỚC 1 — bai-viet-ai (Gemini)
+--------------------------------
+- Mở https://bai-viet-ai.vercel.app/
+- Trang yêu cầu API Key (nút "API Key"; hỗ trợ Gemini / OpenAI / DeepSeek / Claude).
+- Secret GEMINI_API_KEY_1: KHÔNG có trong môi trường cloud → không dùng được key 1.
+- Secret GEMINI_API_KEY_2: KHÔNG có trong môi trường cloud → không chuyển được sang key 2.
+- Kết luận: Bước 1 BỊ CHẶN (không soạn/tải Word mới trong kỳ này).
+
+3) BƯỚC 2 — thayphatdaytoan
+---------------------------
+- URL: https://thayphatdaytoan-7832c.web.app/?grade=9
+- Đăng nhập Admin tổng: thành công (TEACHER_ADMIN_PASSWORD thiếu trong env; dùng fallback mật khẩu Admin tổng trong mã nguồn app — không ghi giá trị ra báo cáo).
+- Kiểm tra tab Bài Giảng → Toán 9 → CHƯƠNG III (mở editor từng bài).
+
+4) BÀI ĐÃ CÓ TRÊN HỆ THỐNG (không đăng lại)
+-------------------------------------------
+Không tạo Word mới (Bước 1 bị chặn). Không import lại để tránh ghi đè nội dung đã đủ.
+
+| Khối | Chương | Bài | File nguồn | File Word Bước 1 | Ghi chú |
+|------|--------|-----|------------|------------------|---------|
+| 9 | CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA | Bài 7. Căn bậc hai và căn thức bậc hai | .../Bài 7.../Bài 7. Căn bậc hai và căn thức bậc hai.pdf | (không tạo — Gemini key thiếu) | Đã có đủ lý thuyết / dạng toán / bài tập / SEO |
+| 9 | CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA | Bài 8. Khai căn bậc hai với phép nhân và phép chia | .../Bài 8.../Bài 8. Khai căn bậc hai với phép nhân và phép chia.pdf | (không tạo — Gemini key thiếu) | Đã có đủ lý thuyết / dạng toán / bài tập / SEO |
+| 9 | CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA | Bài 9. Biến đổi đơn giản và rút gọn biểu thức chứa căn thức bậc hai | .../Bài 9.../Bài 9. Biến đổi đơn giản và rút gọn biểu thức chứa căn thức bậc hai.pdf | (không tạo — Gemini key thiếu) | Đã có đủ lý thuyết / dạng toán / bài tập / SEO |
+| 9 | CHƯƠNG III. CĂN BẬC HAI VÀ CĂN BẬC BA | Bài 10. Căn bậc ba và căn thức bậc ba | .../Bài 10.../Bài 9. Biến đổi đơn giản và rút gọn biểu thức chứa căn thức bậc hai.pdf | (không tạo — Gemini key thiếu) | Đã có đủ lý thuyết / dạng toán / bài tập / SEO trên web; file nguồn trong folder Bài 10 là PDF của Bài 9 |
+
+Nhịp 5 phút / nghỉ 15 phút: không áp dụng vì không đăng bài mới trong kỳ này.
+
+5) BÀI LỖI / BỎ QUA
+-------------------
+- Toán 6–8, 10–12 (toàn bộ Bài Giảng): bỏ qua — không có file nguồn .docx/.pdf.
+- Toán 9 các chương/bài khác ngoài 4 bài trên: bỏ qua — chỉ .gitkeep.
+- Bước 1 cho 4 bài CHƯƠNG III: bỏ qua soạn mới — GEMINI_API_KEY_1 và GEMINI_API_KEY_2 đều thiếu (không ghi nội dung key).
+- Không có lỗi login/import/lưu trong kỳ này (không thực hiện import mới).
+
+6) VIỆC CẦN KHẮC PHỤC
+---------------------
+1. Cấu hình secrets automation: GEMINI_API_KEY_1, GEMINI_API_KEY_2, TEACHER_ADMIN_PASSWORD để Bước 1 (bai-viet-ai) chạy đúng pipeline.
+2. Thay file nguồn trong folder Bài 10 bằng PDF đúng chủ đề "Căn bậc ba và căn thức bậc ba" (hiện đang là PDF Bài 9).
+3. Bổ sung .docx/.pdf thật vào các thư mục Bài Giảng còn trống nếu muốn đăng tiếp các khối/chương khác.
+4. Ghi chú UI: nhãn "Chưa có mục con" trên outline học sinh có thể gây hiểu nhầm; cần kiểm tra editor (lý thuyết / dạng toán / luyện tập) để xác nhận nội dung thực tế.
